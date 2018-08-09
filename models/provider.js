@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 
 const Schema = mongoose.Schema;
 
-const ProviderSchema = new Schema({
+const providerSchema = new Schema({
 
     date_added: {type: Date, default: Date.now},
     name: { first: { type: String, required: true }, last: { type: String, required: true } },
@@ -18,6 +18,6 @@ const ProviderSchema = new Schema({
 
 });
 
-var Provider = mongoose.model("Physician", ProviderSchema);
+var Provider = mongoose.model("Physician", providerSchema);
 
 module.exports = Provider;
