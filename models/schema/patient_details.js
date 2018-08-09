@@ -3,20 +3,21 @@ const Schema = mongoose.Schema;
 
 
 const patient_detailsSchema = new Schema({
-    
+
     hospital_id: { 
         type: String, 
+        unique: true, 
         validate: {
             validator: function(hospnum) {
                 let re = /^(?!\d\s+$)[a-zA-Z\d\s]+{2,12}$/
                 return re.test(hospnum);
             },
-            message: props => `${props.value} is not a valid name!`
+            message: props => `${props.value} is not a valid hospital id!`
         },
-        unique: true, 
-        required: [true, "No hospital ID" ],  },
+        
+        required: [true, "No hospital ID" ],  
+    },
     
-
     firstname: { 
         type: String, 
         validate: {
@@ -26,7 +27,8 @@ const patient_detailsSchema = new Schema({
             },
             message: props => `${props.value} is not a valid name!`
         },
-        required: [true, "No patient first name"] }, 
+        required: [true, "No patient first name"] 
+    }, 
 
     lastname: { 
         type: String, 
@@ -37,7 +39,8 @@ const patient_detailsSchema = new Schema({
             },
             message: props => `${props.value} is not a valid name!`
         },
-        required: [true, "No patient last name"] },
+        required: [true, "No patient last name"]
+    },
 
     dob:  { 
         type: String, 
@@ -49,7 +52,8 @@ const patient_detailsSchema = new Schema({
             },
             message: props => `${props.value} is not a valid email address!`
         },
-        required: [true, "No patient date of birth"] },
+        required: [true, "No patient date of birth"] 
+    },
 
     email: { 
         type: String, 
@@ -61,17 +65,21 @@ const patient_detailsSchema = new Schema({
             },
             message: props => `${props.value} is not a valid email address!`
         },
-        required: [true, "No patient email address"] },
+        required: [true, "No patient email address"] 
+    },
 
     phone: { 
         type: String, 
         validate: {
             validator: function(phone) {
-                return /\d{3}-\d{3}-\d{4}/.test(phone);
+                let re = /\d{3}-\d{3}-\d{4}/
+                return re.test(phone);
             },
             message: props => `${props.value} is not a valid phone number!`
         },
-        required: [true, "No patient phone number"] }
+        required: [true, "No patient phone number"] 
+    }
+
 });
 
 module.exports = patient_detailsSchema; 
