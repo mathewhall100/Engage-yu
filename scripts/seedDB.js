@@ -4,11 +4,20 @@ mongoose.Promise = global.Promise;
 
 // Database name = 'medmonccfdb'
 // This file empties the respective collections and inserts the seed data below
+// Run via command line with 'node scripts/seedDB.js'
+// Will exit back to command line once seed script run (WITHOUT running application)
 
+
+// Connect to the Mongo DB 'medmonccfdb'
 mongoose.connect(
-  process.env.MONGODB_URI || "mongodb://localhost/medmonccfdb",
-);
-
+  process.env.MONGODB_URI || "mongodb://localhost:27017/medmonccfdb", { useNewUrlParser: true })
+  .then(
+    (res) => {
+     console.log("Connected to Database 'medmonccfdb' Successfully.")
+    }
+  ).catch(() => {
+    console.log("Conntection to database failed.");
+  });;
 
 // User collection seeds
 const userSeed = [
