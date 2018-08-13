@@ -46,6 +46,9 @@ class TestRoutes extends Component {
             first: "Peter", 
             last: "Willis",
         },
+        role: { 
+            role: "Physician (specialist)" 
+        },
         office: {
             address1: "Cleveland Clinic, Downtown Plaza 1",
             address2: "Cleveland",
