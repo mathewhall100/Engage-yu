@@ -30,11 +30,11 @@ mongoose.connect(
      console.log("Connected to Database 'medmonccfdb' Successfully.")
     }
   ).catch(() => {
-    console.log("Conntection to database failed.");
+    console.log("Connection to database failed.");
   });;
 
 // Set up promises with mongoose
-mongoose.Promise = require('bluebird');
+//mongoose.Promise = require('bluebird');
 mongoose.Promise = global.Promise
 
 

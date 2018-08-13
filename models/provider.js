@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const providerSchema = new Schema({
 
     date_added: {type: Date, default: Date.now},
+
     name: { 
         first:  { 
             type: String, 
@@ -24,8 +25,6 @@ const providerSchema = new Schema({
             required: true  
         },
     }, 
-
-    
 
     id_number: {
         type: String,
@@ -68,6 +67,7 @@ const providerSchema = new Schema({
 
 });
 
+
 // mongoose error handling middleware function
 handleError = (error, doc, next) => {
     console.log('Operation failed')
@@ -78,7 +78,6 @@ handleError = (error, doc, next) => {
         next()
     }
 };
-
 providerSchema.post('save', handleError);
 providerSchema.post('findOneAndUpdate', handleError);
 

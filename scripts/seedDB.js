@@ -46,6 +46,7 @@ const providerSeed = [
   { date_added: new Date(),
     name: { first: "John", last: "Heyworth" },
     id_number: "id12233",
+    role: "Physician (specialist)",
     office: {address1: "Beachwood medical practice", address2: "Beachwood", state: "Ohio", zip: "44139" },
     email: "john.heworth@doctor.com",
     phone: "216-395-2345"
@@ -55,6 +56,7 @@ const providerSeed = [
     date_added: new Date(),
     name: { first: "melanie", last: "kopff" },
     id_number: "id09876",
+    role: "Physician (primary care)",
     office: { address1: "Park Road East medical centre", address2: "Solon", state: "Ohio", zip: "44139" },
     email: "mel.kopff@doctor.com",
     phone: "216-786-2845"
