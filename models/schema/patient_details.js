@@ -3,31 +3,19 @@ const Schema = mongoose.Schema;
 
 
 const patient_detailsSchema = new Schema({
-    //hospital_id
-    //firstname
-    //lastname
-    //DOB
-    //email
-    //phone
 
-    hospital_id: { 
-        type: String, 
-        unique: true, 
-        minlength: 2,
-        maxlength: 12,
+    hospital_id: { type: String, unique: true, required: [true, "No hospital ID" ],  
         validate: {
             validator: function(val) {
-                //should contain only letters and numbers
-                let re = /^\d*[a-zA-Z][a-zA-Z\d\s]*$/
+                //should contain between 2 and 12 characters and only letters and numbers
+                let re = /^\d*[a-zA-Z][a-zA-Z\d\s]{2,12}$/
                 return re.test(val);
             },
             message: props => `${props.value} is not a valid hospital id!`
         },   
-        required: [true, "No hospital ID" ],  
+        
     },
-    
-    firstname: { 
-        type: String, 
+    firstname: { type: String, required: [true, "No patient first name"],
         validate: {
             validator: function(val) {
                 //should be between 2 and 30 characters and contain only letters
@@ -35,12 +23,9 @@ const patient_detailsSchema = new Schema({
                 return re.test(val);
             },
             message: props => `${props.value} is not a valid name!`
-        },
-        required: [true, "No patient first name"] 
+        }
     }, 
-
-    lastname: { 
-        type: String, 
+    lastname: { type: String, required: [true, "No patient last name"],
         validate: {
             validator: function(val) {
                 //should be between 2 and 30 characters and contain only letters
@@ -48,12 +33,9 @@ const patient_detailsSchema = new Schema({
                 return re.test(val);
             },
             message: props => `${props.value} is not a valid name!`
-        },
-        required: [true, "No patient last name"]
+        }
     },
-
-    dob:  { 
-        type: String, 
+    dob:  { type: String, required: [true, "No patient date of birth"],
         validate: {
             validator: function(val) {
                 // mm/dd/yyyy or mm-dd-yyyy formats only
@@ -61,13 +43,9 @@ const patient_detailsSchema = new Schema({
                 return re.test(val);
             },
             message: props => `${props.value} is not a valid date!`
-        },
-        required: [true, "No patient date of birth"] 
+        }
     },
-
-    email: { 
-        type: String, 
-        unique: true,
+    email: { type: String, unique: true, required: [true, "No patient email address"],
         validate: {
             validator: function(val) {
                 //email formatting regex. Must contain letters and numbers, '@' and '.' 
@@ -75,12 +53,9 @@ const patient_detailsSchema = new Schema({
                 return re.test(val);
             },
             message: props => `${props.value} is not a valid email address!`
-        },
-        required: [true, "No patient email address"] 
+        }
     },
-
-    phone: { 
-        type: String, 
+    phone: { type: String, required: [true, "No patient phone number"],
         validate: {
             validator: function(val) {
                 //must be of xxx-xxx-xxxx format with numbers and '-' only
@@ -88,10 +63,8 @@ const patient_detailsSchema = new Schema({
                 return re.test(val);
             },
             message: props => `${props.value} is not a valid phone number!`
-        },
-        required: [true, "No patient phone number"] 
+        } 
     }
-
 });
 
 module.exports = patient_detailsSchema; 
