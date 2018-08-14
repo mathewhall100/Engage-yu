@@ -34,7 +34,6 @@ mongoose.connect(
   });;
 
 // Set up promises with mongoose
-//mongoose.Promise = require('bluebird');
 mongoose.Promise = global.Promise
 
 

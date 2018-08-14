@@ -1,22 +1,34 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const patient_detailsSchema = require("./schema/patient_details");
-const next_appointmentSchema = require("./schema/next_appointment");
 const episodeSchema = require("./schema/episode");
 
 const patientSchema = new Schema({
-        date_created: { type: Date, default: Date.now },
+        date_enrolled: { type: Date, default: Date.now },
         enrolled_by: { type: Schema.Types.ObjectId, ref: "Provider", required: [true, "No enrolling physician"] },
         status: { type: String, enum: ["active", "inactive"], required: true, default: "active" },
         patient_details: { type: patient_detailsSchema, required: true},  
-        primary_provider: { type: Schema.Types.ObjectId, ref: "Provider", required: [true, "No primary physician"] },          
-        next_appointment: {type: next_appointmentSchema, required: true},
-        episode: episodeSchema,
+        primary_provider: { type: Schema.Types.ObjectId, ref: "Provider", required: [true, "No primary physician"] },
+        episode: [episodeSchema],
     },
     
     { timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'} }
 
 );
+
+// mongoose error handling middleware function
+handleError = (error, doc, next) => {
+    console.log('Operation failed')
+    console.log(`Error name: ${error.name}  + error code: ${error.code}`)
+    // if (error.name === "ValidationError") {
+    //     next(new Error(`New/updated document failed Mongoose validation.`));
+    // } else {
+        next()
+     //}
+};
+patientSchema.post('save', handleError);
+patientSchema.post('findOneAndUpdate', handleError);
+
 
 var Patient= mongoose.model("Patient", patientSchema);
 

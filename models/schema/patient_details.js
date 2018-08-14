@@ -13,10 +13,12 @@ const patient_detailsSchema = new Schema({
     hospital_id: { 
         type: String, 
         unique: true, 
+        minlength: 2,
+        maxlength: 12,
         validate: {
             validator: function(val) {
-                //should be between 2 and 12 characters and contain only letters and numbers
-                let re = /^(?!\d\s+$)[a-zA-Z\d\s]+{2,12}$/
+                //should contain only letters and numbers
+                let re = /^\d*[a-zA-Z][a-zA-Z\d\s]*$/
                 return re.test(val);
             },
             message: props => `${props.value} is not a valid hospital id!`
@@ -58,7 +60,7 @@ const patient_detailsSchema = new Schema({
                 let re = /^(0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])[\/\-]\d{4}$/
                 return re.test(val);
             },
-            message: props => `${props.value} is not a valid email address!`
+            message: props => `${props.value} is not a valid date!`
         },
         required: [true, "No patient date of birth"] 
     },

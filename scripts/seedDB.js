@@ -79,9 +79,9 @@ const questionSeed = [
 // Patient collection seeds
 const patientSeed = [
   {
-    date_created: new Date(),
-    enrolled_by: "5b6b5b1c09cd09292030ba4c",
-    status: "error????",
+    date_enrolled: new Date(),
+    enrolled_by: "55b722e30a78fe511a9bf7dd8",
+    status: "active",
 
     patient_details: {
         hospital_id: "H123456",
@@ -92,22 +92,16 @@ const patientSeed = [
         phone: "216-376-2314"
     },
 
-    primary_provider: "5b6b5b1c09cd09292030ba4c",
+    primary_provider: "55b722e30a78fe511a9bf7dd8",
 
-    next_appointment: {
-        date: new Date(),
-        comments: "Be sure to attend",
-        provider: "5b6b5b1c09cd09292030ba4c",
-    },
-
-    episode: {
+    episode: [{
         episode_number: 1,
         start_date: new Date(),
         num_days: 3,
         end_date: new Date(),
-        requesting_provider: "5b6b5b1c09cd09292030ba4c",
+        requesting_provider: "55b722e30a78fe511a9bf7dd8",
         report_to: [
-            "5b6b5b1c09cd09292030ba4c"
+            "55b722e30a78fe511a9bf7dd8"
         ],
         num_questions: 4,
         questions: [
@@ -136,7 +130,7 @@ const patientSeed = [
             patient_comments: ""
 
         }]
-    }
+    }]
   }
 ];
 
