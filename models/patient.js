@@ -4,12 +4,14 @@ const patient_detailsSchema = require("./schema/patient_details");
 const episodeSchema = require("./schema/episode");
 
 const patientSchema = new Schema({
+
         date_enrolled: { type: Date, default: Date.now },
-        enrolled_by: { type: Schema.Types.ObjectId, ref: "Provider", required: [true, "No enrolling physician"] },
+        enrolled_by: { type: Schema.Types.ObjectId, ref: "Provider" },
         status: { type: String, enum: ["active", "inactive"], required: true, default: "active" },
         patient_details: { type: patient_detailsSchema, required: true},  
         primary_provider: { type: Schema.Types.ObjectId, ref: "Provider", required: [true, "No primary physician"] },
-        episode: [episodeSchema],
+        episode: [episodeSchema]
+
     },
     
     { timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'} }

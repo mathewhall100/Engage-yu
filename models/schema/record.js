@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const recordSchema = new Schema({
+
     record_number: { type: Number, required: [true, "No record number"] },
     day: { type: Number, required: [true, "No record day"] },
     time: { type: String, required: [true, "No record time"] },
@@ -10,7 +11,8 @@ const recordSchema = new Schema({
     medication_adherance: { type: String, enum: ["yes", "no", "no meds", "unanswered", "not asked"] }, 
     actual_datetime: Date,
     data: [{ type: Boolean }],
-    patient_comments: String,
+    patient_comments: String
+
 });
 
 

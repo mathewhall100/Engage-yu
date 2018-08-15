@@ -1,6 +1,12 @@
 import React, { Component } from "react";
 import providerAPI from "../utils/provider.js";
 import patientAPI from "../utils/patient.js";
+import activeAPI from "../utils/active.js";
+import question_customAPI from "..//utils/question_custom.js";
+import question_defaultAPI from "..//utils/question_default.js";
+
+
+
 
 import { Container } from "reactstrap";
 import { Button, Form,} from 'reactstrap'
@@ -10,8 +16,10 @@ class TestRoutes extends Component {
 
     state = {
         // test ids
-        providerId: "5b722e30a78fe511a9bf7dd8", 
-        patientId: "5b722e2fa78fe511a9bf7dd5"
+        providerId: "5b733f4b0ee1d97e749c2a27", 
+        patientId: "5b7269ad6a1874ea30180bc9",
+        activeId: "5b733f4c0ee1d97e749c2a29",
+        question_customId: "5b74444dc51e8327080092cd"
     };
 
     componentDidMount() {
@@ -282,6 +290,146 @@ class TestRoutes extends Component {
 
 
 
+    // --------------------
+    // Active routes tests
+    // --------------------
+
+
+
+    // load all active
+    loadAllActive = event => {
+        event.preventDefault();
+        activeAPI.findAll({})
+            .then(res => console.log("res.data: " + JSON.stringify(res.data, null, 2 )))
+            .catch(err => {
+                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
+                console.log(err);
+            })
+    };
+
+    // find single active by id
+    findOneActive = event => {
+        event.preventDefault();
+        activeAPI.findById(this.state.activeId)
+            .then(res => console.log("res.data: " + JSON.stringify(res.data, null, 2 )))
+            .catch(err => {
+                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
+                console.log(err);
+            })
+    };
+
+        // add a new provider
+        addNewActive = event => {
+            event.preventDefault();
+            activeAPI.create({
+                firstname: "Sally",
+                lastname: "Kidstone",
+                hospital_id: "H3453736",
+                patient_id: "5b7311026b0e10f62ca85be5",
+                episode_number: 1,
+                episode_id: "5b7311526b0e10f62ca85be8",
+                requesting_provider_firstname: "John",
+                requesting_provider_lastname: "Heyworth",
+                requesting_provider_id: "5b733f4b0ee1d97e749c2a27",
+                primary_provider_firstname: "John",
+                primary_provider_lastname: "Heyworth",
+                primary_provider_id: "5b733f4b0ee1d97e749c2a27",
+                start_date: new Date(),
+                start_time: "0800",
+                end_date: new Date(),
+                end_time: "1400",
+                last_entry: new Date()
+            })
+            .then(res => console.log("res.data: " + JSON.stringify(res.data, null, 2 )))
+            .catch(err => {
+                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
+                console.log(err);
+            })
+        };
+
+    // update active last entry
+    updateActive = event => {
+        event.preventDefault();
+        activeAPI.update(this.state.activeId, {
+            last_entry: new Date()
+        })
+        .then(res => console.log("res.data: " + JSON.stringify(res.data, null, 2 )))
+        .catch(err => {
+            console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
+            console.log(err);
+        })
+    };
+
+
+
+    // --------------------
+    // Question_custom routes tests
+    // --------------------
+
+
+
+    // load all custom questions
+    loadAllCustomQuestions = event => {
+        event.preventDefault();
+        question_customAPI.findAll({})
+            .then(res => console.log("res.data: " + JSON.stringify(res.data, null, 2 )))
+            .catch(err => {
+                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
+                console.log(err);
+            })
+    };
+
+    
+    // add a new custom question
+    addNewCustomQuestion = event => {
+        event.preventDefault();
+        question_customAPI.create({
+            date_added: new Date(),
+            added_by: "5b733f4b0ee1d97e749c2a28",
+            question: "Do you have nausea or sickness?",
+            answers: [ "no", "yes, mild", "yes, troubling", "yes, severe", "asleep"] ,
+        })
+        .then(res => console.log("res.data: " + JSON.stringify(res.data, null, 2 )))
+        .catch(err => {
+            console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
+            console.log(err);
+        })
+    };
+
+
+    // Delete a question from the custom question collection by id
+    removeCustomQuestion = event => {
+        event.preventDefault();
+        question_customAPI.remove(this.state.question_customId)
+            .then(res => console.log("res.data: " + JSON.stringify(res.data, null, 2 )))
+            .catch(err => {
+                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
+                console.log(err);
+            })
+    };
+
+
+     // --------------------
+    // Question_default routes tests
+    // --------------------
+
+
+
+    // load default questions
+    loadDefaultQuestions = event => {
+        event.preventDefault();
+        question_defaultAPI.findAll({})
+            .then(res => console.log("res.data: " + JSON.stringify(res.data, null, 2 )))
+            .catch(err => {
+                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
+                console.log(err);
+            })
+    };
+
+
+
+
+
     // ------
     // Render
     // ------
@@ -320,6 +468,40 @@ class TestRoutes extends Component {
                         <Button id="n" onClick={this.createEpisode}> new episode</Button> 
                         <Button id="o" onClick={this.addRecord}> addRecord</Button> 
                         
+                    </Form>
+                </Container>
+
+                <Container>
+                    <br />
+                    Active collection tests
+                    <Form>
+                        <br />
+                        <Button id="p" onClick={this.loadAllActive}> load all </Button>
+                        <Button id="q" onClick={this.findOneActive}> find one </Button>
+                        <Button id="r" onClick={this.addNewActive}> add new </Button>
+                        <Button id="s" onClick={this.updateActive}> update </Button>
+                        <Button id="t" onClick={this.removeActive}> remove </Button>
+                    </Form>
+                </Container>
+
+                <Container>
+                    <br />
+                    Question_custom collection tests
+                    <Form>
+                        <br />
+                        <Button id="u" onClick={this.loadAllCustomQuestions}> load all </Button>
+                        <Button id="v" onClick={this.addNewCustomQuestion}> add new </Button>
+                        <Button id="w" onClick={this.removeCustomQuestion}> remove </Button>
+                    </Form>
+                </Container>
+
+                                <Container>
+                    <br />
+                    Question_deafult collection tests
+                    <Form>
+                        <br />
+                        <Button id="x" onClick={this.loadAllDefaultQuestions}> load all </Button>
+
                     </Form>
                 </Container>
 

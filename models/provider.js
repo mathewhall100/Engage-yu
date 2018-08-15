@@ -42,7 +42,8 @@ const providerSchema = new Schema({
      },
     email: { type: String, unique: true, required: [true, "No email address supplied"] },
     phone: { type: String, required: [true, "No phone number supplied"] },
-    custom_questions: [{ type: Schema.Types.ObjectId, ref: "Question" }],
+    custom_questions: [{ type: Schema.Types.ObjectId, ref: "Question" }]
+
 });
 
 

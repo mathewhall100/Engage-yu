@@ -1,6 +1,7 @@
 module.exports = {
-    Question: require("./question"),
+    Question_default: require("./question_default"),
+    Question_custom: require("./question_custom"),
     Patient: require("./patient"),
-    User: require("./user"),
     Provider: require("./provider"),
+    Active: require("./active")
   };

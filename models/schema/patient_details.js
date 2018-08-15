@@ -65,6 +65,7 @@ const patient_detailsSchema = new Schema({
             message: props => `${props.value} is not a valid phone number!`
         } 
     }
+    
 });
 
 module.exports = patient_detailsSchema; 

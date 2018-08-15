@@ -19,31 +19,32 @@ mongoose.connect(
     console.log("Conntection to database failed.");
   });;
 
+
 // User collection seeds
 const userSeed = [
-    {
-      username: "john",
-      password: "$2a$10$SAvF6U2.nGRTGYe2uIpvYuQW30ZDRz0uofxy3exuYNUYr8GssEri2",
-      role: "Admin",
-      email: "john.heworth@doctor.com",
-      patient_id: "n/a",
-      doctor_id: "johnID"
-    },
-    {
-      username: "melanie",
-      password: "$2a$10$3srPp78Me/7mKZa9DSxReOnyYSTi2l7gsvVhCfjmRiDDXfUeqIsfO",
-      role: "Admin",
-      email: "mel.kopffh@doctor.com",
-      patient_id: "n/a",
-      doctor_id: "melanieID"
-    }
-  ]
+  {
+    username: "john",
+    password: "$2a$10$SAvF6U2.nGRTGYe2uIpvYuQW30ZDRz0uofxy3exuYNUYr8GssEri2",
+    role: "Admin",
+    email: "john.heworth@doctor.com",
+    patient_id: "n/a",
+    doctor_id: "johnID"
+  },
+  {
+    username: "melanie",
+    password: "$2a$10$3srPp78Me/7mKZa9DSxReOnyYSTi2l7gsvVhCfjmRiDDXfUeqIsfO",
+    role: "Admin",
+    email: "mel.kopffh@doctor.com",
+    patient_id: "n/a",
+    doctor_id: "melanieID"
+  }
+];
 
 
 // Provider collection seeds
 const providerSeed = [
-
-  { date_added: new Date(),
+  { 
+    date_added: new Date(),
     name: { first: "John", last: "Heyworth" },
     id_number: "id12233",
     role: "Physician (specialist)",
@@ -51,7 +52,6 @@ const providerSeed = [
     email: "john.heworth@doctor.com",
     phone: "216-395-2345"
   },
-
   {
     date_added: new Date(),
     name: { first: "melanie", last: "kopff" },
@@ -61,18 +61,47 @@ const providerSeed = [
     email: "mel.kopff@doctor.com",
     phone: "216-786-2845"
  },
-
 ];
 
 
-// Question collection seeds
-const questionSeed = [
-    
-    { default: { question: "on" } },
-    { default: { question: "off" } },
-    { default: { question: "on, non-troubling dyskinesia" } },
-    { default: { question: "on, troubling dyskinesia" } }
+// Question_deafult collection seeds
+const question_defaultSeed = [
+  {
+      question: "Are you currently?",
+      answers: ["on",  "off", "on", "non-troubling dyskinesia", "on, troubling dyskinesia", "asleep" ]
+  }
+];
 
+// Question_custom collection seeds
+const question_customSeed = [
+  {
+      date_added: new Date(),
+      added_by: "5b733f4b0ee1d97e749c2a28",
+      question: "Do you have tremor??",
+      answers: ["no", "yes, non-troubling", "yes, troubling", "yes, disabling", "asleep" ],
+  }
+];
+
+// Active collection seeds
+const activeSeed = [
+  { 
+    firstname: "Sundance",
+    lastname: "Kid",
+    hospital_id: "H3453736",
+    patient_id: "5b7311026b0e10f62ca85be5",
+    episode_id: "5b7311526b0e10f62ca85be8",
+    requesting_provider_firstname: "John",
+    requesting_provider_lastname: "Heyworth",
+    requesting_provider_id: "55b722e30a78fe511a9bf7dd8",
+    primary_provider_firstname: "John",
+    primary_provider_lastname: "Heyworth",
+    primary_provider_id: "5b722e30a78fe511a9bf7dd9",
+    start_date: new Date(),
+    start_time: "0800",
+    end_date: new Date(),
+    end_time: "1400",
+    last_entry: new Date()
+  }
 ];
 
 
@@ -138,33 +167,48 @@ const patientSeed = [
 
 
 // Insert seed data into the respective collections
+// ***Commented out so that provider ids don't change when reseeding***
 
-db.Provider
+// db.Provider
+//   .remove({})
+//   .then(() => db.Provider.collection.insertMany(providerSeed))
+//     .then(data => {
+//       console.log(data.insertedCount + " provider collection documents inserted!");
+//   });
+
+// db.User
+//   .remove({})
+//   .then(() => db.User.collection.insertMany(userSeed))
+//     .then(data =>{
+//       console.log(data.insertedCount + " user collection documents inserted!");
+//     })
+
+// db.Patient
+//    .remove({})
+//    .then(() => db.Patient.collection.insertMany(patientSeed))
+//       .then(data => {
+//        console.log(data.insertedCount + " patient collection documents inserted!");
+//    })
+
+// db.Active
+//   .remove({})
+//   .then(() => db.Active.collection.insertMany(activeSeed))
+//     .then(data => {
+//       console.log(data.insertedCount + " active collection documents inserted!");
+//   })
+
+db.Question_default
   .remove({})
-  .then(() => db.Provider.collection.insertMany(providerSeed))
-    .then(data => {
-      console.log(data.insertedCount + " provider records inserted!");
-  });
-
-db.User
-  .remove({})
-  .then(() => db.User.collection.insertMany(userSeed))
-    .then(data =>{
-      console.log(data.insertedCount + " user records inserted!");
-    })
-
-db.Patient
-   .remove({})
-   .then(() => db.Patient.collection.insertMany(patientSeed))
-      .then(data => {
-       console.log(data.insertedCount + " patient records inserted!");
-   })
-
-db.Question
-  .remove({})
-  .then(() => db.Question.collection.insertMany(questionSeed))
+  .then(() => db.Question_default.collection.insertMany(question_defaultSeed))
      .then(data => {
-      console.log(JSON.stringify(data.insertedCount, null, 2) + " question records inserted!")
+      console.log(JSON.stringify(data.insertedCount, null, 2) + " question_default collection documents inserted!")
+  })
+
+  db.Question_custom
+  .remove({})
+  .then(() => db.Question_custom.collection.insertMany(question_customSeed))
+     .then(data => {
+      console.log(JSON.stringify(data.insertedCount, null, 2) + " question_custom collection documents inserted!")
   })
 
   .catch(err => {

@@ -1,8 +1,6 @@
 const db = require("../models");
 
 
-// Methods for Medication collection controller (using Medication model from medication.js)
-
 module.exports = {
 
     // Fetch personal details of all patients in Patient collection
@@ -15,7 +13,6 @@ module.exports = {
         //if(req.user){
             db.Patient
             .find( {}, {date_enrolled: 1, patient_details: 1, status: 1} )
-            .populate("provider")
             .sort( {"details.lastname": 1} )
             .then(patientList => {
                 console.log(patientList)
@@ -42,7 +39,7 @@ module.exports = {
         //if(req.user){
             db.Patient
             .findById(req.params.id)
-            .populate("provider")
+            .populate("enrolled_by", "name")
             .then(patient => {
                 console.log(patient);
                 res.json(patient)

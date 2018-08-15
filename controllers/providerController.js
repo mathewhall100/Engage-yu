@@ -1,8 +1,6 @@
 const db = require("../models");
 
 
-// Methods for Provider collection controller (using Provider model from provider.js)
-
 module.exports = { 
 
     // Fetch all provider names and _ids (to populate listmenu)
