@@ -1,18 +1,16 @@
 import React, { Component } from "react";
-import providerAPI from "../utils/provider.js";
-import patientAPI from "../utils/patient.js";
-import activeAPI from "../utils/active.js";
-import question_customAPI from "..//utils/question_custom.js";
-import question_defaultAPI from "..//utils/question_default.js";
-
-
+import providerAPI from "../../utils/provider.js";
+import patientAPI from "../../utils/patient.js";
+import activeAPI from "../../utils/active.js";
+import question_customAPI from "../../utils/question_custom.js";
+import question_defaultAPI from "../../utils/question_default.js";
 
 
 import { Container } from "reactstrap";
 import { Button, Form,} from 'reactstrap'
 
 
-class TestRoutes extends Component {
+class TestAllRoutes extends Component {
 
     state = {
         // test ids
@@ -511,6 +509,6 @@ class TestRoutes extends Component {
     };
 };
 
-export default TestRoutes;
+export default TestAllRoutes;
 
 
