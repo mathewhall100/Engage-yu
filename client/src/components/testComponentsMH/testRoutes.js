@@ -13,8 +13,6 @@ import {CustomQuestionRouteTests, DefaultQuestionRouteTests, TestNavQuestions} f
 const TestRoutes = () => (
     <Container>
 
-    <TestNav />
-
     <Switch>
         <Route exact path='/test/all' component={TestAllRoutes}/>
         <Route exact path='/test/patient' component={PatientRouteTests}/>

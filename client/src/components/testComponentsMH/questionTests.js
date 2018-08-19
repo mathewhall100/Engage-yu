@@ -15,10 +15,10 @@ export class TestNavQuestions extends Component {
         <div>
             <br />
             <br />
-            
-            <Link to='/test/customq'>Test custom question routes</Link>
+
+            <Link to='/test/customq'><Button>Test custom question routes</Button></Link>
             <br />
-            <Link to='/test/defaultq'>Test default question routes</Link>
+            <Link to='/test/defaultq'><Button>Test default question routes</Button></Link>
         </div>
     )}
 
