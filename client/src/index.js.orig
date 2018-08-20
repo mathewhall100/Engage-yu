@@ -8,6 +8,10 @@ import registerServiceWorker from "./registerServiceWorker";
 import Auth from './services/auth0';
 <<<<<<< Updated upstream
 
+
+
+
+
 // ReactDOM.render(<App />, document.getElementById("root"));
 // registerServiceWorker();
 

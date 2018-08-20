@@ -6,13 +6,20 @@ import reducers from './reducers';
 import ReduxThunk from 'redux-thunk';
 import logo from "./logo.svg";
 import "./App.css";
+<<<<<<< Updated upstream
 import TestNav from "./components/testComponentsMH/testNav";
 import TestRoutes from "./components/testComponentsMH/testRoutes"
 import QuestionRoutes from './components/testComponentsMH/questionRoutes'
+=======
+>>>>>>> Stashed changes
 import Main from './components/Main';
 import Secret from './components/Secret';
 import NotFound from './components/NotFound';
 import Callback from './components/Callback';
+<<<<<<< Updated upstream
+=======
+import TestRoutes from "./pages/testPageMH.js"
+>>>>>>> Stashed changes
 
 
 const createStoreWithMiddleware = applyMiddleware(ReduxThunk)(createStore);
@@ -21,6 +28,10 @@ class App extends Component {
   render() {
     
     return (
+<<<<<<< Updated upstream
+
+=======
+>>>>>>> Stashed changes
       <Provider store={createStoreWithMiddleware(reducers)}>
         <Router>
           <div className="App">
@@ -35,9 +46,13 @@ class App extends Component {
                 <Route exact path="/notfound" component={NotFound} />
                 <Route component={NotFound} />
             </Switch>
+<<<<<<< Updated upstream
             <TestNav />
             <TestRoutes />
             <QuestionRoutes />
+=======
+            <TestRoutes />
+>>>>>>> Stashed changes
           </div>
         </Router>
       </Provider>
