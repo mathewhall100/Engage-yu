@@ -39,6 +39,7 @@ class App extends Component {
             <TestNav />
             <TestRoutes />
             <QuestionRoutes />
+            <TestRoutes />
           </div>
         </Router>
       </Provider>
