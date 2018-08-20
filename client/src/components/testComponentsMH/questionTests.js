@@ -1,29 +1,8 @@
 import React, { Component } from "react";
-import { Link } from 'react-router-dom';
 import question_customAPI from "../../utils/question_custom.js";
 import question_defaultAPI from "../../utils/question_default.js";
-
 import { Container } from "reactstrap";
 import { Button, Form,} from 'reactstrap'
-
-
-// Question nested navigation 
-
-export class TestNavQuestions extends Component {
-    render() {
-        return (
-        <div>
-            <br />
-            <br />
-
-            <Link to='/test/customq'><Button>Test custom question routes</Button></Link>
-            <br />
-            <Link to='/test/defaultq'><Button>Test default question routes</Button></Link>
-        </div>
-    )}
-
-};
-
 
 
 export class CustomQuestionRouteTests extends Component {
