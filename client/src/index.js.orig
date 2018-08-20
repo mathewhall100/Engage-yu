@@ -6,8 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import registerServiceWorker from "./registerServiceWorker";
 //import Auth from './Auth';
 import Auth from './services/auth0';
-
-
+<<<<<<< Updated upstream
 
 // ReactDOM.render(<App />, document.getElementById("root"));
 // registerServiceWorker();
@@ -17,3 +16,13 @@ ReactDOM.render((
         <App />
     </BrowserRouter>
 ), document.getElementById('root'));
+=======
+
+
+
+    ReactDOM.render(<App  />, document.getElementById("root"));    
+
+
+
+registerServiceWorker();
+>>>>>>> Stashed changes
