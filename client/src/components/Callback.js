@@ -1,10 +1,10 @@
 import React , { Component } from 'react';
-import Auth from '../Auth';
+import { connect } from 'react-redux';
+import { login, handleAuthentication, isAuthenticated, getProfile } from '../actions'
 
-export default class Callback extends Component {
+class Callback extends Component {
     componentDidMount() {
-        const auth = new Auth();
-        auth.handleAuthentication();
+        this.props.handleAuthentication();
     }
     render () {
         return(
@@ -14,3 +14,14 @@ export default class Callback extends Component {
         )
     }
 }
+
+
+const mapStateToProps = (state) => {
+    console.log("State in main : ", state);
+    const { authenticated, error, id_token, loading, profile } = state.auth
+    return {
+        authenticated, error, id_token, loading, profile
+    }
+}
+
+export default connect(mapStateToProps, { login, handleAuthentication, isAuthenticated, getProfile })(Callback);

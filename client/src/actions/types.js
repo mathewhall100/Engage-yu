@@ -1,13 +1,15 @@
-export const EMAIL_CHANGED = 'email_changed';
+export const EMAIL_CHANGED = 'EMAIL_CHANGED';
 
-export const PASSWORD_CHANGED = 'password_changed';
+export const PASSWORD_CHANGED = 'PASSWORD_CHANGED';
 
-export const LOGIN_USER_SUCCESS = 'login_user_success';
+export const LOGIN_USER_SUCCESS = 'LOGIN_USER_SUCCESS';
 
-export const LOGIN_USER_FAIL = 'login_user_fail';
+export const LOGIN_USER_FAIL = 'LOGIN_USER_FAIL';
 
-export const LOGIN_USER = 'login_user';
+export const LOGIN_USER = 'LOGIN_USER';
 
-export const LOGIN_AUTHENTICATED = 'login_authenticated';
+export const LOGIN_AUTHENTICATED = 'LOGIN_AUTHENTICATED';
 
-export const LOGOUT_SUCCESS = 'logout_success';
+export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
+
+export const USER_PROFILE = 'USER_PROFILE';
