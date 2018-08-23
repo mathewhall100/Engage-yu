@@ -36,7 +36,7 @@ class Routes extends Component {
                     <Route exact path='/callback' render={props => <Callback></Callback>} />
                     <Route exact path='/secret' render={props => <Secret {...this.props}></Secret>} />
                     <Route exact path="/" render={props => <Main {...this.props}> </Main>} />
-                    <Route exact path="/notfound" component={NotFound} />
+                    <Route path="/notfound" component={NotFound} />
                     <Route component={NotFound} />
                 </Switch>
                 <TestNav />
@@ -61,4 +61,4 @@ const mapStateToProps = (state) => {
 }
 
 
-export default connect(mapStateToProps, { login, logout, handleAuthentication, isAuthenticated, getProfile })(Routes);
+export default connect(mapStateToProps, { login, logout, handleAuthentication, isAuthenticated, getProfile},null, {pure: false})(Routes);
