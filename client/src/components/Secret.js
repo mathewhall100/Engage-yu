@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
-import { login, logout, handleAuthentication, isAuthenticated, getUserProfile } from '../actions/AuthAction'
-import history from '../history'; 
-
 class Secret extends Component {     
     
     render () {
         
         const { authenticated } = this.props
         console.log("Props : ", this.props);
-        {if(authenticated=== 0 || authenticated === 2) return <Redirect to='/' /> }
+        if(authenticated=== 0 || authenticated === 2) return <Redirect to='/' /> 
         return (
                 <div>
                     <div>
