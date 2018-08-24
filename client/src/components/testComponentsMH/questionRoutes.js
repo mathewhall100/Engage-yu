@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import { Switch, Route, Link } from 'react-router-dom'
-import { Container, Button } from "reactstrap";
-import QuestionNav from './questionNav'
+import { Switch, Route} from 'react-router-dom'
 import {CustomQuestionRouteTests, DefaultQuestionRouteTests} from "./questionTests"
 
     // Question nested navigation 
