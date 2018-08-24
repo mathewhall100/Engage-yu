@@ -1,5 +1,4 @@
 import jwtDecode from 'jwt-decode';
-import { LOGIN_USER_SUCCESS, LOGIN_USER_FAIL, LOGIN_USER, LOGIN_AUTHENTICATED, USER_PROFILE } from './types';
 import auth0 from '../services/auth0';
 import history from '../history' 
 

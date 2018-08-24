@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux';
-import { Route, Switch, Redirect, Link } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import logo from "../logo.svg";
 import TestNav from "./testComponentsMH/testNav";
 import TestRoutes from "./testComponentsMH/testRoutes"
 import QuestionRoutes from './testComponentsMH/questionRoutes'
-import Main from './Main';
+import Homepage from './Homepage';
 import Secret from './Secret';
 import NotFound from './NotFound';
 import Callback from './Callback';
@@ -35,7 +35,7 @@ class Routes extends Component {
                 <Switch>
                     <Route exact path='/callback' render={props => <Callback></Callback>} />
                     <Route exact path='/secret' render={props => <Secret {...this.props}></Secret>} />
-                    <Route exact path="/" render={props => <Main {...this.props}> </Main>} />
+                    <Route exact path="/" render={props => <Homepage {...this.props}> </Homepage>} />
                     <Route path="/notfound" component={NotFound} />
                     <Route component={NotFound} />
                 </Switch>
