@@ -21,14 +21,16 @@ mongoose.connect(
 
 
 // User collection seeds
-const user_roleSeed = [
+const userSeed = [
   {
     sub: "google1",
-    role: "provider"
+    role: "provider",
+    id: "objId1"
   },
   {
     sub: "google2",
-    role: "provider"
+    role: "provider",
+    id: "objId2"
   }
 ];
 
@@ -93,10 +95,12 @@ const question_customSeed = [
 // Active collection seeds
 const activeSeed = [
   { 
-    sub: "google3",
+    patient_info_id: "objId",
     firstname: "Sundance",
     lastname: "Kid",
     hospital_id: "H3453736",
+    patient_data_id: "objId",
+    episode_number: "1",
     episode_id: "5b7311526b0e10f62ca85be8",
     requesting_provider_firstname: "John",
     requesting_provider_lastname: "Heyworth",
@@ -104,6 +108,8 @@ const activeSeed = [
     primary_provider_firstname: "John",
     primary_provider_lastname: "Heyworth",
     primary_provider_id: "5b722e30a78fe511a9bf7dd9",
+    provider_group_name: "The Cleveland Practice",
+    provider_group_id: "groupid",
     start_date: new Date(),
     start_time: "0800",
     end_date: new Date(),
@@ -117,87 +123,85 @@ const activeSeed = [
 // Patient-data collection seeds
 const patient_dataSeed = [
   {
-    
-    sub: "google3",
+    patient_info_id: "obgectid1",
 
-    episode: [{
-        episode_number: 1,
-        start_date: new Date(),
-        num_days: 3,
-        end_date: new Date(),
-        requesting_provider: "55b722e30a78fe511a9bf7dd8",
-        report_to: [
-            "55b722e30a78fe511a9bf7dd8"
-        ],
-        num_questions: 4,
-        questions: [
-            "on", "off", "on, non-troubling dyskinesia", "on, troubling dyskinesia", "asleep"
-        ],
-        timeframe: {
-            start_time: "0800",
-            end_time: "1200",
-            interval_mins: 30,
-            margin_mins: 15
-        },
-        remind: {
-            remind: "on",
-            mins_before: 10,
-        },
-        expected_num_records: 15,
-        record: [{
-            record_number: 1,
-            day: 1,
-            time: "0800",
-            scheduled_datetime: new Date(),
-            record_valid: true,
-            medication_adherance: "yes",
-            actual_datetime: new Date(),
-            data: [ 1, 0, 0, 0, 0 ],
-            patient_comments: ""
+    episodes: [{
+      episode_number: 1,
+      start_date: new Date(),
+      num_days: 3,
+      end_date: new Date(),
+      requesting_provider: "55b722e30a78fe511a9bf7dd8",
+      report_to: [
+          "55b722e30a78fe511a9bf7dd8"
+      ],
+      num_questions: 4,
+      questions: [
+          "on", "off", "on, non-troubling dyskinesia", "on, troubling dyskinesia", "asleep"
+      ],
+      timeframe: {
+        start_time: "0800",
+        end_time: "1200",
+        interval_mins: 30,
+        margin_mins: 15
+      },
+      remind: {
+        remind: "on",
+        mins_before: 10,
+      },
+      expected_num_records: 15,
+      record: [{
+        record_number: 1,
+        day: 1,
+        time: "0800",
+        scheduled_datetime: new Date(),
+        record_valid: true,
+        medication_adherance: "yes",
+        actual_datetime: new Date(),
+        data: [ 1, 0, 0, 0, 0 ],
+        patient_comments: ""
 
-        }]
+      }]
     }]
   },
   {
-    
-    sub: "google4",
+    patient_info_id: "obgectid2",
 
-    episode: [{
-        episode_number: 1,
-        start_date: new Date(),
-        num_days: 4,
-        end_date: new Date(),
-        requesting_provider: "55b722e30a78fe511a9bf7dd8",
-        report_to: [
-            "55b722e30a78fe511a9bf7dd8"
-        ],
-        num_questions: 4,
-        questions: [
-            "on", "off", "on, non-troubling dyskinesia", "on, troubling dyskinesia", "asleep"
-        ],
-        timeframe: {
-            start_time: "0800",
-            end_time: "1200",
-            interval_mins: 30,
-            margin_mins: 15
-        },
-        remind: {
-            remind: "on",
-            mins_before: 10,
-        },
-        expected_num_records: 15,
-        record: [{
-            record_number: 1,
-            day: 1,
-            time: "0800",
-            scheduled_datetime: new Date(),
-            record_valid: true,
-            medication_adherance: "yes",
-            actual_datetime: new Date(),
-            data: [ 1, 0, 0, 0, 0 ],
-            patient_comments: ""
+    episodes: [{
+      episode_number: 1,
+      start_date: new Date(),
+      num_days: 4,
+      end_date: new Date(),
+      requesting_provider: "55b722e30a78fe511a9bf7dd8",
+      report_to: [
+          "55b722e30a78fe511a9bf7dd8"
+      ],
+      num_questions: 4,
+      questions: [
+          "on", "off", "on, non-troubling dyskinesia", "on, troubling dyskinesia", "asleep"
+      ],
+      timeframe: {
+        start_time: "0800",
+        end_time: "1200",
+        interval_mins: 30,
+        margin_mins: 15
+      },
+      remind: {
+        remind: "on",
+        mins_before: 10,
+      },
+      expected_num_records: 15,
+      record: [{
+        record_number: 1,
+        day: 1,
+        time: "0800",
+        scheduled_datetime: new Date(),
+        record_valid: true,
+        medication_adherance: "yes",
+        actual_datetime: new Date(),
+        data: [ 1, 0, 0, 0, 0 ],
+        patient_comments: ""
 
-        }]
+      }]
     }]
   }
 ];
@@ -207,39 +211,47 @@ const patient_infoSeed = [
   {
     
     date_enrolled: new Date(),
-    sub: "google3",
     enrolled_by: "55b722e30a78fe511a9bf7dd8",
+    patient_data_id: "obgect id1",
+    
     status: "active",
 
     patient_details: {
-        hospital_id: "H123456",
-        firstname: "sundance",
-        lastname: "kid",
-        dob: "07-23-1978",
-        email: "sunny2@theranch.com",
-        phone: "216-376-2314"
+      hospital_id: "H123456",
+      firstname: "sundance",
+      lastname: "kid",
+      dob: "07-23-1978",
+      email: "sunny2@theranch.com",
+      phone: "216-376-2314"
     },
 
-    primary_provider: "55b722e30a78fe511a9bf7dd8",
+    primary_provider_id: "55b722e30a78fe511a9bf7dd8",
+    primary_provider_name: "John heyworth",
+    provider_group_id: "group id",
+    provider_group_name: "the cleveland practice"
 
   },
   {
     
     date_enrolled: new Date(),
-    sub: "google4",
     enrolled_by: "55b722e30a78fe511a9bf7dd8",
+    patient_info_id: "obgectid2",
+    
     status: "active",
 
     patient_details: {
-        hospital_id: "H123457",
-        firstname: "sundance",
-        lastname: "kid",
-        dob: "07-23-1978",
-        email: "sunny@theranch.com",
-        phone: "216-376-2314"
+      hospital_id: "H123457",
+      firstname: "sundance",
+      lastname: "kid",
+      dob: "07-23-1978",
+      email: "sunny@theranch.com",
+      phone: "216-376-2714"
     },
 
-    primary_provider: "55b722e30a78fe511a9bf7dd8",
+    primary_provider_id: "55b722e30a78fe511a9bf7dd8",
+    primary_provider_name: "John heyworth",
+    provider_group_id: "group id",
+    provider_group_name: "the cleveland practice"
 
   }
 ];
@@ -264,11 +276,11 @@ db.Provider_group
     console.log(data.insertedCount + " provider_group collection documents inserted!");
 });
 
-db.User_role
+db.User
   .remove({})
-  .then(() => db.User_role.collection.insertMany(user_roleSeed))
+  .then(() => db.User.collection.insertMany(userSeed))
     .then(data =>{
-      console.log(data.insertedCount + " user_role collection documents inserted!");
+      console.log(data.insertedCount + " user collection documents inserted!");
     })
 
 db.Patient_info

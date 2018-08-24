@@ -1,15 +1,11 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 import { Container } from "reactstrap";
-
-import TestNav from "./testNav";
 import TestAllRoutes from "./allTests";
 import PatientRouteTests from './patientTests';
 import ProviderRouteTests from './providerTests';
 import ActiveRouteTests from './activeTests';
 import QuestionNav from './questionNav';
-import QuestionRoutes from './questionRoutes';
-
 
 const TestRoutes = () => (
 

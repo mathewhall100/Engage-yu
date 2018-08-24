@@ -6,5 +6,5 @@ module.exports = {
     Provider: require("./provider"),
     Provider_group: require("./provider_group"),
     Active: require("./active"),
-    User_role: require("./user_role")
+    User: require("./user")
   };

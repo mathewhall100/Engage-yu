@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import { Link } from 'react-router-dom';
 import { Button} from 'reactstrap'
 
-import {CustomQuestionRouteTests, DefaultQuestionRouteTests} from "./questionTests"
-
 
 class QuestionNav extends Component {
     render() {

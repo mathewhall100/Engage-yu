@@ -5,7 +5,6 @@ const Schema = mongoose.Schema;
 const providerSchema = new Schema({
 
     date_added: {type: Date, default: Date.now},
-    sub: { type: String, unique: true, required: [true, 'SUB absolutely required!'] },
     name: { 
         first:  { type: String, required: [true, 'No first name supplied'],
             validate: {
