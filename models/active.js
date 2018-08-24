@@ -3,11 +3,11 @@ const mongoose = require("mongoose")
 const Schema = mongoose.Schema;
 
 const activeSchema = new Schema({
-    
+
+    sub: { type: String, unique: true, required: [true, 'SUB absolutely required!'] },
     firstname: { type: String, required: [true, "No name supplied"] },
     lastname: { type: String, required: [true, "No name supplied"] },
     hospital_id: { type: String, required: [true, "No hospital id number supplied"] },
-    patient_id: { type: Schema.Types.ObjectId, ref: "Patient", required: [true, "No patient Id supplied"] },
     episode_number: { type: Number, required: [true, "No episode number supplied"] },
     episode_id: { type: String, required: [true, "No episode id supplied"] },
     requesting_provider_firstname: { type: String, required: [true, "No requesting provider name supplied"] },
@@ -20,7 +20,8 @@ const activeSchema = new Schema({
     start_time: {type: String, required: [true, "No end time supplied"] },
     end_date: {type: Date, required: [true, "No end date supplied"] },
     end_time: { type: String, required: [true, "No end time supplied"] },
-    last_entry: Date
+    last_entry: Date,
+    num_entries: {type: Number, required: [true, 'No number of entries']}
     
     },
 
