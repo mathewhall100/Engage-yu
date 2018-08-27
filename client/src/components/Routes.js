@@ -42,7 +42,6 @@ class Routes extends Component {
                 <TestNav />
                 <TestRoutes />
                 <QuestionRoutes />
-                <TestRoutes />
                 <hr/>
                 {authenticated ? <button onClick={this.props.logout}>Logout</button> : null}
                 

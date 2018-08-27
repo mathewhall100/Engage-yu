@@ -4,27 +4,38 @@ const Schema = mongoose.Schema;
 
 const activeSchema = new Schema({
 
-    patient_info_id: {type: String, unique: true, required: [true, "No patient-info_id"]},
-    firstname: { type: String, required: [true, "No name supplied"] },
-    lastname: { type: String, required: [true, "No name supplied"] },
-    hospital_id: { type: String, required: [true, "No hospital id number supplied"] },
-    patient_data_id:  {type: String, unique: true, required: [true, "No patient-info_id"]},
+    patient_info_ref: { type: Schema.Types.ObjectId, ref: "Patient_info", required: [true, "No patient_info ref supplied."] },
+    patient_info_id: {type: String, required: [true, "No patient-info_id supplied."]},
+    firstname: { type: String, required: [true, "No patient firstname supplied"] },
+    lastname: { type: String, required: [true, "No patient lastname supplied"] },
+    hospital_id: { type: String, required: [true, "No patient hospital id number supplied"] },
+    patient_data_ref: { type: Schema.Types.ObjectId, ref: "Patient_data", required: [true, "No patient_data ref supplied"] },
+    patient_data_id:  {type: String, required: [true, "No patient-data_id supplied"]},
     episode_number: { type: Number, required: [true, "No episode number supplied"] },
     episode_id: { type: String, required: [true, "No episode id supplied"] },
-    requesting_provider_firstname: { type: String, required: [true, "No requesting provider name supplied"] },
-    requesting_provider_lastname: { type: String, required: [true, "No requesting provider name supplied"] },
-    requesting_provider_id: { type: Schema.Types.ObjectId, ref: "Provider", required: [true, "No requesting provider Id supplied"] },
-    primary_provider_firstname: { type: String, required: [true, "No primary provider name supplied"] },
-    primary_provider_lastname: { type: String, required: [true, "No primary provider name supplied"] },
-    primary_provider_id: { type: Schema.Types.ObjectId, ref: "Provider", required: [true, "No primary provider Id supplied"] },
-    provider_group_name: String, 
-    provider_group_id: {type: Schema.Types.ObjectId, ref: "Provider_group"},
+
+    requesting_provider_ref: { type: Schema.Types.ObjectId, ref: "Provider", required: [true, "No requesting provider Id supplied"] },
+    requesting_provider_id: {type: String, required: [true, "No requesting provider id supplied"]},
+    requesting_provider_firstname: { type: String, required: [true, "No requesting provider firstname supplied"] },
+    requesting_provider_lastname: { type: String, required: [true, "No requesting provider lastname supplied"] },
+
+    primary_provider_ref: { type: Schema.Types.ObjectId, ref: "Provider", required: [true, "No requesting provider Id supplied"] },
+    primary_provider_id: { type: String, required: [true, "No primary provider Id supplied"] },
+    primary_provider_firstname: { type: String, required: [true, "No primary provider firstname supplied"] },
+    primary_provider_lastname: { type: String, required: [true, "No primary provider lastname supplied"] },
+    
+    provider_group_ref: { type: Schema.Types.ObjectId, ref: "Provider_group" },
+    provider_group_id: String,
+    provider_group_name: String,
+
     start_date: {type: Date, required: [true, "No start date supplied"] },
     start_time: {type: String, required: [true, "No end time supplied"] },
     end_date: {type: Date, required: [true, "No end date supplied"] },
     end_time: { type: String, required: [true, "No end time supplied"] },
     last_entry: Date,
-    num_entries: {type: Number, required: [true, 'No number of entries']}
+    num_entries: {type: Number, required: [true, 'No number of entries']},
+
+    status: {type: String, enum: ["pending", "active", "cancelled", "awaiting review", "reviewed", "actioned", "archived", ], default: "pending"},
     
     },
 

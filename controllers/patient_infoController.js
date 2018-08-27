@@ -7,14 +7,14 @@ module.exports = {
     // Include their provider (populate)
     // Returns json list of patients details only (sorted alphabeltically by last_name)
     findAll: function(req, res) {
-        console.log("Patient_info controller called to 'find all'" );
+        console.log("Patient_info controller called to 'find all'");
         //console.log(`Requester:  ${req.user}`);
         //if(req.user){
             db.Patient_info
-            .find( {}, {date_enrolled: 1, patient_details: 1, status: 1} )
+            .find( {}, {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1} )
             .sort( {"patient_details.lastname": 1} )
             .then(patientList => {
-                console.log("RESULT:", patient)
+                console.log("RESULT:", patientList)
                 res.json({
                     patientList: patientList,
                 });
@@ -33,15 +33,15 @@ module.exports = {
     // Fetch personal details of all patients of a particular physician
     // requires physician id as searchterm in req.body.searchId
     // Returns json list of patients details only (sorted alphabeltically by last_name)
-    findAll: function(req, res) {
-        console.log("Patient_info controller called to 'find all'" );
+    findAllByProvider: function(req, res) {
+        console.log("Patient_info controller called to 'find all by provider'");
         //console.log(`Requester:  ${req.user}`);
         //if(req.user){
             db.Patient_info
-            .find( {primary_provider_id: req.body.searchId}, {date_enrolled: 1, patient_details: 1, status: 1} )
+            .find( {primary_provider_id: req.params.id}, {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1} )
             .sort( {"patient_details.lastname": 1} )
             .then(patientList => {
-                console.log("RESULT:", patient)
+                console.log("RESULT:", patientList)
                 res.json({
                     patientList: patientList,
                 });
@@ -59,15 +59,15 @@ module.exports = {
      // Fetch personal details of all patients of a particular care group
      //requires caregroup id as searchterm in req.body.searchId
     // Returns json list of patients details only (sorted alphabeltically by last_name)
-    findAll: function(req, res) {
-        console.log("Patient_info controller called to 'find all'" );
+    findAllByGroup: function(req, res) {
+        console.log("Patient_info controller called to 'find all by provider group'", req.body );
         //console.log(`Requester:  ${req.user}`);
         //if(req.user){
             db.Patient_info
-            .find( {provider_group: searchId}, {date_enrolled: 1, patient_details: 1, status: 1} )
+            .find( {provider_group_id: req.params.id}, {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1} )
             .sort( {"patient_details.lastname": 1} )
             .then(patientList => {
-                console.log("RESULT:", patient)
+                console.log("RESULT:", patientList)
                 res.json({
                     patientList: patientList,
                 });
@@ -83,16 +83,17 @@ module.exports = {
     }, 
 
 
-    // Fetch patient by id (for doctor use)
+    // Fetch patient by id 
     // To be sent req.params.id with _id of patient to be fetched
-    // Returns json of patient data (all) + provider (via populate)
-    findByIdForProvider: function(req, res) {
-        console.log("Patient_info controller called to 'findByIdForProvider'" );
+    // Returns json of patient data (all) + providers (via populate)
+    findById: function(req, res) {
+        console.log("Patient_info controller called to 'findById'",);
         //console.log(`Requester:  ${req.user}`);
         //if(req.user){
             db.Patient_info
             .findById(req.params.id)
             .populate("enrolled_by", "name")
+            .populate("primary_provider_ref", "name")
             .then(patient => {
                 console.log("RESULT:", patient);
                 res.json(patient)
@@ -106,17 +107,17 @@ module.exports = {
         // }
     },
 
-    // Fetch patient details (for patient use)
-    // To be sent req.params.id of patient
-    // Return json of patient details, next appointment & episodes + provider details (via populate)
-    findByIdForPatient: function(req, res) {
-        console.log("Patient_info controller called to 'findByIdForPatient'" );
+    // Search patient_info documents
+    // To be sent a searchterm (object) of patient
+    // Return json of patient data (all) + provider details (via populate)
+   findBySearchterm: function(req, res) {
+        console.log("Patient_info controller called to 'findBySearchterm' ", req.body);
         //console.log(`Requester:  ${req.user}`);
         //if(req.user){
-            console.log(req.params.id);
-            db.Patient.info
-            .findById(req.params.id, {patient_details: 1, active: 1})
-            .populate("provider")
+            db.Patient_info
+            .find(req.body,  {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1})
+            .populate("enrolled_by", "name")
+            .populate("primary_provider_ref", "name")
             .then(patient => {
                 console.log("RESULT:", patient);
                 res.json(patient);
@@ -138,7 +139,7 @@ module.exports = {
         console.log("Patient controller called to 'create'" );
         //console.log(`Requester:  ${req.user}`);
         //if(req.user){
-            let patient_info = new db.Patient(req.body)
+            let patient = new db.Patient_info(req.body)
             patient.save()
             .then(result=> {
                 console.log("RESULT: ", result);
@@ -164,7 +165,7 @@ module.exports = {
             db.Patient_info
             .findOneAndUpdate(
                 { _id: req.params.id },
-                { $set: { "patient_details.email": req.body.email }
+                { $set: { "email": req.body.email }
                 }, opts
             )
             .then(result => {
@@ -191,7 +192,7 @@ module.exports = {
             db.Patient_info
             .findOneAndUpdate(
                 { _id: req.params.id },
-                { $set: { "patient_details.phone": req.body.phone }
+                { $set: { "phone": req.body.phone }
                 }, opts
             )
             .then(result => {
@@ -243,8 +244,8 @@ module.exports = {
             .findOneAndUpdate(
                 { _id: req.params.id },
                 { $set: {
-                    "patient_details.firstname": req.body.firstname,
-                    "patient_details.lastname": req.body.lastname,
+                    "firstname": req.body.firstname,
+                    "lastname": req.body.lastname,
                      } 
                 }, opts
             )
@@ -273,7 +274,9 @@ module.exports = {
             .findOneAndUpdate(
                 { _id: req.params.id },
                 { $set: {
-                    "primary_provider": req.body.providerid,
+                    "primary_provider_ref": req.body.primary_provider_ref,
+                    "primary_provider_id": req.body.primary_provider_id,
+                    "primary_provider_name": req.body.primary_provider_name
                      } 
                 }, opts
             )
@@ -302,7 +305,9 @@ module.exports = {
             .findOneAndUpdate(
                 { _id: req.params.id },
                 { $set: {
-                    "provider_group_id": req.body.providerGroupId,
+                    "provider_group_ref": req.body.provider_group_ref,
+                    "provider_group_id": req.body.provider_group_id,
+                    "provider_group_name": req.body.provider_group_name
                      } 
                 }, opts
             )

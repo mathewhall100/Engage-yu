@@ -39,37 +39,47 @@ const userSeed = [
 const providerSeed = [
   { 
     date_added: new Date(),
-    sub: "google1",
-    name: { first: "John", last: "Heyworth" },
-    provider_group: "the clinic",
-    provider_id: "id12233",
+    firstname: "John", 
+    lastname: "Heyworth" ,
+    provider_group_ref: "5b733f4b0ee1d97e749c2a29",
+    provider_group_id: "5b733f4b0ee1d97e749c2a29", 
+    provider_group_name: "The practice",
+
     role: "Physician (specialist)",
+
     office: {address1: "Beachwood medical practice", address2: "Beachwood", state: "Ohio", zip: "44139" },
     email: "john.heworth@doctor.com",
     phone: { phone1: {phone: "office", number: "216-395-2345", ext: 123} },
   },
   {
     date_added: new Date(),
-    sub: "google2",
-    name: { first: "melanie", last: "kopff" },
-    provider_group: "the practice",
-    provider_id: "id9375602",
-    role: "Physician (primary care)",
-    office: { address1: "Park Road East medical centre", address2: "Solon", state: "Ohio", zip: "44139" },
-    email: "mel.kopff@doctor.com",
-    phone: { phone1: {phone: "office", number: "216-395-2937", ext: 123} },
+    firstname: "melanie", 
+    lastname: "Kopff" ,
+    provider_group_ref: "5b733f4b0ee1d97e749c2a28",
+    provider_group_id: "5b733f4b0ee1d97e749c2a28", 
+    provider_group_name: "The clinic",
+
+    role: "Physician (specialist)",
+
+    office: {address1: "Solon medical practice", address2: "solon", state: "Ohio", zip: "44139" },
+    email: "jmelanie.kopff@doctor.com",
+    phone: { phone1: {phone: "office", number: "216-395-4569", ext: 123} },
  },
 ];
 
-// Provider collection seeds
+// Provider group collection seeds
 const provider_groupSeed = [
   { 
-    added_by: "5b733f4b0ee1d97e749c2a28",
+    added_by_ref: "5b733f4b0ee1d97e749c2a29",
+    added_by_id: "5b733f4b0ee1d97e749c2a29",
+    added_by_name: "john heyworth",
     group_name: "The Cleveland Practice"
   },
   {
-    added_by: "5b733f4b0ee1d97e749c2a28",
-    group_name: "The Cleveland Office"
+    added_by_ref: "5b733f4b0ee1d97e749c2a28",
+    added_by_id: "5b733f4b0ee1d97e749c2a28",
+    added_by_name: "melanie kopff",
+    group_name: "The Clinic Practice"
  },
 ];
 
@@ -95,27 +105,38 @@ const question_customSeed = [
 // Active collection seeds
 const activeSeed = [
   { 
-    patient_info_id: "objId",
+    patient_info_ref: "objId",
+    patient_info_id: "objId3",
     firstname: "Sundance",
     lastname: "Kid",
     hospital_id: "H3453736",
-    patient_data_id: "objId",
+    patient_data_ref: "objId1",
+    patient_data_id: "objId1",
     episode_number: "1",
     episode_id: "5b7311526b0e10f62ca85be8",
+
+    requesting_provider_ref: "55b722e30a78fe511a9bf7dd8",
+    requesting_provider_id: "55b722e30a78fe511a9bf7dd8",
     requesting_provider_firstname: "John",
     requesting_provider_lastname: "Heyworth",
-    requesting_provider_id: "55b722e30a78fe511a9bf7dd8",
+    
+    primary_provider_ref: "55b722e30a78fe511a9bf7dd8",
+    primary_provider_id: "5b722e30a78fe511a9bf7dd9",
     primary_provider_firstname: "John",
     primary_provider_lastname: "Heyworth",
-    primary_provider_id: "5b722e30a78fe511a9bf7dd9",
+    
+    provider_group_ref: "groupid", 
+    provider_group_id: "groupid", 
     provider_group_name: "The Cleveland Practice",
-    provider_group_id: "groupid",
+   
     start_date: new Date(),
     start_time: "0800",
     end_date: new Date(),
     end_time: "1400",
     last_entry: new Date(),
-    num_entries: 1
+    num_entries: 0,
+
+    status: "pending",
   }
 ];
 
@@ -127,40 +148,28 @@ const patient_dataSeed = [
 
     episodes: [{
       episode_number: 1,
-      start_date: new Date(),
-      num_days: 3,
-      end_date: new Date(),
-      requesting_provider: "55b722e30a78fe511a9bf7dd8",
-      report_to: [
-          "55b722e30a78fe511a9bf7dd8"
-      ],
-      num_questions: 4,
-      questions: [
-          "on", "off", "on, non-troubling dyskinesia", "on, troubling dyskinesia", "asleep"
-      ],
-      timeframe: {
-        start_time: "0800",
-        end_time: "1200",
-        interval_mins: 30,
-        margin_mins: 15
-      },
-      remind: {
-        remind: "on",
-        mins_before: 10,
-      },
-      expected_num_records: 15,
-      record: [{
-        record_number: 1,
-        day: 1,
-        time: "0800",
-        scheduled_datetime: new Date(),
-        record_valid: true,
-        medication_adherance: "yes",
-        actual_datetime: new Date(),
-        data: [ 1, 0, 0, 0, 0 ],
-        patient_comments: ""
+      requesting_provider_ref: "5b722e30a78fe511a9bf7dd8" , 
+      requesting_provider_id: "5b722e30a78fe511a9bf7dd8" , 
+      requesting_provider_lastname: "melanie",
+      requesting_provider_firstname: "jkopff", 
 
-      }]
+      start_date: new Date(),
+      end_date: new Date(),             
+      num_days: 3,
+      start_time: "1000",
+      end_time: "1400",
+      interval_mins: 35,
+      margin_mins: 15,
+  
+      num_questions: 5,
+      questions: ["on", "off", "on, non-troubling dyskinesia", "on, troubling dyskinesia", "asleep"],
+
+      expected_num_records: 15,
+
+      remind_sataus: 'on',
+      
+      report_to: [ "5b722e30a78fe511a9bf7dd8" ],  
+
     }]
   },
   {
@@ -168,89 +177,85 @@ const patient_dataSeed = [
 
     episodes: [{
       episode_number: 1,
-      start_date: new Date(),
-      num_days: 4,
-      end_date: new Date(),
-      requesting_provider: "55b722e30a78fe511a9bf7dd8",
-      report_to: [
-          "55b722e30a78fe511a9bf7dd8"
-      ],
-      num_questions: 4,
-      questions: [
-          "on", "off", "on, non-troubling dyskinesia", "on, troubling dyskinesia", "asleep"
-      ],
-      timeframe: {
-        start_time: "0800",
-        end_time: "1200",
-        interval_mins: 30,
-        margin_mins: 15
-      },
-      remind: {
-        remind: "on",
-        mins_before: 10,
-      },
-      expected_num_records: 15,
-      record: [{
-        record_number: 1,
-        day: 1,
-        time: "0800",
-        scheduled_datetime: new Date(),
-        record_valid: true,
-        medication_adherance: "yes",
-        actual_datetime: new Date(),
-        data: [ 1, 0, 0, 0, 0 ],
-        patient_comments: ""
+      requesting_provider_ref: "5b722e30a78fe511a9bf7dd8" , 
+      requesting_provider_id: "5b722e30a78fe511a9bf7dd8" , 
+      requesting_provider_lastname: "melanie",
+      requesting_provider_firstname: "jkopff", 
 
-      }]
+      start_date: new Date(),
+      end_date: new Date(),             
+      num_days: 3,
+      start_time: "1000",
+      end_time: "1400",
+      interval_mins: 35,
+      margin_mins: 15,
+  
+      num_questions: 5,
+      questions: ["on", "off", "on, non-troubling dyskinesia", "on, troubling dyskinesia", "asleep"],
+
+      expected_num_records: 15,
+
+      remind_sataus: 'on',
+      
+      report_to: [ "5b722e30a78fe511a9bf7dd8" ],
+
     }]
   }
 ];
 
-// Patient-data collection seeds
+// Patient-info collection seeds
 const patient_infoSeed = [
   {
     
     date_enrolled: new Date(),
-    enrolled_by: "55b722e30a78fe511a9bf7dd8",
-    patient_data_id: "obgect id1",
-    
+    enrolled_by_ref: "55b722e30a78fe511a9bf7dd8",
+    enrolled_by_id: "55b722e30a78fe511a9bf7dd8",
+    enrolled_by_name: "melanie kopff",
+
+    patient_data_ref: "obgectid1",
+    patient_data_id: "objectid1",
     status: "active",
 
-    patient_details: {
-      hospital_id: "H123456",
-      firstname: "sundance",
-      lastname: "kid",
-      dob: "07-23-1978",
-      email: "sunny2@theranch.com",
-      phone: "216-376-2314"
-    },
+    hospital_id: "H123456",
+    firstname: "sundance",
+    lastname: "kid",
+    dob: "07-23-1978",
+    email: "sunny2@theranch.com",
+    phone: "216-376-2314",
 
-    primary_provider_id: "55b722e30a78fe511a9bf7dd8",
+    primary_provider_ref: "55b722e30a78fe511a9bf7dd8",
+    primary_provider_id: "providerid1",
     primary_provider_name: "John heyworth",
-    provider_group_id: "group id",
+
+    primary_group_ref: "groupid1",
+    provider_group_id: "groupid1",
     provider_group_name: "the cleveland practice"
 
   },
   {
     
     date_enrolled: new Date(),
-    enrolled_by: "55b722e30a78fe511a9bf7dd8",
-    patient_info_id: "obgectid2",
-    
+    enrolled_by_ref: "55b722e30a78fe511a9bf7dd8",
+    enrolled_by_id: "55b722e30a78fe511a9bf7dd8",
+    enrolled_by_name: "melanie kopff",
+
+    patient_data_ref: "obgectid2",
+    patient_data_id: "objectid2",
     status: "active",
 
-    patient_details: {
-      hospital_id: "H123457",
-      firstname: "sundance",
-      lastname: "kid",
-      dob: "07-23-1978",
-      email: "sunny@theranch.com",
-      phone: "216-376-2714"
-    },
+    hospital_id: "H123457",
+    firstname: "butch",
+    lastname: "cassidy",
+    dob: "07-23-1779",
+    email: "butch2@theranch.com",
+    phone: "216-376-2874",
 
-    primary_provider_id: "55b722e30a78fe511a9bf7dd8",
+    primary_provider_ref: "55b722e30a78fe511a9bf7dd8",
+    primary_provider_id: "providerid1",
     primary_provider_name: "John heyworth",
-    provider_group_id: "group id",
+
+    primary_group_ref: "groupid1",
+    provider_group_id: "groupid1",
     provider_group_name: "the cleveland practice"
 
   }

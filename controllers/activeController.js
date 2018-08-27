@@ -30,14 +30,14 @@ module.exports = {
     // Fetch active episode details by id
     // To be sent req.params.id with _id of actuive episode to be fetched
     findById: function(req, res) {
-        console.log("Active controller called to 'findOne'" +req.params.id);
+        console.log("Active controller called to 'findOne' " +req.params.id);
         //console.log(`Requester:  ${req.user}`);
         // if(req.user) {
             db.Active
             .findById(req.params.id)
-            .populate("patient_id", ["patient_details.firstname", "patient_details.lastname"])
-            .populate("requesting_provider_id", "name")
-            .populate("primary_provider_id", "name")
+            // .populate("patient_id", ["patient_details.firstname", "patient_details.lastname"])
+            // .populate("requesting_provider_id", "name")
+            // .populate("primary_provider_id", "name")
             .then(activeList => {
                 console.log(activeList);
                 res.json(activeList)

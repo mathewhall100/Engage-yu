@@ -9,7 +9,7 @@ export class CustomQuestionRouteTests extends Component {
 
     state = {
         // test ids
-        question_customId: "5b74444dc51e8327080092cd"
+        question_customId: "5b844944d8dc5ce848cd28a1"
     };
 
     componentDidMount() {
@@ -39,7 +39,9 @@ export class CustomQuestionRouteTests extends Component {
         event.preventDefault();
         question_customAPI.create({
             date_added: new Date(),
-            added_by: "5b733f4b0ee1d97e749c2a28",
+            added_by_ref: "5b733f4b0ee1d97e749c2a28",
+            added_by_id: "5b733f4b0ee1d97e749c2a28",
+            added_by_name: "John heyworth",
             question: "Do you have nausea or sickness?",
             answers: [ "no", "yes, mild", "yes, troubling", "yes, severe", "asleep"] ,
         })

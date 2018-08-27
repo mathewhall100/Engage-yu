@@ -7,13 +7,12 @@ module.exports = {
     // Fetch single patient's data (for doctor use)
     // To be sent req.params.id with _id of patient to be fetched
     // Returns json of patient episodes
-    findByIdForProvider: function(req, res) {
-        console.log("Patient_data controller called to 'findByIdForProvider'" );
+    findById: function(req, res) {
+        console.log("Patient_data controller called to 'findById'");
         //console.log(`Requester:  ${req.user}`);
         //if(req.user){
             db.Patient_data
             .findById(req.params.id, {"episodes": 1})
-            .populate("enrolled_by", "name")
             .then(patient => {
                 console.log("RESULT:", patient);
                 res.json(patient)
@@ -25,31 +24,6 @@ module.exports = {
         // }else{
         //     res.status(422).json('You do not have proper credential to perform this action.')
         // }
-    },
-
-    // Fetch single patient's data (for patient use)
-    // To be sent req.params.id of patient
-    // Return json of patient episodes
-    findByIdForPatient: function(req, res) {
-        console.log("Patient_data controller called to 'findByIdForPatient'" );
-        //console.log(`Requester:  ${req.user}`);
-        //if(req.user){
-            console.log(req.params.id);
-            db.Patient_data
-            .findById(req.params.id, {"episodes": 1})
-            .populate("provider")
-            .then(patient => {
-                console.log("RESULT:", patient);
-                res.json(patient);
-            })
-            .catch(err => {
-                console.log(`CONTROLLER ERROR: ${err}`);
-                res.status(422).json(err);
-            })
-        // }else{
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
-        
     },
 
     // Add new patient_data document
@@ -78,6 +52,7 @@ module.exports = {
     // Create a new patient_data episode 
     // To be sent req.params.id of patient and req.body of new episode info
     newEpisode: function(req, res) {
+        console.log("Patient_data controller called to 'newEpisode" );
         //console.log(`Requester:  ${req.user}`);
         // if(req.user){
             db.Patient_data
@@ -101,6 +76,7 @@ module.exports = {
     // add a new record to an episode
     // To be sent req.params.id of patient and req.body of new record data
     addRecord: function(req, res) {
+        console.log("Patient_data controller called to 'addRecord'", req.body );
         //console.log(`Requester:  ${req.user}`);
         // if(req.user){
             db.Patient_data
@@ -112,22 +88,23 @@ module.exports = {
                 let records = lastEpisode.record;
                 records.push(req.body);
 
-                    db.Patient_data
+                 db.Patient_data
                     .findOneAndUpdate(
-                    { _id: req.params.id},
-                    { $pop: {"episodes": 1} } 
-                )
-                .then(result => 
-                    db.Patient_data
-                    .findOneAndUpdate(
-                        { _id: req.params.id },
-                        { $push: {"episodes": lastEpisode} }
+                        { _id: req.params.id},
+                        { $pop: {"episodes": 1} } 
                     )
-                )
-            })
-            .then(result => {
-                console.log("RESULT:", result);
-                res.json(result)
+                    .then(result => {
+
+                        db.Patient_data
+                        .findOneAndUpdate(
+                            { _id: req.params.id },
+                            { $push: {"episodes": lastEpisode} }
+                        )
+                         .then(result => {
+                            console.log("RESULT:", result);
+                            res.json(result)
+                         })
+                    })
             })
             .catch(err => {
                 console.log(`CONTROLLER ERROR: ${err}`);

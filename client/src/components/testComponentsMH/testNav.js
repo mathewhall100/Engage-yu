@@ -9,15 +9,20 @@ class TestNav extends Component {
 
             <Container>
                 <div>
-                    <Link to='/test/all'><Button>Test All</Button></Link>
-                    <br />
                     <Link to='/test/provider'><Button>Test provider routes</Button></Link>
                     <br />
-                    <Link to='/test/patient'><Button>Test patient routes</Button></Link>
+                    <Link to='/test/provider_group'><Button>Test provider group routes</Button></Link>
+                    <br />
+                    <Link to='/test/patient_info'><Button>Test patient_info routes</Button></Link>
+                    <br />
+                    <Link to='/test/patient_data'><Button>Test patient_data routes</Button></Link>
                     <br />
                     <Link to='/test/active'><Button>Test active routes</Button></Link>
                     <br />
                     <Link to='/test/question'><Button>Test question routes</Button></Link>
+                    <br />
+                    <Link to='/test/user'><Button>Test user routes</Button></Link>
+
                 </div>
 
             </Container>

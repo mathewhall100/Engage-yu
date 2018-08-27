@@ -9,8 +9,9 @@ class ProviderRouteTests extends Component {
 
     state = {
         // test ids
-        providerId: "5b733f4b0ee1d97e749c2a27", 
-        question_customId: "5b74444dc51e8327080092cd"
+        providerId: "5b8466bbf6d8b1d2fc8d45b1", 
+        provider_groupId: "5b844946d8dc5ce848cd28a6",
+        question_customId: "5b844944d8dc5ce848cd28a1"
     };
 
     componentDidMount() {
@@ -51,22 +52,24 @@ class ProviderRouteTests extends Component {
     addNewProvider = event => {
         event.preventDefault();
         providerAPI.create({
-        name: {
-            first: "Peter", 
-            last: "Willis",
-        },
-        role: { 
-            role: "Physician (specialist)" 
-        },
-        office: {
-            address1: "Cleveland Clinic, Downtown Plaza 1",
-            address2: "Cleveland",
-            state: "Ohio",
-            zip: "44563"
-        },
-        email: "peter.thegreat@gmail.com",
-        phone: "254-456-8254"
-    })
+
+            firstname: "john", 
+            lastname: "smith",
+            role: "Physician (specialist)",
+
+            office: {
+                address1: "Akron Clinic, Downtown Plaza 1",
+                address2: "Akron",
+                state: "Ohio",
+                zip: "44563"
+            },
+            email: "john.smith@gmail.com",
+            phone: { phone1: {type: "office", number: "254-456-8254", ext: "234"} }, 
+            provider_group_ref: this.state.provider_groupId,
+            provider_group_id:  this.state.provider_groupId,
+            provider_group_name: "The practice",
+            custom_questions: ["5b82d459f5c2bc19fc1615bc"]
+         })
         .then(res => console.log("res.data: " + JSON.stringify(res.data, null, 2 )))
         .catch(err => {
             console.log(`OOPS! A fatal problem occurred and your request could not be completed`);

@@ -9,7 +9,12 @@ class  ActiveRouteTests extends Component {
 
     state = {
         // test ids
-        activeId: "5b733f4c0ee1d97e749c2a29",
+        patientId: "5b844945d8dc5ce848cd28a2",
+        activeId: "5b847607b352ed3d343d6741",
+        patientDataId: "5b844944d8dc5ce848cd289f",
+        //episideId: "5b844946d8dc5ce848cd28a4",
+        providerId: "5b844946d8dc5ce848cd28a4",
+        groupId: "5b844946d8dc5ce848cd28a6",
 
     };
 
@@ -50,23 +55,38 @@ class  ActiveRouteTests extends Component {
         addNewActive = event => {
             event.preventDefault();
             activeAPI.create({
-                firstname: "Sally",
-                lastname: "Kidstone",
+                patient_info_ref: this.state.patientId,
+                patient_info_id: this.state.patientId,
+                firstname: "Butch",
+                lastname: "cassidy",
                 hospital_id: "H3453736",
-                patient_id: "5b7311026b0e10f62ca85be5",
-                episode_number: 1,
+                patient_data_ref: this.state.patientDataId,
+                patient_data_id: this.state.patientDataId,
+                episode_number: "1",
                 episode_id: "5b7311526b0e10f62ca85be8",
+            
+                requesting_provider_ref: this.state.providerId,
+                requesting_provider_id: this.state.providerId,
                 requesting_provider_firstname: "John",
                 requesting_provider_lastname: "Heyworth",
-                requesting_provider_id: "5b733f4b0ee1d97e749c2a27",
+                
+                primary_provider_ref: this.state.providerId,
+                primary_provider_id: this.state.providerId,
                 primary_provider_firstname: "John",
                 primary_provider_lastname: "Heyworth",
-                primary_provider_id: "5b733f4b0ee1d97e749c2a27",
+                
+                provider_group_ref: this.state.groupId, 
+                provider_group_id: this.state.groupId, 
+                provider_group_name: "The Cleveland Practice",
+               
                 start_date: new Date(),
                 start_time: "0800",
                 end_date: new Date(),
                 end_time: "1400",
-                last_entry: new Date()
+                last_entry: new Date(),
+                num_entries: 0,
+            
+                status: "pending",
             })
             .then(res => console.log("res.data: " + JSON.stringify(res.data, null, 2 )))
             .catch(err => {
@@ -106,7 +126,6 @@ class  ActiveRouteTests extends Component {
                     <Button id="q" onClick={this.findOneActive}> find one </Button>
                     <Button id="r" onClick={this.addNewActive}> add new </Button>
                     <Button id="s" onClick={this.updateActive}> update </Button>
-                    <Button id="t" onClick={this.removeActive}> remove </Button>
                 </Form>
             </Container>
 

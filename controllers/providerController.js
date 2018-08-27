@@ -31,6 +31,7 @@ module.exports = {
         // if(req.user) {
             db.Provider
             .findById(req.params.id)
+            .populate("provider_group_ref", "group_name")
             .then(provider => {
                 console.log(provider);
                 res.json(provider)
