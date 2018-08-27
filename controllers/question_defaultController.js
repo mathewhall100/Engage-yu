@@ -12,9 +12,7 @@ module.exports = {
             .find({}) 
             .then(questionList => {
                 console.log(questionList)
-                res.json({
-                    questionList: questionList,
-                });
+                res.send(questionList);
             })
             .catch(err => {
                 console.log(`CONTROLLER ERROR: ${err}`);

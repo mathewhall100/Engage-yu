@@ -9,20 +9,13 @@ import Homepage from './Homepage';
 import Secret from './Secret';
 import NotFound from './NotFound';
 import Callback from './Callback';
-import { login, logout, handleAuthentication, isAuthenticated, getProfile } from '../actions/AuthAction'
+import SK from './SKBranch/patients';
+import { login, logout, handleAuthentication, isAuthenticated, getProfile } from '../actions/AuthAction';
 
 class Routes extends Component { 
     componentDidMount(){
-        this.props.isAuthenticated()
+        this.props.isAuthenticated();
     }
-    AuthenticatedRoute = ({ component: Component, ...rest }) => (
-        <Route {...rest} render={(props) => (
-            this.props.isAuthenticated === true ?
-                <Component {...props} />
-                :
-                <Redirect to='/' />
-        )} />
-    );
 
     render(){
         const {authenticated} = this.props
@@ -36,6 +29,7 @@ class Routes extends Component {
                     <Route exact path='/callback' render={props => <Callback></Callback>} />
                     <Route exact path='/secret' render={props => <Secret {...this.props}></Secret>} />
                     <Route exact path="/" render={props => <Homepage {...this.props}> </Homepage>} />
+                    <Route exact path="/sk" render={props => <SK {...this.props}></SK>} />
                     <Route path="/notfound" component={NotFound} />
                     <Route component={NotFound} />
                 </Switch>
@@ -51,9 +45,9 @@ class Routes extends Component {
     
 }
 
-const mapStateToProps = (state) => {
-    console.log("State in main : ", state);
-    const { authenticated, profile } = state.auth
+function mapStateToProps(state) {
+    console.log("Route : State in main : ", state);
+    const { authenticated, profile } = state.auth;
     return {
         authenticated, profile
     }
