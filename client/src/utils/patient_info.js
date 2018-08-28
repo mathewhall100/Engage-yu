@@ -3,10 +3,10 @@ import axios from "axios";
 
 export default {
 
-    findAll: function() {
-        console.log("Axios call made to '/api/patient_info' to 'findAll' ");
-        return axios.get("/api/patient_info/all");
-    },
+    // findAll: function() {
+    //     console.log("Axios call made to '/api/patient_info' to 'findAll' ");
+    //     return axios.get("/api/patient_info/all");
+    // },
 
     findAllByProvider: function(id) {
         console.log("Axios call made to '/api/patient_info' to 'findAllByProvider' ", id);

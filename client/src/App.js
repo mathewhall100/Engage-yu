@@ -11,7 +11,6 @@ import Routes from './components/Routes';
 import history from './history';
 
 
-
 const createStoreWithMiddleware = applyMiddleware(ReduxThunk)(createStore);
 
 class App extends Component {

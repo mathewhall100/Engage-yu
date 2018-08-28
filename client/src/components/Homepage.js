@@ -14,20 +14,19 @@ class Main extends Component {
             <div>
                 
                 {authenticated === 2 || authenticated === 0 ?
-
                 <div>
                     <hr/>
                         Please login first <br />
                         <button onClick={this.props.login}>Login</button>
                     <hr />
                 </div>
-                
                 :
                 <p className="App-intro">
                     Hello {this.props.profile ? this.props.profile.nickname : "" } ! <br/>
                     Go to the secret page ? <a href='/secret'>Click here </a>
                 </p>
                 }
+
             </div>
         );
     }

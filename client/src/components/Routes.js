@@ -1,12 +1,11 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux';
-import { Route, Switch, Redirect } from "react-router-dom";
-import logo from "../logo.svg";
-import TestNav from "./testComponentsMH/testNav";
-import TestRoutes from "./testComponentsMH/testRoutes"
-import QuestionRoutes from './testComponentsMH/questionRoutes'
+import { Route, Switch, Link} from "react-router-dom";
+// import TestNav from "./testComponentsMH/testNav";
+// import TestRoutes from "./testComponentsMH/testRoutes"
+// import QuestionRoutes from './testComponentsMH/questionRoutes'
 import Homepage from './Homepage';
-import Secret from './Secret';
+import Dashboard from './Dashboard';
 import NotFound from './NotFound';
 import Callback from './Callback';
 import SK from './SKBranch/patients';
@@ -21,23 +20,25 @@ class Routes extends Component {
         const {authenticated} = this.props
         return(
             <div className="App">
+
                 <div className="App-header">
-                    <img src={logo} className="App-logo" alt="logo" />
-                    <h2>Welcome to React, {this.props.name}</h2>
+                    <h1>Engage-Yu: navbar</h1>
+                    {authenticated ? <button onClick={this.props.logout}>Logout</button> : null}
+                    <button><Link to='/'>Home </Link></button>
                 </div>
+
                 <Switch>
                     <Route exact path='/callback' render={props => <Callback></Callback>} />
-                    <Route exact path='/secret' render={props => <Secret {...this.props}></Secret>} />
+                    <Route exact path='/dashboard' render={props => <Dashboard {...this.props}></Dashboard>} />
                     <Route exact path="/" render={props => <Homepage {...this.props}> </Homepage>} />
                     <Route exact path="/sk" render={props => <SK {...this.props}></SK>} />
                     <Route path="/notfound" component={NotFound} />
                     <Route component={NotFound} />
                 </Switch>
-                <TestNav />
+
+                {/* <TestNav />
                 <TestRoutes />
-                <QuestionRoutes />
-                <hr/>
-                {authenticated ? <button onClick={this.props.logout}>Logout</button> : null}
+                <QuestionRoutes /> */}
                 
             </div>
         );
