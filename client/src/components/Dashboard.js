@@ -1,14 +1,19 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import FetchAll from '../containers/DashboardFetch';
+
 import PatientList from '../containers/DashboardDisplay';
+import { fetchPatients } from '../actions/index';
 
 
 class Dashboard extends Component {  
-    
-   
+
+    componentDidMount() {
+        console.log("auto-load patients")
+        this.props.fetchPatients()
+    }
+
     render () {
         
         const { authenticated } = this.props;
@@ -20,18 +25,20 @@ class Dashboard extends Component {
 
         return (
                 <div>
-                    <div>
-                        <p>dashboard</p>
-                        <br />
-                        Click to load list of  Patients:
-                        <br />
-                        <FetchAll />
-                        <br />
-                        <PatientList />
-                    </div>
+      
+                    <p>dashboard</p>
+                    <br />
+                    <PatientList />
+
                 </div >
         );
     }
 }
 
-export default connect(null,null,null, {pure:false})(Dashboard);
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({ fetchPatients}, dispatch);
+}
+
+// export default connect(null,null,null, {pure:false})(Dashboard);
+
+export default connect(null, mapDispatchToProps) (Dashboard)

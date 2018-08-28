@@ -2,7 +2,7 @@
 import auth0 from 'auth0-js';
 import jwtDecode from 'jwt-decode';
 
-const LOGIN_SUCCESS_PAGE = '/dashboard';
+const LOGIN_SUCCESS_PAGE = '/admin/dashboard';
 const LOGIN_FAILURE_PAGE = '/';
 
 export default class Auth {

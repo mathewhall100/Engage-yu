@@ -5,7 +5,7 @@ import { Route, Switch, Link} from "react-router-dom";
 // import TestRoutes from "./testComponentsMH/testRoutes"
 // import QuestionRoutes from './testComponentsMH/questionRoutes'
 import Homepage from './Homepage';
-import Dashboard from './Dashboard';
+import Admin from './Admin';
 import NotFound from './NotFound';
 import Callback from './Callback';
 import SK from './SKBranch/patients';
@@ -21,25 +21,15 @@ class Routes extends Component {
         return(
             <div className="App">
 
-                <div className="App-header">
-                    <h1>Engage-Yu: navbar</h1>
-                    {authenticated ? <button onClick={this.props.logout}>Logout</button> : null}
-                    <button><Link to='/'>Home </Link></button>
-                </div>
-
                 <Switch>
+                    <Route path='/admin' render={props => <Admin {...this.props}></Admin>} />
                     <Route exact path='/callback' render={props => <Callback></Callback>} />
-                    <Route exact path='/dashboard' render={props => <Dashboard {...this.props}></Dashboard>} />
                     <Route exact path="/" render={props => <Homepage {...this.props}> </Homepage>} />
                     <Route exact path="/sk" render={props => <SK {...this.props}></SK>} />
                     <Route path="/notfound" component={NotFound} />
                     <Route component={NotFound} />
                 </Switch>
 
-                {/* <TestNav />
-                <TestRoutes />
-                <QuestionRoutes /> */}
-                
             </div>
         );
     }
