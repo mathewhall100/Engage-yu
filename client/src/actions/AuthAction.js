@@ -15,7 +15,7 @@ export const handleAuthentication = () => {
                 localStorage.setItem('access_token', authResults.accessToken);
                 localStorage.setItem('id_token', authResults.idToken);
                 localStorage.setItem('expires_at', expiresAt);
-                history.push('/admim/dashboard');
+                history.push('/admin/dashboard');
                 dispatch({
                     type: 'LOGIN_USER_SUCCESS',
                     payload: {id_token : authResults.idToken, profileInfo : getProfile() }

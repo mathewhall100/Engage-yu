@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+//import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+
+import { withStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
 
 import PatientList from '../containers/DashboardDisplay';
 import { fetchPatients } from '../actions/index';
@@ -25,11 +28,7 @@ class Dashboard extends Component {
 
         return (
                 <div>
-      
-                    <p>dashboard</p>
-                    <br />
                     <PatientList />
-
                 </div >
         );
     }
