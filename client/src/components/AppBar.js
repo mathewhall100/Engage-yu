@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 // import { bindActionCreators } from 'redux';
 
@@ -27,7 +27,7 @@ const styles = theme =>({
 
     menuButton: {
         '&:hover': {
-            backgroundColor: "#1a242b",
+            backgroundColor: "#28353d",
         },
         hover: {},
     },
@@ -74,7 +74,7 @@ class TopBar extends Component {
                                 Engage-Yu!
                             </Typography>
 
-                            <Typography variant="Title" color="inherit" align="center" className={classes.flex}>
+                            <Typography variant="subheading" color="inherit" align="center" className={classes.flex}>
                                 Care Group: The Cleveland Practice
                             </Typography>
 

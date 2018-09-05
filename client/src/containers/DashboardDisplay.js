@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 class PatientList extends Component {
 
-    componentDidUpdate() {
+    componentDidMount() {
         this.renderPatients(this.props.patients);
     }
 

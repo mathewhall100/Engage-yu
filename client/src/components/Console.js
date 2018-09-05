@@ -13,29 +13,27 @@ import Hidden from '@material-ui/core/Hidden';
 import Divider from '@material-ui/core/Divider';
 import MenuIcon from '@material-ui/icons/Menu';
 
-import { dashboardListItems, workflowListItems, adminListItems, customiseListItems } from "./ConsoleMenuListItems"
-import Dashboard from './Dashboard';
+import { dashboardListItems, workflowListItems, adminListItems, customiseListItems } from "./ConsoleMenuListItems";
+import ConsoleTitle from '../containers/ConsoleTitle';
+import ConsoleRoutes from './ConsoleRoutes';
 
-
-const drawerWidth = 300;
+const drawerWidth = 255;
 
 const styles = theme => ({
 
   root: {
     flexGrow: 1,
-    zIndex: 1,
     overflow: 'hidden',
     position: 'relative',
     display: 'flex',
-    width: '100%',
   },
 
   appBar: {
     position: 'absolute',
-    marginLeft: drawerWidth,
-    zIndex: theme.zIndex.toolbar + 1,
+    marginLeft: -1 * drawerWidth,
+    zIndex: theme.zIndex.drawer + 1,
     boxShadow: "none",
-    borderBottom: '2px solid #eeeeee',
+    // borderBottom: '2px solid #eeeeee',
     backgroundColor: theme.palette.background.default,
     [theme.breakpoints.up('md')]: {
       width: `calc(100% - ${drawerWidth}px)`,
@@ -56,7 +54,10 @@ const styles = theme => ({
     },
   },
 
-  toolbar: theme.mixins.toolbar,
+  //toolbar: theme.mixins.toolbar,
+  toolbarCompensate: {
+    paddingTop: 40,
+  },
 
   content: {
     flexGrow: 1,
@@ -70,6 +71,7 @@ class Console extends Component {
 
     state = {
         mobileOpen: false,
+        consoleTitle: "Dashboard",
       };
     
       handleDrawerToggle = () => {
@@ -99,7 +101,7 @@ class Console extends Component {
             <AppBar className={classes.appBar}>
               <Toolbar>
                 <IconButton
-                  color="darkGrey"
+                  color="inherit"
                   aria-label="Open drawer"
                   onClick={this.handleDrawerToggle}
                   className={classes.navIconHide}
@@ -108,7 +110,7 @@ class Console extends Component {
                 </IconButton>
                 <div className="classes.consoleTitle">
                   <Typography variant="title"  noWrap>
-                    Dashboard
+                    <ConsoleTitle />
                   </Typography>
                 </div>
               </Toolbar>
@@ -143,15 +145,17 @@ class Console extends Component {
             </Hidden>
 
             <main className={classes.content}>
-              <div className={classes.toolbar} />
-              <Typography noWrap>{'Patient List'}</Typography>
-              <br />
-              <Dashboard />
+              <div className={classes.toolbarCompensate}>
+
+                <ConsoleRoutes />
+                
+              </div>
             </main>
           </div>
+          
         );
-      }
     }
+  };
 
 Console.propTypes = {
   classes: PropTypes.object.isRequired,

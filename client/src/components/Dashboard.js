@@ -3,32 +3,37 @@ import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { withStyles } from '@material-ui/core/styles';
-import PropTypes from 'prop-types';
+import { selectConsoleTitle } from '../actions/index'
+import DashboardBanner from './DashboardBanner';
+import DashboardTable from './DashboardTable';
 
 import PatientList from '../containers/DashboardDisplay';
-import { fetchPatients } from '../actions/index';
+import { fetchPatients } from '../actions/index'
 
 
 class Dashboard extends Component {  
-
+    
     componentDidMount() {
-        console.log("auto-load patients")
-        this.props.fetchPatients()
+
+        this.props.selectConsoleTitle({title: "Dashboard"});
+        this.props.fetchPatients();
     }
 
     render () {
         
         const { isAuthenticated } = this.props;
         console.log("Props : ", this.props);
-        if(!isAuthenticated) return <Redirect to='/' />
-       
+        if (!isAuthenticated) return <Redirect to='/' />
+
         return (
                 <div>
-      
-                    <p>dashboard</p>
+                    {/* <button onClick={() => this.props.selectConsoleTitle({title: "Dashboard"})}>Button</button> */}
+                    <DashboardBanner />
+
                     <br />
-                    <PatientList name={this.props.profile.name} />
+
+                    <PatientList />
+                    {/* <DashboardTable /> */}
 
                 </div >
         );
@@ -36,7 +41,7 @@ class Dashboard extends Component {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ fetchPatients}, dispatch);
+    return bindActionCreators({ selectConsoleTitle, fetchPatients }, dispatch);
 }
 function mapStatToProps({auth}){
     console.log(auth);
