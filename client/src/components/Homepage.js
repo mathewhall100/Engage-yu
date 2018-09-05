@@ -1,43 +1,63 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { login, handleAuthentication, isAuthenticated, getProfile} from '../actions'
-
+import { withRouter } from 'react-router-dom';
+import {authActions} from '../reducers/modules/auth';
+import PropTypes from 'prop-types';
+import * as AuthService from '../services/AuthService';
+import Appbar from './AppBar';
 class Main extends Component {
-    componentDidMount() {
-        this.props.isAuthenticated();
-        console.log("Main : ", this.props);
-    }
+    static propTypes = {
+        history: PropTypes.shape({
+            push: PropTypes.func.isRequired
+        }).isRequired,
+        auth: PropTypes.shape({
+            isAuthenticated: PropTypes.bool.isRequired,
+            profile: PropTypes.object,
+            error: PropTypes.object
+        }).isRequired,
+        loginRequest: PropTypes.func.isRequired,
+        logoutSuccess: PropTypes.func.isRequired
+    };
+
+    handleLoginClick = () => {
+        AuthService.login();
+        this.props.loginRequest();
+    };
+
+    handleLogoutClick = () => {
+        this.props.logoutSuccess();
+        AuthService.logout(); // careful, this is a static method
+        this.props.history.push({ pathname: '/' });
+    };
+
     render () {
-        const {authenticated } = this.props
-        console.log(authenticated)
+        const { auth } = this.props;
         return(
             <div>
-                
-                {authenticated === 2 || authenticated === 0 ?
-                <div>
-                    <hr/>
+                <Appbar />
+                {auth.isAuthenticated ? (
+                    <div>
+                        <img src={auth.profile.picture} height="40px" alt="profile" />
+                        <span>Welcome, {auth.profile.nickname}</span>
+                        <p>Go to the secret page ? <a href='/secret'>Click here </a></p>
+                        <button onClick={this.handleLogoutClick}>Logout</button>
+                    </div>
+                ) : (
+                        <div>
                         Please login first <br />
-                        <button onClick={this.props.login}>Login</button>
-                    <hr />
-                </div>
-                :
-                <p className="App-intro">
-                    Hello {this.props.profile ? this.props.profile.nickname : "" } ! <br/>
-                    Go to the secret page ? <a href='/secret'>Click here </a>
-                </p>
-                }
-
+                        <button onClick={this.handleLoginClick}>Login</button>
+                        </div>
+                )}
             </div>
         );
     }
 }
 
-const mapStateToProps = (state) => {
-    console.log("State in main : " , state);
-    const { authenticated, error, id_token, loading, profile } = state.auth
-    return {
-        authenticated, error, id_token, loading, profile
-    }
-}
+const mapStateToProps = ({auth}) => ({auth})
 
-export default connect(mapStateToProps, { login, handleAuthentication, isAuthenticated, getProfile})(Main);
+const mapDispatchToProps = dispatch => ({
+    loginRequest: () => dispatch(authActions.loginRequest()),
+    logoutSuccess: () => dispatch(authActions.logoutSuccess())
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Main));

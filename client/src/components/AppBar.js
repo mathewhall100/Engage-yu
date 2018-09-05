@@ -9,7 +9,8 @@ import AppBar from '@material-ui/core/AppBar';
 import ToolBar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-
+import { authActions } from '../reducers/modules/auth';
+import * as AuthService from '../services/AuthService';
 
 const styles = theme =>({
     root: {
@@ -34,13 +35,33 @@ const styles = theme =>({
 
 class TopBar extends Component {  
     
+    handleLoginClick = () => {
+        AuthService.login();
+        this.props.loginRequest();
+    };
+
+    handleLogoutClick = () => {
+        this.props.logoutSuccess();
+        AuthService.logout(); // careful, this is a static method
+        <Redirect to ='/' />
+    };
+
+    renderProfile(profile, isAuthenticated) {
+        console.log("profile : ", profile);
+        return(
+            profile && isAuthenticated ?
+                <p><img src={profile.picture} height="40px" alt="profile" style={{verticalAlign: "middle"}} /> Welcome! {profile.name} </p>
+            : null
+        );
+    }
 
     render () {
-        
-        const { authenticated } = this.props;
         console.log("Auth props : ", this.props);
+        const { isAuthenticated, profile } = this.props.auth;
+        console.log("Profile : ", JSON.stringify(profile))
+        
         // if(authenticated ===  0 || authenticated === 2) return <Redirect to='/' /> 
-        // if(!authenticated ) {return <Redirect to='/' />};
+        //if(!isAuthenticated ) {return <Redirect to='/' />};
 
         const { classes } = this.props;
 
@@ -58,11 +79,21 @@ class TopBar extends Component {
                             </Typography>
 
                             <Typography variant="Body2" color="inherit" align="right" className={classes.welcomeText}>
-                                Welcome Dr. Mathew Hall
+                            {this.renderProfile(profile, isAuthenticated)}
                                  {/* [this.props.profile.given_name this.props.profile.family_name] */}
                             </Typography>
                             <Button color="inherit" className={classes.menuButton}>Help</Button>
-                            <Button color="inherit" className={classes.menuButton}>Logout</Button>
+                            {!isAuthenticated ? 
+                            (
+                                <Button color="inherit" className={classes.menuButton} onClick={this.handleLoginClick}>Login</Button>
+                            ):
+                            (
+                                <Button color="inherit" className={classes.menuButton} onClick={this.handleLogoutClick}>Logout</Button>
+                            )
+                            }
+                            
+
+                            
                         </ToolBar>
                     </AppBar>
 
@@ -71,8 +102,25 @@ class TopBar extends Component {
     }
 }
 
-TopBar.propTYpes = {
+TopBar.propTypes = {
     classes: PropTypes.object.isRequired,
+    history: PropTypes.shape({
+        push: PropTypes.func.isRequired
+    }).isRequired,
+    auth: PropTypes.shape({
+        isAuthenticated: PropTypes.bool.isRequired,
+        profile: PropTypes.object,
+        error: PropTypes.object
+    }).isRequired,
+    loginRequest: PropTypes.func.isRequired,
+    logoutSuccess: PropTypes.func.isRequired
 };
 
-export default connect(null,null,null, {pure:false}) (withStyles(styles) (TopBar));
+const mapStateToProps = ({ auth }) => ({ auth })
+
+const mapDispatchToProps = dispatch => ({
+    loginRequest: () => dispatch(authActions.loginRequest()),
+    logoutSuccess: () => dispatch(authActions.logoutSuccess())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps,null, {pure:false}) (withStyles(styles) (TopBar));

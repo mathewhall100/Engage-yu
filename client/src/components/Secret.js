@@ -7,7 +7,6 @@ class Secret extends Component {
         
         const { authenticated } = this.props
         console.log("Props : ", this.props);
-        if(authenticated=== 0 || authenticated === 2) return <Redirect to='/' /> 
         return (
                 <div>
                     <div>
@@ -21,4 +20,4 @@ class Secret extends Component {
     }
 }
 
-export default connect(null,null,null, {pure:false})(Secret);
+export default (Secret);
