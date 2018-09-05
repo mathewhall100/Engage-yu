@@ -1,4 +1,4 @@
-import { DEFAULT_QUESTION, CUSTOM_QUESTIONS, QUESTIONS } from '../actions/types';
+import { DEFAULT_QUESTION, CUSTOM_QUESTIONS, QUESTIONS, PATIENT_DETAILS } from '../actions/types';
 
 const INITIAL_STATE = {
     defaultQuestion : [],
@@ -19,6 +19,11 @@ export default (state = INITIAL_STATE, action) => {
             return {defaultQuestion : action.payload.defaultQuestion };
         case CUSTOM_QUESTIONS:
             return { customQuestions : action.payload.customQuestions };
+        case PATIENT_DETAILS:
+            return { 
+                patientInfo: action.payload.patientInfo ,
+                patientData : action.payload.patientData
+            }
         default:
             return state;
     }

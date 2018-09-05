@@ -22,23 +22,28 @@ class PatientList extends Component {
 
     render () {
         return (
-            <table className="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Firstname</th>
-                        <th>Lastname</th>
-                        <th>DOB</th>
-                        <th>hospital ID</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-                    {this.props.patients.map((patient) => patient.map(this.renderPatients))} 
-                    {/* {this.props.patients.map((patient) => {
+            <div>
+                <table className="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Firstname</th>
+                            <th>Lastname</th>
+                            <th>DOB</th>
+                            <th>hospital ID</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        {this.props.patients.map((patient) => patient.map(this.renderPatients))}
+                        {/* {this.props.patients.map((patient) => {
                         return (patient.map(this.renderPatients))
                         }) */}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+                <p>{this.props.name}</p>
+            </div>
+            
+
         )
     }
 }

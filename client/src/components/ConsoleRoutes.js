@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux';
-import { Route, Switch } from "react-router-dom";
-import { login, logout, handleAuthentication, isAuthenticated, getProfile } from '../actions/AuthAction';
+import { Route, Switch, Link} from "react-router-dom";
 
 import Dashboard from './Dashboard';
 import EnrollPatient from './EnrollPatient';
@@ -9,9 +8,6 @@ import NotFound from './NotFound';
 
 
 class ConsoleRoutes extends Component { 
-    componentDidMount(){
-        this.props.isAuthenticated();
-    }
 
     render(){
         const {authenticated} = this.props
@@ -32,13 +28,5 @@ class ConsoleRoutes extends Component {
     
 }
 
-function mapStateToProps(state) {
-    //console.log("Route : State in main : ", state);
-    const { authenticated, profile } = state.auth;
-    return {
-        authenticated, profile
-    }
-}
 
-
-export default connect(mapStateToProps, { login, logout, handleAuthentication, isAuthenticated, getProfile},null, {pure: false})(ConsoleRoutes);
+export default (ConsoleRoutes);

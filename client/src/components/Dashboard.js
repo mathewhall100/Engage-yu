@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-//import { Link, Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -21,11 +21,9 @@ class Dashboard extends Component {
 
     render () {
         
-        const { authenticated } = this.props;
-        //console.log("Props : ", this.props);
-        //if(authenticated ===  0 || authenticated === 2) return <Redirect to='/' /> 
-        //if(!authenticated ) {return <Redirect to='/' />};
-
+        const { isAuthenticated } = this.props;
+        console.log("Props : ", this.props);
+        if (!isAuthenticated) return <Redirect to='/' />
 
         return (
                 <div>
@@ -45,5 +43,10 @@ class Dashboard extends Component {
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({ selectConsoleTitle, fetchPatients }, dispatch);
 }
+function mapStatToProps({auth}){
+    console.log(auth);
+    return (auth);
+}
+// export default connect(null,null,null, {pure:false})(Dashboard);
 
-export default connect(null, mapDispatchToProps)(Dashboard)
+export default connect(mapStatToProps, mapDispatchToProps) (Dashboard)

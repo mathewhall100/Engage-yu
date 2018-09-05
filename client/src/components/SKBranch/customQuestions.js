@@ -5,7 +5,7 @@ class customQuestions extends Component {
         console.log("Custom questions : ", this.props.customQuestions.questionList);
         return(
             <div>
-                {this.props.renderQuestionnaires(this.props.customQuestions.questionList)}
+                {this.props.renderQuestionnaires(this.props.customQuestions.questionList, this.props.menuButton, this.props.formControl, this.props.radioGroup, this.props.handleChange)}
             </div>
         );
     }
