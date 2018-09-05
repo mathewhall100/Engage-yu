@@ -72,7 +72,7 @@ class DashboardBanner extends Component {
                         <CardContent className={classes.content}>
 
                             <Typography variant="display1" noWrap className={classes.bannerText}>
-                                Pateint Engagement Solutions
+                                Patient Engagement Solutions
                             </Typography>
 
                             <Typography variant="display1" noWrap className={classes.bannerText}>

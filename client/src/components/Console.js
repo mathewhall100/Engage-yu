@@ -12,8 +12,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Hidden from '@material-ui/core/Hidden';
 import Divider from '@material-ui/core/Divider';
 import MenuIcon from '@material-ui/icons/Menu';
-
-import { dashboardListItems, workflowListItems, adminListItems, customiseListItems } from "./ConsoleMenuListItems";
+import ListItems from "./ConsoleMenuListItems";
 import ConsoleTitle from '../containers/ConsoleTitle';
 import ConsoleRoutes from './ConsoleRoutes';
 
@@ -33,7 +32,6 @@ const styles = theme => ({
     marginLeft: -1 * drawerWidth,
     zIndex: theme.zIndex.drawer + 1,
     boxShadow: "none",
-    // borderBottom: '2px solid #eeeeee',
     backgroundColor: theme.palette.background.default,
     [theme.breakpoints.up('md')]: {
       width: `calc(100% - ${drawerWidth}px)`,
@@ -55,7 +53,7 @@ const styles = theme => ({
   },
 
   //toolbar: theme.mixins.toolbar,
-  toolbarCompensate: {
+  toolbarCompensatePadding: {
     paddingTop: 40,
   },
 
@@ -83,15 +81,12 @@ class Console extends Component {
     
         const drawer = (
           <div style={{fontSize: 11}}>
-            <div className={classes.toolbar} />
-            {/* <Divider /> */}
-            <List>{dashboardListItems}</List>
-            <Divider />
-            <List>{workflowListItems}</List>
-            <Divider />
-            <List>{adminListItems}</List>
-            <Divider />
-            <List>{customiseListItems}</List>
+
+            {/* <div className={classes.toolbar} /> */}
+            <List>
+              <ListItems />
+            </List>
+
           </div>
         );
     
@@ -145,7 +140,7 @@ class Console extends Component {
             </Hidden>
 
             <main className={classes.content}>
-              <div className={classes.toolbarCompensate}>
+              <div className={classes.toolbarCompensatePadding}>
 
                 <ConsoleRoutes />
                 
