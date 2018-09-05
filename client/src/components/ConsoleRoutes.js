@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux';
-import { Route, Switch, Link} from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import { login, logout, handleAuthentication, isAuthenticated, getProfile } from '../actions/AuthAction';
 
 import Dashboard from './Dashboard';
-import Report from './Report';
+import EnrollPatient from './EnrollPatient';
 import NotFound from './NotFound';
 
 
@@ -19,12 +19,12 @@ class ConsoleRoutes extends Component {
             <div className="App">
 
                 <Switch>
-                    <Route exact path='/admin/dashboard' render={props => <Dashboard {...this.props}></Dashboard>} />
-                    <Route exact path="/admin" render={props => <Dashboard {...this.props}> </Dashboard>} />
-                    <Route exact path='/admin/report' render={props => <Report {...this.props}></Report>} />
-                    <Route path="/notfound" component={NotFound} />
-                    <Route component={NotFound} />
-                </Switch>
+                  <Route exact path="/admin" render={props => <Dashboard {...this.props}> </Dashboard>} />
+                  <Route exact path='/admin/dashboard' render={props => <Dashboard {...this.props}></Dashboard>} />
+                  <Route exact path='/admin/enroll' render={props => <EnrollPatient {...this.props}></EnrollPatient>} />
+                  <Route path="/notfound" component={NotFound} />
+                  <Route component={NotFound} />
+              </Switch>
 
             </div>
         );
@@ -33,7 +33,7 @@ class ConsoleRoutes extends Component {
 }
 
 function mapStateToProps(state) {
-    console.log("Route : State in main : ", state);
+    //console.log("Route : State in main : ", state);
     const { authenticated, profile } = state.auth;
     return {
         authenticated, profile

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 // import { bindActionCreators } from 'redux';
 
@@ -26,7 +26,7 @@ const styles = theme =>({
 
     menuButton: {
         '&:hover': {
-            backgroundColor: "#1a242b",
+            backgroundColor: "#28353d",
         },
         hover: {},
     },
@@ -38,7 +38,7 @@ class TopBar extends Component {
     render () {
         
         const { authenticated } = this.props;
-        console.log("Auth props : ", this.props);
+        //console.log("Auth props : ", this.props);
         // if(authenticated ===  0 || authenticated === 2) return <Redirect to='/' /> 
         // if(!authenticated ) {return <Redirect to='/' />};
 
@@ -53,11 +53,11 @@ class TopBar extends Component {
                                 Engage-Yu!
                             </Typography>
 
-                            <Typography variant="Title" color="inherit" align="center" className={classes.flex}>
+                            <Typography variant="subheading" color="inherit" align="center" className={classes.flex}>
                                 Care Group: The Cleveland Practice
                             </Typography>
 
-                            <Typography variant="Body2" color="inherit" align="right" className={classes.welcomeText}>
+                            <Typography variant="subheading" color="inherit" align="right" className={classes.welcomeText}>
                                 Welcome Dr. Mathew Hall
                                  {/* [this.props.profile.given_name this.props.profile.family_name] */}
                             </Typography>

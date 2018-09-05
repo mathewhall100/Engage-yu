@@ -17,11 +17,10 @@ class App extends Component {
   render() {
     
     return (
-
       <Provider store={createStoreWithMiddleware(reducers)}>
-        <Router history={history}>
-          <Routes/>
-        </Router>
+          <Router history={history}>
+            <Routes/>
+          </Router>
       </Provider>
     );
   }
