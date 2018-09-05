@@ -11,6 +11,7 @@ import Button from '@material-ui/core/Button';
 
 import FormText from './Forms/FormText'
 import FormTextFocused from './Forms/FormTextFocused'
+import FormTextPassword from './Forms/FormTextPassword'
 import FormSelect from './Forms/FormSelect'
 import FormRadio from './Forms/FormRadio'
 import { enrollNewPatient } from '../actions';
@@ -149,14 +150,29 @@ class Enroll extends Component {
                             <Grid item xs={4}>
                             <br />
                                 <FormSelect 
-                                name="provider" 
-                                label="Primary Provider"
-                                items={selectItems}
+                                    name="provider" 
+                                    label="Primary Provider"
+                                    items={selectItems}
                                 />
                             </Grid>
                             <Grid item xs={3}></Grid>
 
-                            <Grid item xs={12}><br /><br /><br /><br /></Grid>
+                            <Grid item xs={4}>
+                                <FormTextPassword
+                                    name="password1"
+                                    label="Password"
+                                />
+                            </Grid>
+                            <Grid item xs={1}></Grid>
+                            <Grid item xs={4}>
+                                <FormTextPassword
+                                    name="password2" 
+                                    label="Re-enter password"
+                                    />
+                            </Grid>
+                            <Grid item xs={3}></Grid>
+
+                            <Grid item xs={12}><br /><br /></Grid>
 
                             <Grid item xs={4}>
                                 <Button type="submit" disabled={submitting || pristine} className={classes.submitBtn}>Submit</Button>
