@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
-import Appbar from './AppBar';
 import Console from './Console';
 
 
@@ -30,7 +29,6 @@ class Admin extends Component {
                 <CssBaseline />
                 <div className={classes.root}>
 
-                        <Appbar />
 
                         <Console />  
 
