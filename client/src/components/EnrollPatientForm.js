@@ -59,6 +59,8 @@ class Enroll extends Component {
 
     
     componentDidMount() {
+
+        //console.log(`Dr. ${localStorage.getItem('profile.name')}`)
         // On component mount, fetch names of all providers in provider group to populate primary provider form field
         providerAPI.findAllByGroup(this.state.providerGroupId)
             .then(res => {
@@ -110,7 +112,8 @@ class Enroll extends Component {
             date_enrolled: new Date(),
             enrolled_by_ref: '5b844946d8dc5ce848cd28a4',
             enrolled_by_id: "5b844946d8dc5ce848cd28a4",
-            enrolled_by_name: "john heyworth",
+           enrolled_by_name: `Dr Mathew Hall`,
+           // enrolled_by_name: `Dr. ${localStorage.get('profile.name')}`,
 
             patient_data_ref: "000000000000000000000000",
             patient_data_id:  "000000000000000000000000",

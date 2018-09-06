@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const recordSchema = require("./record");
+const questionSchema = require("./question");
 
 const episodeSchema = new Schema({
 
@@ -21,18 +22,24 @@ const episodeSchema = new Schema({
     margin_mins: { type: Number, min: 5, max: 60, default: 15 },
      
     num_questions: { type: Number, min: 1, max: 25, required: true },
-    questions: [{ type: String, minlength: 2, maxlength: 40, required: true }],
+    questions: [
+        {questionSchema}
+    ],
 
     expected_num_records: { type: Number, min: 2, required: [true, "No expected number records"] },
     notes: String,
-    record: [recordSchema], 
+    record: [
+        recordSchema
+    ], 
     
     remind_status: { type: String, enum: ["on", "off"], default: "on"},
     remind_mins_before: { type: Number, min: 1, max: 30, default: 10 },
     
     status: {type: String, enum: ["pending", "active", "cancelled", "awaiting review", "reviewed", "actioned", "archived", ], default: "pending"},
 
-    report_to: [{ type: Schema.Types.ObjectId, ref: "Provider" }], 
+    report_to: [
+        { type: Schema.Types.ObjectId, ref: "Provider" }
+    ], 
 
 });
 
