@@ -31,6 +31,11 @@ router
   .route("/new")
   .post(patient_infoController.create)
 
+  // Matches with "/api/patient_info/insertRef/:id" 
+router
+.route('/insertRef/:id')
+.put(patient_infoController.insertRef)
+
 // Matches with "/api/patient_info/updateEmail/:id" 
 router
     .route('/updateEmail/:id')

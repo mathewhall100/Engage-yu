@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
-import Appbar from './AppBar';
 import Console from './Console';
 
 
@@ -20,7 +19,7 @@ class Admin extends Component {
 
         const { classes } = this.props;
         const { authenticated } = this.props;
-        console.log("Props : ", this.props);
+        //console.log("Props : ", this.props);
         //console.log("Props : ", this.props);
         //if(authenticated ===  0 || authenticated === 2) return <Redirect to='/' /> 
         //if(!authenticated ) {return <Redirect to='/' />};
@@ -29,8 +28,6 @@ class Admin extends Component {
             <React.Fragment>
                 <CssBaseline />
                 <div className={classes.root}>
-
-                        <Appbar />
 
                         <Console />  
 

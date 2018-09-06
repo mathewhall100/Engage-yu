@@ -34,7 +34,6 @@ class Main extends Component {
         const { auth } = this.props;
         return(
             <div>
-                <Appbar />
                 {auth.isAuthenticated ? (
                     <div>
                         <img src={auth.profile.picture} height="40px" alt="profile" />

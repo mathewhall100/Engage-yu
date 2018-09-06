@@ -23,6 +23,34 @@ module.exports = {
         // }
     },
 
+    // Fetch details of all providers of a particular care group
+    //requires caregroup id as searchterm in req.body.searchId
+    // Returns json list of provider names only (sorted alphabeltically by last_name)
+    findAllByGroup: function(req, res) {
+        console.log("Provider controller called to 'find all by provider group'", req.body );
+        //console.log(`Requester:  ${req.user}`);
+        //if(req.user){
+            db.Provider
+            .find( {
+                provider_group_id: req.params.id}, 
+                {firstname: 1, lastname: 1, _id: 1, provider_group_ref: 1, provider_group_id: 1, provider_group_name: 1}, )
+            .sort( {"lastname": 1} )
+            .then(providerList => {
+                console.log("RESULT:", providerList)
+                res.json({
+                    providerList: providerList,
+                });
+            })
+            .catch(err => {
+                console.log(`CONTROLLER ERROR: ${err}`);
+                res.status(422).json(err);
+            })
+        // }else{
+        //     res.status(422).json('You do not have proper credential to perform this action.')
+        // }
+        
+    }, 
+
 
     // Fetch provider details by id
     // To be sent req.params.id with _id of provider to be fetched

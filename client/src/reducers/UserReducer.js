@@ -8,10 +8,10 @@ const INITIAL_STATE = {
 }
 
 export default (state = INITIAL_STATE , action) => {
-    console.log("in user action : ", action);
+    //console.log("in user action : ", action);
     switch(action.type){
         case USER_PROFILE : 
-            console.log("reducer in user action  ")
+            //console.log("reducer in user action  ")
             return { ...state, role: action.payload.role, id: action.payload.id }
         default :
             return state;

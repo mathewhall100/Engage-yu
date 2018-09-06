@@ -2,7 +2,7 @@ import axios from 'axios';
 import { USER_PROFILE } from './types';
 
 export const fetchUserDetails = (id) => {
-    console.log("here in fetch user details action", id)
+    //console.log("here in fetch user details action", id)
     const url = `/api/user/${id}`;
     const request = axios.get(url);
     let userInfo;

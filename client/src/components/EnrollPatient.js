@@ -14,7 +14,7 @@ class EnrollPatient extends Component {
     render () {
         
         const { authenticated } = this.props;
-        console.log("Props : ", this.props);
+        //console.log("Props : ", this.props);
         //if(authenticated ===  0 || authenticated === 2) return <Redirect to='/' /> 
         //if(!authenticated ) {return <Redirect to='/' />};
 

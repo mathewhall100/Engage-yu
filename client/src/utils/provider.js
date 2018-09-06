@@ -6,6 +6,11 @@ export default {
         return axios.get("/api/provider");
     }, 
 
+    findAllByGroup: function(id) {
+        console.log("Axios call made to '/api/provider to 'findAllByGroup' ", id);
+        return axios.get("/api/provider/allByGroup/"+id);
+    },
+
     findById: function(id){
         console.log("Axios call made to '/api/provider' to 'findById'" + id);
         return axios.get("/api/provider/"+id);
