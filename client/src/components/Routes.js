@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 import { connect } from 'react-redux';
-import { login, logout, handleAuthentication, isAuthenticated, getProfile } from '../actions/AuthAction';
+//import { login, logout, handleAuthentication, isAuthenticated, getProfile } from '../actions/AuthAction';
 import AppBar from './AppBar';
 import Homepage from './Homepage';
 import Admin from './Admin';
@@ -14,7 +14,7 @@ import SK from './SKBranch/patients';
 
 class Routes extends Component { 
     render(){
-        console.log("routes props : " , this.props);
+        //console.log("routes props : " , this.props);
         return(
             <div className="App">
                 <AppBar/>

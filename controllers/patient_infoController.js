@@ -154,6 +154,37 @@ module.exports = {
         // }
     },
 
+    // INsert data ref during patient enroll
+    // To be sent req.params.id of patient to be updated and req.body with new patient_data ref id
+    insertRef: function(req, res) {
+        console.log("Patient_info controller called to 'insert Ref'" );
+        //console.log(`Requester:  ${req.user}`);
+        //if(req.user){
+
+        let opts = {runValidators: true};
+            db.Patient_info
+            .findOneAndUpdate(
+                { _id: req.params.id },
+                { $set: { 
+                    "patient_data_ref": req.body.patient_data_ref,
+                    "patient_data_id": req.body.patient_data_ref,
+                }
+                }, opts
+            )
+            .then(result => {
+                console.log("RESULT: ", result);
+                res.json(result)
+            })
+            .catch(err => {
+                console.log(`CONTROLLER ERROR: ${err}`);
+                res.status(422).json(err);
+            })
+        // }else{
+        //     res.status(422).json('You do not have proper credential to perform this action.')
+        // }
+    },
+
+
     // Update patient email 
     // To be sent req.params.id of patient to be updated and req.body with new patient info
     updateEmail: function(req, res) {

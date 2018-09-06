@@ -1,9 +1,7 @@
 import React, { Component } from "react";
-import PropTypes from 'prop-types';
-import { withRouter, Router } from "react-router-dom";
-import { createStore, applyMiddleware } from 'redux';
+import { withRouter } from "react-router-dom";
 import {connect} from 'react-redux';
-import ReduxThunk from 'redux-thunk';
+import PropTypes from 'prop-types';
 import * as AuthService from './services/AuthService';
 import { authActions } from './reducers/modules/auth';
 import { fetchUserDetails } from './actions/UserAction';
@@ -27,11 +25,11 @@ class App extends Component {
     fetchUserDetails : PropTypes.func.isRequired,
   };
   componentDidMount(){
-    console.log("fetching user details..." , this.props);
+    //console.log("fetching user details..." , this.props);
     fetchUserDetails(this.props.auth.profile.sub);
   }
   componentWillMount() {
-    console.log("this.props in app js file : ", this.props);
+    //console.log("this.props in app js file : ", this.props);
     const { history, loginError, loginSuccess } = this.props;
     let userProfile;
     // Add callback for lock's `authenticated` event
@@ -45,7 +43,7 @@ class App extends Component {
         AuthService.setToken(authResult.idToken); // static method
         AuthService.setProfile(profile); // static method
         loginSuccess(profile);
-        console.log("Profile : ", profile);
+        //console.log("Profile : ", profile);
         history.push({ pathname: '/admin/dashboard' });
         AuthService.lock.hide();
       });
@@ -69,7 +67,7 @@ class App extends Component {
   }
 }
 const mapStateToProps =state =>{
-  console.log("state in app.js : ", state);
+  //console.log("state in app.js : ", state);
   return state;
 
 }

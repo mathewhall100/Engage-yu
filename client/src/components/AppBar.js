@@ -47,7 +47,7 @@ class TopBar extends Component {
     };
 
     renderProfile(profile, isAuthenticated) {
-        console.log("profile : ", profile);
+        //console.log("profile : ", profile);
         return(
             profile && isAuthenticated ?
                 <p><img src={profile.picture} height="40px" alt="profile" style={{verticalAlign: "middle"}} /> Welcome! {profile.name} </p>
@@ -56,9 +56,9 @@ class TopBar extends Component {
     }
 
     render () {
-        console.log("Auth props : ", this.props);
+       // console.log("Auth props : ", this.props);
         const { isAuthenticated, profile } = this.props.auth;
-        console.log("Profile : ", JSON.stringify(profile))
+        //console.log("Profile : ", JSON.stringify(profile))
         
         // if(authenticated ===  0 || authenticated === 2) return <Redirect to='/' /> 
         //if(!isAuthenticated ) {return <Redirect to='/' />};
@@ -78,9 +78,8 @@ class TopBar extends Component {
                                 Care Group: The Cleveland Practice
                             </Typography>
 
-                            <Typography variant="Body2" color="inherit" align="right" className={classes.welcomeText}>
-                            {this.renderProfile(profile, isAuthenticated)}
-                                 {/* [this.props.profile.given_name this.props.profile.family_name] */}
+                            <Typography variant="subheading" color="inherit" align="right" className={classes.welcomeText}>
+                                {this.renderProfile(profile, isAuthenticated)}
                             </Typography>
                             <Button color="inherit" className={classes.menuButton}>Help</Button>
                             {!isAuthenticated ? 

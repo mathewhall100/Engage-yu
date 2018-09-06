@@ -7,6 +7,11 @@ router
   .get(providerController.findAll)
   .post(providerController.create);
 
+  // Matches with "/api/provider/allByGroup" 
+router
+  .route("/allByGroup/:id")
+  .get(providerController.findAllByGroup)
+
 // Matches with "/api/provider/:id"
 router
   .route("/:id")
