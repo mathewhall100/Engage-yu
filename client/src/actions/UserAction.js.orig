@@ -1,8 +1,14 @@
 import axios from 'axios';
 import { USER_PROFILE } from './types';
 
+<<<<<<< Updated upstream
+export const fetchUserDetails = (id) => {
+    //console.log("here in fetch user details action", id)
+    const url = `/api/user/${id}`;
+=======
 export const fetchUserDetails = (sub) => {
     const url = `/api/user/${sub}`;
+>>>>>>> Stashed changes
     const request = axios.get(url);
     let userInfo, userRole, userID;
     return (dispatch) => {

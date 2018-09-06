@@ -1,34 +1,31 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import { withStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
+import { Link, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-const styles = {
-    row: {
-        display: 'flex',
-        justifyContent: 'center',
-    },
-    avatar: {
-        margin: 10,
-    },
-    bigAvatar: {
-        width: 60,
-        height: 60,
-    },
-};
 
-function physicianInfo(props) {
-    const { classes } = props;
-    return (
-        <div className={classes.row}>
-            <Avatar alt='name' src='' classNName={classes.avatar} /> Physician Name
-        </div>
-    )
+
+class PhysicianInfo extends Component {  
+    
+    componentDidMount() {
+    }
+
+    render () {
+
+        return (
+                <div>
+                    PhysicianInfo
+
+                </div >
+        );
+    }
 }
 
-physicianInfo.propTypes = {
-    classes: PropTypes.object.isRequired,
-};
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({}, dispatch);
+}
+function mapStatToProps(state){
+    return (state);
+}
 
-export default withStyles(styles)(physicianInfo);
+export default connect(mapStatToProps, mapDispatchToProps) (PhysicianInfo)

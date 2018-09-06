@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
-import PropTypes from 'prop-types';
+import propTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Console from '../Patient/Console';
 
@@ -39,8 +39,8 @@ class SKBranch extends Component {
         
     }
 }
-SKBranch.PropTypes = {
-    classes : PropTypes.object.isRequired
+SKBranch.propTypes = {
+    classes : propTypes.object.isRequired
 }
 
 

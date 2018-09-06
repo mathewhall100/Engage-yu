@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import * as AuthService from './services/AuthService';
 import { authActions } from './reducers/modules/auth';
-import { fetchUserDetails } from './actions/UserAction';
+import { fetchUserDetails, getUserRole, getUserID } from './actions/UserAction';
 import "./App.css";
 
 import Routes from './components/Routes';
@@ -13,7 +13,10 @@ const mapDispatchToProps = dispatch => ({
   loginSuccess: profile => dispatch(authActions.loginSuccess(profile)),
   loginError: error => dispatch(authActions.loginError(error)), 
   fetchUserDetails : id => dispatch(fetchUserDetails(id)),
+  getUserID :  () => getUserID(),
+  getUserRole : () => getUserRole(),
 });
+let userProfile ;
 
 class App extends Component {
   static propTypes = {
@@ -23,6 +26,8 @@ class App extends Component {
     loginError: PropTypes.func.isRequired,
     loginSuccess: PropTypes.func.isRequired,
     fetchUserDetails : PropTypes.func.isRequired,
+    getUserID : PropTypes.func.isRequired, 
+    getUserRole : PropTypes.func.isRequired, 
   };
   componentDidMount(){
     //console.log("fetching user details..." , this.props);
@@ -34,7 +39,6 @@ class App extends Component {
     let userProfile;
     // Add callback for lock's `authenticated` event
     AuthService.lock.on('authenticated', authResult => {
-      
       AuthService.lock.getUserInfo(authResult.accessToken, (error, profile) => {
         if (error) {
           return loginError(error);
@@ -47,18 +51,21 @@ class App extends Component {
         history.push({ pathname: '/admin/dashboard' });
         AuthService.lock.hide();
       });
-      
     });
     // Add callback for lock's `authorization_error` event
     AuthService.lock.on('authorization_error', error => {
       loginError(error);
       history.push({ pathname: '/' });
-    });
+    }); 
+  }
 
+  componentDidMount(){
+    const {sub} = this.props.auth.profile
+    {sub ? this.props.fetchUserDetails(sub) : null}
     
   }
   render() {
-    
+    console.log("app.js, props : " , this.props);
     return (
         <div>
           <Routes {...this.props} />

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import ToolBar from '@material-ui/core/AppBar';
 import { connect } from 'react-redux';
-
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -22,6 +21,7 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
+import PatientConsoleRoutes from './PatientConsoleRoutes';
 import _ from 'lodash';
 
 
@@ -213,28 +213,9 @@ class PatientConsole extends Component {
                     </Drawer>
                 </Hidden>
                 <main className={classes.content}>
-                    {this.props.title.toLowerCase() === 'survey' ? 
-                        <div>
-                            <div className={classes.toolbar} />
-                            <Typography component='h1' variant='headline' noWrap>
-                                {this.props.title}
-                            </Typography>
-                            <Divider />
-                            <Typography component='h3' variant='headline'>
-                                Default Question :
-                            </Typography>
-
-                            <DefaultQuestion menuButton={classes.menuButton} radioGroup={classes.group} formControl={classes.formControl} handleChange={this.handleDefaultQuestionChange} defaultQuestion={this.props.defaultQuestion} renderQuestionnaires={this.renderQuestionnaires} stateName = {this.state.defaultQuestion} />
-                            <Divider />
-                            <Typography component='h3' variant='headline'>
-                                Custom Questions :
-                            </Typography>
-
-                            <CustomQuestions menuButton={classes.menuButton} radioGroup={classes.group} formControl={classes.formControl} handleChange={this.handleCustomQuestionChange} customQuestions={this.props.customQuestions} renderQuestionnaires={this.renderQuestionnaires} stateName= {this.state.customQuestions} />
-                            <Divider />
-                            <AfterSurvey />
-                        </div>
-                    : null }
+                        <p>Here</p>
+                    <PatientConsoleRoutes />
+                    
                     
                 </main>
 
@@ -248,12 +229,7 @@ PatientConsole.propTypes = {
 };
 
 const mapStateToProps = state => {
-    console.log("SK : ", state);
-    return {
-        defaultQuestion: state.patient.defaultQuestion,
-        customQuestions: state.patient.customQuestions,
-        auth: state.auth,
-    }
+    return state;
 }
 
 export default connect(mapStateToProps, { fetchQuestions })(withStyles(styles, { withTheme: true })(PatientConsole))

@@ -16,7 +16,7 @@ import BuildIcon from '@material-ui/icons/Build';
 
 export const patientDashboardListItem = (
     <div>
-        <Link to='/SK' style={{textDecoration:'none', display: 'block'}}>
+        <Link to='/patient' style={{textDecoration:'none', display: 'block'}}>
             <ListItem button>
                 <ListItemIcon>
                     <DashboardIcon />
@@ -30,7 +30,7 @@ export const patientDashboardListItem = (
 export const patientListItems = (
     <div>
         <ListSubheader>Patient Info</ListSubheader>
-        <Link to='/SK/survey' style={{ textDecoration: 'none', display: 'block' }}>
+        <Link to='/patient/survey' style={{ textDecoration: 'none', display: 'block' }}>
             <ListItem button>
                 <ListItemIcon>
                     <AssessmentIcon />
@@ -38,7 +38,7 @@ export const patientListItems = (
                 <ListItemText primary='Survey' />
             </ListItem>
         </Link>
-        <Link to='/SK/report' style={{ textDecoration: 'none', display: 'block' }}>
+        <Link to='/patient/report' style={{ textDecoration: 'none', display: 'block' }}>
             <ListItem button>
                 <ListItemIcon>
                     <AssignmentIcon />
@@ -46,7 +46,7 @@ export const patientListItems = (
                 <ListItemText primary='Report' />
             </ListItem>
         </Link>
-        <Link to='/SK/Physician' style={{ textDecoration: 'none', display: 'block' }}>
+        <Link to='/patient/Physician' style={{ textDecoration: 'none', display: 'block' }}>
             <ListItem button>
                 <ListItemIcon>
                     <ContactPhoneIcon />

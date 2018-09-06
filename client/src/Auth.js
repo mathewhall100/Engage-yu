@@ -45,6 +45,9 @@ export default class Auth {
         localStorage.removeItem('access_token');
         localStorage.removeItem('id_token');
         localStorage.removeItem('expires_at');
+        localStorage.removeItem('sub');
+        localStorage.removeItem('role');
+        localStorage.removeItem('userID');
         location.pathname = LOGIN_FAILURE_PAGE;
     }
 
