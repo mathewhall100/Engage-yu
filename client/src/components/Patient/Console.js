@@ -153,7 +153,6 @@ class PatientConsole extends Component {
         }
     }
     render() {
-        console.log("Console : ", this.props);
         const { classes, theme, auth, } = this.props;
         const drawer = (
             <div style={{fontSize : 11}}>
@@ -214,7 +213,7 @@ class PatientConsole extends Component {
                 </Hidden>
                 <main className={classes.content}>
                         <p>Here</p>
-                    <PatientConsoleRoutes />
+                    <PatientConsoleRoutes {...this.props} />
                     
                     
                 </main>

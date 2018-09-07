@@ -29,10 +29,9 @@ class SKBranch extends Component {
     
     render () {
         const { classes } = this.props;
-        console.log("in render , " , this.props);
         return(
             <div>
-                <Console title={this.props.title} />
+                <Console {...this.props } title={this.props.title} />
             </div>
 
         );

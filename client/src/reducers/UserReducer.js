@@ -10,7 +10,7 @@ const INITIAL_STATE = {
 export default (state = INITIAL_STATE , action) => {
     switch(action.type){
         case USER_PROFILE : 
-            return {  role: action.payload.role, id: action.payload.id }
+            return {  role: action.payload.role, id: action.payload.id, details : action.payload.details }
         default :
             return state;
     }

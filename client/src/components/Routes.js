@@ -12,7 +12,6 @@ import SK from './SKBranch/patients';
 
 class Routes extends Component { 
     render(){
-        //console.log("routes props : " , this.props);
         return(
             <div className="App">
                 <AppBar/>

@@ -8,7 +8,6 @@ export const fetchQuestions = () => {
     let defaultQ = [];
     return(dispatch) => {
         request.then( res => {
-            console.log("HERE: " , res.data);
             defaultQ = res.data;
         }).then( 
             axios.get('/api/question_custom').then( res => {

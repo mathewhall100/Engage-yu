@@ -1,4 +1,5 @@
 const db = require("../models");
+const mongoose = require('mongoose');
 
 
 module.exports = { 
@@ -33,7 +34,7 @@ module.exports = {
             db.Provider
             .find( {
                 provider_group_id: req.params.id}, 
-                {firstname: 1, lastname: 1, _id: 1, provider_group_ref: 1, provider_group_id: 1, provider_group_name: 1}, )
+                {firstname: 1, lastname: 1, _id: 1, provider_group_ref: 1, provider_group_id: 1, provider_group_name: 1} )
             .sort( {"lastname": 1} )
             .then(providerList => {
                 console.log("RESULT:", providerList)
@@ -65,7 +66,7 @@ module.exports = {
                 res.json(provider)
             })
             .catch(err => {
-                console.log(`CONTROLLER ERROR: ${err}`);
+                console.log(`CONTROLLER ERROR IN FIND BY ID: ${err}`);
                 res.status(422).json(err);
             })
         // } else {

@@ -47,9 +47,16 @@ class App extends Component {
         AuthService.setToken(authResult.idToken); // static method
         AuthService.setProfile(profile); // static method
         loginSuccess(profile);
-        //console.log("Profile : ", profile);
-        history.push({ pathname: '/admin/dashboard' });
+        profile.sub ? this.props.fetchUserDetails(profile.sub) : null
+        
+        setTimeout(() => {
+        if(this.props.user.role ==='patient'){
+          history.push({ pathname: '/patient' });
+        }else{
+          history.push({ pathname: '/admin/dashboard' });
+        }
         AuthService.lock.hide();
+        }, 500);
       });
     });
     // Add callback for lock's `authorization_error` event
@@ -62,10 +69,8 @@ class App extends Component {
   componentDidMount(){
     const {sub} = this.props.auth.profile
     {sub ? this.props.fetchUserDetails(sub) : null}
-    
   }
   render() {
-    console.log("app.js, props : " , this.props);
     return (
         <div>
           <Routes {...this.props} />

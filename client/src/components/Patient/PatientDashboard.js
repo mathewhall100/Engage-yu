@@ -32,7 +32,6 @@ const styles = theme => ({
 class PatientDashboard extends Component {  
     
     componentDidMount() {
-        console.log("here in pat dash");
     }
 
     render () {
@@ -71,9 +70,8 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({}, dispatch);
 }
 function mapStatToProps(state){
-    console.log("SK : ", state);
     return {
-        auth: state.auth,
+        state
     }
 }
 PatientDashboard.propTypes = {
