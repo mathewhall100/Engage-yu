@@ -76,7 +76,7 @@ class Console extends Component {
       };
     
       render() {
-        const { classes, theme } = this.props;
+        const { classes } = this.props;
     
         const drawer = (
           <div style={{fontSize: 11}}>

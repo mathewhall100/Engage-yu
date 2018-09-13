@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ToolBar from '@material-ui/core/AppBar';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -9,15 +8,10 @@ import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Hidden from '@material-ui/core/Hidden';
-import Divider from '@material-ui/core/Divider';
 import MenuIcon from '@material-ui/icons/Menu';
-import Button from '@material-ui/core/Button';
-import DefaultQuestion from '../SKBranch/defaultQuestion';
-import CustomQuestions from '../SKBranch/customQuestions';
 import { fetchQuestions } from '../../actions/PatientAction';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
@@ -26,7 +20,6 @@ import _ from 'lodash';
 
 
 import { patientListItems, patientDashboardListItem } from "./ConsoleMenuListItems"
-import AfterSurvey from './AfterSurvey';
 import { Drawer } from '@material-ui/core';
 
 const drawerWidth = 300;
@@ -153,7 +146,7 @@ class PatientConsole extends Component {
         }
     }
     render() {
-        const { classes, theme, auth, } = this.props;
+        const { classes,  auth, } = this.props;
         const drawer = (
             <div style={{fontSize : 11}}>
                 <div className={classes.toolbar} />

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import { connect } from 'react-redux';
-import { Route, Switch, Link} from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 
 import Dashboard from './Dashboard';
 import EnrollPatient from './EnrollPatient';
@@ -10,7 +9,6 @@ import NotFound from './NotFound';
 class ConsoleRoutes extends Component { 
 
     render(){
-        const {authenticated} = this.props
         return(
             <div className="App">
 

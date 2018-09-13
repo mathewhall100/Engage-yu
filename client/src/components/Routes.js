@@ -25,7 +25,6 @@ class Routes extends Component {
                      <Route path="/notfound" component={NotFound} />
                     <Route component={NotFound} />
                 </Switch>
-
             </div>
         );
     }

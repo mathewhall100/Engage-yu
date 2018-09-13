@@ -1,7 +1,37 @@
 import axios from 'axios';
-import { QUESTIONS, PATIENT_DETAILS } from './types';
+import { QUESTIONS, PATIENT_DETAILS, PATIENT_DATA, PATIENT_DATA_FAIL, PATIENT_PROVIDER_INFO } from './types';
 
-
+export const fetchPatientData = () => {
+    const user = localStorage.getItem('userID') ? localStorage.getItem('userID') : '';
+    const url = `/api/patient_data/${user}`
+    const request = axios.get(url);
+    return(dispatch) => {
+        console.log("fetching patient data : " );
+        if(user){
+            console.log("user is : ", user);
+            request.then( res => {
+                console.log("patient data : ", res.data[0]);
+            dispatch({
+                type :  PATIENT_DATA,
+                payload : {
+                    patientData : res.data[0],
+                    episodes : res.data[0].episodes,
+                    currentEpisode : res.data[0].episodes[res.data[0].episodes.length-1]
+                }
+            })
+        }, err => {dispatch({
+            type: PATIENT_DATA_FAIL,
+            payload: 'no user found'
+        })})
+        }else{
+            dispatch({
+                type: PATIENT_DATA_FAIL,
+                payload: 'no user found'
+            })
+        }
+        
+    }
+}
 export const fetchQuestions = () => {
     const url = `/api/question_default`
     const request = axios.get(url);
@@ -45,4 +75,28 @@ export const fetchPatientDetails = (id) => {
             )
         )
     }
+}
+
+export const fetchProviderInfo = () => {
+    console.log("fetching provider info")
+    const providerID = localStorage.getItem('patientProviderID') ? localStorage.getItem('patientProviderID') : ''; 
+
+    const url = `/api/provider/${providerID}`;
+    const request = axios.get(url);
+    return (dispatch) => {
+        request.then( res => {
+            console.log("Fetched provider info : ", res.data)
+            dispatch({
+                type: PATIENT_PROVIDER_INFO,
+                payload : {
+                    physicianInfo : res.data,
+                                    
+                }
+            })
+        })
+    }
+}
+
+export const submitForm = () => {
+    console.log("submitForm ")
 }

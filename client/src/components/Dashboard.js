@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import {  Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import { selectConsoleTitle } from '../actions/index'
 import DashboardBanner from './DashboardBanner';
-import DashboardTable from './DashboardTable';
 
 import PatientList from '../containers/DashboardDisplay';
 import { fetchPatients } from '../actions/index'

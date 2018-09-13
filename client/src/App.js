@@ -16,7 +16,6 @@ const mapDispatchToProps = dispatch => ({
   getUserID :  () => getUserID(),
   getUserRole : () => getUserRole(),
 });
-let userProfile ;
 
 class App extends Component {
   static propTypes = {
@@ -30,20 +29,20 @@ class App extends Component {
     getUserRole : PropTypes.func.isRequired, 
   };
   componentDidMount(){
-    //console.log("fetching user details..." , this.props);
-    fetchUserDetails(this.props.auth.profile.sub);
+    console.log("fetching user details..." , this.props);
+    const {sub} = this.props.auth.profile
+    {sub ? this.props.fetchUserDetails(sub) : null}
+    
   }
   componentWillMount() {
     //console.log("this.props in app js file : ", this.props);
     const { history, loginError, loginSuccess } = this.props;
-    let userProfile;
     // Add callback for lock's `authenticated` event
     AuthService.lock.on('authenticated', authResult => {
       AuthService.lock.getUserInfo(authResult.accessToken, (error, profile) => {
         if (error) {
           return loginError(error);
         }
-        userProfile = profile;
         AuthService.setToken(authResult.idToken); // static method
         AuthService.setProfile(profile); // static method
         loginSuccess(profile);
@@ -52,8 +51,10 @@ class App extends Component {
         setTimeout(() => {
         if(this.props.user.role ==='patient'){
           history.push({ pathname: '/patient' });
-        }else{
+        }else if(this.props.user.role === 'provider'){
           history.push({ pathname: '/admin/dashboard' });
+        }else {
+          history.push({ pathname: '/' });
         }
         AuthService.lock.hide();
         }, 500);
@@ -67,8 +68,7 @@ class App extends Component {
   }
 
   componentDidMount(){
-    const {sub} = this.props.auth.profile
-    {sub ? this.props.fetchUserDetails(sub) : null}
+    
   }
   render() {
     return (

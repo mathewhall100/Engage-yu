@@ -1,4 +1,4 @@
-import { DEFAULT_QUESTION, CUSTOM_QUESTIONS, QUESTIONS, PATIENT_DETAILS } from '../actions/types';
+import { DEFAULT_QUESTION, CUSTOM_QUESTIONS, QUESTIONS, PATIENT_DETAILS, PATIENT_DATA, PATIENT_PROVIDER_INFO } from '../actions/types';
 
 const INITIAL_STATE = {
     defaultQuestion : [],
@@ -7,7 +7,7 @@ const INITIAL_STATE = {
 
 
 export default (state = INITIAL_STATE, action) => {
-    //console.log("Patient reducer : " , action);
+    console.log("Patient reducer : " , action);
 
     switch (action.type) {
         case QUESTIONS : 
@@ -20,10 +20,13 @@ export default (state = INITIAL_STATE, action) => {
         case CUSTOM_QUESTIONS:
             return { customQuestions : action.payload.customQuestions };
         case PATIENT_DETAILS:
-            return { 
-                patientInfo: action.payload.patientInfo ,
-                patientData : action.payload.patientData
-            }
+            return {...state, patientInfo: action.payload.patientInfo, userInfo : action.payload.userInfo, patientData : action.payload.patientData }
+        case PATIENT_DATA :
+        console.log("Patient reducer, patient data : " , action.payload);
+            return  { ...state, patientData : action.payload.patientData, episodes : action.payload.patientData, currentEpisode : action.payload.currentEpisode }
+        case PATIENT_PROVIDER_INFO :
+        console.log("Patient reducer, physician info" , action.payload);
+            return { ...state, physicianInfo : action.payload.physicianInfo }
         default:
             return state;
     }

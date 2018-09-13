@@ -14,5 +14,6 @@ export default combineReducers({
     router : routerReducer,
     user: UserReducer,
     patients: DashboardReducer,
-    consoleTitle: ConsoleTitleReducer
+    consoleTitle: ConsoleTitleReducer,
+    patientData : PatientReducer,
 });

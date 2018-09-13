@@ -1,18 +1,20 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux';
-import { Route, Switch, Link} from "react-router-dom";
-
+import { Route, Switch } from "react-router-dom";
+import { bindActionCreators } from 'redux';
 import Dashboard from './PatientDashboard';
 import PatientReport from './PatientReport';
 import PhysicianInfo from './PhysicianInfo';
 import AfterSurvey from './AfterSurvey';
 import NotFound from '../NotFound';
-
+import { fetchPatientData } from '../../actions/PatientAction';
 
 class PatientConsoleRoutes extends Component { 
+    componentDidMount() {
+        this.props.fetchPatientData();
+    }
 
     render(){
-        const {authenticated} = this.props
         return(
             <div className="App">
 
@@ -33,6 +35,10 @@ class PatientConsoleRoutes extends Component {
     }
     
 }
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({
+        fetchPatientData
+    }, dispatch);
+}
 
-
-export default (PatientConsoleRoutes);
+export default connect(null, mapDispatchToProps) (PatientConsoleRoutes)
