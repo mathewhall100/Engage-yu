@@ -8,11 +8,11 @@ module.exports = {
     // To be sent req.params.id with _id of patient to be fetched
     // Returns json of patient episodes
     findById: function(req, res) {
-        console.log("Patient_data controller called to 'findById'");
+        console.log("Patient_data controller called to 'findById'", req.params.id);
         //console.log(`Requester:  ${req.user}`);
         //if(req.user){
             db.Patient_data
-            .findById(req.params.id, {"episodes": 1})
+            .findById(req.params.id)
             .then(patient => {
                 console.log("RESULT:", patient);
                 res.json(patient)

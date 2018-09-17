@@ -19,6 +19,7 @@
   "dependencies": {
     "@material-ui/core": "^3.0.1",
     "@material-ui/icons": "^2.0.3",
+    "@material-ui/lab": "^3.0.0-alpha.15",
     "auth0-js": "^9.7.3",
     "auth0-lock": "^11.8.1",
     "axios": "^0.18.0",

@@ -23,6 +23,11 @@ export default {
         return axios.get("/api/patient_info/find/"+id);
     },
 
+    findFullById:function(id) {
+        console.log("Axios call made to '/api/patient_info' to 'findFullById'", id);
+        return axios.get("/api/patient_info/findFull/"+id);
+    },
+
     findBySearchterm: function(searchterm) {
         console.log("Axios call made to '/api/patient_info' to 'findBySearchterm' ", searchterm );
         return axios.post("/api/patient_info/search", searchterm);

@@ -9,7 +9,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
 
-class EnrollFormFailedDialog extends React.Component {
+class SurveySaveFailedDialog extends React.Component {
   state = {
     open: true
   };
@@ -36,7 +36,7 @@ class EnrollFormFailedDialog extends React.Component {
             <DialogTitle id="responsive-dialog-title">Failed!</DialogTitle>
 
             <DialogContent>
-                <p>A problem was encountered and new patient {this.props.name} has not been enrolled.</p>
+                <p>A problem was encountered and the new dairy was not created.</p>
                 
                 <p>Click 'Return' to review form entries and try again, 'Cancel' to return to the dashboard</p>
             </DialogContent>
@@ -56,8 +56,8 @@ class EnrollFormFailedDialog extends React.Component {
   }
 }
 
-EnrollFormFailedDialog.propTypes = {
+SurveySaveFailedDialog.propTypes = {
   fullScreen: PropTypes.bool.isRequired,
 };
 
-export default withMobileDialog()(EnrollFormFailedDialog);
+export default withMobileDialog()(SurveySaveFailedDialog);

@@ -9,7 +9,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
 
-class EnrollFormFailedDialog extends React.Component {
+class SurveySaveSuccessDialog extends React.Component {
   state = {
     open: true
   };
@@ -33,20 +33,20 @@ class EnrollFormFailedDialog extends React.Component {
           aria-labelledby="responsive-dialog-title"
         >
 
-            <DialogTitle id="responsive-dialog-title">Failed!</DialogTitle>
+            <DialogTitle id="responsive-dialog-title">Success!</DialogTitle>
 
             <DialogContent>
-                <p>A problem was encountered and new patient {this.props.name} has not been enrolled.</p>
-                
-                <p>Click 'Return' to review form entries and try again, 'Cancel' to return to the dashboard</p>
+                <p>New diary card successfully created for {this.props.name}.</p>
+                <p>This entry will appear in the active diary cards las 'pending' and become 'active' once the patient logs in and starts to enter their symptom information.</p>
+                <p>You can edit this diary card by selcting it from the lst of diary cards on the dashboard. </p>               
+
+                <br /><br />
+
             </DialogContent>
 
             <DialogActions>
                 <Button color="primary" autoFocus component={Link} to='/admin/dashboard'>
-                Try again
-                </Button>
-                <Button color="primary" component={Link} to='/admin/dashboard' >
-                Cancel
+                Done
                 </Button>
             </DialogActions>
 
@@ -56,8 +56,8 @@ class EnrollFormFailedDialog extends React.Component {
   }
 }
 
-EnrollFormFailedDialog.propTypes = {
+SurveySaveSuccessDialog.propTypes = {
   fullScreen: PropTypes.bool.isRequired,
 };
 
-export default withMobileDialog()(EnrollFormFailedDialog);
+export default withMobileDialog()(SurveySaveSuccessDialog);

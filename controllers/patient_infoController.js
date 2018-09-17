@@ -92,8 +92,31 @@ module.exports = {
         //if(req.user){
             db.Patient_info
             .findById(req.params.id)
-            .populate("enrolled_by", "name")
-            .populate("primary_provider_ref", "name")
+            .populate("enrolled_by_ref", "firstname lastname")
+            .populate("primary_provider_ref", "firstname lastname")
+            .then(patient => {
+                console.log("RESULT:", patient);
+                res.json(patient)
+            })
+            .catch(err => {
+                console.log(`CONTROLLER ERROR: ${err}`);
+                res.status(422).json(err);
+            })
+        // }else{
+        //     res.status(422).json('You do not have proper credential to perform this action.')
+        // }
+    },
+
+    // Fetch FULL patienrt record (info+ data) by patient  id 
+    // To be sent req.params.id with _id of patient to be fetched
+    // Returns json of patient info + patient data
+    findFullById: function(req, res) {
+        console.log("Patient_info controller called to 'findFullById'");
+        //console.log(`Requester:  ${req.user}`);
+        //if(req.user){
+            db.Patient_info
+            .findById(req.params.id)
+            .populate("patient_data_ref")
             .then(patient => {
                 console.log("RESULT:", patient);
                 res.json(patient)

@@ -21,6 +21,11 @@ router
     .route("/find/:id")
     .get(patient_infoController.findById)
 
+// Matches with "/api/patient_info/:id"
+router
+    .route("/findFull/:id")
+    .get(patient_infoController.findFullById)
+
 // Matches with "/api/patient_info/search" 
 router 
     .route("/search")
