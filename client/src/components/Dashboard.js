@@ -27,14 +27,13 @@ class Dashboard extends Component {
 
         return (
                 <div>
-                    {/* <button onClick={() => this.props.selectConsoleTitle({title: "Dashboard"})}>Button</button> */}
+
                     <DashboardBanner />
 
                     <br />
 
-                    <PatientList />
-                    {/* <DashboardTable /> */}
-
+                    <PatientList />  {/* <DashboardTable /> */}
+                    
                 </div >
         );
     }
@@ -43,10 +42,9 @@ class Dashboard extends Component {
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({ selectConsoleTitle, fetchPatients }, dispatch);
 }
-function mapStatToProps({auth}){
+function mapStateToProps({auth}){
     console.log(auth);
     return (auth);
 }
-// export default connect(null,null,null, {pure:false})(Dashboard);
 
-export default connect(mapStatToProps, mapDispatchToProps) (Dashboard)
+export default connect(mapStateToProps, mapDispatchToProps) (Dashboard)

@@ -13,7 +13,7 @@ class FormText extends Component {
             <div>
                 <TextField
                     label={field.label}
-                        {...field.input}    
+                    {...field.input}    
                     margin="normal"
                     style={{width: "250px"}}
                 />

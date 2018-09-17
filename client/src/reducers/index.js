@@ -7,6 +7,8 @@ import PatientReducer from './PatientReducer';
 import UserReducer from './UserReducer';
 import DashboardReducer from './DashboardReducer';
 import ConsoleTitleReducer from './ConsoleTitleReducer';
+import SurveyQuestionsReducer from './SurveyQuestionsReducer';
+import SurveyPatientReducer from './SurveyPatientReducer';
 
 export default combineReducers({
     form: formReducer,
@@ -14,5 +16,7 @@ export default combineReducers({
     router : routerReducer,
     user: UserReducer,
     patients: DashboardReducer,
-    consoleTitle: ConsoleTitleReducer
+    consoleTitle: ConsoleTitleReducer,
+    surveyQuestions: SurveyQuestionsReducer,
+    surveyPatient: SurveyPatientReducer
 });
