@@ -13,16 +13,16 @@ const activeSchema = new Schema({
     patient_data_id:  {type: String, required: [true, "No patient-data_id supplied"]},
     episode_number: { type: Number, required: [true, "No episode number supplied"] },
     episode_id: { type: String, required: [true, "No episode id supplied"] },
+    date_created: {type: Date, default: new Date()},
 
     requesting_provider_ref: { type: Schema.Types.ObjectId, ref: "Provider", required: [true, "No requesting provider Id supplied"] },
     requesting_provider_id: {type: String, required: [true, "No requesting provider id supplied"]},
-    requesting_provider_firstname: { type: String, required: [true, "No requesting provider firstname supplied"] },
-    requesting_provider_lastname: { type: String, required: [true, "No requesting provider lastname supplied"] },
+    requesting_provider_name: { type: String, required: [true, "No requesting provider firstname supplied"] },
 
     primary_provider_ref: { type: Schema.Types.ObjectId, ref: "Provider", required: [true, "No requesting provider Id supplied"] },
     primary_provider_id: { type: String, required: [true, "No primary provider Id supplied"] },
-    primary_provider_firstname: { type: String, required: [true, "No primary provider firstname supplied"] },
-    primary_provider_lastname: { type: String, required: [true, "No primary provider lastname supplied"] },
+    primary_provider_name: { type: String, required: [true, "No primary provider firstname supplied"] },
+
     
     provider_group_ref: { type: Schema.Types.ObjectId, ref: "Provider_group" },
     provider_group_id: String,

@@ -61,8 +61,14 @@ module.exports = {
                 { $push: {episodes: req.body} }
             )
             .then(result => {
-                console.log("RESULT:", result);
-                res.json(result)
+                //console.log("RESULT:", result);
+                //res.json(result)
+                db.Patient_data
+                     .findById(req.params.id)
+                     .then(patient => {
+                    console.log("RESULT:", patient);
+                    res.json(patient.episodes[patient.episodes.length -1])
+                     })
             })
             .catch(err => {
                 console.log(`CONTROLLER ERROR: ${err}`);

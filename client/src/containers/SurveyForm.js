@@ -30,6 +30,7 @@ import Panel from '../components/Panels/ExpansionPanel.js';
 
 import { fetchSurveyQuestions, fetchSurveyPatientDetails } from '../actions/index.js';
 import patient_dataAPI from "../utils/patient_data.js";
+import activeAPI from "../utils/active.js";
 import SurveySaveSuccessDialog from '../components/Dialogs/SurveySaveSuccessDialog.js'
 import SurveySaveFailedDialog from '../components/Dialogs/SurveySaveFailedDialog.js'
 import Patient_dataRouteTests from '../components/MHBranch/patient_dataTests.js';
@@ -269,7 +270,7 @@ class SurveyForm extends Component {
                             valid: false,
                             day: day,
                             time: timepoint,
-                            scheduled_datetime: moment(datepoint).toISOString(true), 
+                            scheduled_datetime: moment(datepoint), 
                         }
                     )
                 ) : null
@@ -324,13 +325,13 @@ class SurveyForm extends Component {
         const records = this.createRecordsArray(startDate, startTime, values.duration, values.frequency, entriesPerDay);
         const reportTo = [this.props.patientInfo.primary_provider_id]
 
-        const obj = {
+        const surveyObj = {
             episode_number: episodeNumber,
             requesting_provider_ref: '5b844946d8dc5ce848cd28a4',
             requesting_provider_id: '5b844946d8dc5ce848cd28a4',
-            rerquesting_provider_firstname: "Mathew",
+            requesting_provider_firstname: "Mathew",
             requesting_provider_lastname: "Hall",
-            date_requested: moment(),
+            date_requested: moment().format('YYYY-MM-DDTHH:mm:ss.SSSZ'),
 
             start_date: startDate,
             end_date: endDate,
@@ -352,19 +353,55 @@ class SurveyForm extends Component {
             report_to: reportTo
         };
         
-        console.log("obj ", obj)
-        console.log("id: ", this.state.patientDataId)
+        //onsole.log("obj ", surveyObj)
+        //console.log("id: ", this.state.patientDataId)
 
-        patient_dataAPI.newEpisode(this.state.patientDataId, obj)
+        patient_dataAPI.newEpisode(this.state.patientDataId, surveyObj)
         .then(res => {
-            //console.log("res.data: " + JSON.stringify(res.data, null, 2 ))
+            //console.log("res.data: ", res.data)
 
-            // +++++++++++++++++++++++++++
-            // create a new active here
-            //+++++++++++++++++++++++++++
+            const activeObj = {
 
+                patient_info_ref: this.props.patientInfo._id,
+                patient_info_id: this.props.patientInfo._id,
+                firstname: this.props.patientInfo.firstname,
+                lastname: this.props.patientInfo.lastname,
+                hospital_id: this.props.patientInfo.hospital_id,
+                patient_data_ref: this.props.patientInfo.patient_data_id,
+                patient_data_id:  this.props.patientInfo.patient_data_id,
+                episode_number: episodeNumber,
+                episode_id: res.data._id,
+                date_created: moment(),
+            
+                requesting_provider_ref: '5b844946d8dc5ce848cd28a4',
+                requesting_provider_id: '5b844946d8dc5ce848cd28a4',
+                requesting_provider_name: "Mathew Hall",
 
-            this.setState ({surveySaveSuccess: true})   // save success dialog
+                primary_provider_ref: this.props.patientInfo.primary_provider_ref._id,
+                primary_provider_id: this.props.patientInfo.primary_provider_id,
+                primary_provider_name: this.props.patientInfo.primary_provider_name,
+                
+                provider_group_ref: this.props.patientInfo.provider_group_ref,
+                provider_group_id: this.props.patientInfo.provider_group_id,
+                provider_group_name: this.props.patientInfo.provider_group_name,
+            
+                start_date: startDate,
+                start_time: startTime,
+                end_date: endDate,
+                end_time: endTime,
+                num_entries: 0,
+            
+                status: "pending"
+            };
+            
+            //console.log("activeobj: ", activeObj)
+
+            activeAPI.create(activeObj)
+            .then(res => {
+                console.log("res.data: ", res.data)
+
+                this.setState ({surveySaveSuccess: true})   // save success dialog
+            })
         })
         .catch(err => {
             console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
@@ -754,8 +791,9 @@ class SurveyForm extends Component {
                             <Button type="submit" disabled={submitting || (sliderValue1 === 0 && sliderValue2 === 20)} className={classes.submitBtn}>Create diary card</Button>
                             <Link to='/admin' style={{textDecoration: "none"}}><Button className={classes.cancelBtn}>Cancel</Button></Link>
 
-                            {!this.state.openCustomQuestions && <Button className={classes.openLink} onClick={() => {this.openCustomQuestions(true)}}><u>Custom questions</u></Button>} 
+                            
                             {!this.state.openAdvancedSettings && <Button className={classes.openLink} onClick={() => {this.openAdvancedSettings(true)}}><u>Advanced settings</u></Button>}
+                            {!this.state.openCustomQuestions && <Button className={classes.openLink} onClick={() => {this.openCustomQuestions(true)}}><u>Custom questions</u></Button>} 
                         </Grid> 
                         
                     </Grid>

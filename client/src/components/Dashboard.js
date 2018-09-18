@@ -5,10 +5,9 @@ import { bindActionCreators } from 'redux';
 
 import { selectConsoleTitle } from '../actions/index'
 import DashboardBanner from './DashboardBanner';
-import DashboardTable from './DashboardTable';
+import DashboardTable from '../containers/DashboardTable';
 
-import PatientList from '../containers/DashboardDisplay';
-import { fetchPatients } from '../actions/index'
+import { fetchActiveSurveys } from '../actions/index'
 
 
 class Dashboard extends Component {  
@@ -16,7 +15,7 @@ class Dashboard extends Component {
     componentDidMount() {
 
         this.props.selectConsoleTitle({title: "Dashboard"});
-        this.props.fetchPatients();
+        this.props.fetchActiveSurveys();
     }
 
     render () {
@@ -32,7 +31,7 @@ class Dashboard extends Component {
 
                     <br />
 
-                    <PatientList />  {/* <DashboardTable /> */}
+                    <DashboardTable /> 
                     
                 </div >
         );
@@ -40,7 +39,7 @@ class Dashboard extends Component {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle, fetchPatients }, dispatch);
+    return bindActionCreators({ selectConsoleTitle, fetchActiveSurveys }, dispatch);
 }
 function mapStateToProps({auth}){
     console.log(auth);

@@ -9,6 +9,7 @@ import DashboardReducer from './DashboardReducer';
 import ConsoleTitleReducer from './ConsoleTitleReducer';
 import SurveyQuestionsReducer from './SurveyQuestionsReducer';
 import SurveyPatientReducer from './SurveyPatientReducer';
+import ActiveSurveysReducer from './ActiveSurveysReducer';
 
 export default combineReducers({
     form: formReducer,
@@ -18,5 +19,6 @@ export default combineReducers({
     patients: DashboardReducer,
     consoleTitle: ConsoleTitleReducer,
     surveyQuestions: SurveyQuestionsReducer,
-    surveyPatient: SurveyPatientReducer
+    surveyPatient: SurveyPatientReducer,
+    activeSurveys: ActiveSurveysReducer
 });
