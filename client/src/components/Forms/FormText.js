@@ -8,6 +8,7 @@ import DoneIcon from '@material-ui/icons/Done';
 class FormText extends Component {  
 
     renderTextField(field) {
+        console.log("text field : ", field);
     const {meta: {touched, error}} = field;
         return (
             <div>
@@ -15,6 +16,7 @@ class FormText extends Component {
                     label={field.label}
                         {...field.input}    
                     margin="normal"
+                    multiline={field.mutliline ===true ? "true" : "false"}
                     style={{width: "250px"}}
                 />
                 
@@ -36,6 +38,7 @@ class FormText extends Component {
             <Field 
                 name={this.props.name}
                 label={this.props.label}
+                multiline={this.props.multiline}
                 component={this.renderTextField}
                 autoComplete="off"
             />

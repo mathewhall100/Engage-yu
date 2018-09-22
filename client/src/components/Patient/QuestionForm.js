@@ -7,12 +7,10 @@ import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 
-import FormText from '../Forms/FormText'
-import FormTextFocused from '../Forms/FormTextFocused'
-import FormTextPassword from '../Forms/FormTextPassword'
-import FormSelect from '../Forms/FormSelect'
-import FormRadio from '../Forms/FormRadio'
-
+import FormText from '../Forms/FormText';
+import FormRadio from '../Forms/FormRadio';
+import FormCheckBoxList from '../Forms/FormCheckboxList';
+import ChkList from '../Forms/FormChkList';
 import {submitForm} from '../../actions/PatientAction';
 const styles = theme => ({
     submitBtn: {
@@ -59,9 +57,17 @@ class QuestionForm extends Component {
                 radioItems.push(objRadioItems);
             })
             return(
-                this.renderRadioButtons(radioItems, index, item.question, item.hints)
-            )         
-            
+                <div>
+                    <FormCheckBoxList
+                        hints={item.hints}
+                        items={radioItems}
+                        name={item.question}
+                        
+                    />
+                    <hr />
+                </div>
+                
+            )
         });
     }
     renderRadioButtons = (objQuestion, index, question, hints) => {
@@ -73,9 +79,19 @@ class QuestionForm extends Component {
                     items={objQuestion}
                 />
             </div>
-            
         );
-            
+    }
+    renderCheckboxList = (objQuestion, index, question, hints) => {
+        return (
+            <div>
+                <label>{question}</label>
+                <FormRadio
+                    name={"question" + index}
+                    items={objQuestion}
+                />
+            </div>
+
+        );
     }
     render(){
         const { handleSubmit, classes, pristine, submitting } = this.props;
@@ -85,12 +101,18 @@ class QuestionForm extends Component {
             <div>
                 <Card style={{padding: '20px'}}>
                     <form autoComplete='off' onSubmit={handleSubmit(this.submit.bind(this))}>
-                        <Grid container spacing={24} >                            
-                           <Grid item xs={24}>
+                        <Grid container spacing={12} >                            
+                           <Grid item xs={12}>
                                  {this.props.arrQuestions ? this.renderQuestion() : null}
                            </Grid>
+                           <Grid item>
+                                <FormText name='comment' row={"4"} multiline={true} label='additional comment' />
+                           </Grid>
+                           <Grid>
+                             
+                           </Grid>
                            
-                            <Grid item xs={4}>
+                            <Grid item xs={12}>
                                 <Button type="submit" disabled={submitting || pristine} className={classes.submitBtn}>Submit</Button>
                             </Grid>
                             <Grid item xs={8}></Grid>

@@ -38,6 +38,14 @@ export const patientListItems = (
                 <ListItemText primary='Survey' />
             </ListItem>
         </Link>
+        <Link to='/patient/history' style={{ textDecoration: 'none', display: 'block' }}>
+            <ListItem button>
+                <ListItemIcon>
+                    <AssignmentIcon />
+                </ListItemIcon>
+                <ListItemText primary='History' />
+            </ListItem>
+        </Link>
         <Link to='/patient/report' style={{ textDecoration: 'none', display: 'block' }}>
             <ListItem button>
                 <ListItemIcon>

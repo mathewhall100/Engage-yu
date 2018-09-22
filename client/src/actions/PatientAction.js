@@ -33,7 +33,8 @@ export const fetchPatientData = () => {
     }
 }
 export const fetchQuestions = () => {
-    const url = `/api/question_default`
+
+     const url = `/api/question_default`
     const request = axios.get(url);
     let defaultQ = [];
     return(dispatch) => {
@@ -47,7 +48,7 @@ export const fetchQuestions = () => {
                 })
             })
         )
-    }
+    } 
 }
 
 export const fetchPatientDetails = (id) => {

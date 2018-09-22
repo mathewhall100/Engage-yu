@@ -23,7 +23,7 @@ export default (state = INITIAL_STATE, action) => {
             return {...state, patientInfo: action.payload.patientInfo, userInfo : action.payload.userInfo, patientData : action.payload.patientData }
         case PATIENT_DATA :
         console.log("Patient reducer, patient data : " , action.payload);
-            return  { ...state, patientData : action.payload.patientData, episodes : action.payload.patientData, currentEpisode : action.payload.currentEpisode }
+            return  {...state, ...action.payload }
         case PATIENT_PROVIDER_INFO :
         console.log("Patient reducer, physician info" , action.payload);
             return { ...state, physicianInfo : action.payload.physicianInfo }
