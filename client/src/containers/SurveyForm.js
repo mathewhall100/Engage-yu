@@ -186,7 +186,7 @@ class SurveyForm extends Component {
 
     componentDidMount() {
             this.props.fetchSurveyQuestions();
-            this.props.fetchSurveyPatientDetails("5b844945d8dc5ce848cd28a3");
+            this.props.fetchSurveyPatientDetails("5ba3f0accab44e143054e9d4");
     }
 
     componentWillReceiveProps(nextProps) {
@@ -389,6 +389,8 @@ class SurveyForm extends Component {
                 start_time: startTime,
                 end_date: endDate,
                 end_time: endTime,
+                num_records: numRecords,
+                entries_per_day: entriesPerDay,
                 num_entries: 0,
             
                 status: "pending"
@@ -476,11 +478,6 @@ class SurveyForm extends Component {
     // Render component
     render () {
         
-        const { authenticated } = this.props;
-        //console.log("Props : ", this.props);
-        //if(authenticated ===  0 || authenticated === 2) return <Redirect to='/' /> 
-        //if(!authenticated ) {return <Redirect to='/' />};
-
         const { handleSubmit, classes, pristine, submitting } = this.props;
         const { sliderValue1, sliderValue2, sliderTouched } = this.state;
         const { rowsPerPage, page, numSelected, selectedQuestions, defaultId  } = this.state;
@@ -585,7 +582,7 @@ class SurveyForm extends Component {
                                         <br />
 
                                         {this.props.defaultQuestion.map(question =>
-                                            <div className={classes.defaultQuestionContainer}>
+                                            <div key={question._id} className={classes.defaultQuestionContainer}>
                                                 <Panel 
                                                     question = {question.question}
                                                     answers = {question.answers}
@@ -811,7 +808,6 @@ function validate(values) {
     const errors = {};
 
     // validate inputs from 'values'
-    
     if (values.startDate === "date" && !values.datePick) {
         errors.datePick = "Please enter a valid date";   // message to be displayed if invalid
     }

@@ -55,11 +55,8 @@ class TopBar extends Component {
     }
 
     render () {
-        const { isAuthenticated, profile } = this.props.auth;
         
-        // if(authenticated ===  0 || authenticated === 2) return <Redirect to='/' /> 
-        //if(!isAuthenticated ) {return <Redirect to='/' />};
-
+        const { isAuthenticated, profile } = this.props.auth;
         const { classes } = this.props;
 
         return (
@@ -100,9 +97,9 @@ class TopBar extends Component {
 
 TopBar.propTypes = {
     classes: PropTypes.object.isRequired,
-    history: PropTypes.shape({
-        push: PropTypes.func.isRequired
-    }).isRequired,
+    // history: PropTypes.shape({
+    //     push: PropTypes.func.isRequired
+    // }).isRequired,
     auth: PropTypes.shape({
         isAuthenticated: PropTypes.bool.isRequired,
         profile: PropTypes.object,

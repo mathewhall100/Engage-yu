@@ -2,12 +2,14 @@ import axios from 'axios';
 import { USER_PROFILE } from './types';
 
 export const fetchUserDetails = (sub) => {
+    console.log("Sub : ", sub);
     const url = `/api/user/${sub.toString()}`;
     const request = axios.get(url);
     let userInfo, userRole, userID;
     return (dispatch) => {
     request.then(res => {
         userInfo = res.data[0];
+        console.log("User info : " , res.data);
         localStorage.setItem('role', userInfo.role);
         localStorage.setItem('userID', userInfo.id);
         localStorage.setItem('sub', userInfo.sub);

@@ -20,10 +20,6 @@ class Dashboard extends Component {
 
     render () {
         
-        const { isAuthenticated } = this.props;
-        console.log("Props : ", this.props);
-        if (!isAuthenticated) return <Redirect to='/' />
-
         return (
                 <div>
 

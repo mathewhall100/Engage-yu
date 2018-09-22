@@ -22,18 +22,20 @@ const activeSchema = new Schema({
     primary_provider_ref: { type: Schema.Types.ObjectId, ref: "Provider", required: [true, "No requesting provider Id supplied"] },
     primary_provider_id: { type: String, required: [true, "No primary provider Id supplied"] },
     primary_provider_name: { type: String, required: [true, "No primary provider firstname supplied"] },
-
-    
+   
     provider_group_ref: { type: Schema.Types.ObjectId, ref: "Provider_group" },
     provider_group_id: String,
     provider_group_name: String,
 
-    start_date: {type: Date, required: [true, "No start date supplied"] },
-    start_time: {type: String, required: [true, "No end time supplied"] },
-    end_date: {type: Date, required: [true, "No end date supplied"] },
-    end_time: { type: String, required: [true, "No end time supplied"] },
+    start_date: {type: Date, required: [true, "No start date supplied"]},
+    start_time: {type: String, required: [true, "No end time supplied"]},
+    end_date: {type: Date, required: [true, "No end date supplied"]},
+    end_time: {type: String, required: [true, "No end time supplied"]},
+    num_records: {type: Number, required: [true, "No number of records supplied"]},
+    entries_per_day: {type: Number, required: [true, "No number of entries per day supplied"]},
     last_entry: Date,
     num_entries: {type: Number, required: [true, 'No number of entries']},
+    
 
     status: {type: String, enum: ["pending", "active", "cancelled", "awaiting review", "reviewed", "actioned", "archived", ], default: "pending"},
     

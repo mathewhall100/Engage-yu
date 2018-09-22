@@ -11,7 +11,7 @@ import NotFound from './NotFound';
 class ConsoleRoutes extends Component { 
 
     render(){
-        const {authenticated} = this.props
+
         return(
             <div className="App">
 
