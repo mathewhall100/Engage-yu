@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 //import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import moment from 'moment';
 
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -22,17 +23,37 @@ import Tooltip from '@material-ui/core/Tooltip';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
+import orderBy from 'lodash/orderBy'
 
-// import PatientList from '../containers/DashboardDisplay';
-// import { fetchPatients } from '../actions';
 
-let counter = 0;
-function createData(name, calories, fat, carbs, protein) {
-  counter += 1;
-  return { id: counter, name, calories, fat, carbs, protein };
+
+function createData(data) {
+  let counter = 0;
+  let newData = [];
+  let newDatum = {};
+
+  data.map(datum => {
+    counter += 1;
+    let newDatum = { 
+      id: counter, 
+      _id: datum._id,
+      name: `${datum.firstname} ${datum.lastname}`, 
+      number: datum.hospital_id, 
+      start: datum.start_date, 
+      end: datum.end_date, 
+      timeframe: `${datum.start_time.slice(0,2)}:${datum.start_time.slice(-2)} - ${datum.end_time.slice(0,2)}:${datum.end_time.slice(-2)}`, 
+      status: datum.status,
+      requester: datum.requesting_provider_name
+    };
+    newData.push(newDatum)
+  })
+  console.log("newData: ", newData)
+  return newData;
 }
 
+
 function desc(a, b, orderBy) {
+  console.log("a: ", a, " b: ", b)
   if (b[orderBy] < a[orderBy]) {
     return -1;
   }
@@ -42,18 +63,35 @@ function desc(a, b, orderBy) {
   return 0;
 }
 
+function stableSort(array, cmp) {
+  console.log("array: ", array, " cmp: " , cmp )
+
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  stabilizedThis.sort((a, b) => {
+    const order = cmp(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+  return stabilizedThis.map(el => el[0]);
+}
+
 function getSorting(order, orderBy) {
+  // order = direction, orderBy = id of column to sort 
+  console.log("order, orderBy: ", order, orderBy)
+
   return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy);
 }
 
-const rows = [
-  { id: 'name', numeric: false, disablePadding: true, label: 'Dessert (100g serving)' },
-  { id: 'calories', numeric: true, disablePadding: false, label: 'Calories' },
-  { id: 'fat', numeric: true, disablePadding: false, label: 'Fat (g)' },
-  { id: 'carbs', numeric: true, disablePadding: false, label: 'Carbs (g)' },
-  { id: 'protein', numeric: true, disablePadding: false, label: 'Protein (g)' },
-];
 
+const rows = [
+  { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
+  { id: 'number', numeric: false, disablePadding: false, label: 'Hosp Id' },
+  { id: 'start', numeric: false, disablePadding: false, label: 'Start' },
+  { id: 'end', numeric: false, disablePadding: false, label: 'End' },
+  { id: 'timeframe', numeric: false, disablePadding: false, label: 'Timeframe' },
+  { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
+  { id: 'requester', numeric: false, disablePadding: false, label: 'Requester' }
+];
 
 
 class EnhancedTableHead extends React.Component {
@@ -78,7 +116,6 @@ class EnhancedTableHead extends React.Component {
             return (
               <TableCell
                 key={row.id}
-                numeric={row.numeric}
                 padding={row.disablePadding ? 'none' : 'default'}
                 sortDirection={orderBy === row.id ? order : false}
               >
@@ -162,19 +199,11 @@ let EnhancedTableToolbar = props => {
       </div>
       <div className={classes.spacer} />
       <div className={classes.actions}>
-        {numSelected > 0 ? (
-          <Tooltip title="Delete">
-            <IconButton aria-label="Delete">
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
-              <FilterListIcon />
-            </IconButton>
-          </Tooltip>
-        )}
+        <Tooltip title="Filter list"> 
+          <IconButton aria-label="Filter list">
+            <FilterListIcon />
+          </IconButton>
+        </Tooltip>
       </div>
     </Toolbar>
   );
@@ -200,31 +229,36 @@ const styles = theme => ({
   },
 });
 
+const CustomTableCell = withStyles(theme => ({
+  head: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
+
 
 
 class DashboardTable extends React.Component {
   state = {
-    order: 'asc',
-    orderBy: 'calories',
+    order: 'desc',
+    orderBy: 'start',
     selected: [],
-    data: [
-      createData('Cupcake', 305, 3.7, 67, 4.3),
-      createData('Donut', 452, 25.0, 51, 4.9),
-      createData('Eclair', 262, 16.0, 24, 6.0),
-      createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-      createData('Gingerbread', 356, 16.0, 49, 3.9),
-      createData('Honeycomb', 408, 3.2, 87, 6.5),
-      createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-      createData('Jelly Bean', 375, 0.0, 94, 0.0),
-      createData('KitKat', 518, 26.0, 65, 7.0),
-      createData('Lollipop', 392, 0.2, 98, 0.0),
-      createData('Marshmallow', 318, 0, 81, 2.0),
-      createData('Nougat', 360, 19.0, 9, 37.0),
-      createData('Oreo', 437, 18.0, 63, 4.0),
-    ],
     page: 0,
     rowsPerPage: 5,
+    tableData: [],
+
+    activeSurveysLength: 0,
   };
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({ 
+        activeSurveysLength:  nextProps.activeSurveys.length,
+        tableData: this.state.tableData === [] ? this.state.tableData : createData(nextProps.activeSurveys)     
+    })
+  }
 
   handleRequestSort = (event, property) => {
     const orderBy = property;
@@ -233,13 +267,12 @@ class DashboardTable extends React.Component {
     if (this.state.orderBy === property && this.state.order === 'desc') {
       order = 'asc';
     }
-
     this.setState({ order, orderBy });
   };
 
   handleSelectAllClick = event => {
     if (event.target.checked) {
-      this.setState(state => ({ selected: state.data.map(n => n.id) }));
+      this.setState(state => ({ selected: state.tableData.map(active => active.id) }));
       return;
     }
     this.setState({ selected: [] });
@@ -278,62 +311,67 @@ class DashboardTable extends React.Component {
 
   render() {
     const { classes } = this.props;
-    const { data, order, orderBy, selected, rowsPerPage, page } = this.state;
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
+    const { order, orderBy, tableData, selected, rowsPerPage, page } = this.state;
+    const { activeSurveys } = this.props;
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, this.state.activeSurveysLength - page * rowsPerPage);
+
+    console.log("ActiveSurveyprops: ", activeSurveys)
 
     return (
       <Paper className={classes.root}>
         <EnhancedTableToolbar numSelected={selected.length} />
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
+
             <EnhancedTableHead
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
               onSelectAllClick={this.handleSelectAllClick}
               onRequestSort={this.handleRequestSort}
-              rowCount={data.length}
+              rowCount={this.state.activeSurveysLength}
             />
+
             <TableBody>
-              {data
-                .sort(getSorting(order, orderBy))
+              {activeSurveys ? (
+                stableSort(tableData, getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map(n => {
-                  const isSelected = this.isSelected(n.id);
+                .map(active => {
+                  const isSelected = this.isSelected(active._id);
                   return (
                     <TableRow
                       hover
-                      onClick={event => this.handleClick(event, n.id)}
+                      onClick={event => this.handleClick(event, active._id)}
                       role="checkbox"
                       aria-checked={isSelected}
                       tabIndex={-1}
-                      key={n.id}
+                      key={active.id}
                       selected={isSelected}
                     >
-                      <TableCell padding="checkbox">
+                      <CustomTableCell padding="checkbox">
                         <Checkbox checked={isSelected} />
-                      </TableCell>
-                      <TableCell component="th" scope="row" padding="none">
-                        {n.name}
-                      </TableCell>
-                      <TableCell numeric>{n.calories}</TableCell>
-                      <TableCell numeric>{n.fat}</TableCell>
-                      <TableCell numeric>{n.carbs}</TableCell>
-                      <TableCell numeric>{n.protein}</TableCell>
+                      </CustomTableCell>
+                      <CustomTableCell component="th" scope="row" padding="none">
+                        {active.name}
+                      </CustomTableCell>
+                      <CustomTableCell>{active.number}</CustomTableCell>
+                      <CustomTableCell>{moment(active.start).format("MMM Do YYYY")}</CustomTableCell>
+                      <CustomTableCell>{moment(active.end).format("MMM Do YYYY")}</CustomTableCell>
+                      <CustomTableCell>{active.timeframe}</CustomTableCell>
+                      <CustomTableCell>{active.status}</CustomTableCell>
+                      <CustomTableCell>Dr. {active.requester}</CustomTableCell>
                     </TableRow>
                   );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 49 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
+                })
+              ) : null}
             </TableBody>
+
           </Table>
         </div>
+
         <TablePagination
           component="div"
-          count={data.length}
+          count={this.state.activeSurveysLength}
           rowsPerPage={rowsPerPage}
           page={page}
           backIconButtonProps={{
@@ -345,6 +383,7 @@ class DashboardTable extends React.Component {
           onChangePage={this.handleChangePage}
           onChangeRowsPerPage={this.handleChangeRowsPerPage}
         />
+
       </Paper>
     );
   }
@@ -354,35 +393,13 @@ DashboardTable.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(DashboardTable);
+const mapStateToProps = (state) => {
+  console.log("State : ", state);
+  return {
+      activeSurveys: state.activeSurveys.activeSurveys.activeList
+  }
+};
+DashboardTable = connect(mapStateToProps)(DashboardTable)
+DashboardTable = withStyles(styles, { withTheme: true })(DashboardTable)
+export default DashboardTable
 
-//     render () {
-
-//         const {classes, theme } = this.props
-
-//         const { authenticated } = this.props;
-//         console.log("Props : ", this.props);
-//         //if(authenticated ===  0 || authenticated === 2) return <Redirect to='/' /> 
-//         //if(!authenticated ) {return <Redirect to='/' />};
-
-//         return (
-
-//             <div>
-//                 <Card className={classes.card}>
-                        
-//                     <CardContent className={classes.content}>
-//                         <PatientList />
-//                     </CardContent>
-
-//                 </Card>
-//             </div >
-
-//         );
-//     }
-// }
-
-// function mapDispatchToProps(dispatch) {
-//     return bindActionCreators({ fetchPatients}, dispatch);
-// }
-
-// export default connect(null, mapDispatchToProps) (withStyles(styles, {withTheme: true})(DashboardTable))

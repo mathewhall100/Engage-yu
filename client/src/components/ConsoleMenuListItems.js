@@ -49,8 +49,8 @@ export default class ListItems extends Component {
           button
           
           selected={this.state.selectedIndex === 1}
-          onClick={event => this.handleListItemClick(event, 1)}>
-          
+          onClick={event => this.handleListItemClick(event, 1)}
+          >
           <ListItemIcon>
             <SearchIcon />
           </ListItemIcon>
@@ -59,6 +59,7 @@ export default class ListItems extends Component {
 
         <ListItem 
           button
+          component={Link} to='/admin/survey'
           selected={this.state.selectedIndex === 2}
           onClick={event => this.handleListItemClick(event, 2)}
           >

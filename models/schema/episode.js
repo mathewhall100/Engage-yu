@@ -23,12 +23,12 @@ const episodeSchema = new Schema({
      
     num_questions: { type: Number, min: 1, max: 25, required: true },
     questions: [
-        {questionSchema}
+        questionSchema
     ],
 
     expected_num_records: { type: Number, min: 2, required: [true, "No expected number records"] },
     notes: String,
-    record: [
+    records: [
         recordSchema
     ], 
     

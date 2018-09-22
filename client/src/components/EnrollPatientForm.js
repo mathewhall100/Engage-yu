@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import { Link, Redirect} from 'react-router-dom';
 import { reset, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
-import providerAPI from "../utils/provider.js";
 
-//import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
@@ -18,8 +16,11 @@ import FormRadio from './Forms/FormRadio'
 import { enrollNewPatient } from '../actions';
 import EnrollFormSuccessDialog from './Dialogs/EnrollFormSuccessDialog.js'
 import EnrollFormFailedDialog from './Dialogs/EnrollFormFailedDialog.js'
+
+import providerAPI from "../utils/provider.js";
 import patient_infoAPI from "../utils/patient_info.js";
 import patient_dataAPI from "../utils/patient_data.js";
+import { defaultProps } from 'recompose';
 
 let selectItems = [];
 
@@ -55,9 +56,8 @@ const styles = theme => ({
 });    
 
 
-class Enroll extends Component {
+class EnrollPatientForm extends Component {
 
-    
     componentDidMount() {
 
         //console.log(`Dr. ${localStorage.getItem('profile.name')}`)
@@ -106,14 +106,14 @@ class Enroll extends Component {
 
     // handle form submission
     submit(values) {
-        //console.log("Submitted values: ", values);
+        console.log("Submitted values: ", values);
 
         patient_infoAPI.createNewPatient({
             date_enrolled: new Date(),
             enrolled_by_ref: '5b844946d8dc5ce848cd28a4',
             enrolled_by_id: "5b844946d8dc5ce848cd28a4",
-           enrolled_by_name: `Dr Mathew Hall`,
-           // enrolled_by_name: `Dr. ${localStorage.get('profile.name')}`,
+            enrolled_by_name: `Dr Mathew Hall`,
+            // enrolled_by_name: `Dr. ${localStorage.get('profile.name')}`,
 
             patient_data_ref: "000000000000000000000000",
             patient_data_id:  "000000000000000000000000",
@@ -154,16 +154,17 @@ class Enroll extends Component {
                     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
         
-                    this.setState({name: `${values.firstName} ${values.lastName}`})
-                    this.setState({dob: values.dob})
-                    this.setState({gender: values.Gender})
-                    this.setState({email: values.email})
-                    this.setState({phone: values.phone})
-                    this.setState({hospId: values.hospId})
-                    this.setState({provider: selectItems[values.provider].text})
-                    this.setState({enroller: "TBA"})
+                    this.setState({
+                        name: `${values.firstName} ${values.lastName}`,
+                        dob: values.dob,
+                        gender: values.Gender,
+                        email: values.email,
+                        phone: values.phone,
+                        hospId: values.hospId,
+                        provider: selectItems[values.provider].text,
+                        enroller: "TBA",
                     
-                    this.setState({enrollSuccess: true}); 
+                        enrollSuccess: true}); 
                 })
                 .catch(err => {
                     console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
@@ -342,20 +343,18 @@ function validate(values) {
      }
 
     // If errors is empty, then form good to submit
-    // If errors has anay properties, redux form assumes form is invalid
+    // If errors has any properties, redux form assumes form is invalid
     console.log("Errors: ", errors)
     return errors;
 
 }
 
 
-export default reduxForm ({
-        validate,
-        form: 'EnrollPatientForm', // unique identifier for this form
-        
-    })(
-        connect(null, { enrollNewPatient }
-    )(
-        withStyles(styles)(Enroll)
-));
+const formData = {
+        form: 'EnrollPatientForm', //unique identifier for this form 
+        validate,      
+}
+EnrollPatientForm = reduxForm(formData)(EnrollPatientForm)
+EnrollPatientForm = withStyles(styles)(EnrollPatientForm)
+export default EnrollPatientForm
 

@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import EnrollPatientForm from './EnrollPatientForm'
-import { selectConsoleTitle } from '../actions/index'
+import Card from '@material-ui/core/Card';
 
-class EnrollPatient extends Component {  
+import SurveyForm from '../containers/SurveyForm'
+import { selectConsoleTitle } from '../actions'
+
+class Survey extends Component {  
 
     componentDidMount() {
-        this.props.selectConsoleTitle({title: "Enroll New patient"});
+        this.props.selectConsoleTitle({title: "Create new diary card"});
     }
 
     render () {
@@ -18,13 +21,13 @@ class EnrollPatient extends Component {
         //if(authenticated ===  0 || authenticated === 2) return <Redirect to='/' /> 
         //if(!authenticated ) {return <Redirect to='/' />};
 
-
         return (
-                <div>
+                
+                <Card style={{paddingLeft: "40px", paddingTop: "20px"}}>
 
-                    <EnrollPatientForm />
-                    
-                </div >
+                    <SurveyForm />
+
+                </Card >
         );
     }
 }
@@ -33,4 +36,4 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({ selectConsoleTitle }, dispatch);
 }
 
-export default connect(null, mapDispatchToProps)(EnrollPatient)
+export default connect(null, mapDispatchToProps)(Survey)

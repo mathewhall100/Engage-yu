@@ -5,9 +5,9 @@ import { bindActionCreators } from 'redux';
 
 import { selectConsoleTitle } from '../actions/index'
 import DashboardBanner from './DashboardBanner';
+import DashboardTable from '../containers/DashboardTable';
 
-import PatientList from '../containers/DashboardDisplay';
-import { fetchPatients } from '../actions/index'
+import { fetchActiveSurveys } from '../actions/index'
 
 
 class Dashboard extends Component {  
@@ -15,7 +15,7 @@ class Dashboard extends Component {
     componentDidMount() {
 
         this.props.selectConsoleTitle({title: "Dashboard"});
-        this.props.fetchPatients();
+        this.props.fetchActiveSurveys();
     }
 
     render () {
@@ -26,26 +26,24 @@ class Dashboard extends Component {
 
         return (
                 <div>
-                    {/* <button onClick={() => this.props.selectConsoleTitle({title: "Dashboard"})}>Button</button> */}
+
                     <DashboardBanner />
 
                     <br />
 
-                    <PatientList />
-                    {/* <DashboardTable /> */}
-
+                    <DashboardTable /> 
+                    
                 </div >
         );
     }
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle, fetchPatients }, dispatch);
+    return bindActionCreators({ selectConsoleTitle, fetchActiveSurveys }, dispatch);
 }
-function mapStatToProps({auth}){
+function mapStateToProps({auth}){
     console.log(auth);
     return (auth);
 }
-// export default connect(null,null,null, {pure:false})(Dashboard);
 
-export default connect(mapStatToProps, mapDispatchToProps) (Dashboard)
+export default connect(mapStateToProps, mapDispatchToProps) (Dashboard)
