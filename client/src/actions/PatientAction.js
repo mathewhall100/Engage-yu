@@ -10,11 +10,11 @@ export const fetchPatientData = () => {
         if(user){
             console.log("user is : ", user);
             request.then( res => {
-                console.log("patient data : ", res.data[0]);
+                console.log("patient data : ", res.data);
             dispatch({
                 type :  PATIENT_DATA,
                 payload : {
-                    patientData : res.data[0],
+                    patientData : res.data,
                     episodes : res.data[0].episodes,
                     currentEpisode : res.data[0].episodes[res.data[0].episodes.length-1]
                 }

@@ -12,9 +12,9 @@ module.exports = {
         //console.log(`Requester:  ${req.user}`);
         //if(req.user){
             db.Patient_data
-            .findById(req.params.id)
+            .find({ patient_info_id: req.params.id }, { "episodes": 1 })
             .then(patient => {
-                console.log("RESULT:", patient);
+                console.log("RESULT FOR PATIENT_DATA:", patient);
                 res.json(patient)
             })
             .catch(err => {
