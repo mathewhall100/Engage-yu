@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-//import { Link, Redirect } from 'react-router-dom';
+import { Router, Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { reduxForm } from 'redux-form';
 import moment from 'moment';
+import { times, startCase } from 'lodash'
 
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -44,11 +45,8 @@ const styles = theme => ({
 });
 
 const CustomTableCell = withStyles(theme => ({
-  head: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
-  },
   body: {
+    padding: '5px',
     fontSize: 14,
   },
 }))(TableCell);
@@ -59,6 +57,9 @@ const CustomTableCell = withStyles(theme => ({
 class DashboardTable extends React.Component {
 
   state = {
+    
+    redirect: false,
+    rowId: "",
 
     activeSurveysLength: 0,
     tableData: [],
@@ -73,13 +74,13 @@ class DashboardTable extends React.Component {
 
     statusFilter: ["active"],
     personFilter: "requester",
-    checked: [],
-
+    checked: [], 
+    
     userId: "5b844946d8dc5ce848cd28a4"
   };
 
   componentWillReceiveProps(nextProps) {
-    console.log("will receive : ", nextProps);
+    // console.log("will receive : ", nextProps);
     this.setState({ 
       activeSurveysLength:  nextProps.activeSurveys.length,
       //userId: this.state.user,
@@ -103,10 +104,13 @@ class DashboardTable extends React.Component {
     let compliance = 0;
 
     if (status === "active") {
-
+      //console.log("moment1: ", moment())
+      //console.log("moment2: ", moment(endDate))
       if (moment().isAfter(moment(endDate))) {
         return {
-          status: "awaiting review"
+          status: "awaiting review",
+          compliance: compliance,
+          progress: 100,
         }
       }
 
@@ -131,7 +135,6 @@ class DashboardTable extends React.Component {
         progress: progress
       }
 
-    // prepare output for differnet statuses
     } else if (status === "awaiting review") {
       return {
         status: "awaiting review",
@@ -143,7 +146,7 @@ class DashboardTable extends React.Component {
   }
 
   createData = (data) =>  {
-  console.log("createData: ", data)
+    //console.log("createData: ", data)
     let counter = 0;
     let newData = [];
 
@@ -152,6 +155,7 @@ class DashboardTable extends React.Component {
       let newDataObj = { 
         id: counter, 
         _id: d._id,
+        patientInfoId: d.patient_info_id,
         name: `${d.firstname} ${d.lastname}`, 
         number: d.hospital_id, 
         start: d.start_date, 
@@ -162,6 +166,7 @@ class DashboardTable extends React.Component {
         requesterId: d.requesting_provider_id,
         primary: d.primary_provider_name,
         primaryId: d.primary_provider_id,
+
       };
       newData.push(newDataObj)
     })
@@ -176,9 +181,9 @@ class DashboardTable extends React.Component {
 
   // filter by requester/provider
   filterByPerson = (data, filter) => {
-    //console.log("DATATOFILTER1: ", data)
-    //console.log("filter1: ", filter)
-    //console.log("userId: ", this.state.userId)
+    console.log("DATATOFILTER1: ", data)
+    console.log("filter1: ", filter)
+    console.log("userId: ", this.state.userId)
     let filteredData = [];
     
     switch (filter) {
@@ -192,20 +197,20 @@ class DashboardTable extends React.Component {
       filteredData = data.filter(d => d.requesterId === this.state.userId);
       
     };
-    //console.log("filtered data1: ", filteredData)
+    console.log("filtered data1: ", filteredData)
     return filteredData;
   };
 
   // filter by status
   filterByStatus = (data, filter) => {
-    //console.log("DATATOFILTER2: ", data)
-    //console.log("filter2: ", filter)
+    console.log("DATATOFILTER2: ", data)
+    console.log("filter2: ", filter)
 
     let filteredData = [];
     filter.map(f => {
       filteredData = filteredData.concat(data.filter(d => d.status.status === f))
     })
-    //console.log("filtered Data2: ", filteredData)
+    console.log("filtered Data2: ", filteredData)
     return filteredData;
   };
 
@@ -217,7 +222,7 @@ class DashboardTable extends React.Component {
     if (filter.length > 0) {
       let filteredData = [];
       filteredData = data.filter(d => filter.indexOf(d._id) > -1)
-      //console.log("filtereddata3: ", filteredData)
+      console.log("filtereddata3: ", filteredData)
       return filteredData;
       } 
       else {
@@ -277,7 +282,6 @@ class DashboardTable extends React.Component {
   handleRequestSort = (event, property) => {
     const orderBy = property;
     let order = 'desc';
-
     if (this.state.orderBy === property && this.state.order === 'desc') {
       order = 'asc';
     }
@@ -290,6 +294,10 @@ class DashboardTable extends React.Component {
 
   handleRowClick = (event, id) => {
     console.log("row clicked: ", id)
+    this.setState({
+      rowId: id,
+      redirect: true
+    })
   }
 
   handleCheckClick = (event, id) => {
@@ -326,12 +334,13 @@ class DashboardTable extends React.Component {
   // progress bar create loop
 
   statusProgressBar = (progress) => {
+    //console.log("progress: ", progress)
     let progressBar = [];
     if (progress < 1) {return null}
     if(progress > 100) {progress = 100}
-    for (let i = 0; i < Math.round(progress/4); i++) {
-      progressBar.push(<span key={i}>|</span>);
-    }
+    //for (let i = 0; i < Math.round(progress/4); i++) {
+      times(Math.round(progress/4), (index) => progressBar.push(<span key={index}>|</span>));
+    //}
     return progressBar;
   }
 
@@ -342,6 +351,12 @@ class DashboardTable extends React.Component {
     const { order, orderBy, tableDataFiltered, selected, rowsPerPage, page } = this.state;
     const { activeSurveys } = this.props;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, this.state.activeSurveysLength - page * rowsPerPage);
+
+    const { redirect, rowId } = this.state;
+     if (redirect) {
+       const url=`/admin/report/${rowId}`
+       return <Redirect to={url}/>;
+     }
 
     return (
       <Paper className={classes.root}>
@@ -376,24 +391,19 @@ class DashboardTable extends React.Component {
                   return (
                     <TableRow
                       hover
-                      onClick={event => this.handleRowClick(event, d._id)}
+                      onClick={event => this.handleRowClick(event, d.patientInfoId)}
                       role="checkbox"
                       aria-checked={isSelected}
                       tabIndex={-1}
                       key={d.id}
                       selected={isSelected}
                     >
-                      <CustomTableCell padding="checkbox">
-                        <Checkbox checked={isSelected} onClick={event => this.handleCheckClick(event, d._id)}/>
-                      </CustomTableCell>
-                      <CustomTableCell component="th" scope="row" padding="none">
-                        {d.name}
-                      </CustomTableCell>
+                      <CustomTableCell padding="checkbox"><Checkbox checked={isSelected} onClick={event => this.handleCheckClick(event, d._id)}/></CustomTableCell>
+                      <CustomTableCell component="th" scope="row" padding="none">{startCase(d.name)}</CustomTableCell> 
                       <CustomTableCell>{d.number}</CustomTableCell>
                       <CustomTableCell>{moment(d.start).format("MMM Do YYYY")}</CustomTableCell>
                       <CustomTableCell>{moment(d.end).format("MMM Do YYYY")}</CustomTableCell>
                       <CustomTableCell>{d.timeframe}</CustomTableCell>
-                    
                       <CustomTableCell >
                         <div style={{height: "30px", width: "129px", border: "1px solid #dddddd", paddingLeft: "6px", paddingTop: "2px", paddingRight: "10px", 
                           backgroundColor: d.status.status === "active" ? "#ffffff" :
@@ -404,20 +414,20 @@ class DashboardTable extends React.Component {
                                            d.status.status === "actioned" ? "#eeeeee" : 
                                            d.status.status === "archived" ? "#aaaaaa" : "#ffffff",
                           fontSize: d.status.status === "active" || d.status.status === "awaiting review" ? "18px" : "15px",
-                          paddingTop: d.status.status === "active" || d.status.status === "awaiting review" ? "2px" : "5px"
+                          paddingTop: d.status.status === "active" || d.status.status === "awaiting review" ? "2px" : "5px",
+                          color: d.status.status === "archived" ? "#ffffff" : "#666666"
                                         }}>
                            {d.status.status === "active" || d.status.status === "awaiting review" ? 
                               <span style={{ textShadow: "1px 0", fontWeight: 600, color: d.status.compliance > 90 ? "green" : d.status.compliance > 75 ? "#ffc200" : "red"}}>
 
                                 {this.statusProgressBar(d.status.progress)}
 
-                            </span> 
-                        : d.status.status}       
+                              </span> 
+                          : d.status.status}       
                         
                         </div>
                       </CustomTableCell>
-
-                      <CustomTableCell>Dr. {d.requester}</CustomTableCell>
+                      <CustomTableCell>Dr. {startCase(d.requester)}</CustomTableCell>
                     </TableRow>
                   );
                 })

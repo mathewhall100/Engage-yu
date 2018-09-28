@@ -41,8 +41,11 @@ const toolbarStyles = theme => ({
         fontWeight: 500,
       },
     },
-});
+    customWidth: {
+        maxWidth: "100px",
 
+    }
+});
 
 
 class EnhancedTableToolbar extends React.Component {  
@@ -82,12 +85,23 @@ class EnhancedTableToolbar extends React.Component {
 
                     <span>
                         <Typography variant="title" id="tableTitle">
-                            My Surveys.
+                            My Diary Cards.
                         </Typography>
+
                         <Typography variant="caption" id="tableTitle">
-                                    <span className={classes.navLinks} style={{color: this.state.navLinksSwitch === "requester" ? "#000000" : "#888888"}} onClick = {event => this.handleNavLinksFilter(event, "requester")}>As requester</span>  
-                            <span className={classes.navLinks} style={{color: this.state.navLinksSwitch === "provider" ? "#000000" : "#888888"}} onClick = {event => this.handleNavLinksFilter(event, "provider")}>As primary provider</span>
-                            <span className={classes.navLinks} style={{color: this.state.navLinksSwitch === "all" ? "#000000" : "#888888"}} onClick = {event => this.handleNavLinksFilter(event, "all")}>All my surveys</span>
+
+                            <Tooltip title = "Select diary cards requested by me" classes={{tooltip: classes.customWidth}} enterDelay={300}>
+                                <span className={classes.navLinks} style={{color: this.state.navLinksSwitch === "requester" ? "#000000" : "#888888"}} onClick = {event => this.handleNavLinksFilter(event, "requester")}>As requester</span> 
+                            </Tooltip>
+
+                            <Tooltip title ="Select diary cards where I am the patient's primary provider" classes={{tooltip: classes.customWidth}} enterDelay={300}>
+                                <span className={classes.navLinks} style={{color: this.state.navLinksSwitch === "provider" ? "#000000" : "#888888"}} onClick = {event => this.handleNavLinksFilter(event, "provider")}>As primary provider</span>
+                            </Tooltip>
+
+                            <Tooltip title = "Select all diary cards where I am the requester or primary provider" classes={{tooltip: classes.customWidth}} enterDelay={300}>
+                                <span className={classes.navLinks} style={{color: this.state.navLinksSwitch === "all" ? "#000000" : "#888888"}} onClick = {event => this.handleNavLinksFilter(event, "all")}>All my surveys</span>
+                            </Tooltip>
+
                         </Typography>
                     </span>
 

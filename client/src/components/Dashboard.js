@@ -37,6 +37,7 @@ class Dashboard extends Component {
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({ selectConsoleTitle, fetchActiveSurveys }, dispatch);
 }
+
 function mapStateToProps({auth}){
     console.log(auth);
     return (auth);

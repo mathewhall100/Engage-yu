@@ -11,13 +11,20 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Checkbox from '@material-ui/core/Checkbox';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 
+
+const CustomTableCell = withStyles(theme => ({
+  head: {
+    padding: "5px",
+  },
+}))(TableCell);
+
 const rows = [
   { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
   { id: 'number', numeric: false, disablePadding: false, label: 'Hosp Id' },
   { id: 'start', numeric: false, disablePadding: false, label: 'Start' },
   { id: 'end', numeric: false, disablePadding: false, label: 'End' },
   { id: 'timeframe', numeric: false, disablePadding: false, label: 'Timeframe' },
-  { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
+  { id: 'progress', numeric: false, disablePadding: false, label: 'Progress' },
   { id: 'requester', numeric: false, disablePadding: false, label: 'Requester' }
 ];
 
@@ -35,7 +42,7 @@ class EnhancedTableHead extends React.Component {
         <TableHead>
           <TableRow>
 
-            <TableCell padding="checkbox">
+            <CustomTableCell padding="checkbox">
             {numSelected > 0 && 
               <Checkbox
                 indeterminate={numSelected > 0 } 
@@ -44,11 +51,11 @@ class EnhancedTableHead extends React.Component {
               />
             }
 
-            </TableCell>
+            </CustomTableCell>
 
             {rows.map(row => {
               return (
-                <TableCell
+                <CustomTableCell
                   key={row.id}
                   padding={row.disablePadding ? 'none' : 'default'}
                   sortDirection={orderBy === row.id ? order : false}
@@ -66,7 +73,7 @@ class EnhancedTableHead extends React.Component {
                       {row.label}
                     </TableSortLabel>
                   </Tooltip>
-                </TableCell>
+                </CustomTableCell>
               );
             }, this)}
 

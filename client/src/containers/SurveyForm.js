@@ -26,7 +26,7 @@ import Slider from '@material-ui/lab/Slider';
 
 import SurveyRadio from '../components/Forms/SurveyRadio.js';
 import SurveyStartDate from '../components/Forms/SurveyStartDatePicker.js';
-import Panel from '../components/Panels/ExpansionPanel.js';
+import Panel from '../components/Panels/SurveyExpansionPanel.js';
 
 import { fetchSurveyQuestions, fetchSurveyPatientDetails } from '../actions/index.js';
 import patient_dataAPI from "../utils/patient_data.js";
@@ -294,9 +294,9 @@ class SurveyForm extends Component {
             return (this.state.selectedQuestions.indexOf(question._id) > -1)
         })
 
-        filteredQuestions.map(question => {
+        filteredQuestions.map((question, index) => {
             surveyQuestions.push(
-                {
+                {   question_number: index,
                     question: question.question,
                     answers: question.answers,
                     hints: question.hints
