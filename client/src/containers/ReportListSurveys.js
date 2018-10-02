@@ -40,6 +40,7 @@ class ReportPendingSurveys extends Component {
    async componentWillReceiveProps(nextProps) {
         //console.log("NextProps: ", nextProps)
         await this.setState({episodes: nextProps.patientData.episodes}) 
+        if (this.state.episodes) {
         //console.log("Episodes: ", this.state.episodes)
         this.setState({pending: this.state.episodes.filter(episode => episode.status === "pending") }) 
         this.setState({active: this.state.episodes.filter(episode => episode.status === "active") }) 
@@ -47,10 +48,11 @@ class ReportPendingSurveys extends Component {
         this.setState({actioned: this.state.episodes.filter(episode => episode.status === "actioned") }) 
         this.setState({archived: this.state.episodes.filter(episode => episode.status === "archived") }) 
         this.setState({cancelled: this.state.episodes.filter(episode => episode.status === "cancelled") }) 
+       } 
     };
 
     createPendingTableData = (data) => {
-        console.log("creatependingData: ", data)
+        //console.log("creatependingData: ", data)
 
         let dataItems = [];
         let dataArray = [];
@@ -191,7 +193,7 @@ class ReportPendingSurveys extends Component {
     }
 
     handleClickMore = () => {
-        console.log("MorePanels: ", this.state.morePanels)
+        //console.log("MorePanels: ", this.state.morePanels)
         this.setState({morePanels: this.state.morePanels ? 0 : 1})
     }
     
@@ -280,6 +282,8 @@ class ReportPendingSurveys extends Component {
 
                 {this.state.morePanels ? <Button onClick={() => this.handleClickMore()}>Hide...</Button> : <Button onClick={() => this.handleClickMore()}>More...</Button>}
 
+                <br /><br />
+
                 {this.state.morePanels ?  
                 
                     <div>
@@ -336,7 +340,7 @@ ReportPendingSurveys.propTypes = {
   };
   
   const mapStateToProps = (state) => {
-    console.log("State : ", state);
+    //console.log("State : ", state);
     return {
         patientData: state.reportPatientData.reportPatientData,
         user: state.user

@@ -56,21 +56,22 @@ class EnhancedTableToolbar extends React.Component {
     
     state = {
         navLinksFilter: "",
+        navLinksSwitch: ""
     }
       
     handleNavLinksFilter = (event, filter) => {
-        console.log("FilterLink: ", filter)
+        //console.log("FilterLink: ", filter)
         this.setState({navLinksSwitch: filter})
         this.props.navLinksFilter(filter)
     }
 
     handleStatusFilter = filter => {
-        console.log("FilterStatus: ", filter)
+        //console.log("FilterStatus: ", filter)
         this.props.statusFilter(filter)
     }
 
     handleCheckedFilter = event => {
-        console.log("FilterChecked: ", event)
+        //console.log("FilterChecked: ", event)
         this.props.checkedFilter(event)
     }
 

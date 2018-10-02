@@ -20,7 +20,7 @@ const styles = theme => ({
     root: {
         width: '100%',
         boxShadow: "none",
-        marginTop: "5px" 
+        marginTop: "-5px" 
     },
     heading: {
         fontSize: theme.typography.pxToRem(16),
@@ -119,7 +119,7 @@ class Panel extends Component {
 
         const { classes } = this.props;
         const { tableData, actions } = this.props;
-        console.log("tableData: ", tableData)
+        //console.log("tableData: ", tableData)
 
         return (
             <div className={classes.root}>

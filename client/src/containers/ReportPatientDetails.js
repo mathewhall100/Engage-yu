@@ -36,6 +36,7 @@ class ReportPatientDetails extends Component {
         return (
             <Paper className={classes.root}>
                 <Typography variant="subheading">
+
                     <Grid container spacing={24}>
                         <Grid item xs={3}>
                         <Typography variant="caption">Patient name</Typography>
@@ -52,6 +53,7 @@ class ReportPatientDetails extends Component {
                         <Grid item xs={3}>
                         <Link to='/admin' className={classes.backbtn}><Button className={classes.cancelBtn}>Back</Button></Link>
                         </Grid>
+                        
                     </Grid>
                 </Typography>
             </Paper>
@@ -65,7 +67,7 @@ ReportPatientDetails.propTypes = {
   };
   
   const mapStateToProps = (state) => {
-    console.log("State : ", state);
+    //console.log("State : ", state);
     return {
         patientInfo: state.reportPatientData.reportPatientInfo,
         user: state.user

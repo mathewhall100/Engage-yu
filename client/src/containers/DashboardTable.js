@@ -59,7 +59,8 @@ class DashboardTable extends React.Component {
   state = {
     
     redirect: false,
-    rowId: "",
+    patient: "",
+    episode: "",
 
     activeSurveysLength: 0,
     tableData: [],
@@ -79,15 +80,13 @@ class DashboardTable extends React.Component {
     userId: "5b844946d8dc5ce848cd28a4"
   };
 
-  componentWillReceiveProps(nextProps) {
+  async componentWillReceiveProps(nextProps) {
     // console.log("will receive : ", nextProps);
-    this.setState({ 
-      activeSurveysLength:  nextProps.activeSurveys.length,
-      //userId: this.state.user,
-      tableData:  this.createData(nextProps.activeSurveys),
-      tableDataFiltered: this.filterData(this.createData(nextProps.activeSurveys), this.state.personFilter, this.state.statusFilter, this.state.checked),
-    })
-    console.log("tableData: ", this.state.tableData)
+    //userId: this.state.user,
+    activeSurveysLength:  nextProps.activeSurveys.length,
+    await this.setState({ tableData:  this.createData(nextProps.activeSurveys) })
+    if (this.state.tableData) { this.setState({ tableDataFiltered: this.filterData(this.createData(nextProps.activeSurveys), this.state.personFilter, this.state.statusFilter, this.state.checked) }) }
+    //console.log("tableData: ", this.state.tableData)
   }
 
   createStatus = (status, records, entries, startDate, endDate, entriesPerDay) => {
@@ -146,7 +145,7 @@ class DashboardTable extends React.Component {
   }
 
   createData = (data) =>  {
-    //console.log("createData: ", data)
+    console.log("createData: ", data)
     let counter = 0;
     let newData = [];
 
@@ -156,6 +155,7 @@ class DashboardTable extends React.Component {
         id: counter, 
         _id: d._id,
         patientInfoId: d.patient_info_id,
+        episodeId: d.episode_id,
         name: `${d.firstname} ${d.lastname}`, 
         number: d.hospital_id, 
         start: d.start_date, 
@@ -181,9 +181,9 @@ class DashboardTable extends React.Component {
 
   // filter by requester/provider
   filterByPerson = (data, filter) => {
-    console.log("DATATOFILTER1: ", data)
-    console.log("filter1: ", filter)
-    console.log("userId: ", this.state.userId)
+    //console.log("DATATOFILTER1: ", data)
+    //console.log("filter1: ", filter)
+    //console.log("userId: ", this.state.userId)
     let filteredData = [];
     
     switch (filter) {
@@ -197,20 +197,20 @@ class DashboardTable extends React.Component {
       filteredData = data.filter(d => d.requesterId === this.state.userId);
       
     };
-    console.log("filtered data1: ", filteredData)
+    //console.log("filtered data1: ", filteredData)
     return filteredData;
   };
 
   // filter by status
   filterByStatus = (data, filter) => {
-    console.log("DATATOFILTER2: ", data)
-    console.log("filter2: ", filter)
+    //console.log("DATATOFILTER2: ", data)
+    //console.log("filter2: ", filter)
 
     let filteredData = [];
     filter.map(f => {
       filteredData = filteredData.concat(data.filter(d => d.status.status === f))
     })
-    console.log("filtered Data2: ", filteredData)
+    //console.log("filtered Data2: ", filteredData)
     return filteredData;
   };
 
@@ -292,10 +292,11 @@ class DashboardTable extends React.Component {
     this.setState({ selected: [] });
   };
 
-  handleRowClick = (event, id) => {
-    console.log("row clicked: ", id)
+  handleRowClick = (event, patient, episode) => {
+    //console.log("row clicked: ", patient)
     this.setState({
-      rowId: id,
+      patient: patient,
+      episode: episode,
       redirect: true
     })
   }
@@ -352,9 +353,9 @@ class DashboardTable extends React.Component {
     const { activeSurveys } = this.props;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, this.state.activeSurveysLength - page * rowsPerPage);
 
-    const { redirect, rowId } = this.state;
+    const { redirect, patient, episode } = this.state;
      if (redirect) {
-       const url=`/admin/report/${rowId}`
+       const url=`/admin/report/${patient}&${episode}`
        return <Redirect to={url}/>;
      }
 
@@ -391,7 +392,7 @@ class DashboardTable extends React.Component {
                   return (
                     <TableRow
                       hover
-                      onClick={event => this.handleRowClick(event, d.patientInfoId)}
+                      onClick={event => this.handleRowClick(event, d.patientInfoId, d.episodeId)}
                       role="checkbox"
                       aria-checked={isSelected}
                       tabIndex={-1}
