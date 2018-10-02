@@ -109,6 +109,7 @@ class Panel extends Component {
 
     handleClickView = (event, id) => {
         console.log("episode id: ", id)
+        this.props.viewEpisode(id)
     };
 
     handleClickCancel = (event, id) => {
@@ -166,13 +167,15 @@ class Panel extends Component {
                                             <CustomTableCell >
                                                 {actions.indexOf("cancel") !== -1 &&
                                                     <Button size="small" className={classes.cancelBtn} onClick={event => this.handleClickCancel(event, n[0])}>Cancel</Button>}
+
                                                 {actions.indexOf("archive") !== -1 &&
                                                     <Button size="small" className={classes.archiveBtn} onClick={event => this.handleClickArchive(event, n[0])}>Archive</Button>}
+
                                                 {actions.indexOf("view") !== -1 && actions.length === 1 &&
                                                     <Button size="small" className={classes.viewBtnAlone} onClick={event => this.handleClickView(event, n[0])}>View</Button>}
+
                                                 {actions.indexOf("view") !== -1 && actions.length > 1 &&
                                                     <Button size="small" className={classes.viewBtnCompany} onClick={event => this.handleClickView(event, n[0])}>View</Button>}
-                                                
                                             </CustomTableCell>
                                         </TableRow>
                                     )

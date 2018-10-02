@@ -41,13 +41,13 @@ class ReportPendingSurveys extends Component {
         //console.log("NextProps: ", nextProps)
         await this.setState({episodes: nextProps.patientData.episodes}) 
         if (this.state.episodes) {
-        //console.log("Episodes: ", this.state.episodes)
-        this.setState({pending: this.state.episodes.filter(episode => episode.status === "pending") }) 
-        this.setState({active: this.state.episodes.filter(episode => episode.status === "active") }) 
-        this.setState({review: this.state.episodes.filter(episode => episode.status === "awaiting review") }) 
-        this.setState({actioned: this.state.episodes.filter(episode => episode.status === "actioned") }) 
-        this.setState({archived: this.state.episodes.filter(episode => episode.status === "archived") }) 
-        this.setState({cancelled: this.state.episodes.filter(episode => episode.status === "cancelled") }) 
+            //console.log("Episodes: ", this.state.episodes)
+            this.setState({pending: this.state.episodes.filter(episode => episode.status === "pending") }) 
+            this.setState({active: this.state.episodes.filter(episode => episode.status === "active") }) 
+            this.setState({review: this.state.episodes.filter(episode => episode.status === "awaiting review") }) 
+            this.setState({actioned: this.state.episodes.filter(episode => episode.status === "actioned") }) 
+            this.setState({archived: this.state.episodes.filter(episode => episode.status === "archived") }) 
+            this.setState({cancelled: this.state.episodes.filter(episode => episode.status === "cancelled") }) 
        } 
     };
 
@@ -196,7 +196,10 @@ class ReportPendingSurveys extends Component {
         //console.log("MorePanels: ", this.state.morePanels)
         this.setState({morePanels: this.state.morePanels ? 0 : 1})
     }
-    
+
+    viewEpisode = (id) => {
+        this.props.changeEpisode(id)
+    }
 
     render () {
 
@@ -220,6 +223,7 @@ class ReportPendingSurveys extends Component {
                             tableData = {this.createPendingTableData(this.state.pending)}
 
                             actions = {["view", "cancel"]}
+                            viewEpisode = {this.viewEpisode}
                         />
                 }
 
@@ -238,6 +242,7 @@ class ReportPendingSurveys extends Component {
                             tableData = {this.createActiveTableData(this.state.active)}
 
                             actions = {["view", "cancel"]}
+                            viewEpisode = {this.viewEpisode}
                         />
                 }
 
@@ -256,6 +261,7 @@ class ReportPendingSurveys extends Component {
                             tableData = {this.createReviewTableData(this.state.review)}
 
                             actions = {["view"]}
+                            viewEpisode = {this.viewEpisode}
                         />
                 }
 
@@ -275,6 +281,7 @@ class ReportPendingSurveys extends Component {
                             tableData = {this.createActionedTableData(this.state.actioned)}
 
                             actions = {["view", "archive"]}
+                            viewEpisode = {this.viewEpisode}
                         />
                 }
 
@@ -304,6 +311,7 @@ class ReportPendingSurveys extends Component {
                                     tableData = {this.createArchivedTableData(this.state.archived)}
 
                                     actions = {["view"]}
+                                    viewEpisode = {this.viewEpisode}
                                 />
                         } 
 
@@ -323,6 +331,7 @@ class ReportPendingSurveys extends Component {
                                     tableData = {this.createCancelledTableData(this.state.cancelled)}
 
                                     actions = {["view"]}
+                                    viewEpisode = {this.viewEpisode}
                                 />
                         }
 

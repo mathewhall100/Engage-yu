@@ -29,7 +29,18 @@ class Report extends Component {
     }
 
     state = {
-        episode: ""
+        episode: "",
+        comparisonEpisode: ""
+    }
+
+    handleChangeEpisode = (id) => {
+        console.log("New episode id: ", id)
+        this.setState({episode: id})
+    }
+
+    handleCompareEpisode = (id) => {
+        console.log("Compare episode id: ", id)
+        this.setState({comparisonEpisode: id})
     }
 
     render () {
@@ -42,11 +53,11 @@ class Report extends Component {
 
                 <br />
                 
-                <ReportDisplayData episode={this.state.episode}/> 
+                <ReportDisplayData episode={this.state.episode} /> 
 
                 <br />
 
-                <ReportListSurveys />
+                <ReportListSurveys changeEpisode={this.handleChangeEpisode} compareEpisode={this.handleCompareEpisode}/>
 
             </div>
         );

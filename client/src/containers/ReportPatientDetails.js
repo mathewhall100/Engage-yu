@@ -17,6 +17,7 @@ const styles = theme => ({
       width: "100%",
       marginTop: theme.spacing.unit*2,
       paddingLeft: "20px",
+      marginBottom: "10px"
     },
     backbtn: {
         backgroundColor: "#eeeeee",
@@ -25,6 +26,10 @@ const styles = theme => ({
         textDecoration: "none",
         borderRadius: "5px",
     },
+    textBold: {
+        fontWeight: "bold",
+        fontSize: "17px"
+    }
   });
 
 class ReportPatientDetails extends Component {
@@ -35,27 +40,26 @@ class ReportPatientDetails extends Component {
        
         return (
             <Paper className={classes.root}>
-                <Typography variant="subheading">
 
                     <Grid container spacing={24}>
                         <Grid item xs={3}>
                         <Typography variant="caption">Patient name</Typography>
-                            {startCase(this.props.patientInfo.firstname)} {startCase(this.props.patientInfo.lastname)}
+                            <span className={classes.textBold}>{startCase(this.props.patientInfo.firstname)} {startCase(this.props.patientInfo.lastname)}</span>
                         </Grid>
                         <Grid item xs={3}>
                             <Typography variant="caption">Hospital number:</Typography>
-                            {this.props.patientInfo.hospital_id}
+                            <span className={classes.textBold}>{this.props.patientInfo.hospital_id}</span>
                         </Grid>
                         <Grid item xs={3}>
                             <Typography variant="caption">DOB</Typography>
-                            {this.props.patientInfo.dob}
+                            <span className={classes.textBold}>{this.props.patientInfo.dob}</span>
                         </Grid>
                         <Grid item xs={3}>
                         <Link to='/admin' className={classes.backbtn}><Button className={classes.cancelBtn}>Back</Button></Link>
                         </Grid>
                         
                     </Grid>
-                </Typography>
+
             </Paper>
         );
     }
