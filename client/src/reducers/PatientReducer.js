@@ -1,4 +1,4 @@
-import { DEFAULT_QUESTION, CUSTOM_QUESTIONS, QUESTIONS, PATIENT_DETAILS, PATIENT_DATA, PATIENT_PROVIDER_INFO } from '../actions/types';
+import { DEFAULT_QUESTION, CUSTOM_QUESTIONS, QUESTIONS, PATIENT_DETAILS, PATIENT_DATA, PATIENT_PROVIDER_INFO, SUBMIT_QUESTIONNAIRES, ERROR_SUBMIT_QUESTIONNAIRES } from '../actions/types';
 
 const INITIAL_STATE = {
     defaultQuestion : [],
@@ -22,11 +22,13 @@ export default (state = INITIAL_STATE, action) => {
         case PATIENT_DETAILS:
             return {...state, patientInfo: action.payload.patientInfo, userInfo : action.payload.userInfo, patientData : action.payload.patientData }
         case PATIENT_DATA :
-        console.log("Patient reducer, patient data : " , action.payload);
             return  {...state, ...action.payload }
         case PATIENT_PROVIDER_INFO :
-        console.log("Patient reducer, physician info" , action.payload);
             return { ...state, physicianInfo : action.payload.physicianInfo }
+        case SUBMIT_QUESTIONNAIRES : 
+            return { ...state, ...action.payload }
+        case ERROR_SUBMIT_QUESTIONNAIRES : 
+            return { ...state, ...action.payload }
         default:
             return state;
     }

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { QUESTIONS, PATIENT_DETAILS, PATIENT_DATA, PATIENT_DATA_FAIL, PATIENT_PROVIDER_INFO } from './types';
+import { QUESTIONS, PATIENT_DETAILS, PATIENT_DATA, PATIENT_DATA_FAIL, PATIENT_PROVIDER_INFO, SUBMIT_QUESTIONNAIRES, ERROR_SUBMIT_QUESTIONNAIRES } from './types';
 
 export const fetchPatientData = () => {
     const user = localStorage.getItem('userID') ? localStorage.getItem('userID') : '';
@@ -50,34 +50,6 @@ export const fetchQuestions = () => {
         )
     } 
 }
-
-export const fetchPatientDetails = (id) => {
-    const url = `/api/user/${id}`;
-    const request = axios.get(url);
-    let userInfo, patientInfo, patientData;
-    return(dispatch) => {
-        request.then( res => {
-            userInfo = res.data;
-        }).then(
-            axios.get(`/api/patient_info/${userInfo.id}`).then( res => {
-                patientInfo = res.data;
-            }).then(
-            axios.get(`/api/patient_data/${patientInfo.patient_data_id}`).then( res => {
-                patientData = res.data;
-                dispatch({
-                    type: PATIENT_DETAILS,
-                    payload : {
-                        patientInfo,
-                        userInfo,
-                        patientData,
-                    }
-                })
-            })
-            )
-        )
-    }
-}
-
 export const fetchProviderInfo = () => {
     console.log("fetching provider info")
     const providerID = localStorage.getItem('patientProviderID') ? localStorage.getItem('patientProviderID') : ''; 
@@ -98,6 +70,22 @@ export const fetchProviderInfo = () => {
     }
 }
 
-export const submitForm = () => {
+export const submitForm = (objQuestionnaire) => {
     console.log("submitForm ")
+    const url = `/api/patient_data/new`;
+    const request = axios.post(url, objQuestionnaire);
+
+    return (dispatch) => {
+        request.then( res => {
+            dispatch({
+                type : SUBMIT_QUESTIONNAIRES,
+                payload : "Thank you for filling out the questionnaires!"
+            })
+        }, err => {
+            dispatch({
+                type : ERROR_SUBMIT_QUESTIONNAIRES,
+                payload : err,
+            })
+        })
+    }
 }

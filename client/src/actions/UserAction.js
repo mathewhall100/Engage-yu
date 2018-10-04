@@ -32,7 +32,7 @@ export const fetchUserDetails = (sub) => {
                     }
                 })
         }, (error) =>{
-            console.log(error)
+            console.log("Error : ", error)
         })
         
     }, (error) =>{console.log(error)});

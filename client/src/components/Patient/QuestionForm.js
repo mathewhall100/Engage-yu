@@ -10,6 +10,7 @@ import Button from '@material-ui/core/Button';
 import FormText from '../Forms/FormText';
 import FormRadio from '../Forms/FormRadio';
 import FormCheckBoxList from '../Forms/FormCheckboxList';
+import FormButtonList from '../Forms/FormButtonList';
 import ChkList from '../Forms/FormChkList';
 import {submitForm} from '../../actions/PatientAction';
 const styles = theme => ({
@@ -44,6 +45,25 @@ const styles = theme => ({
 
 class QuestionForm extends Component {
     submit(values){    
+        console.log("Submitted values: ", values);
+        let objSubmit = {}
+        /*
+        record_number: { type: Number, required: [true, "No record number"] },
+        valid: { type: Boolean, default: false },
+        day: { type: Number, required: [true, "No record day"] },
+        time: { type: String, required: [true, "No record time"] },
+
+        scheduled_datetime:  {type: Date, required: true},
+        actual_datetime: Date,
+
+        medication_adherance: { type: String, enum: ["yes", "no", "no meds", "unanswered", "not asked"] },
+
+        data: [{ type: Boolean }],
+        late: {type: Boolean, default: false},
+        patient_comments: String
+        */
+
+
     }
 
     renderQuestion = () => {        
@@ -58,10 +78,11 @@ class QuestionForm extends Component {
             })
             return(
                 <div>
-                    <FormCheckBoxList
+                    <FormButtonList
                         hints={item.hints}
                         items={radioItems}
                         name={item.question}
+                        index={index}
                         
                     />
                     <hr />
@@ -70,29 +91,7 @@ class QuestionForm extends Component {
             )
         });
     }
-    renderRadioButtons = (objQuestion, index, question, hints) => {
-        return(
-            <div>
-                <label>{question}</label>
-                <FormRadio 
-                    name={"question"+index}
-                    items={objQuestion}
-                />
-            </div>
-        );
-    }
-    renderCheckboxList = (objQuestion, index, question, hints) => {
-        return (
-            <div>
-                <label>{question}</label>
-                <FormRadio
-                    name={"question" + index}
-                    items={objQuestion}
-                />
-            </div>
-
-        );
-    }
+    
     render(){
         const { handleSubmit, classes, pristine, submitting } = this.props;
 

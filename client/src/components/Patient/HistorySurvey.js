@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import moment from 'moment';
+import { Redirect } from 'react-router-dom';
 import connect from 'react-redux';
 import PropTypes from 'prop-types';
 import IconButton from '@material-ui/core/IconButton';
@@ -7,6 +8,11 @@ import WarningIcon from '@material-ui/icons/Warning';
 import CheckIcon from '@material-ui/icons/Check';
 import EditIcon from '@material-ui/icons/Edit';
 import { withStyles } from '@material-ui/core/styles';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import Typography from '@material-ui/core/Typography';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import green from '@material-ui/core/colors/green';
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
@@ -14,25 +20,49 @@ import {Link } from 'react-router-dom';
 import _ from 'lodash';
 import { Dialog } from '@material-ui/core';
 
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
 
 const styles = theme => ({
+    historyRoot: {
+        width: '100%',
+        display: 'inline',
+    },
     button: {
         margin: theme.spacing.unit,
+        
+    },
+    historyExpansionCol : {
+        display: 'inline-flex',
     },
     input: {
         display: 'none',
     },
     hyperLink : {
         textDecoration : 'none',
+    },
+    panelSummary : {
+        display: 'flowRoot',
     }
 });
 
 class HistorySurvey extends Component {
     state = {
         open : false,
+        redirect : false,
+        episode : '',
+        entry : '',
     }
-    handleOpen = () => {
-        this.setState({ open: true });
+    handleOpen = (episode, entry) => {
+        console.log("in handle open : ")
+        this.setState({ 
+            open: true ,
+            episode,
+            entry,
+        });
     };
 
     handleClose = () => {
@@ -61,84 +91,100 @@ class HistorySurvey extends Component {
                 })
                 console.log("Before moment : ", beforeMoment);
                 return(
-                    <React.Fragment>
-
-                        <Link key={epi.episode_number} to={`/patient/history/${epi.episode_number}`} className={classes.hyperLink}><Button variant='outlined' className={classes.button}>Episode {epi.episode_number}</Button></Link>
-                        <br/>
-                        {epi.record.map( item => {
-                            /* */
-                            return (
-                                [<Link key={epi.record_number} className={classes.hyperLink} to={`/patient/history/${epi.episode_number}/${item.record_number}`}>
-                                    
-                                    {item.valid === false ? 
-                                        [beforeMoment.includes(item.scheduled_datetime) ?
-                                            <Button variant='outlined' color='secondary' className={classes.button}>
-                                                <Icon aria-label="Edit" >
-                                                    <EditIcon />
+                    <ExpansionPanel>
+                        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                            <Typography className={classes.heading}>Episode {epi.episode_number}</Typography>
+                        </ExpansionPanelSummary>
+                        <ExpansionPanelDetails className={classes.panelSummary}>
+                            <Typography className={classes.historyExpansionCol}>
+                            {epi.records.map( item => {
+                                /* */
+                                return (
+                                    [<Typography>>
+                                        {item.valid === false ? 
+                                            [beforeMoment.includes(item.scheduled_datetime) ?
+                                                <Button variant='outlined' color='secondary' onClick={ () => this.handleOpen(epi.episode_number, item.record_number)} className={classes.button}>
+                                                    <Icon aria-label="Edit" >
+                                                        <EditIcon />
+                                                    </Icon>
+                                                    Record {item.record_number}
+                                                </Button>
+                                                : 
+                                                <Button variant='outlined' onClick={() => this.handleOpen(epi.episode_number, item.record_number)}  className={classes.button}>
+                                                <Icon aria-label="Warning">
+                                                    <WarningIcon />
                                                 </Icon>
                                                 Record {item.record_number}
                                             </Button>
-                                            : 
-                                        <Button variant='outlined' className={classes.button}>
-                                            <Icon aria-label="Warning">
-                                                <WarningIcon />
-                                            </Icon>
-                                            Record {item.record_number}
-                                        </Button>
-                                        ]
-                                    : 
-                                        <Button variant='outlined' color='primary' className={classes.button}>
-                                            <Icon aria-label="Check" >
-                                                <CheckIcon />
-                                            </Icon>
-                                            Record {item.record_number}
-                                        </Button>
-                                }
-                                        
+                                            ]
+                                        : 
+                                            <Button variant='outlined' color='primary' onClick={() => this.handleOpen(item.episode_number, item.record_number)}  className={classes.button}>
+                                                <Icon aria-label="Check" >
+                                                    <CheckIcon />
+                                                </Icon>
+                                                Record {item.record_number}
+                                            </Button>
+                                    }
+                                    </Typography>]
                                     
-                                </Link>]
-                                
-                            )
-                        })
-                        }
-                    </React.Fragment>
+                                )
+                            })
+                            }
+                            </Typography>
+                        </ExpansionPanelDetails>
+                    </ExpansionPanel>
                     )
                     
         })
         )
         
     }
+    handleRedirect=(episode, entry)=> {
+        console.log("here");
+        this.setState({
+            episode,
+            entry,
+            redirect : true
+        }   )
+    }
+
     render() {
         const { classes } = this.props;
-        const actions = [
-            <Button
-                label="Cancel"
-                primary={true}
-                onClick={this.handleClose}
-            />,
-            <Button
-                label="Submit"
-                primary={true}
-                keyboardFocused={true}
-                onClick={this.handleClose}
-            />,
-        ];
+        const { redirect, episode, entry } = this.state;
+        if (redirect) {
+            const url = `/patient/history/${episode}/${entry}`
+            return <Redirect to={url} episode={this.state.episode} entry={this.state.entry} />;
+        }
         console.log("history survey props : ", this.props);
         return(
             <div>
                 <h1>Survey History</h1>
-                <div>
+                <div className={classes.historyRoot}>
                     {this.props.patientData && this.props.patientData.episodes ? this.renderAllEpisodesRow(this.props.patientData.episodes, classes) : null}
                 </div>
                 <div>
                     <Dialog
-                        title='Edit this entry?'
-                        actions={actions}
+                        title='Edit late entry?'
                         modal={false}
                         open={this.state.open}
-
+                        onClose={this.handleClose}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
                     >
-                        Edit this entry?
+                        <DialogTitle id="alert-dialog-title">{"Edit late entry?"}</DialogTitle>
+                        <DialogContent>
+                            <DialogContentText id="alert-dialog-description">
+                                Proceed to edit this entry {this.state.episode? this.state.episode : null } entry number {this.state.entry ? this.state.entry : null } ?     
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={this.handleClose} color="primary">
+                                Cancel
+                            </Button>
+                            <Button onClick={() => this.handleRedirect(this.state.episode, this.state.entry)} color="primary" autoFocus>
+                                Proceed
+                            </Button>   
+                        </DialogActions>
                     </Dialog>
                 </div>
                 

@@ -19,13 +19,15 @@ class PatientConsoleRoutes extends Component {
     }
 
     render(){
+        console.log("this props in routes console : ", this.props);
+        console.log("this state in routes console : ", this.state);
         return(
             <div className="App">
 
                 <Switch>
                     <Route exact path="/patient" render={props => <Dashboard {...this.props}> </Dashboard>} />
                     <Route exact path='/patient/dashboard' render={props => <Dashboard {...this.props}></Dashboard>} />
-                    <Route exact path='/patient/history/:episode/:entry' render={props => <Dashboard {...this.props} test="test this route"></Dashboard>} />
+                    <Route exact path='/patient/history/:episode/:entry' render={props => <Dashboard {...this.props}  test="test this route"></Dashboard>} />
                     <Route exact path='/patient/complete' render={props => <AfterSurvey {...this.props}></AfterSurvey>} />
                     <Route exact path='/patient/physician' render={props => <PhysicianInfo {...this.props}></PhysicianInfo>} />
                     <Route exact path='/patient/history' render={props => <HistorySurvey {...this.props}></HistorySurvey>} />

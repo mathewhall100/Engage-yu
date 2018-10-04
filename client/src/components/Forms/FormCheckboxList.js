@@ -50,11 +50,11 @@ class CheckboxList extends React.Component {
                                 >
                                     <FormControlLabel
                                         key={item.label}
-                                        value={item.value}
+                                        value={item.value.toString()}
                                         control={<Radio />}
                                         label={item.label}
                                     >
-                                        <Radio key={item.value} value={item.value} label={item.label} />
+                                        <Radio key={item.value} value={item.value.toString()} label={item.label} />
                                     </FormControlLabel>
                                 </ListItem>
                             )}
@@ -78,7 +78,7 @@ class CheckboxList extends React.Component {
         console.log("In checkbox list : ", this.props);
 
         return (
-            <Field name={name} items={items} hints={hints} classes={classes} component={this.renderCheckboxList}>
+            <Field name={name} type='radio' items={items} hints={hints} classes={classes} component={this.renderCheckboxList}>
                 
             </Field>
         );
