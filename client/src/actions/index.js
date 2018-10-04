@@ -6,5 +6,6 @@ export * from './EnrollNewPatient';
 export * from './ConsoleTitleAction';
 export * from './SurveyAction';
 export * from './ActiveSurveysAction';
+export * from './ReportAction';
 
 

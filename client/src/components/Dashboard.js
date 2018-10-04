@@ -20,10 +20,6 @@ class Dashboard extends Component {
 
     render () {
         
-        const { isAuthenticated } = this.props;
-        console.log("Props : ", this.props);
-        if (!isAuthenticated) return <Redirect to='/' />
-
         return (
                 <div>
 
@@ -41,6 +37,7 @@ class Dashboard extends Component {
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({ selectConsoleTitle, fetchActiveSurveys }, dispatch);
 }
+
 function mapStateToProps({auth}){
     console.log(auth);
     return (auth);

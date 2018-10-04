@@ -13,7 +13,10 @@ const recordSchema = new Schema({
     
     medication_adherance: { type: String, enum: ["yes", "no", "no meds", "unanswered", "not asked"] }, 
 
-    data: [{ type: Boolean }],
+    data: [{ 
+        question_number: Number,
+        question_answers: [{type: Boolean }]
+    }],
     late: {type: Boolean, default: false},
     patient_comments: String
 

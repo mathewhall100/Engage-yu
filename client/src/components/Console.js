@@ -37,25 +37,21 @@ const styles = theme => ({
     },
 
   },
-
   navIconHide: {
     [theme.breakpoints.up('md')]: {
       display: 'none',
     },
   },
-
   drawerPaper: {
     width: drawerWidth,
     [theme.breakpoints.up('md')]: {
       position: 'relative',
     },
   },
-
   //toolbar: theme.mixins.toolbar,
   toolbarCompensatePadding: {
     paddingTop: 40,
   },
-
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
@@ -81,7 +77,7 @@ class Console extends Component {
         const drawer = (
           <div style={{fontSize: 11}}>
 
-            {/* <div className={classes.toolbar} /> */}
+            {/* <div className={classes.toolbar} />  */}
             <List>
               <ListItems />
             </List>

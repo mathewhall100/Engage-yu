@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link, Redirect} from 'react-router-dom';
 import { reset, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
+import { defaultProps } from 'recompose';
 
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -20,7 +21,7 @@ import EnrollFormFailedDialog from './Dialogs/EnrollFormFailedDialog.js'
 import providerAPI from "../utils/provider.js";
 import patient_infoAPI from "../utils/patient_info.js";
 import patient_dataAPI from "../utils/patient_data.js";
-import { defaultProps } from 'recompose';
+
 
 let selectItems = [];
 
@@ -60,7 +61,6 @@ class EnrollPatientForm extends Component {
 
     componentDidMount() {
 
-        //console.log(`Dr. ${localStorage.getItem('profile.name')}`)
         // On component mount, fetch names of all providers in provider group to populate primary provider form field
         providerAPI.findAllByGroup(this.state.providerGroupId)
             .then(res => {
@@ -135,25 +135,20 @@ class EnrollPatientForm extends Component {
             provider_group_name: selectItems[values.provider].group_name
         })
         .then(res => {
-            console.log("res.data: " + JSON.stringify(res.data, null, 2 ))
+            // console.log("res.data: " + JSON.stringify(res.data, null, 2 ))
 
             patient_dataAPI.createNewPatient({
                 patient_info_id: res.data._id
             })
             .then(result=> {
-                console.log("result.data: " + JSON.stringify(result.data, null, 2 ))
+                // console.log("result.data: " + JSON.stringify(result.data, null, 2 ))
 
                 patient_infoAPI.insertRef(res.data._id, {
                     patient_data_ref: result.data._id
                 })
                 .then(res => {
-                    console.log("res.data: " + JSON.stringify(res.data, null, 2 ))
+                   // console.log("res.data: " + JSON.stringify(res.data, null, 2 ))
 
-                    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-                    // AuthO app call to create account and then insert sub into user account needs to go here
-                    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-        
                     this.setState({
                         name: `${values.firstName} ${values.lastName}`,
                         dob: values.dob,
