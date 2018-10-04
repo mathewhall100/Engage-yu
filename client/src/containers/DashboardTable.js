@@ -56,6 +56,16 @@ const CustomTableCell = withStyles(theme => ({
 
 class DashboardTable extends React.Component {
 
+  async componentWillReceiveProps(nextProps) {
+    // console.log("will receive : ", nextProps);
+    // userId: this.state.user,
+    await  this.setState({activeSurveysLength:  nextProps.activeSurveys.length}),
+    await this.setState({ tableData:  this.createData(nextProps.activeSurveys) })
+    if (this.state.tableData) {
+       this.setState({ tableDataFiltered: this.filterData(this.createData(nextProps.activeSurveys), this.state.personFilter, this.state.statusFilter, this.state.checked) }) }
+  }
+
+
   state = {
     
     redirect: false,
@@ -80,31 +90,14 @@ class DashboardTable extends React.Component {
     userId: "5b844946d8dc5ce848cd28a4"
   };
 
-  async componentWillReceiveProps(nextProps) {
-    // console.log("will receive : ", nextProps);
-    //userId: this.state.user,
-    activeSurveysLength:  nextProps.activeSurveys.length,
-    await this.setState({ tableData:  this.createData(nextProps.activeSurveys) })
-    if (this.state.tableData) { this.setState({ tableDataFiltered: this.filterData(this.createData(nextProps.activeSurveys), this.state.personFilter, this.state.statusFilter, this.state.checked) }) }
-    //console.log("tableData: ", this.state.tableData)
-  }
-
   createStatus = (status, records, entries, startDate, endDate, entriesPerDay) => {
-    // console.log("createStatus: ", status)
-    // console.log("createRecords: ", records)
-    // console.log("createEntries: ", entries)
-    // console.log("createStartdate: ", startDate)
-    // console.log("createEndDate: ", endDate)
-    // console.log("entriesPerDay: ", entriesPerDay)
 
     let diffDays = 0;
-    let estCurrentEntries = 0;
     let progress = 0;
     let compliance = 0;
 
     if (status === "active") {
-      //console.log("moment1: ", moment())
-      //console.log("moment2: ", moment(endDate))
+
       if (moment().isAfter(moment(endDate))) {
         return {
           status: "awaiting review",
@@ -113,21 +106,10 @@ class DashboardTable extends React.Component {
         }
       }
 
-      // console.log("moment1: ", moment(moment(), "DD.MM.YYYY"))
-      // console.log("moment2: ", moment(moment(startDate), "DD.MM.YYYY"))
-
       diffDays = moment(moment(), "DD.MM.YYYY").diff(moment(moment(startDate), "DD.MM.YYYY"), 'days')
-      estCurrentEntries = diffDays*entriesPerDay;
-      progress = Math.round((estCurrentEntries/records)*100)
-      compliance = entries ? Math.round((entries/estCurrentEntries)*100) : 0
-      compliance > 100 ? compliance = 100 : null
-
-      // console.log("entries/day: ", entriesPerDay)
-      // console.log("diffDays: ", diffDays)
-      // console.log("estCurrentEntries: ", estCurrentEntries)
-      // console.log("compliance: ", compliance)
-      // console.log("progress: ", progress)
-
+      progress = Math.round(((diffDays*entriesPerDay)/records)*100)
+      compliance = entries ? Math.round((entries/(diffDays*entriesPerDay))*100) : 0
+      compliance = compliance > 100 ? 100 : compliance
       return {
         status: "active",
         compliance: compliance,
@@ -140,6 +122,7 @@ class DashboardTable extends React.Component {
         compliance: compliance,
         progress: 100,
       }
+
     } else return { status: status }
 
   }
@@ -171,7 +154,6 @@ class DashboardTable extends React.Component {
       newData.push(newDataObj)
     })
     console.log("newData: ", newData)
-    //this.setState({tableData: newData})
     return newData;
   };
 
@@ -333,15 +315,11 @@ class DashboardTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   // progress bar create loop
-
   statusProgressBar = (progress) => {
-    //console.log("progress: ", progress)
     let progressBar = [];
     if (progress < 1) {return null}
     if(progress > 100) {progress = 100}
-    //for (let i = 0; i < Math.round(progress/4); i++) {
       times(Math.round(progress/4), (index) => progressBar.push(<span key={index}>|</span>));
-    //}
     return progressBar;
   }
 
@@ -469,6 +447,7 @@ const mapStateToProps = (state) => {
       user: state.user
   }
 };
+
 DashboardTable = connect(mapStateToProps)(DashboardTable)
 DashboardTable = withStyles(styles, { withTheme: true })(DashboardTable)
 export default DashboardTable
