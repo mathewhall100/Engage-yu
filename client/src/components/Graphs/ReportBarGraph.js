@@ -25,6 +25,7 @@ class ReportBarGraph extends React.Component {
     }
 
     render () {
+
         return (
 
             <div>

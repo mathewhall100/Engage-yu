@@ -13,8 +13,10 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 import { BarChart, Bar, XAxis, YAxis, Legend, ResponsiveContainer } from 'recharts';
 
+import Callback from '../components/Callback';
 import ReportTable from '../components/Tables/ReportTable';
 import ReportBarGraph from '../components/Graphs/ReportBarGraph';
+
 
 
 const styles = theme => ({
@@ -277,9 +279,9 @@ class ReportDisplayData extends Component {
 
             <div>
 
-                {displayData && questions && episode ? null : <div>
-                        Loading ... 
-                </div> }
+                {displayData && questions && episode ? null : <Callback />}
+                       
+                
 
                 {displayData && questions && episode && <Paper className={classes.root}>
 
@@ -294,7 +296,7 @@ class ReportDisplayData extends Component {
                                 <Grid item xs={4}>
                                     <Button className={classes.btn} onClick={event => this.handleReportPrepClick(event)}>Prepare Report</Button>
                                 </Grid>
-                                
+
                             </Grid>
 
                             <div className={classes.graphContainer}>
@@ -304,25 +306,22 @@ class ReportDisplayData extends Component {
                                     displayQuestion={displayQuestion}
                                     question={questions[displayQuestion]}
                                     height={230}
+                                    responsive="true"
                                 />
-                               
                             </div> 
 
                         </Grid>
 
                         <Grid item xs={6}>
-                        
                             <div className={classes.tableContainer}>
                                 <RenderQuestion />
                                 <ReportTable 
                                     displayData={displayData}
                                     displayQuestion={displayQuestion}
                                     question={questions[displayQuestion]}
-
                                     numDays={this.state.episode.num_days}
                                 />
                             </div>
-
                         </Grid>
                     </Grid>
 
