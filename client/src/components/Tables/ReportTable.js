@@ -4,9 +4,7 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
 
 
 const CustomTableCell = withStyles(theme => ({
@@ -41,7 +39,7 @@ class ReportTable extends React.Component {
     render () {
         return (
 
-            <Table style={{ width: '90%'}}>    
+            <Table style={{ width: '100%'}}>    
                 <TableHead >
                     <TableRow>
                         <CustomTableCell style={{width: "20%"}}>Time</CustomTableCell>

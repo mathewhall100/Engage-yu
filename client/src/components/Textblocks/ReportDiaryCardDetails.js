@@ -40,8 +40,6 @@ class ReportDiaryCardDetails extends React.Component {
         const { episode, classes } = this.props
         const { compliance } = this.state
 
-        console.log("ReportPrepareEpisode2: ", episode)
-
         return (
 
             <div>
