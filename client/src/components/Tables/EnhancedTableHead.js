@@ -9,7 +9,7 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Tooltip from '@material-ui/core/Tooltip';
 import Checkbox from '@material-ui/core/Checkbox';
-import { lighten } from '@material-ui/core/styles/colorManipulator';
+// import { lighten } from '@material-ui/core/styles/colorManipulator';
 
 
 const CustomTableCell = withStyles(theme => ({
@@ -18,15 +18,6 @@ const CustomTableCell = withStyles(theme => ({
   },
 }))(TableCell);
 
-const rows = [
-  { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
-  { id: 'number', numeric: false, disablePadding: false, label: 'Hosp Id' },
-  { id: 'start', numeric: false, disablePadding: false, label: 'Start' },
-  { id: 'end', numeric: false, disablePadding: false, label: 'End' },
-  { id: 'timeframe', numeric: false, disablePadding: false, label: 'Timeframe' },
-  { id: 'progress', numeric: false, disablePadding: false, label: 'Progress' },
-  { id: 'requester', numeric: false, disablePadding: false, label: 'Requester' }
-];
 
 class EnhancedTableHead extends React.Component {
 
@@ -36,13 +27,13 @@ class EnhancedTableHead extends React.Component {
   
     render() {
 
-      const { onDeSelectAllClick, order, orderBy, numSelected, rowCount } = this.props;
+      const { onDeSelectAllClick, order, orderBy, numSelected, displayCheckbox, rowCount } = this.props;
   
       return (
         <TableHead>
           <TableRow>
 
-            <CustomTableCell padding="checkbox">
+            {displayCheckbox && <CustomTableCell padding="checkbox">
             {numSelected > 0 && 
               <Checkbox
                 indeterminate={numSelected > 0 } 
@@ -51,9 +42,9 @@ class EnhancedTableHead extends React.Component {
               />
             }
 
-            </CustomTableCell>
+            </CustomTableCell> }
 
-            {rows.map(row => {
+            {this.props.rows.map(row => {
               return (
                 <CustomTableCell
                   key={row.id}
@@ -86,7 +77,6 @@ class EnhancedTableHead extends React.Component {
   EnhancedTableHead.propTypes = {
     numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
-    onDeSelectAllClick: PropTypes.func.isRequired,
     order: PropTypes.string.isRequired,
     orderBy: PropTypes.string.isRequired,
     rowCount: PropTypes.number.isRequired,

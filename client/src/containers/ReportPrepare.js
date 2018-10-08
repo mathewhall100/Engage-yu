@@ -136,7 +136,7 @@ class ReportPrepare extends Component {
             })
         } 
     }
-
+    
     state = {
         episode: [],
         questions: [],
@@ -145,7 +145,6 @@ class ReportPrepare extends Component {
 
     displayDataCalc = (records, numDays, numTimes, numQuestions) => {
         //console.log("displaycalc Data: ", records, " ", " ", numDays, " ", numTimes, " ", numQuestions)
-
         let timesArrayIn = [];
         let questionDataSum = [];
         let obj = {};
@@ -194,7 +193,6 @@ class ReportPrepare extends Component {
                 ans5: d.questions[question].answers[4],
             })
         })
-
         //console.log("graphdataout: ", array)
         return array;
     }
@@ -208,11 +206,6 @@ class ReportPrepare extends Component {
         const RenderPatientDetails = () => {
             return (
                 <Grid container spacing={24}>
-                    {/* <Grid item xs={12}>
-                        <div className={classes.bold}>
-                            Patient Details
-                        </div>
-                    </Grid> */}
                     <Grid item xs={3}>
                         <Typography variant="caption">
                             Patient name
@@ -250,61 +243,60 @@ class ReportPrepare extends Component {
         }
         
         const RenderDiaryCardDetails = () => {
-        return (
-            <Grid container spacing={24}>
-                <Grid item xs={6}> 
-                    <ReportDiaryCardDetails episode={episode} /> 
+            return (
+                <Grid container spacing={24}>
+                    <Grid item xs={6}> 
+                        <ReportDiaryCardDetails episode={episode} /> 
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Typography variant="body2">
+                            <div className={classes.detailsText}>
+                                <br />
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>Diary card requested by: </td>
+                                            <td className={classes.rightColumn}>{ startCase(`Dr. ${episode.requesting_provider_firstname} ${episode.requesting_provider_lastname}`) }</td>
+                                        </tr><tr>
+                                            <td>Report to: </td>
+                                            <td className={classes.rightColumn}> {startCase(`Dr. ${ this.props.patientInfo.primary_provider_name}`) }</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </Typography>
+                    </Grid>
                 </Grid>
-                <Grid item xs={6}>
+            )
+        }  
+
+        const RenderReportDetails = () => {
+            return (
+                <div>
+                    <div className={classes.bold}>
+                            Report Details
+                    </div>
+                    <br />
+
                     <Typography variant="body2">
-                        <div className={classes.detailsText}>
-                            <br />
-                            <table>
-                                <tbody>
-
-                                    <tr>
-                                        <td>Diary card requested by: </td>
-                                        <td className={classes.rightColumn}>{ startCase(`Dr. ${episode.requesting_provider_firstname} ${episode.requesting_provider_lastname}`) } </td>
-                                    </tr> <tr>
-                                        <td>Report to: </td>
-                                        <td className={classes.rightColumn}> {startCase(`Dr. ${ this.props.patientInfo.primary_provider_name}`) } </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                            <div className={classes.detailsText}>
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>Report date: </td>
+                                            <td className={classes.rightColumn}>{moment().format("MMM Do YYYY")}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Report Requested by:  </td>
+                                            <td className={classes.rightColumn}> {startCase(`Dr. ${ user.details.firstname} ${ user.details.lastname}`) } </td>
+                                        </tr>                     
+                                    </tbody>
+                                </table>
+                            </div>
                     </Typography>
-                </Grid>
-            </Grid>
-        )
-    }
-
-    const RenderReportDetails = () => {
-        return (
-            <div>
-                <div className={classes.bold}>
-                        Report Details
-                 </div>
-                 <br />
-
-                <Typography variant="body2">
-                        <div className={classes.detailsText}>
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <td>Report date: </td>
-                                        <td className={classes.rightColumn}>{moment().format("MMM Do YYYY")}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Report Requested by:  </td>
-                                        <td className={classes.rightColumn}> {startCase(`Dr. ${ user.details.firstname} ${ user.details.lastname}`) } </td>
-                                    </tr>                     
-                                </tbody>
-                            </table>
-                        </div>
-                </Typography>
-            </div>
-        )
-    }
+                </div>
+            )
+        }
 
 
         return (
@@ -452,12 +444,12 @@ class ReportPrepare extends Component {
                                                     <TableBody key={day}>
 
                                                         <TableRow style={{height: "10px"}}>
-                                                            <CustomTableCell colspan={6}> 
+                                                            <CustomTableCell colSpan={6}> 
                                                             </CustomTableCell>
                                                         </TableRow>
 
                                                         <TableRow> 
-                                                            <CustomTableCell colspan={3}>
+                                                            <CustomTableCell colSpan={3}>
                                                                 Day: {day}: {moment(records[(day)*records.length/episode.num_days].scheduled_datetime).format("MMM Do YYYY")} 
                                                                 <hr />
                                                             </CustomTableCell>
@@ -487,7 +479,7 @@ class ReportPrepare extends Component {
                                                                 
                                                             )
                                                         })}
-                                                        </TableBody>)
+                                                    </TableBody>)
                                                 })}
 
                                                

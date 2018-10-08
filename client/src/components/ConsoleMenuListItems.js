@@ -47,7 +47,7 @@ export default class ListItems extends Component {
 
         <ListItem 
           button
-          
+          component={Link} to='/admin/find'
           selected={this.state.selectedIndex === 1}
           onClick={event => this.handleListItemClick(event, 1)}
           >
@@ -82,6 +82,7 @@ export default class ListItems extends Component {
 
         <ListItem 
           button
+
           selected={this.state.selectedIndex === 4}
           onClick={event => this.handleListItemClick(event, 4)}>
           <ListItemIcon>
@@ -95,6 +96,7 @@ export default class ListItems extends Component {
 
         <ListItem 
           button
+
           selected={this.state.selectedIndex === 5}
           onClick={event => this.handleListItemClick(event, 5)}>
           <ListItemIcon>
@@ -105,6 +107,7 @@ export default class ListItems extends Component {
 
         <ListItem 
           button
+
           selected={this.state.selectedIndex === 6}
           onClick={event => this.handleListItemClick(event, 6)}>
           <ListItemIcon>
@@ -115,6 +118,7 @@ export default class ListItems extends Component {
 
         <ListItem 
           button
+
           selected={this.state.selectedIndex === 7}
           onClick={event => this.handleListItemClick(event, 7)}>
           <ListItemIcon>
@@ -128,6 +132,7 @@ export default class ListItems extends Component {
 
         <ListItem 
           button
+          
           selected={this.state.selectedIndex === 8}
           onClick={event => this.handleListItemClick(event, 8)}>
           

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Router, Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { reduxForm } from 'redux-form';
+// import { reduxForm } from 'redux-form';
 import moment from 'moment';
 import { times, startCase } from 'lodash'
 
@@ -15,7 +15,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
+
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
@@ -33,7 +33,7 @@ import EnhancedTableToolbar from '../components/Tables/EnhancedTableToolbar'
 
 const styles = theme => ({
   root: {
-    width: "'100%'",
+    width: "100%",
     marginTop: theme.spacing.unit * 3,
   },
   table: {
@@ -128,7 +128,7 @@ class DashboardTable extends React.Component {
   }
 
   createData = (data) =>  {
-    console.log("createData: ", data)
+    // console.log("createData: ", data)
     let counter = 0;
     let newData = [];
 
@@ -153,7 +153,7 @@ class DashboardTable extends React.Component {
       };
       newData.push(newDataObj)
     })
-    console.log("newData: ", newData)
+    // console.log("newData: ", newData)
     return newData;
   };
 
@@ -220,7 +220,7 @@ class DashboardTable extends React.Component {
     //console.log("tableDataFiltered0: ", this.state.tableDataFiltered)
   };
 
- statusFilter = (filter) => {
+  statusFilter = (filter) => {
     //console.log("filter0 ", filter)
     this.setState({tableDataFiltered: this.filterData(this.state.tableData, this.state.personFilter, filter, this.state.selected) })
     this.setState({statusFilter: filter})
@@ -275,7 +275,7 @@ class DashboardTable extends React.Component {
   };
 
   handleRowClick = (event, patient, episode) => {
-    //console.log("row clicked: ", patient)
+    //console.log("row clicked: ", event, patient, episode)
     this.setState({
       patient: patient,
       episode: episode,
@@ -284,6 +284,9 @@ class DashboardTable extends React.Component {
   }
 
   handleCheckClick = (event, id) => {
+    event.stopPropagation();
+    event.nativeEvent.stopImmediatePropagation();
+    //console.log("checkclick: ", event, id)
     const { selected } = this.state;
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
@@ -331,6 +334,16 @@ class DashboardTable extends React.Component {
     const { activeSurveys } = this.props;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, this.state.activeSurveysLength - page * rowsPerPage);
 
+    const rows = [
+      { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
+      { id: 'number', numeric: false, disablePadding: false, label: 'Hosp Id' },
+      { id: 'start', numeric: false, disablePadding: false, label: 'Start' },
+      { id: 'end', numeric: false, disablePadding: false, label: 'End' },
+      { id: 'timeframe', numeric: false, disablePadding: false, label: 'Timeframe' },
+      { id: 'progress', numeric: false, disablePadding: false, label: 'Progress' },
+      { id: 'requester', numeric: false, disablePadding: false, label: 'Requester' }
+    ];
+
     const { redirect, patient, episode } = this.state;
      if (redirect) {
        const url=`/admin/report/${patient}&${episode}`
@@ -346,7 +359,6 @@ class DashboardTable extends React.Component {
           navLinksFilter={this.navLinksFilter}
           statusFilter={this.statusFilter}
           checkedFilter={this.checkedFilter}
-
          /> 
 
         <div className={classes.tableWrapper}>
@@ -359,6 +371,7 @@ class DashboardTable extends React.Component {
               onDeSelectAllClick={this.handleDeSelectAllClick}
               onRequestSort={this.handleRequestSort}
               rowCount={this.state.activeSurveysLength}
+              rows={rows}
             />
 
             <TableBody>
@@ -371,11 +384,8 @@ class DashboardTable extends React.Component {
                     <TableRow
                       hover
                       onClick={event => this.handleRowClick(event, d.patientInfoId, d.episodeId)}
-                      role="checkbox"
-                      aria-checked={isSelected}
                       tabIndex={-1}
                       key={d.id}
-                      selected={isSelected}
                     >
                       <CustomTableCell padding="checkbox"><Checkbox checked={isSelected} onClick={event => this.handleCheckClick(event, d._id)}/></CustomTableCell>
                       <CustomTableCell component="th" scope="row" padding="none">{startCase(d.name)}</CustomTableCell> 

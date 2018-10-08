@@ -28,7 +28,7 @@ class ReportDiaryCardDetails extends React.Component {
     }
 
     complianceCalc = (data) => {
-        console.log("completioncalc: ", data)
+       // console.log("completioncalc: ", data)
         let validCount = [];
         validCount = data.records.filter(record => record.valid === true)
         //console.log("validCount: ", validCount)

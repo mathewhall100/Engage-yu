@@ -6,9 +6,14 @@ export default {
         return axios.get("/api/patient_data/"+id);
     },
 
-    createNewPatient: function(patientInfo){
+    createNewPatient: function(info){
         console.log("Axios call made to '/api/patient_data' to 'createNewPatient'");
-        return axios.post("/api/patient_data/new", patientInfo);
+        return axios.post("/api/patient_data/new", info);
+    },
+
+    insertRef: function(id, info) {
+        console.log("Axios call made to '/api/patient_data' to 'insertRef' ", id);
+        return axios.put("/api/patient_data/insertRef/"+id, info);
     },
 
     newEpisode: function(id, episode){
