@@ -5,7 +5,7 @@ import jwtDecode from 'jwt-decode';
 // Configure Auth0 lock
 export const lock = new Auth0Lock('uQdJPDVXxxYgPqJiUoRVnAYFKZudGoHh', 'shikwan.auth0.com', {
     auth: {
-        redirectUrl: window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? 'http://localhost:3000/callback' : 'https://lit-island-56219.herokuapp.com//callback',
+        redirectUrl: window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? 'http://localhost:3000/callback' : 'https://lit-island-56219.herokuapp.com/callback',
         responseType: 'token id_token'
     },
     theme: {

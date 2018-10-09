@@ -20,7 +20,7 @@ export default class Auth {
         new auth0.WebAuth({
             domain: 'shikwan.auth0.com',
             clientID: 'uQdJPDVXxxYgPqJiUoRVnAYFKZudGoHh',
-            redirectUri: 'https://lit-island-56219.herokuapp.com//callback',
+            redirectUri: 'https://lit-island-56219.herokuapp.com/callback',
             audience: 'https://shikwan.auth0.com/api/v2/',
             responseType: 'token id_token',
             scope: 'openid profile'
