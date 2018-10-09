@@ -122,6 +122,28 @@ module.exports = {
         // }
     },
 
+    editRecord : function( req, res) {
+        console.log("Patient_data controller called to editRecord : ", req.body);
+
+        db.Patient_data.findOneAndUpdate(
+            {
+                "patient_info_id": "5b91d55d83a9cab314dc89c1",
+            },
+            {
+                "$push": { "episodes.$[outer].records.$[inner].time": 1523 }
+            },
+            {
+                "arrayFilters": [{ "outer.episode_number": 27.0 }, { "inner._id": "5ba06e3214dba31a98b895d0" }], new: true, upsert: true
+            }
+        ).then( data => {
+            console.log(data);
+            res.json(data);
+        }).catch( err => {
+            console.log(err);
+            res.json(err);
+        })
+    },
+
     // add a new record to an episode
     // To be sent req.params.id of patient and req.body of new record data
     addRecord: function(req, res) {
