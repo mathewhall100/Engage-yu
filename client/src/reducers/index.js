@@ -11,6 +11,7 @@ import SurveyQuestionsReducer from './SurveyQuestionsReducer';
 import SurveyPatientReducer from './SurveyPatientReducer';
 import ActiveSurveysReducer from './ActiveSurveysReducer';
 import ReportReducer from './ReportReducer';
+import ListPatientsByProvider from './PatientListReducer';
 
 export default combineReducers({
     form: formReducer,
@@ -23,5 +24,6 @@ export default combineReducers({
     surveyQuestions: SurveyQuestionsReducer,
     surveyPatient: SurveyPatientReducer,
     activeSurveys: ActiveSurveysReducer,
-    reportPatientData: ReportReducer
+    reportPatientData: ReportReducer,
+    listPatientsByProvider: ListPatientsByProvider
 });

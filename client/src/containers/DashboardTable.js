@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Router, Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { reduxForm } from 'redux-form';
+// import { reduxForm } from 'redux-form';
 import moment from 'moment';
 import { times, startCase } from 'lodash'
 
@@ -15,7 +15,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
+
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
@@ -33,7 +33,7 @@ import EnhancedTableToolbar from '../components/Tables/EnhancedTableToolbar'
 
 const styles = theme => ({
   root: {
-    width: "'100%'",
+    width: "100%",
     marginTop: theme.spacing.unit * 3,
   },
   table: {
@@ -55,6 +55,16 @@ const CustomTableCell = withStyles(theme => ({
 // Table component
 
 class DashboardTable extends React.Component {
+
+  async componentWillReceiveProps(nextProps) {
+    // console.log("will receive : ", nextProps);
+    // userId: this.state.user,
+    await  this.setState({activeSurveysLength:  nextProps.activeSurveys.length}),
+    await this.setState({ tableData:  this.createData(nextProps.activeSurveys) })
+    if (this.state.tableData) {
+       this.setState({ tableDataFiltered: this.filterData(this.createData(nextProps.activeSurveys), this.state.personFilter, this.state.statusFilter, this.state.checked) }) }
+  }
+
 
   state = {
     
@@ -80,31 +90,14 @@ class DashboardTable extends React.Component {
     userId: "5b844946d8dc5ce848cd28a4"
   };
 
-  async componentWillReceiveProps(nextProps) {
-    // console.log("will receive : ", nextProps);
-    //userId: this.state.user,
-    activeSurveysLength:  nextProps.activeSurveys.length,
-    await this.setState({ tableData:  this.createData(nextProps.activeSurveys) })
-    if (this.state.tableData) { this.setState({ tableDataFiltered: this.filterData(this.createData(nextProps.activeSurveys), this.state.personFilter, this.state.statusFilter, this.state.checked) }) }
-    //console.log("tableData: ", this.state.tableData)
-  }
-
   createStatus = (status, records, entries, startDate, endDate, entriesPerDay) => {
-    // console.log("createStatus: ", status)
-    // console.log("createRecords: ", records)
-    // console.log("createEntries: ", entries)
-    // console.log("createStartdate: ", startDate)
-    // console.log("createEndDate: ", endDate)
-    // console.log("entriesPerDay: ", entriesPerDay)
 
     let diffDays = 0;
-    let estCurrentEntries = 0;
     let progress = 0;
     let compliance = 0;
 
     if (status === "active") {
-      //console.log("moment1: ", moment())
-      //console.log("moment2: ", moment(endDate))
+
       if (moment().isAfter(moment(endDate))) {
         return {
           status: "awaiting review",
@@ -113,21 +106,10 @@ class DashboardTable extends React.Component {
         }
       }
 
-      // console.log("moment1: ", moment(moment(), "DD.MM.YYYY"))
-      // console.log("moment2: ", moment(moment(startDate), "DD.MM.YYYY"))
-
       diffDays = moment(moment(), "DD.MM.YYYY").diff(moment(moment(startDate), "DD.MM.YYYY"), 'days')
-      estCurrentEntries = diffDays*entriesPerDay;
-      progress = Math.round((estCurrentEntries/records)*100)
-      compliance = entries ? Math.round((entries/estCurrentEntries)*100) : 0
-      compliance > 100 ? compliance = 100 : null
-
-      // console.log("entries/day: ", entriesPerDay)
-      // console.log("diffDays: ", diffDays)
-      // console.log("estCurrentEntries: ", estCurrentEntries)
-      // console.log("compliance: ", compliance)
-      // console.log("progress: ", progress)
-
+      progress = Math.round(((diffDays*entriesPerDay)/records)*100)
+      compliance = entries ? Math.round((entries/(diffDays*entriesPerDay))*100) : 0
+      compliance = compliance > 100 ? 100 : compliance
       return {
         status: "active",
         compliance: compliance,
@@ -140,12 +122,13 @@ class DashboardTable extends React.Component {
         compliance: compliance,
         progress: 100,
       }
+
     } else return { status: status }
 
   }
 
   createData = (data) =>  {
-    console.log("createData: ", data)
+    // console.log("createData: ", data)
     let counter = 0;
     let newData = [];
 
@@ -170,8 +153,7 @@ class DashboardTable extends React.Component {
       };
       newData.push(newDataObj)
     })
-    console.log("newData: ", newData)
-    //this.setState({tableData: newData})
+    // console.log("newData: ", newData)
     return newData;
   };
 
@@ -238,7 +220,7 @@ class DashboardTable extends React.Component {
     //console.log("tableDataFiltered0: ", this.state.tableDataFiltered)
   };
 
- statusFilter = (filter) => {
+  statusFilter = (filter) => {
     //console.log("filter0 ", filter)
     this.setState({tableDataFiltered: this.filterData(this.state.tableData, this.state.personFilter, filter, this.state.selected) })
     this.setState({statusFilter: filter})
@@ -293,7 +275,7 @@ class DashboardTable extends React.Component {
   };
 
   handleRowClick = (event, patient, episode) => {
-    //console.log("row clicked: ", patient)
+    //console.log("row clicked: ", event, patient, episode)
     this.setState({
       patient: patient,
       episode: episode,
@@ -302,6 +284,9 @@ class DashboardTable extends React.Component {
   }
 
   handleCheckClick = (event, id) => {
+    event.stopPropagation();
+    event.nativeEvent.stopImmediatePropagation();
+    //console.log("checkclick: ", event, id)
     const { selected } = this.state;
     const selectedIndex = selected.indexOf(id);
     let newSelected = [];
@@ -333,15 +318,11 @@ class DashboardTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1;
 
   // progress bar create loop
-
   statusProgressBar = (progress) => {
-    //console.log("progress: ", progress)
     let progressBar = [];
     if (progress < 1) {return null}
     if(progress > 100) {progress = 100}
-    //for (let i = 0; i < Math.round(progress/4); i++) {
       times(Math.round(progress/4), (index) => progressBar.push(<span key={index}>|</span>));
-    //}
     return progressBar;
   }
 
@@ -352,6 +333,16 @@ class DashboardTable extends React.Component {
     const { order, orderBy, tableDataFiltered, selected, rowsPerPage, page } = this.state;
     const { activeSurveys } = this.props;
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, this.state.activeSurveysLength - page * rowsPerPage);
+
+    const rows = [
+      { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
+      { id: 'number', numeric: false, disablePadding: false, label: 'Hosp Id' },
+      { id: 'start', numeric: false, disablePadding: false, label: 'Start' },
+      { id: 'end', numeric: false, disablePadding: false, label: 'End' },
+      { id: 'timeframe', numeric: false, disablePadding: false, label: 'Timeframe' },
+      { id: 'progress', numeric: false, disablePadding: false, label: 'Progress' },
+      { id: 'requester', numeric: false, disablePadding: false, label: 'Requester' }
+    ];
 
     const { redirect, patient, episode } = this.state;
      if (redirect) {
@@ -368,7 +359,6 @@ class DashboardTable extends React.Component {
           navLinksFilter={this.navLinksFilter}
           statusFilter={this.statusFilter}
           checkedFilter={this.checkedFilter}
-
          /> 
 
         <div className={classes.tableWrapper}>
@@ -381,6 +371,7 @@ class DashboardTable extends React.Component {
               onDeSelectAllClick={this.handleDeSelectAllClick}
               onRequestSort={this.handleRequestSort}
               rowCount={this.state.activeSurveysLength}
+              rows={rows}
             />
 
             <TableBody>
@@ -393,11 +384,8 @@ class DashboardTable extends React.Component {
                     <TableRow
                       hover
                       onClick={event => this.handleRowClick(event, d.patientInfoId, d.episodeId)}
-                      role="checkbox"
-                      aria-checked={isSelected}
                       tabIndex={-1}
                       key={d.id}
-                      selected={isSelected}
                     >
                       <CustomTableCell padding="checkbox"><Checkbox checked={isSelected} onClick={event => this.handleCheckClick(event, d._id)}/></CustomTableCell>
                       <CustomTableCell component="th" scope="row" padding="none">{startCase(d.name)}</CustomTableCell> 
@@ -469,6 +457,7 @@ const mapStateToProps = (state) => {
       user: state.user
   }
 };
+
 DashboardTable = connect(mapStateToProps)(DashboardTable)
 DashboardTable = withStyles(styles, { withTheme: true })(DashboardTable)
 export default DashboardTable

@@ -33,44 +33,44 @@ export default {
         return axios.post("/api/patient_info/search", searchterm);
     },  
     
-    createNewPatient: function(patientInfo) {
-        console.log("Axios call made to '/api/patient_info' to 'createNewPatient'" + JSON.stringify(patientInfo, null, 2));
-        return axios.post("/api/patient_info/new", patientInfo);
+    createNewPatient: function(info) {
+        console.log("Axios call made to '/api/patient_info' to 'createNewPatient'" + JSON.stringify(info, null, 2));
+        return axios.post("/api/patient_info/new", info);
     },
 
-    insertRef: function(id, patientInfo) {
+    insertRef: function(id, info) {
         console.log("Axios call made to '/api/patient_info' to 'insertRef' ", id);
-        return axios.put("/api/patient_info/insertRef/"+id, patientInfo);
+        return axios.put("/api/patient_info/insertRef/"+id, info);
     },
 
-    updateEmail: function(id, patientInfo) {
+    updateEmail: function(id, info) {
         console.log("Axios call made to '/api/patient_info' to 'updateEmail' ", id);
-        return axios.put("/api/patient_info/updateEmail/"+id, patientInfo);
+        return axios.put("/api/patient_info/updateEmail/"+id, info);
     },
 
-    updatePhone: function(id, patientInfo) {
+    updatePhone: function(id, info) {
         console.log("Axios call made to '/api/patient_info' to 'updatePhone' ", id);
-        return axios.put("/api/patient_info/updatePhone/"+id, patientInfo);
+        return axios.put("/api/patient_info/updatePhone/"+id, info);
     },
 
-    updateStatus: function(id, patientInfo) {
+    updateStatus: function(id, info) {
         console.log("Axios call made to '/api/patient_info' to 'updateStatus' ", id);
-        return axios.put("/api/patient_info/updateStatus/"+id, patientInfo);
+        return axios.put("/api/patient_info/updateStatus/"+id, info);
     },
 
-    updateName: function(id, patientInfo ){
+    updateName: function(id, info ){
         console.log("Axios call made to '/api/patient_info' to 'updateName' ", id);
-        return axios.put("/api/patient_info/updateName/"+id, patientInfo);
+        return axios.put("/api/patient_info/updateName/"+id, info);
     },
 
-    updateProvider: function(id, patientInfo) {
+    updateProvider: function(id, info) {
         console.log("Axios call made to '/api/patient_info' to 'updateProvider' ", id);
-        return axios.put("/api/patient_info/updateProvider/"+id, patientInfo);
+        return axios.put("/api/patient_info/updateProvider/"+id, info);
     },
 
-    updateProviderGroup: function(id, patientInfo) {
+    updateProviderGroup: function(id, info) {
         console.log("Axios call made to '/api/patient_info' to 'updateProviderGroup' ", id);
-        return axios.put("/api/patient_info/updateProviderGroup/"+id, patientInfo);
+        return axios.put("/api/patient_info/updateProviderGroup/"+id, info);
     },
 
 

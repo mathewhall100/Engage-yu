@@ -48,6 +48,49 @@ module.exports = {
         // }
     },
 
+     // INsert data ref during patient enroll
+    // To be sent req.params.id of patient to be updated and req.body with new patient_data ref id
+    insertRef: function(req, res) {
+        console.log("Patient_data controller called to 'insert Ref': ", req.params.id, " : ", req.body);
+        //console.log(`Requester:  ${req.user}`);
+        //if(req.user){
+
+            db.Patient_data
+            .findById({
+                _id: req.params.id}, {"episodes": 1}
+            )
+            .then(result => {
+                let lastEpisode = result.episodes[result.episodes.length-1]
+                lastEpisode.active_record_ref = req.body.active_record_ref
+                lastEpisode.active_record_id = req.body.active_record_id
+
+                 db.Patient_data
+                    .findOneAndUpdate(
+                        { _id: req.params.id},
+                        { $pop: {"episodes": 1} } 
+                    )
+                    .then(result => {
+
+                        db.Patient_data
+                        .findOneAndUpdate(
+                            { _id: req.params.id },
+                            { $push: {"episodes": lastEpisode} }
+                        )
+                         .then(result => {
+                            // console.log("RESULT:", result);
+                            res.json(result)
+                         })
+                    })
+            })
+            .catch(err => {
+                console.log(`CONTROLLER ERROR: ${err}`);
+                res.status(422).json(err);
+            })
+        // }else{
+        //     res.status(422).json('You do not have proper credential to perform this action.')
+        // }
+    },
+
     
     // Create a new patient_data episode 
     // To be sent req.params.id of patient and req.body of new episode info

@@ -186,7 +186,7 @@ class SurveyForm extends Component {
 
     componentDidMount() {
             this.props.fetchSurveyQuestions();
-            this.props.fetchSurveyPatientDetails("5ba3f0accab44e143054e9d4");
+            this.props.fetchSurveyPatientDetails("5b844945d8dc5ce848cd28a3");
     }
 
     componentWillReceiveProps(nextProps) {
@@ -349,6 +349,9 @@ class SurveyForm extends Component {
             notes: "",
             records:  records,
 
+            active_record_ref: "000000000000000000000000",
+            active_record_id: "000000000000000000000000",
+
             status: "pending",
             report_to: reportTo
         };
@@ -399,17 +402,27 @@ class SurveyForm extends Component {
             //console.log("activeobj: ", activeObj)
 
             activeAPI.create(activeObj)
-            .then(res => {
-                console.log("res.data: ", res.data)
+            .then(result => {
+                console.log("result.data: ", result.data)
 
-                this.setState ({surveySaveSuccess: true})   // save success dialog
+                patient_dataAPI.insertRef(result.data.patient_data_id, {
+                    episode_id: result.data.episode_id,
+                    active_record_ref: result.data._id,
+                    active_record_id: result.data._id
+                })
+                .then(res => {
+                    // console.log("res.data: " + JSON.stringify(res.data, null, 2 ))
+
+                    this.setState ({surveySaveSuccess: true})   // save success dialog
+                
+                })
+                .catch(err => {
+                    console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
+                    console.log(err);
+
+                    this.setState({surveySaveFailed: true}); // save success dialog
+                })
             })
-        })
-        .catch(err => {
-            console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-            console.log(err);
-
-            this.setState({surveySaveFailed: true}); // save success dialog
         })
      
     };

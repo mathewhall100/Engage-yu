@@ -35,7 +35,6 @@ const activeSchema = new Schema({
     entries_per_day: {type: Number, required: [true, "No number of entries per day supplied"]},
     last_entry: Date,
     num_entries: {type: Number, required: [true, 'No number of entries']},
-    
 
     status: {type: String, enum: ["pending", "active", "cancelled", "awaiting review", "reviewed", "actioned", "archived", ], default: "pending"},
     

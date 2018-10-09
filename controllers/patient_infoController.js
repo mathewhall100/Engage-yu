@@ -34,8 +34,8 @@ module.exports = {
     // requires physician id as searchterm in req.body.searchId
     // Returns json list of patients details only (sorted alphabeltically by last_name)
     findAllByProvider: function(req, res) {
-        console.log("Patient_info controller called to 'find all by provider'");
-        //console.log(`Requester:  ${req.user}`);
+        console.log("Patient_info controller called to 'find all by provider'" + req.params.id);
+        console.log(`Requester:  ${req.user}`);
         //if(req.user){
             db.Patient_info
             .find( {primary_provider_id: req.params.id}, {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1} )
@@ -190,7 +190,7 @@ module.exports = {
                 { _id: req.params.id },
                 { $set: { 
                     "patient_data_ref": req.body.patient_data_ref,
-                    "patient_data_id": req.body.patient_data_ref,
+                    "patient_data_id": req.body.patient_data_id,
                 }
                 }, opts
             )

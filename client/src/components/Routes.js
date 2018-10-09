@@ -22,7 +22,7 @@ class Routes extends Component {
                     <Route path='/admin/medication' render={props => <Admin {...this.props}></Admin>} />
                     <Route exact path='/callback' render={props => <Callback></Callback>} />
                     <Route path="/patient" render={props => <SK {...this.props} title='Dashboard' ></SK>} />
-                     <Route path="/notfound" component={NotFound} />
+                    <Route path="/notfound" component={NotFound} />
                     <Route component={NotFound} />
                 </Switch>
             </div>

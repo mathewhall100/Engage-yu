@@ -34,6 +34,9 @@ const episodeSchema = new Schema({
     
     remind_status: { type: String, enum: ["on", "off"], default: "on"},
     remind_mins_before: { type: Number, min: 1, max: 30, default: 10 },
+
+    active_record_ref: { type: Schema.Types.ObjectId, ref: "Active", required: [true, "No active record reference supplied"]},
+    active_record_id: { type: String, required: [true, "No active record id supplied"]},
     
     status: {type: String, enum: ["pending", "active", "cancelled", "awaiting review", "actioned", "archived" ], default: "pending"},
     reviewed_by: String,

@@ -97,7 +97,7 @@ class EnrollPatientForm extends Component {
         phone: "",
         hospId: "",
         provider: "",
-        enrioller: "",
+        enoller: "",
 
         enrollFailed: false,
         enrollSuccess: false
@@ -144,7 +144,8 @@ class EnrollPatientForm extends Component {
                 // console.log("result.data: " + JSON.stringify(result.data, null, 2 ))
 
                 patient_infoAPI.insertRef(res.data._id, {
-                    patient_data_ref: result.data._id
+                    patient_data_ref: result.data._id,
+                    patient_data_id: result.data._id
                 })
                 .then(res => {
                    // console.log("res.data: " + JSON.stringify(res.data, null, 2 ))
@@ -159,7 +160,8 @@ class EnrollPatientForm extends Component {
                         provider: selectItems[values.provider].text,
                         enroller: "TBA",
                     
-                        enrollSuccess: true}); 
+                        enrollSuccess: true
+                    }); 
                 })
                 .catch(err => {
                     console.log(`OOPS! A fatal problem occurred and your request could not be completed`);

@@ -55,7 +55,7 @@ class ReportPatientDetails extends Component {
                             <span className={classes.textBold}>{this.props.patientInfo.dob}</span>
                         </Grid>
                         <Grid item xs={3}>
-                        <Link to='/admin' className={classes.backbtn}><Button className={classes.cancelBtn}>Back</Button></Link>
+                        <Link to='/admin' className={classes.backbtn}><Button>Back</Button></Link>
                         </Grid>
                         
                     </Grid>

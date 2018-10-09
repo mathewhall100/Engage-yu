@@ -3,7 +3,6 @@ import { withRouter} from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-
 import ReportPatientDetails from '../containers/ReportPatientDetails';
 import ReportDisplayData from '../containers/ReportDisplayData';
 import ReportListSurveys from '../containers/ReportListSurveys';
@@ -15,50 +14,32 @@ import { fetchPatientData } from '../actions/index';
 class Report extends Component {  
     
     componentDidMount() {
-
         this.props.selectConsoleTitle({title: "Report"});
 
         const param = this.props.match.params.id
-        const patient = param.slice(0, param.indexOf("&"))
-        this.props.fetchPatientData(patient);
-
-        this.state.episode = param.slice(-param.indexOf("&"))
-        //console.log("params: ", param)
-        //console.log("patient: ", patient)
-        //console.log("episode: ", episode)
+        const patientId = param.slice(0, param.indexOf("&"))
+        this.props.fetchPatientData(patientId);
+        this.state.episodeId = param.slice(-param.indexOf("&"))
     }
 
     state = {
         episode: "",
-        comparisonEpisode: ""
     }
 
     handleChangeEpisode = (id) => {
         console.log("New episode id: ", id)
-        this.setState({episode: id})
-    }
-
-    handleCompareEpisode = (id) => {
-        console.log("Compare episode id: ", id)
-        this.setState({comparisonEpisode: id})
+        this.setState({episodeId: id})
     }
 
     render () {
         
         return (
-
             <div>
-
                 <ReportPatientDetails />
-
+                <br />     
+                <ReportDisplayData episodeId={this.state.episodeId} />
                 <br />
-                
-                <ReportDisplayData episode={this.state.episode} /> 
-
-                <br />
-
-                <ReportListSurveys changeEpisode={this.handleChangeEpisode} compareEpisode={this.handleCompareEpisode}/>
-
+                <ReportListSurveys changeEpisode={this.handleChangeEpisode} />
             </div>
         );
     }
@@ -69,7 +50,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 function mapStateToProps({auth}){
-    //console.log(auth);
+    console.log(auth);
     return (auth);
 }
 
