@@ -7,7 +7,7 @@ const LOGIN_FAILURE_PAGE = '/';
 
 export default class Auth {
     
-    auth0 = location.hostname === "localhost" || location.hostname === "127.0.0.1" ? 
+    auth0 = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? 
     new auth0.WebAuth({
         domain: 'shikwan.auth0.com',
         clientID: 'uQdJPDVXxxYgPqJiUoRVnAYFKZudGoHh',
