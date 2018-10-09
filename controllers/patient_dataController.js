@@ -83,15 +83,18 @@ module.exports = {
     // To be sent req.params.id of patient and req.body of new record data
     addRecord: function(req, res) {
         console.log("Patient_data controller called to 'addRecord'", req.body );
+        console.log("id is  : " , req.params.id);
         //console.log(`Requester:  ${req.user}`);
         // if(req.user){
             db.Patient_data
-            .findById({
+            .find({
                 _id: req.params.id}, {"episodes": 1}
             )
             .then(result => {
-                let lastEpisode = result.episodes[result.episodes.length-1]
-                let records = lastEpisode.record;
+
+                console.log("result : ", result[0]);
+                let lastEpisode = result[0].episodes[result[0].episodes.length-1]
+                let records = lastEpisode.records;
                 records.push(req.body);
 
                  db.Patient_data

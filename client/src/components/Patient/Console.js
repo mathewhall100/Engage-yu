@@ -150,7 +150,6 @@ class PatientConsole extends Component {
         const drawer = (
             <div style={{fontSize : 11}}>
                 <div className={classes.toolbar} />
-                <List>{patientDashboardListItem}</List>
                 <List>{patientListItems}</List>
             </div>
         );

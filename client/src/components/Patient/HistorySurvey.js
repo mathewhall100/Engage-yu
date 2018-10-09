@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
-import { Redirect } from 'react-router-dom';
-import connect from 'react-redux';
+import { Redirect, withRouter } from 'react-router-dom';
+import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import IconButton from '@material-ui/core/IconButton';
 import WarningIcon from '@material-ui/icons/Warning';
@@ -196,4 +196,7 @@ HistorySurvey.propTypes = {
     classes : PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(HistorySurvey);
+HistorySurvey = connect(null)(HistorySurvey)
+HistorySurvey = withRouter(HistorySurvey)
+
+export default withStyles(styles)(HistorySurvey); 

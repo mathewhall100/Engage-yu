@@ -19,8 +19,6 @@ class PatientConsoleRoutes extends Component {
     }
 
     render(){
-        console.log("this props in routes console : ", this.props);
-        console.log("this state in routes console : ", this.state);
         return(
             <div className="App">
 
