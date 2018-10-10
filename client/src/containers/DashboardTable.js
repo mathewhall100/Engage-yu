@@ -31,6 +31,8 @@ import dashboardMultipleSelect from '../components/Forms/DashboardMultipleSelect
 import EnhancedTableHead from '../components/Tables/EnhancedTableHead'
 import EnhancedTableToolbar from '../components/Tables/EnhancedTableToolbar'
 
+import { fetchPatientData } from '../actions/index';
+
 const styles = theme => ({
   root: {
     width: "100%",
@@ -274,11 +276,11 @@ class DashboardTable extends React.Component {
     this.setState({ selected: [] });
   };
 
-  handleRowClick = (event, patient, episode) => {
+  handleRowClick = (event, patientId, episodeId) => {
     //console.log("row clicked: ", event, patient, episode)
+    this.props.fetchPatientData(patientId)
     this.setState({
-      patient: patient,
-      episode: episode,
+      episodeId: episodeId,
       redirect: true
     })
   }
@@ -344,9 +346,9 @@ class DashboardTable extends React.Component {
       { id: 'requester', numeric: false, disablePadding: false, label: 'Requester' }
     ];
 
-    const { redirect, patient, episode } = this.state;
+    const { redirect, episodeId } = this.state;
      if (redirect) {
-       const url=`/admin/report/${patient}&${episode}`
+       const url=`/admin/report/${episodeId}`
        return <Redirect to={url}/>;
      }
 
@@ -371,6 +373,7 @@ class DashboardTable extends React.Component {
               onDeSelectAllClick={this.handleDeSelectAllClick}
               onRequestSort={this.handleRequestSort}
               rowCount={this.state.activeSurveysLength}
+              displayCheckbox={true}
               rows={rows}
             />
 
@@ -450,6 +453,10 @@ DashboardTable.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ fetchPatientData }, dispatch);
+}
+
 const mapStateToProps = (state) => {
   console.log("State : ", state);
   return {
@@ -458,7 +465,7 @@ const mapStateToProps = (state) => {
   }
 };
 
-DashboardTable = connect(mapStateToProps)(DashboardTable)
+DashboardTable = connect(mapStateToProps, mapDispatchToProps)(DashboardTable)
 DashboardTable = withStyles(styles, { withTheme: true })(DashboardTable)
 export default DashboardTable
 

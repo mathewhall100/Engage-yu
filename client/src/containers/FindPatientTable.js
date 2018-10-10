@@ -5,7 +5,6 @@ import { bindActionCreators } from 'redux';
 import { times, startCase } from 'lodash'
 import moment from 'moment'
 
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -19,6 +18,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
 import EnhancedTableHead from '../components/Tables/EnhancedTableHead'
+import { fetchPatientData, fetchSurveyQuestions, fetchSurveyPatientDetails } from '../actions/index';
 
 
 const styles = theme => ({
@@ -33,7 +33,7 @@ const styles = theme => ({
         textDecoration: "none",
         borderRadius: "5px",
         padding: "5px",
-        marginLeft: "20px",
+        marginLeft: "15px",
         float: "right",
         '&:hover': {
             backgroundColor: "#dddddd",
@@ -77,6 +77,9 @@ class FindPatientTable extends Component {
 
 
     state = {
+        redirect: false,
+        redirectURL: "",
+
         patientList: "",
         tableData: [],
         tableDataFiltered: [],
@@ -88,11 +91,10 @@ class FindPatientTable extends Component {
         page: 0,
         rowsPerPage: 5,
 
-        displayDetailsBox: false
+        displayRowActions: false
     }
 
     // create functions
-
     createData = (data) => {
         let counter = 0;
         let newData = [];
@@ -123,9 +125,18 @@ class FindPatientTable extends Component {
         }
 
     // filters   
-    
     filterData = (data) => {
-        return this.filterByNumber(this.filterByName(data))
+        const filteredData = this.filterByNumber(this.filterByName(data))
+        console.log("filteredData: ", filteredData)
+
+        if (filteredData.length === 1) {
+            this.setState({displayRowActions: filteredData[0]._id }) 
+            this.props.fetchPatientData(filteredData[0]._id );
+            this.props.displayPatientDetails(filteredData[0]._id )
+            return filteredData
+        } else {
+            this.props.displayPatientDetails(null)
+            return filteredData}
       };
 
     filterByNameAlgorithm(firstname, lastname) {
@@ -174,7 +185,6 @@ class FindPatientTable extends Component {
     }
 
     // Sort functions
-
     desc = (a, b, orderBy) => {
     if (b[orderBy] < a[orderBy]) {
       return -1;
@@ -200,7 +210,6 @@ class FindPatientTable extends Component {
     };
 
     // event handlers
-
     handleRequestSort = (event, property) => {
         const orderBy = property;
         let order = 'desc';
@@ -210,24 +219,42 @@ class FindPatientTable extends Component {
         this.setState({ order, orderBy });
     };
 
-    handleRowClick = (event, patient) => {
-        console.log("row clicked: ", event, " ", patient)
-        this.setState({displayDetailsBox: true})
+    handleRowClick = (event, rowId) => {
+        console.log("row clicked: ", event, " ", rowId)
+        this.setState({displayRowActions: this.state.displayRowActions === rowId ? null : rowId})
+        this.props.fetchPatientData(rowId);
+        this.props.displayPatientDetails(rowId)
     }
 
-    handleClickDetails = (id) => {
-        console.log("details clicked: ", id)
+    handleClickDiaryCard = (event, patientId) => {
+        console.log("diarycard clicked: ", patientId)
+        this.props.fetchSurveyQuestions()
+        this.props.fetchSurveyPatientDetails(patientId);
+        this.setState({
+            redirectURL: `survey`,
+            redirect: true
+        })
     }
-    handleClickDiaryCards = (id) => {
-        console.log("diarycard clicked: ", id)
+
+    handleClickReport = (event, patientId) => {
+        console.log("report clicked: ", patientId)
+        this.props.fetchPatientData(patientId);
+        this.setState({
+            redirectURL: `report/null`,
+            redirect: true
+        })
     }
-    handleClickReport = (id) => {
-        console.log("report clicked: ", id)
+
+    handleClickEdit = (event, patientId) => {
+        console.log("editclicked: ", patientId)
+        this.props.fetchPatientData(patientId);
+        this.setState({
+            redirectURL: `updatepatient`,
+            redirect: true
+        })
     }
-    handleClickEdit = (id) => {
-        console.log("editclicked: ", id)
-    }
-    handleClickContact = (id) => {
+
+    handleClickContact = (event, id) => {
         console.log("contact clicked: ", id)
     }
 
@@ -242,7 +269,7 @@ class FindPatientTable extends Component {
     render () {
 
         const { classes } = this.props;
-        const { order, orderBy, tableData, tableDataFiltered, rowsPerPage, page } = this.state;
+        const { order, orderBy, tableData, tableDataFiltered, rowsPerPage, page, displayRowActions } = this.state;
         const emptyRows = rowsPerPage - Math.min(rowsPerPage, this.state.activeSurveysLength - page * rowsPerPage);
 
         const rows = [
@@ -251,8 +278,15 @@ class FindPatientTable extends Component {
             { id: 'dob', numeric: false, disablePadding: false, label: 'DOB' },
             { id: 'number', numeric: false, disablePadding: false, label: 'Hospital Number' },
             { id: 'enrolled', numeric: false, disablePadding: false, label: 'Date Enrolled' },
-            { id: 'actions', numeric: false, disablePadding: false, label: 'Actions' }
+            { id: 'actions', numeric: false, disablePadding: false, label: ' ' }
         ]
+
+        const { redirect, redirectURL} = this.state;
+        console.log("redirectUrl: ", redirectURL)
+        if (redirect) {
+          const url=`/admin/${redirectURL}`
+          return <Redirect to={url}/>;
+        }
 
         return (
             <div>
@@ -288,13 +322,14 @@ class FindPatientTable extends Component {
                                             <CustomTableCell><Typography className={classes.text}>{d.number}</Typography></CustomTableCell>
                                             <CustomTableCell><Typography className={classes.text}>{moment(d.enrolled).format("MMM Do YYYY")}</Typography></CustomTableCell>
 
-                                            <CustomTableCell >
-                                                <Button size="small" className={classes.btn} onClick={event => this.handleClickDetails(event, d._id)}>Details</Button>
-                                                <Button size="small" className={classes.btn} onClick={event => this.handleClickDiaryCard(event, d._id)}>Diary Card</Button>
-                                                <Button size="small" className={classes.btn} onClick={event => this.handleClickReport(event, d._id)}>Report</Button>
-                                                <Button size="small" className={classes.btn} onClick={event => this.handleClickEdit(event, d._id)}>Edit</Button>
-                                                <Button size="small" className={classes.btn} onClick={event => this.handleClickContact(event, d._id)}>Contact</Button>
-                                            </CustomTableCell>
+                                            <CustomTableCell  style={{width: "450px", paddingRight: "0px"}}>
+                                                {displayRowActions == d._id && <div>
+                                                    <Button size="small" className={classes.btn} onClick={event => this.handleClickContact(event, d._id)}>Contact</Button>
+                                                    <Button size="small" className={classes.btn} onClick={event => this.handleClickEdit(event, d._id)}>Edit details</Button>
+                                                    <Button size="small" className={classes.btn} onClick={event => this.handleClickReport(event, d._id)}>View reports</Button>
+                                                    <Button size="small" className={classes.btn} onClick={event => this.handleClickDiaryCard(event, d._id)}>New diary Card</Button>
+                                                </div> }
+                                            </CustomTableCell> 
 
                                         </TableRow>
                                     )
@@ -324,6 +359,10 @@ class FindPatientTable extends Component {
     }
 }
 
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({ fetchSurveyQuestions, fetchPatientData, fetchSurveyPatientDetails }, dispatch);
+}
+
 
 const mapStateToProps = (state) => {
     // console.log("State : ", state);
@@ -333,6 +372,6 @@ const mapStateToProps = (state) => {
     }
 };
 
-FindPatientTable = connect(mapStateToProps)(FindPatientTable)
+FindPatientTable = connect(mapStateToProps, mapDispatchToProps)(FindPatientTable)
 FindPatientTable = withStyles(styles)(FindPatientTable)
 export default FindPatientTable;

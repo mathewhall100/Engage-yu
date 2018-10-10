@@ -7,7 +7,7 @@ import { selectConsoleTitle } from '../actions/index'
 import { fetchListPatientsByProvider } from '../actions';
 import FindPatientForm from '../containers/FindPatientForm';
 import FindPatientTable from '../containers/FindPatientTable';
-// import FindPatientDetails from '../containers/FindPatientDetails';
+import FindPatientDetails from '../components/FindPatientDetails';
 
 
 class FindPatient extends Component {  
@@ -19,7 +19,9 @@ class FindPatient extends Component {
     state = {
         filterName: "",
         filterNumber: "",
-        filterList: ""
+        filterList: "",
+
+        displayDetails: ""
     }
 
     componentWillMount() {
@@ -46,7 +48,13 @@ class FindPatient extends Component {
         this.setState({filterList: value})
     }
 
+    displayPatientDetails = (id) => {
+        this.setState({displayDetails: !this.state.displayDetails ? id : this.state.displayDetails === id ? null : id })
+    }
+
     render () {
+
+        const { displayDetails } = this.state
         
         return (
                 <div>
@@ -63,13 +71,14 @@ class FindPatient extends Component {
                         filterName={this.state.filterName} 
                         filterNumber={this.state.filterNumber} 
                         filterList={this.state.filterList} 
+                        displayPatientDetails={this.displayPatientDetails}
                     /> 
 
                     <br />
 
-                    {/* <FindPatientDetails />  */}
+                    { displayDetails && <FindPatientDetails /> }
                     
-                </div >
+                </div> 
         );
     }
 }

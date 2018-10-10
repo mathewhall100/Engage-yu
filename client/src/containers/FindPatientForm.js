@@ -88,7 +88,7 @@ class FindPatientForm extends Component {
                                     name={"name"}
                                     label={"Name"}
                                     autofocus={true}
-                                    width={300}
+                                    width={"90%"}
                                     component={renderTextField}
                                     onChange={(event, value) => this.onChangeName(value)}
                                 />
@@ -98,7 +98,7 @@ class FindPatientForm extends Component {
                                 <Field 
                                     name={"hospId"}
                                     label={"Hospital Id"}
-                                    width={150}
+                                    width={"90%"}
                                     component={renderTextField}
                                     onChange={(event, value) => this.onChangeHospId(value)}
                                 />

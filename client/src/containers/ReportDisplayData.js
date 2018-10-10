@@ -103,8 +103,13 @@ class ReportDisplayData extends Component {
         //console.log("display nextprops: ", nextProps)
         let episode= []
         await this.setState({episodes: nextProps.patientData.episodes}) 
+
         if (this.state.episodes) {
-            episode = this.state.episodes.filter(e => e._id === nextProps.episodeId)[0];
+            console.log("id: ", nextProps.episodeId)
+            nextProps.episodeId === "null" ? 
+                episode = this.getEpisodeToDisplay(this.state.episodes)
+                :
+                episode = this.state.episodes.filter(e => e._id === nextProps.episodeId)[0];
             this.setState({ 
                 episode: episode,
                 questions: episode.questions,
@@ -119,6 +124,20 @@ class ReportDisplayData extends Component {
         episodes: [],
         displayQuestion: 0,
         redirect: false,
+    }
+
+    getEpisodeToDisplay = (episodes) => {
+        let episode = [];
+        episode = episodes.filter(e => e.status === "awaiting review")
+        if (episode.length > 0) {return episode[0]}
+
+        episode = episodes.filter(e => e.status === "active")
+        if (episode.length > 0) {return episode[0]}
+
+        episode = episodes.filter(e => e.status === "actioned")
+        if (episodes.length > 0) {return episode[0]}  
+
+        return null
     }
 
 
@@ -281,8 +300,6 @@ class ReportDisplayData extends Component {
 
                 {displayData && questions && episode ? null : <Callback />}
                        
-                
-
                 {displayData && questions && episode && <Paper className={classes.root}>
 
                     <Grid container spacing={24}>

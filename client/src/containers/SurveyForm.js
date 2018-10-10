@@ -28,12 +28,11 @@ import SurveyRadio from '../components/Forms/SurveyRadio.js';
 import SurveyStartDate from '../components/Forms/SurveyStartDatePicker.js';
 import Panel from '../components/Panels/SurveyExpansionPanel.js';
 
-import { fetchSurveyQuestions, fetchSurveyPatientDetails } from '../actions/index.js';
+// import { fetchSurveyQuestions, fetchSurveyPatientDetails } from '../actions/index.js';
 import patient_dataAPI from "../utils/patient_data.js";
 import activeAPI from "../utils/active.js";
 import SurveySaveSuccessDialog from '../components/Dialogs/SurveySaveSuccessDialog.js'
 import SurveySaveFailedDialog from '../components/Dialogs/SurveySaveFailedDialog.js'
-import Patient_dataRouteTests from '../components/MHBranch/patient_dataTests.js';
 
 //Form styles
 const styles = theme => ({
@@ -185,8 +184,8 @@ class SurveyForm extends Component {
     }
 
     componentDidMount() {
-            this.props.fetchSurveyQuestions();
-            this.props.fetchSurveyPatientDetails("5b844945d8dc5ce848cd28a3");
+            //this.props.fetchSurveyQuestions();
+            //this.props.fetchSurveyPatientDetails("5b844945d8dc5ce848cd28a3");
     }
 
     componentWillReceiveProps(nextProps) {
@@ -832,12 +831,12 @@ function validate(values) {
 }
 
 
-const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchSurveyQuestions, fetchSurveyPatientDetails }, dispatch);
-}
+// const mapDispatchToProps = (dispatch) => {
+//     return bindActionCreators({ fetchSurveyQuestions, fetchSurveyPatientDetails }, dispatch);
+// }
 
 const mapStateToProps = (state) => {
-    //console.log("State : ", state);
+    console.log("State : ", state);
     return {
         defaultQuestion: state.surveyQuestions.surveyDefaultQuestion,
         customQuestions: state.surveyQuestions.surveyCustomQuestions,
@@ -850,7 +849,7 @@ const formData = {
     form: 'NewSurveyForm',
     validate
 }
-SurveyForm = connect(mapStateToProps, mapDispatchToProps)(SurveyForm)
+SurveyForm = connect(mapStateToProps)(SurveyForm)
 SurveyForm = reduxForm(formData)(SurveyForm)
 SurveyForm = withStyles(styles, { withTheme: true })(SurveyForm)
 export default SurveyForm

@@ -16,10 +16,16 @@ class Report extends Component {
     componentDidMount() {
         this.props.selectConsoleTitle({title: "Report"});
 
-        const param = this.props.match.params.id
-        const patientId = param.slice(0, param.indexOf("&"))
-        this.props.fetchPatientData(patientId);
-        this.state.episodeId = param.slice(-param.indexOf("&"))
+        //const param = this.props.match.params.id
+        // const patientId = param.slice(0, param.indexOf("&"))
+        // this.props.fetchPatientData(patientId);
+
+        // const episodeId = param.slice(param.indexOf("&")+1, param.length)
+        // console.log("param ", param, " then ", episodeId)
+
+        // this.setState({ episodeId: episodeId })
+
+        this.setState({episodeId: this.props.match.params.id})
     }
 
     state = {
