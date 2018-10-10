@@ -9,7 +9,7 @@ class FormTextFocused extends Component {
 
     renderTextField(field) {
 
-        const {meta: {dirty, error}} = field;
+        const {meta: {dirty, touched, error}} = field;
         console.log("Field: ", field)
             return (
                 <div>
@@ -22,7 +22,7 @@ class FormTextFocused extends Component {
                     />
                     
                     <div style={{fontSize: "13px", color: "red"}}> 
-                        {dirty ? error : ''}
+                        {touched ? error : ''}
                     </div>
                     <div style={{fontSize: "13px", color: "green"}}> 
                         {dirty && !error ? <DoneIcon /> : ''}

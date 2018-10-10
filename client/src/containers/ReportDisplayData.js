@@ -100,11 +100,12 @@ const styles = theme => ({
 class ReportDisplayData extends Component {
 
     async componentWillReceiveProps(nextProps) {
-        //console.log("display nextprops: ", nextProps)
+        console.log("display nextprops: ", nextProps)
         let episode= []
         await this.setState({episodes: nextProps.patientData.episodes}) 
 
         if (this.state.episodes) {
+            console.log("episodes: ", nextProps.episodes)
             console.log("id: ", nextProps.episodeId)
             nextProps.episodeId === "null" ? 
                 episode = this.getEpisodeToDisplay(this.state.episodes)

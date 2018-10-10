@@ -8,7 +8,7 @@ import ReportDisplayData from '../containers/ReportDisplayData';
 import ReportListSurveys from '../containers/ReportListSurveys';
 
 import { selectConsoleTitle } from '../actions/index';
-import { fetchPatientData } from '../actions/index';
+//import { fetchReportPatientData } from '../actions/index';
 
 
 class Report extends Component {  
@@ -52,7 +52,7 @@ class Report extends Component {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle, fetchPatientData}, dispatch);
+    return bindActionCreators({ selectConsoleTitle }, dispatch);
 }
 
 function mapStateToProps({auth}){

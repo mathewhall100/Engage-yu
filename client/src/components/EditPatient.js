@@ -217,8 +217,8 @@ class EditPatient extends Component {
 
     render () {
         
-        const { patientInfo, handleSubmit, classes } = this.props
-        const { submitting, editFieldActive, showEditField, patientUpdateFailed, patientUpdateSuccess } = this.state
+        const { submitting, pristine, patientInfo, handleSubmit, classes } = this.props
+        const { editFieldActive, showEditField, patientUpdateFailed, patientUpdateSuccess } = this.state
 
         const formFields = [
             {rowLabel: "Firstname", fieldContent: startCase(patientInfo.firstname), fieldName: "firstname", fieldLabel: "New firstname"},
@@ -363,7 +363,7 @@ class EditPatient extends Component {
                                     <Grid item xs={2}>
                                         {showEditField[index] &&  !patientUpdateSuccess && <span>
                                             <Button size="small" className={classes.btn} onClick={event => this.handleClickCancel(event, 1)}>Cancel</Button>
-                                            <Button size="small" className={classes.btn} type="submit">Submit</Button>
+                                            <Button size="small" type="submit" disabled={submitting || pristine} className={classes.btn} >Submit</Button>
                                         </span> }
                                     </Grid> 
 
@@ -412,7 +412,7 @@ class EditPatient extends Component {
                                     <Grid item xs={2}>
                                         {showEditField[4] &&  !patientUpdateSuccess && <span>
                                             <Button size="small" className={classes.btn} onClick={event => this.handleClickCancel(event)}>Cancel</Button>
-                                            <Button size="small" className={classes.btn} type="submit">Submit</Button>
+                                            <Button size="small" disabled={submitting || pristine} className={classes.btn} type="submit">Submit</Button>
                                         </span> }
                                     </Grid> 
 
@@ -458,7 +458,7 @@ class EditPatient extends Component {
                                     <Grid item xs={2}>
                                         {showEditField[5] &&  !patientUpdateSuccess && <span>
                                             <Button size="small" className={classes.btn} onClick={event => this.handleClickCancel(event, 1)}>Cancel</Button>
-                                            <Button size="small" className={classes.btn} type="submit">Submit</Button>
+                                            <Button size="small" disabled={submitting || pristine} className={classes.btn} type="submit">Submit</Button>
                                         </span> }
                                     </Grid> 
 
@@ -469,10 +469,7 @@ class EditPatient extends Component {
                     
                     </form>
 
-                     <br />
-
-                        {/* <Button size="small" className={classes.btn} component={Link} style={{float: "right"}} to='/admin/find'>Done</Button> */}
-                                
+                    <br />                   
                     <br />
 
                 </Card>
@@ -502,10 +499,6 @@ const validate = (values) => {
     else if (values.phone && values.phone.length < 12) {
     errors.phone = "Please enter a contact phone number!";   // message to be displayed if invalid
     }
-
-    // else if (!values.firstname && !values.lastname && !values.email && !values.phone) {
-    //     errors.firstname = " ";
-    // }
 
     // If errors is empty, then form good to submit
     // If errors has any properties, redux form assumes form is invalid

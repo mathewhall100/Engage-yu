@@ -40,15 +40,34 @@ class FindPatientDetails extends Component {
     
     
     componentDidMount() {
-        
     }
 
     state = {
     }
 
     componentWillMount() {
-
     }
+
+    // findActiveDiaryCards = () => {
+    //     const activeCards = this.props.patientData.episodes.filter(episode => episode.status === "active")
+    //     if (activeCards) {
+    //         return <span>Yes (Dates: {moment(activeCards[0].start).format("MMM Do YYYY")}</span>
+    //     } else {return "No active diary cards"}
+    // }
+
+    // findPendingDiaryCards = () => {
+    //     const pendingCards = this.props.patientData.episodes.filter(episode => episode.status === "pending")
+    //     if (pendingCards) {
+    //         return <span>Yes (Dates: {moment(pendingCards[0].start).format("MMM Do YYYY")}</span>
+    //     } else {return "No pending diary cards"}
+    // }
+
+    // findAwaitingDiaryCards = () => {
+    //     const awaitingCards = this.props.patientData.episodes.filter(episode => episode.status === "awaiting review")
+    //     if (awaitingCards) {
+    //         return <span>Yes <span style={{color: "red"}}>*</span>({awaitingCards.length} diary cards for review</span>
+    //     } else {return "No diary cards awaiting review"}
+    // }
 
 
     render () {
@@ -152,8 +171,9 @@ class FindPatientDetails extends Component {
                     </Grid>
                     <Grid item xs={10}>
                         <Typography variant="subheading">
-                            <div></div>
-                            <div></div>
+                            {/* <div>{this.findActiveDiaryCards()}</div>
+                            <div>{this.findPendingDiaryCards()}</div>
+                            <div>{this.findAwaitingDiaryCards()}</div> */}
                             <div></div>
                         </Typography>
                     </Grid>

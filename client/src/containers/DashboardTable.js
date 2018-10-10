@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Router, Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-// import { reduxForm } from 'redux-form';
+import { reduxForm } from 'redux-form';
 import moment from 'moment';
 import { times, startCase } from 'lodash'
 
@@ -31,7 +31,7 @@ import dashboardMultipleSelect from '../components/Forms/DashboardMultipleSelect
 import EnhancedTableHead from '../components/Tables/EnhancedTableHead'
 import EnhancedTableToolbar from '../components/Tables/EnhancedTableToolbar'
 
-import { fetchPatientData } from '../actions/index';
+import { fetchReportPatientData } from '../actions/index';
 
 const styles = theme => ({
   root: {
@@ -277,8 +277,8 @@ class DashboardTable extends React.Component {
   };
 
   handleRowClick = (event, patientId, episodeId) => {
-    //console.log("row clicked: ", event, patient, episode)
-    this.props.fetchPatientData(patientId)
+    console.log("row clicked: ", event, patientId, episodeId)
+    this.props.fetchReportPatientData(patientId)
     this.setState({
       episodeId: episodeId,
       redirect: true
@@ -454,7 +454,7 @@ DashboardTable.propTypes = {
 };
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchPatientData }, dispatch);
+  return bindActionCreators({ fetchReportPatientData }, dispatch);
 }
 
 const mapStateToProps = (state) => {

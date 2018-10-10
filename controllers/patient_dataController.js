@@ -11,8 +11,9 @@ module.exports = {
         console.log("Patient_data controller called to 'findById'", req.params.id);
         //console.log(`Requester:  ${req.user}`);
         //if(req.user){
+            console.log("patient data findbyid controller id: ", req.params.id)
             db.Patient_data
-            .find({ patient_info_id: req.params.id }, { "episodes": 1 })
+            .find({ _id: req.params.id })
             .then(patient => {
                 console.log("RESULT FOR PATIENT_DATA:", patient);
                 res.json(patient)

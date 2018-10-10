@@ -18,7 +18,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
 import EnhancedTableHead from '../components/Tables/EnhancedTableHead'
-import { fetchPatientData, fetchSurveyQuestions, fetchSurveyPatientDetails } from '../actions/index';
+import { fetchReportPatientData, fetchSurveyQuestions, fetchSurveyPatientDetails } from '../actions/index';
 
 
 const styles = theme => ({
@@ -131,7 +131,7 @@ class FindPatientTable extends Component {
 
         if (filteredData.length === 1) {
             this.setState({displayRowActions: filteredData[0]._id }) 
-            this.props.fetchPatientData(filteredData[0]._id );
+            this.props.fetchreportPatientData(filteredData[0]._id );
             this.props.displayPatientDetails(filteredData[0]._id )
             return filteredData
         } else {
@@ -222,7 +222,7 @@ class FindPatientTable extends Component {
     handleRowClick = (event, rowId) => {
         console.log("row clicked: ", event, " ", rowId)
         this.setState({displayRowActions: this.state.displayRowActions === rowId ? null : rowId})
-        this.props.fetchPatientData(rowId);
+        this.props.fetchReportPatientData(rowId);
         this.props.displayPatientDetails(rowId)
     }
 
@@ -238,7 +238,7 @@ class FindPatientTable extends Component {
 
     handleClickReport = (event, patientId) => {
         console.log("report clicked: ", patientId)
-        this.props.fetchPatientData(patientId);
+        this.props.fetchReportPatientData(patientId);
         this.setState({
             redirectURL: `report/null`,
             redirect: true
@@ -247,7 +247,7 @@ class FindPatientTable extends Component {
 
     handleClickEdit = (event, patientId) => {
         console.log("editclicked: ", patientId)
-        this.props.fetchPatientData(patientId);
+        this.props.fetchReportPatientData(patientId);
         this.setState({
             redirectURL: `updatepatient`,
             redirect: true
@@ -360,7 +360,7 @@ class FindPatientTable extends Component {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ fetchSurveyQuestions, fetchPatientData, fetchSurveyPatientDetails }, dispatch);
+    return bindActionCreators({ fetchSurveyQuestions, fetchReportPatientData, fetchSurveyPatientDetails }, dispatch);
 }
 
 
