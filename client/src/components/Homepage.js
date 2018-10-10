@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom';
 import {authActions} from '../reducers/modules/auth';
 import PropTypes from 'prop-types';
 import * as AuthService from '../services/AuthService';
-import Appbar from './AppBar';
 class Main extends Component {
     static propTypes = {
         history: PropTypes.shape({

@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Redirect,withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import _ from 'lodash';
+import moment from 'moment';
 import propTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import { withStyles } from '@material-ui/core/styles';
+import QuestionForm from './QuestionForm';
+import history from '../../history';
+import StartEndDate from './DashboardItems/StartEndDate';
 
 const styles = theme => ({
     root: {
@@ -28,53 +32,75 @@ const styles = theme => ({
     },
 });
 
-
 class PatientDashboard extends Component {  
-    
-    componentDidMount() {
+    state= {
+        redirect : false
     }
+    
+    submit(values){
+        
 
+    }
+    renderPage = () => {
+        //console.log("In render page", this.props.patientData.closestDateTime);
+        /* if current episode exist in props proceed to check for date and hour  */
+        if(!this.props.patientData.closestDateTime){
+            console.log("past the range");
+            //this.props.history.push('/patient/complete')
+        }
+
+    
+    }
     render () {
-        const { classes } = this.props;
+        const { handleSubmit, classes, pristine, submitting, patientData, patientData : {currentEpisode}, history } = this.props;
+        //console.log("current episode : ", currentEpisode);
+        //console.log("props in patient dashboard : ", this.props);
+        this.props.patientData.closestDateTime  ? this.renderPage : null
         return (
                 <div>
-                    Questionnaires
-                        <div>
-                            <div style={{backgroundColor: "#2d404b"}} />
-                            <Typography component='h1' variant='headline' noWrap>
-                                {this.props.title}
-                            </Typography>
-                            <Divider />
-                            <Typography component='h3' variant='headline'>
-                                Default Question :
-                            </Typography>
+                    <div>
+                        <div style={{backgroundColor: "#2d404b"}} />
+                        <Typography component='h1' variant='headline' noWrap>
+                            {this.props.title}
+                        </Typography>
+                        <Divider />
+                        <Typography component='div'>
+                            {currentEpisode ? <StartEndDate 
+                                start_time={currentEpisode.start_time }  
+                                start_date={currentEpisode.start_date }
+                                end_time = {currentEpisode.end_time }
+                                end_date = {currentEpisode.end_date }
+                                requesting_provider_lastname = {currentEpisode.requesting_provider_lastname }
+                                requesting_provider_firstname= {currentEpisode.requesting_provider_firstname }
 
-                            
-                            <Divider />
-                            <Typography component='h3' variant='headline'>
-                                Custom Questions :
-                            </Typography>
-
-                            
-                            <Divider />
-                        </div>
+                            /> : null }
+                        </Typography>
+                        
+                        <Divider />
+                        <Typography component='div' variant='headline'>
+                            <QuestionForm  {...this.props} dataEntry = {this.state.closestDateTime} arrQuestions={this.props.patientData.currentEpisode ? this.props.patientData.currentEpisode.questions : null} />
+                        </Typography>
+                        <Divider />
+                    </div>
                     
                 </div >
         );
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    //<DefaultQuestion menuButton={classes.menuButton} radioGroup={classes.group} formControl={classes.formControl} handleChange={this.handleDefaultQuestionChange} defaultQuestion={this.props.defaultQuestion} renderQuestionnaires={this.renderQuestionnaires} stateName = {this.state.defaultQuestion} /> 
-    //<CustomQuestions menuButton={classes.menuButton} radioGroup={classes.group} formControl={classes.formControl} handleChange={this.handleCustomQuestionChange} customQuestions={this.props.customQuestions} renderQuestionnaires={this.renderQuestionnaires} stateName= {this.state.customQuestions} />
-    return bindActionCreators({}, dispatch);
-}
 function mapStatToProps(state){
     return {
         state
     }
 }
 PatientDashboard.propTypes = {
-    classes : propTypes.object.isRequired
+    classes : propTypes.object.isRequired,
+    history: propTypes.shape({
+        push: propTypes.func.isRequired
+        }).isRequired,
 }
-export default connect(mapStatToProps, mapDispatchToProps) (PatientDashboard)
+
+PatientDashboard = connect(mapStatToProps)(PatientDashboard);
+PatientDashboard = withRouter(PatientDashboard);
+
+export default (PatientDashboard);

@@ -14,28 +14,23 @@ import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import BuildIcon from '@material-ui/icons/Build';
 
 
-export const patientDashboardListItem = (
-    <div>
-        <Link to='/patient' style={{textDecoration:'none', display: 'block'}}>
-            <ListItem button>
-                <ListItemIcon>
-                    <DashboardIcon />
-                </ListItemIcon>
-                <ListItemText primary="Dashboard" />
-            </ListItem>
-        </Link>
-    </div>
-);
-
 export const patientListItems = (
     <div>
         <ListSubheader>Patient Info</ListSubheader>
-        <Link to='/patient/survey' style={{ textDecoration: 'none', display: 'block' }}>
+        <Link to='/patient' style={{ textDecoration: 'none', display: 'block' }}>
             <ListItem button>
                 <ListItemIcon>
                     <AssessmentIcon />
                 </ListItemIcon>
                 <ListItemText primary='Survey' />
+            </ListItem>
+        </Link>
+        <Link to='/patient/history' style={{ textDecoration: 'none', display: 'block' }}>
+            <ListItem button>
+                <ListItemIcon>
+                    <AssignmentIcon />
+                </ListItemIcon>
+                <ListItemText primary='History' />
             </ListItem>
         </Link>
         <Link to='/patient/report' style={{ textDecoration: 'none', display: 'block' }}>

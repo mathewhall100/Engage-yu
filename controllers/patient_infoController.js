@@ -99,7 +99,7 @@ module.exports = {
                 res.json(patient)
             })
             .catch(err => {
-                console.log(`CONTROLLER ERROR: ${err}`);
+                console.log(`CONTROLLER ERROR IN PATIENT INFO: ${err}`);
                 res.status(422).json(err);
             })
         // }else{

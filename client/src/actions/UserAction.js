@@ -13,13 +13,17 @@ export const fetchUserDetails = (sub) => {
         localStorage.setItem('role', userInfo.role);
         localStorage.setItem('userID', userInfo.id);
         localStorage.setItem('sub', userInfo.sub);
-        userRole = localStorage.getItem('role') ? localStorage.getItem('role') : userInfo.role;
-        userID = localStorage.getItem('userID') ? localStorage.getItem('userID') : userInfo.id;
+        
+        userRole = userInfo.role ? userInfo.role : localStorage.getItem('role');
+        userID = userInfo.id ?  userInfo.id : localStorage.getItem('userID');
 
     }, (error) => console.log(error)).then( () => {
+        console.log("user data : ", userID)
         const url = userRole === 'patient' ? `/api/patient_info/find/${userID}` : `/api/provider/${userID}`
         const request = axios.get(url);
         request.then( res => {
+            console.log("In request patient info : ", res.data);
+            localStorage.setItem('patientProviderID', res.data.primary_provider_id);
             dispatch ({
                     type: USER_PROFILE,
                     payload: {
@@ -29,7 +33,7 @@ export const fetchUserDetails = (sub) => {
                     }
                 })
         }, (error) =>{
-            console.log(error)
+            console.log("Error : ", error)
         })
         
     }, (error) =>{console.log(error)});

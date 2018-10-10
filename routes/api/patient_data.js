@@ -26,4 +26,9 @@ router
     .route('/record/:id')
     .put(patient_dataController.addRecord); 
 
+// Matches with '/api/patient_data/editRecord/'
+router
+    .route('/editRecord/')
+    .post(patient_dataController.editRecord);
+
 module.exports = router;

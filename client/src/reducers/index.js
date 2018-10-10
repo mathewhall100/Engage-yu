@@ -20,6 +20,7 @@ export default combineReducers({
     user: UserReducer,
     patients: DashboardReducer,
     consoleTitle: ConsoleTitleReducer,
+    patientData: PatientReducer,
     surveyQuestions: SurveyQuestionsReducer,
     surveyPatient: SurveyPatientReducer,
     activeSurveys: ActiveSurveysReducer,
