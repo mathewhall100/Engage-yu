@@ -25,7 +25,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Slider from '@material-ui/lab/Slider';
 
 import SurveyRadio from '../components/Forms/SurveyRadio.js';
-import SurveyStartDate from '../components/Forms/SurveyStartDatePicker.js';
+import SurveyStartDate from '../components/Forms/SurveyStartDate.js';
 import Panel from '../components/Panels/SurveyExpansionPanel.js';
 
 // import { fetchSurveyQuestions, fetchSurveyPatientDetails } from '../actions/index.js';
@@ -183,14 +183,9 @@ class SurveyForm extends Component {
         this.handleInitialize();
     }
 
-    componentDidMount() {
-            //this.props.fetchSurveyQuestions();
-            //this.props.fetchSurveyPatientDetails("5b844945d8dc5ce848cd28a3");
-    }
-
     componentWillReceiveProps(nextProps) {
-        //console.log("CWRP: ", nextProps)
-        //console.log("SelQ: ", this.state.selectedQuestions)
+        console.log("CWRP surveyform: ", nextProps)
+        
         if (this.state.selectedQuestions.length === 0) {
             nextProps.defaultQuestion.map(question => 
                 this.setState({ 
@@ -201,6 +196,7 @@ class SurveyForm extends Component {
             );
         }
         this.setState({patientDataId: nextProps.patientData._id})
+        this.setState({patientInfoId: nextProps.patientId})
     }
 
 
@@ -545,7 +541,7 @@ class SurveyForm extends Component {
                                                 {value: "7", label: "7 days" },
                                                 {value: "10", label: "10 days" },
                                                 {value: "14", label: "14 days" }
-                                            ]}
+                                            ]} 
                                         />
                                     </div>
                                 </Grid>
@@ -645,10 +641,11 @@ class SurveyForm extends Component {
                                 </div>
                             </Toolbar>
 
-                            <div className={classes.tableWrapper}>
+                            <div className={classes.tableWrapper}> 
+                            <br />
                                 <Table className={classes.table} >
 
-                                    <br />
+                                   
                                     <TableBody >
                                         {this.props.defaultQuestion
                                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
@@ -756,7 +753,7 @@ class SurveyForm extends Component {
                                                 {value: "30", label: "30 mins intervals" },
                                                 {value: "60", label: "60 mins intervals" }
                                             ]}
-                                        />
+                                        /> 
                                     </Grid>
 
                                     <Grid item xs={12}>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { withRouter, Link, Redirect } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
@@ -17,7 +17,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 
-import { selectConsoleTitle } from '../actions/index';
+import { selectConsoleTitle, fetchReportPatientData } from '../actions/index';
 import patient_infoAPI from "../utils/patient_info.js";
 import providerAPI from "../utils/provider.js";
 import FormTextFocused from './Forms/FormTextFocused';
@@ -64,7 +64,9 @@ class EditPatient extends Component {
     
     
     componentDidMount() {
+        console.log("CDM: ", this.props.match.params.id)
         this.props.selectConsoleTitle({title: "Update patient details"});
+        this.props.fetchReportPatientData(this.props.match.params.id)
 
         // On component mount, fetch names of all providers in provider group to populate primary provider form field
         providerAPI.findAllByGroup(this.state.providerGroupId)
@@ -508,7 +510,7 @@ const validate = (values) => {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle }, dispatch);
+    return bindActionCreators({ selectConsoleTitle, fetchReportPatientData }, dispatch);
 }
 
 const mapStateToProps = (state) => {
@@ -533,4 +535,5 @@ const formData = {
 EditPatient = connect(mapStateToProps, mapDispatchToProps)(EditPatient)
 EditPatient = reduxForm(formData)(EditPatient)
 EditPatient = withStyles(styles)(EditPatient)
+EditPatient = withRouter(EditPatient)
 export default EditPatient;

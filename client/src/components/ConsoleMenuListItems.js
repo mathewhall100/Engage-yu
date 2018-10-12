@@ -54,19 +54,7 @@ export default class ListItems extends Component {
           <ListItemIcon>
             <SearchIcon />
           </ListItemIcon>
-          <ListItemText primary="Find Patient" />
-        </ListItem>
-
-        <ListItem 
-          button
-          component={Link} to='/admin/survey'
-          selected={this.state.selectedIndex === 2}
-          onClick={event => this.handleListItemClick(event, 2)}
-          >
-          <ListItemIcon>
-            <PollIcon />
-          </ListItemIcon>
-          <ListItemText primary="My Surveys" />
+          <ListItemText primary="Existing patient" />
         </ListItem>
 
         <ListItem 
@@ -77,18 +65,7 @@ export default class ListItems extends Component {
           <ListItemIcon>
             <PersonAddIcon />
           </ListItemIcon>
-          <ListItemText primary="Enroll Patient" />
-        </ListItem>
-
-        <ListItem 
-          button
-
-          selected={this.state.selectedIndex === 4}
-          onClick={event => this.handleListItemClick(event, 4)}>
-          <ListItemIcon>
-            <ContactPhoneIcon />
-          </ListItemIcon>
-          <ListItemText primary="Contact Patient" />
+          <ListItemText primary="Enroll New Patient" />
         </ListItem>
 
         <Divider />

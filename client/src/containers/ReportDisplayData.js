@@ -19,6 +19,7 @@ import ReportBarGraph from '../components/Graphs/ReportBarGraph';
 
 
 
+
 const styles = theme => ({
     root: {
       width: "100%",
@@ -99,30 +100,59 @@ const styles = theme => ({
 
 class ReportDisplayData extends Component {
 
+
+    async componentDidMount() {
+        console.log("id: ", this.props.episodeId)
+        await this.setState({episodes: this.props.patientData.episodes}) 
+        if (this.state.episodes) {
+            //console.log("episodes: ", this.state.episodes)
+            let episode= []
+            if (this.props.episodeId === "null") {episode = this.getEpisodeToDisplay(this.state.episodes)[0]}
+            else {episode = this.state.episodes.filter(e => e._id === this.props.episodeId)[0]};
+        if (episode) {
+            console.log("episode not null: ", episode)
+            this.setState({ 
+            episode: episode,
+            questions: episode.questions,
+            displayData: this.displayDataCalc(episode.records, episode.num_days, episode.expected_num_records/episode.num_days, episode.num_questions, episode.status)
+            })
+            } else {
+                this.setState({noEpisodes: true})
+             }
+        }
+        
+    }
+
     async componentWillReceiveProps(nextProps) {
         console.log("display nextprops: ", nextProps)
-        let episode= []
+        console.log("id: ", nextProps.episodeId)
         await this.setState({episodes: nextProps.patientData.episodes}) 
 
         if (this.state.episodes) {
-            console.log("episodes: ", nextProps.episodes)
-            console.log("id: ", nextProps.episodeId)
-            nextProps.episodeId === "null" ? 
-                episode = this.getEpisodeToDisplay(this.state.episodes)
-                :
-                episode = this.state.episodes.filter(e => e._id === nextProps.episodeId)[0];
-            this.setState({ 
+            console.log("episodes: ", this.state.episodes)
+            let episode= []
+            if (nextProps.episodeId === "null") {episode = this.getEpisodeToDisplay(this.state.episodes)[0]}
+                else {episode = this.state.episodes.filter(e => e._id === nextProps.episodeId)[0]};
+            if (episode) {
+                console.log("episode not null: ", episode)
+                this.setState({ 
                 episode: episode,
                 questions: episode.questions,
-                displayData: this.displayDataCalc(episode.records, episode.num_days, episode.expected_num_records/episode.num_days, episode.num_questions)
-            })
+                displayData: this.displayDataCalc(episode.records, episode.num_days, episode.expected_num_records/episode.num_days, episode.num_questions, episode.status)
+                })
+                } else {
+                this.setState({noEpisodes: true})
+            }
+            
         }
+        
     }
 
 
     state = {
         episode: [],
         episodes: [],
+        noEpisodes: false,
         displayQuestion: 0,
         redirect: false,
     }
@@ -130,13 +160,16 @@ class ReportDisplayData extends Component {
     getEpisodeToDisplay = (episodes) => {
         let episode = [];
         episode = episodes.filter(e => e.status === "awaiting review")
-        if (episode.length > 0) {return episode[0]}
+        if (episode.length > 0) {return episode}
 
         episode = episodes.filter(e => e.status === "active")
-        if (episode.length > 0) {return episode[0]}
+        if (episode.length > 0) {return episode}
 
         episode = episodes.filter(e => e.status === "actioned")
-        if (episodes.length > 0) {return episode[0]}  
+        if (episode.length > 0) {return episode}  
+
+        episode = episodes.filter(e => e.status === "pending")
+        if (episode.length > 0) {return episode}  
 
         return null
     }
@@ -150,8 +183,12 @@ class ReportDisplayData extends Component {
         return Math.round(validCount.length/data.expected_num_records*100)
     }
 
-    displayDataCalc = (records, numDays, numTimes, numQuestions) => {
+    displayDataCalc = (records, numDays, numTimes, numQuestions, status) => {
         //console.log("displaycalc Data: ", records, " ", " ", numDays, " ", numTimes, " ", numQuestions)
+
+        if (status === "pending") {
+            return [ "data pending" ]
+        }
 
         let timesArrayIn = [];
         let questionDataSum = [];
@@ -168,7 +205,8 @@ class ReportDisplayData extends Component {
 
                 times(numDays, (k) => {
                     times(5, (l) => {
-                        questionDataSum[l] = questionDataSum[l] + timesArrayIn[k].data[j].question_answers[l]
+                        if (timesArrayIn[k].data.length > 0) {
+                            questionDataSum[l] = questionDataSum[l] + timesArrayIn[k].data[j].question_answers[l] }
                     })
                 }) 
                 objArray.push({
@@ -212,17 +250,15 @@ class ReportDisplayData extends Component {
     }
 
     handleReportPrepClick= (event) => {
-        //console.log("row clicked: ", patient)
-        this.setState({
-          redirect: true
-        })
+        //console.log("episodeId: ", this.state.episode._id)
+        this.props.handleReportPrep(this.state.episode._id)
       }
 
     
     render () {
 
         const { classes } = this.props;
-        const { episode, timeFrame, dateRange, status, compliance, questions, displayData, displayQuestion, redirect } = this.state;
+        const { episode, timeFrame, dateRange, status, questions, displayData, displayQuestion, redirect, patientId, episodeId } = this.state;
 
         const RenderDiaryCardDetails = () => {
             return (
@@ -248,10 +284,22 @@ class ReportDisplayData extends Component {
                                         </tr>
                                         <tr>
                                             <td>Current Status</td> 
-                                            <td className={classes.rightColumn}>
+
+                                            { episode.status === "active" && <td className={classes.rightColumn}>
+                                                This diary card is currently active and has not yet been completed. 
+                                                <span style={{ color: this.complianceCalc(episode) >= 90 ? "green" : this.complianceCalc(episode) >= 70 ? "#ffc200" : "red"}}> &nbsp;&nbsp;({this.complianceCalc(episode)}% compliance)</span>
+                                            </td> }
+
+                                            { episode.status === "pending" && <td className={classes.rightColumn}>
+                                                This diary card is pending and has not yet been started by the patient.
+                                            </td> }
+
+                                            { episode.status !== "pending" && episode.status !== "active" && <td className={classes.rightColumn}>
                                                 {episode.status}
-                                                <span style={{ color: compliance > 90 ? "green" : compliance > 75 ? "#ffc200" : "red"}}> &nbsp;&nbsp;({this.complianceCalc(episode)}% compliance)</span>
-                                            </td> 
+                                                <span style={{ color: this.complianceCalc(episode) >= 90 ? "green" : this.complianceCalc(episode) >= 70 ? "#ffc200" : "red"}}> &nbsp;&nbsp;({this.complianceCalc(episode)}% compliance)</span>
+                                            </td> }
+
+
                                             </tr>
                                     </tbody>
                                 </table>
@@ -290,10 +338,6 @@ class ReportDisplayData extends Component {
             )
         }
 
-        if (redirect) {
-          const url=`/admin/reportprep/${episode._id}`
-          return <Redirect to={url}/>;
-        }
 
         return (
 
@@ -303,7 +347,74 @@ class ReportDisplayData extends Component {
                        
                 {displayData && questions && episode && <Paper className={classes.root}>
 
-                    <Grid container spacing={24}>
+                    {episode.status === "pending" && <Grid container spacing={24}>
+                        <Grid item xs={6}>
+
+                            <Grid container >
+
+                                <Grid item xs={8}>
+                                     <RenderDiaryCardDetails />
+                                </Grid>
+                                <Grid item xs={4}>
+                                    <Button className={classes.btn} disabled={true} onClick={event => this.handleReportPrepClick(event)}>No report available</Button>
+                                </Grid>
+
+                            </Grid>
+
+                            <div className={classes.graphContainer}>
+                                This Diary card has not yet been started.
+                            </div> 
+
+                        </Grid>
+
+                        <Grid item xs={6}>
+                            <div className={classes.tableContainer}>
+
+                            </div>
+                        </Grid>
+                    </Grid> }
+
+                    {episode.status === "active" && <Grid container spacing={24}>
+                        <Grid item xs={6}>
+
+                            <Grid container >
+
+                                <Grid item xs={9}>
+                                     <RenderDiaryCardDetails />
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <Button className={classes.btn} disabled={true} onClick={event => this.handleReportPrepClick(event)}>No Report Available</Button>
+                                </Grid>
+
+                            </Grid>
+
+                            <div className={classes.graphContainer}>
+                                <RenderQuestion />
+                                <ReportBarGraph 
+                                    displayData={displayData}
+                                    displayQuestion={displayQuestion}
+                                    question={questions[displayQuestion]}
+                                    height={230}
+                                    responsive="true"
+                                />
+                            </div> 
+
+                        </Grid> 
+
+                        <Grid item xs={6}>
+                            <div className={classes.tableContainer}>
+                                <RenderQuestion />
+                                <ReportTable 
+                                    displayData={displayData}
+                                    displayQuestion={displayQuestion}
+                                    question={questions[displayQuestion]}
+                                    numDays={this.state.episode.num_days}
+                                />
+                            </div>
+                        </Grid>
+                    </Grid> }
+
+                    {episode.status !== "pending" && episode.status !== "active" && <Grid container spacing={24}>
                         <Grid item xs={6}>
 
                             <Grid container >
@@ -341,7 +452,7 @@ class ReportDisplayData extends Component {
                                 />
                             </div>
                         </Grid>
-                    </Grid>
+                </Grid> }
 
                 </Paper> }
             </div>
@@ -353,7 +464,7 @@ class ReportDisplayData extends Component {
 ReportDisplayData.propTypes = {
     classes: PropTypes.object.isRequired,
   };
-  
+
   const mapStateToProps = (state) => {
     console.log("State : ", state);
     return {

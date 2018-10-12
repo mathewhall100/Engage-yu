@@ -36,19 +36,36 @@ class ReportPendingSurveys extends Component {
         morePanels: 0
     };
 
+   async componentDidMount() {
+        await this.setState({episodes: this.props.patientData.episodes}) 
+        if (this.state.episodes) {
+            console.log("Episodes: ", this.state.episodes)
+            this.setState({
+                pending: this.state.episodes.filter(episode => episode.status === "pending"),
+                active: this.state.episodes.filter(episode => episode.status === "active"),
+                review: this.state.episodes.filter(episode => episode.status === "awaiting review"),
+                actioned: this.state.episodes.filter(episode => episode.status === "actioned"),
+                archived: this.state.episodes.filter(episode => episode.status === "archived"),
+                cancelled: this.state.episodes.filter(episode => episode.status === "cancelled") 
+             })  
+         }
+    };
+
 
    async componentWillReceiveProps(nextProps) {
         //console.log("NextProps: ", nextProps)
         await this.setState({episodes: nextProps.patientData.episodes}) 
         if (this.state.episodes) {
             //console.log("Episodes: ", this.state.episodes)
-            this.setState({pending: this.state.episodes.filter(episode => episode.status === "pending") }) 
-            this.setState({active: this.state.episodes.filter(episode => episode.status === "active") }) 
-            this.setState({review: this.state.episodes.filter(episode => episode.status === "awaiting review") }) 
-            this.setState({actioned: this.state.episodes.filter(episode => episode.status === "actioned") }) 
-            this.setState({archived: this.state.episodes.filter(episode => episode.status === "archived") }) 
-            this.setState({cancelled: this.state.episodes.filter(episode => episode.status === "cancelled") }) 
-       } 
+            this.setState({
+                pending: this.state.episodes.filter(episode => episode.status === "pending"),
+                active: this.state.episodes.filter(episode => episode.status === "active"),
+                review: this.state.episodes.filter(episode => episode.status === "awaiting review"),
+                actioned: this.state.episodes.filter(episode => episode.status === "actioned"),
+                archived: this.state.episodes.filter(episode => episode.status === "archived"),
+                cancelled: this.state.episodes.filter(episode => episode.status === "cancelled")
+             })  
+         }
     };
 
     createPendingTableData = (data) => {

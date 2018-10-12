@@ -22,13 +22,9 @@ class Dashboard extends Component {
         
         return (
                 <div>
-
                     <DashboardBanner />
-
                     <br />
-
                     <DashboardTable /> 
-                    
                 </div >
         );
     }

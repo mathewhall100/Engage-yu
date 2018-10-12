@@ -29,7 +29,7 @@ class FindPatient extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("nextProps: ", nextProps)
+        //console.log("nextProps: ", nextProps)
         if (nextProps.user) { this.props.fetchListPatientsByProvider(nextProps.user.id) }
     }
 

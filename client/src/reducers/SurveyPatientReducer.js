@@ -13,7 +13,7 @@ export default (state = INITIAL_STATE, action) => {
         case SURVEY_PATIENT_DETAILS:
             return { 
                 surveyPatientInfo: action.payload.surveyPatientInfo,
-                surveyPatientData : action.payload.surveyPatientData,
+                surveyPatientData : action.payload.surveyPatientData[0],
             }
         default:
             return state;

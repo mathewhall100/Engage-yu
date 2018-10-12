@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { times, startCase } from 'lodash';
 import moment from 'moment';
 
@@ -22,6 +23,7 @@ import {BarChart, Bar, XAxis, YAxis, Legend} from 'recharts';
 import Callback from '../components/Callback';
 import ReportTable from '../components/Tables/ReportTable';
 import ReportDiaryCardDetails from '../components/Textblocks/ReportDiaryCardDetails'
+import { selectConsoleTitle } from '../actions';
 
 const styles = theme => ({
     root: {
@@ -118,14 +120,17 @@ const CustomTableCell = withStyles(theme => ({
 class ReportPrepare extends Component {
 
     componentWillMount() {
-        const episodeId = this.props.match.params.id;
-        let episodeArray = [];
+
+        let episodes;
         let episode = [];
         let records = [];
+        episodes = this.props.patientData.episodes
+  
+        if (episodes) {
+            console.log("episodes: ", episodes) 
+            episode = episodes.filter(e => e._id === this.props.episodeId)[0]
+            console.log("episodeId: ", this.props.episodeId)
 
-        if (this.props.patientData) {
-            episodeArray = this.props.patientData.episodes.filter(e => e._id === episodeId) 
-            episode = episodeArray[0]
             records = episode.records
 
             this.setState({ 
@@ -134,9 +139,11 @@ class ReportPrepare extends Component {
                 displayData: this.displayDataCalc(episode.records, episode.num_days, episode.expected_num_records/episode.num_days, episode.num_questions),
                 records: records
             })
-        } 
-    }
-    
+        }
+        
+    } 
+
+
     state = {
         episode: [],
         questions: [],
@@ -197,6 +204,11 @@ class ReportPrepare extends Component {
         return array;
     }
 
+    handleClickBack(event, id) {
+        console.log("handleClickBack: ", id)
+        this.props.handleClickBack(id)
+    }
+
 
     render () {
 
@@ -244,56 +256,60 @@ class ReportPrepare extends Component {
         
         const RenderDiaryCardDetails = () => {
             return (
-                <Grid container spacing={24}>
-                    <Grid item xs={6}> 
-                        <ReportDiaryCardDetails episode={episode} /> 
-                    </Grid>
-                    <Grid item xs={6}>
-                        <Typography variant="body2">
-                            <div className={classes.detailsText}>
-                                <br />
-                                <table>
-                                    <tbody>
-                                        <tr>
-                                            <td>Diary card requested by: </td>
-                                            <td className={classes.rightColumn}>{ startCase(`Dr. ${episode.requesting_provider_firstname} ${episode.requesting_provider_lastname}`) }</td>
-                                        </tr><tr>
-                                            <td>Report to: </td>
-                                            <td className={classes.rightColumn}> {startCase(`Dr. ${ this.props.patientInfo.primary_provider_name}`) }</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </Typography>
-                    </Grid>
-                </Grid>
+                <div>
+                    {episode && <Grid container spacing={24}>
+                        <Grid item xs={6}> 
+                            <ReportDiaryCardDetails episode={episode} /> 
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Typography variant="body2">
+                                <div className={classes.detailsText}>
+                                    <br />
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td>Diary card requested by: </td>
+                                                <td className={classes.rightColumn}>{ startCase(`Dr. ${episode.requesting_provider_firstname} ${episode.requesting_provider_lastname}`) }</td>
+                                            </tr><tr>
+                                                <td>Report to: </td>
+                                                <td className={classes.rightColumn}> {startCase(`Dr. ${ this.props.patientInfo.primary_provider_name}`) }</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </Typography>
+                        </Grid>
+                    </Grid> }
+                </div>
             )
         }  
 
         const RenderReportDetails = () => {
             return (
                 <div>
-                    <div className={classes.bold}>
-                            Report Details
-                    </div>
-                    <br />
+                    {user && <div>
+                        <div className={classes.bold}>
+                                Report Details
+                        </div>
+                        <br />
 
-                    <Typography variant="body2">
-                            <div className={classes.detailsText}>
-                                <table>
-                                    <tbody>
-                                        <tr>
-                                            <td>Report date: </td>
-                                            <td className={classes.rightColumn}>{moment().format("MMM Do YYYY")}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Report Requested by:  </td>
-                                            <td className={classes.rightColumn}> {startCase(`Dr. ${ user.details.firstname} ${ user.details.lastname}`) } </td>
-                                        </tr>                     
-                                    </tbody>
-                                </table>
-                            </div>
-                    </Typography>
+                        <Typography variant="body2">
+                                <div className={classes.detailsText}>
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td>Report date: </td>
+                                                <td className={classes.rightColumn}>{moment().format("MMM Do YYYY")}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Report Requested by:  </td>
+                                                <td className={classes.rightColumn}> {startCase(`Dr. ${ user.details.firstname} ${ user.details.lastname}`) } </td>
+                                            </tr>                     
+                                        </tbody>
+                                    </table>
+                                </div>
+                        </Typography>
+                    </div> }
                 </div>
             )
         }
@@ -311,16 +327,17 @@ class ReportPrepare extends Component {
                         <Grid item xs={12}>
                             <div className={classes.btnsContainer}> 
                                 <Tooltip title ="Close page" classes={{tooltip: classes.customWidth}} enterDelay={300}>
-                                        <Button className={classes.btn} onClick = {event => this.handleClickBack(event)}>Close</Button>
+                                    {/* <Link to='/admin' className={classes.cancelLnk}><Button className={classes.btn}>Close</Button></Link> */}
+                                        <Button className={classes.btn} onClick = {event => this.handleClickBack(event, this.props.episodeId)}>Close</Button>
                                 </Tooltip> 
                                 <Tooltip title ="Send report to patients electronic health record" classes={{tooltip: classes.customWidth}} enterDelay={300}>
-                                        <Button className={classes.btn} onClick = {event => this.handleClickEHR(event)}>send to EHR</Button>
+                                     <Button className={classes.btn} onClick = {event => this.handleClickEHR(event)}>send to EHR</Button>
                                 </Tooltip>
                                 <Tooltip title ="Send report to patients electronic health record" classes={{tooltip: classes.customWidth}} enterDelay={300}>
-                                        <Button className={classes.btn} onClick = {event => this.handleClickEmail(event)}>email</Button>
+                                    <Button className={classes.btn} onClick = {event => this.handleClickEmail(event)}>email</Button>
                                 </Tooltip>
                                 <Tooltip title ="Email report to provider and/or patient" classes={{tooltip: classes.customWidth}} enterDelay={300}>
-                                        <Button className={classes.btn} onClick = {event => this.handleClickEmail(event)}>print</Button>
+                                    <Button className={classes.btn} onClick = {event => this.handleClickEmail(event)}>print</Button>
                                 </Tooltip>
                             </div>
                          </Grid>
@@ -334,7 +351,7 @@ class ReportPrepare extends Component {
                             <Typography variant="title" className={classes.reportTitle}>
                                 Diary Card Report
                             </Typography>
-                            <br />
+                            <br /><br />
                         </Grid>
                     </Grid>
 
@@ -354,7 +371,6 @@ class ReportPrepare extends Component {
                             <div key={index}>
                                 <Grid container spacing={24}>
                                     <Grid item xs={12}> 
-                                        <br />
                                         <br />
                                         <br />
                                         <span className={classes.bold}>
@@ -516,8 +532,12 @@ class ReportPrepare extends Component {
 ReportPrepare.propTypes = {
     classes: PropTypes.object.isRequired,
   };
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({ selectConsoleTitle }, dispatch);
+}
   
-  const mapStateToProps = (state) => {
+const mapStateToProps = (state) => {
     console.log("State : ", state);
     return {
         patientInfo: state.reportPatientData.reportPatientInfo,
@@ -525,7 +545,8 @@ ReportPrepare.propTypes = {
         user: state.user
     }
   };
-  ReportPrepare = connect(mapStateToProps)(ReportPrepare)
+
+  ReportPrepare = connect(mapStateToProps, mapDispatchToProps)(ReportPrepare)
   ReportPrepare = withRouter(ReportPrepare)
   ReportPrepare = withStyles(styles, { withTheme: true })(ReportPrepare)
   export default ReportPrepare

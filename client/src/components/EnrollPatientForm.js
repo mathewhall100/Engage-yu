@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link, Redirect} from 'react-router-dom';
+import { withRouter, Link, Redirect} from 'react-router-dom';
 import { reset, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import { defaultProps } from 'recompose';
@@ -287,6 +287,7 @@ class EnrollPatientForm extends Component {
 
                             <Grid item xs={4}>
                                 <Button type="submit" disabled={submitting || pristine} className={classes.submitBtn}>Submit</Button>
+                                {/* <Button className={classes.submitBtn} onClick={event => this.props.history.goBack() }>Cancel</Button> */}
                                 <Link to='/admin' className={classes.cancelLnk}><Button className={classes.cancelBtn}>Cancel</Button></Link>
                             </Grid>
                             <Grid item xs={8}></Grid>
@@ -352,6 +353,7 @@ const formData = {
         validate,      
 }
 EnrollPatientForm = reduxForm(formData)(EnrollPatientForm)
+EnrollPatientForm = withRouter(EnrollPatientForm)
 EnrollPatientForm = withStyles(styles)(EnrollPatientForm)
 export default EnrollPatientForm
 

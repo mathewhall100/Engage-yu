@@ -7,29 +7,23 @@ import ReportPatientDetails from '../containers/ReportPatientDetails';
 import ReportDisplayData from '../containers/ReportDisplayData';
 import ReportListSurveys from '../containers/ReportListSurveys';
 
-import { selectConsoleTitle } from '../actions/index';
-//import { fetchReportPatientData } from '../actions/index';
+import { selectConsoleTitle, fetchReportPatientData } from '../actions/index';
 
+import ReportPrepare from '../containers/ReportPrepare';
 
 class Report extends Component {  
-    
+
     componentDidMount() {
         this.props.selectConsoleTitle({title: "Report"});
-
-        //const param = this.props.match.params.id
-        // const patientId = param.slice(0, param.indexOf("&"))
-        // this.props.fetchPatientData(patientId);
-
-        // const episodeId = param.slice(param.indexOf("&")+1, param.length)
-        // console.log("param ", param, " then ", episodeId)
-
-        // this.setState({ episodeId: episodeId })
-
-        this.setState({episodeId: this.props.match.params.id})
+        const params = this.props.match.params.id;
+        this.props.fetchReportPatientData(params.slice(0, params.indexOf("&")))
+        this.setState({episodeId: params.slice(params.indexOf("&")+1, params.length)})
     }
+    
 
     state = {
-        episode: "",
+        episodeId: "",
+        displayPrepareReport: false
     }
 
     handleChangeEpisode = (id) => {
@@ -37,22 +31,40 @@ class Report extends Component {
         this.setState({episodeId: id})
     }
 
+    handleReportPrep = (id) => {
+        console.log("handleReportprep:", id)
+        this.setState({episodeId: id})
+        this.setState({displayPrepareReport: this.state.displayPrepareReport ? false : true})
+    }
+
     render () {
         
         return (
             <div>
-                <ReportPatientDetails />
-                <br />     
-                <ReportDisplayData episodeId={this.state.episodeId} />
-                <br />
-                <ReportListSurveys changeEpisode={this.handleChangeEpisode} />
+                {!this.state.displayPrepareReport && <div>
+                    <ReportPatientDetails />
+                    <br />     
+                    <ReportDisplayData 
+                        episodeId={this.state.episodeId} 
+                        handleReportPrep={this.handleReportPrep} 
+                    />
+                    <br />
+                    <ReportListSurveys changeEpisode={this.handleChangeEpisode} />
+                </div> }
+
+                {this.state.displayPrepareReport && <div>
+                    <ReportPrepare episodeId={this.state.episodeId} handleClickBack={this.handleReportPrep} />
+                </div> }
+
+
+
             </div>
         );
     }
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle }, dispatch);
+    return bindActionCreators({ selectConsoleTitle, fetchReportPatientData }, dispatch);
 }
 
 function mapStateToProps({auth}){
@@ -60,6 +72,6 @@ function mapStateToProps({auth}){
     return (auth);
 }
 
-Report = connect(mapStateToProps, mapDispatchToProps) (Report)
+Report = connect(mapStateToProps, mapDispatchToProps)(Report)
 Report = withRouter(Report)
 export default Report;

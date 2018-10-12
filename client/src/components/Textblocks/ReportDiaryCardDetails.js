@@ -19,13 +19,6 @@ const styles = theme => ({
 
 class ReportDiaryCardDetails extends React.Component {
 
-    componentDidMount() {
-        this.setState({compliance: this.complianceCalc(this.props.episode)})
-    }
-
-    state = {
-        compliance: 0
-    }
 
     complianceCalc = (data) => {
        // console.log("completioncalc: ", data)
@@ -38,7 +31,6 @@ class ReportDiaryCardDetails extends React.Component {
 
     render () {
         const { episode, classes } = this.props
-        const { compliance } = this.state
 
         return (
 
@@ -68,7 +60,7 @@ class ReportDiaryCardDetails extends React.Component {
                                         <td>Current Status</td> 
                                         <td className={classes.rightColumn}>
                                             {episode.status}
-                                            <span style={{ color: compliance > 90 ? "green" : compliance > 75 ? "#ffc200" : "red"}}> &nbsp;&nbsp;({compliance}% compliance)</span>
+                                            <span style={{ color: this.complianceCalc(episode) >= 90 ? "green" : this.complianceCalc(episode)  >= 70 ? "#ffc200" : "red"}}> &nbsp;&nbsp;({this.complianceCalc(episode)}% compliance)</span>
                                         </td> 
                                         </tr>
                                 </tbody>

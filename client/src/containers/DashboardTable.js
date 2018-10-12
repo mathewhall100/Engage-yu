@@ -31,8 +31,6 @@ import dashboardMultipleSelect from '../components/Forms/DashboardMultipleSelect
 import EnhancedTableHead from '../components/Tables/EnhancedTableHead'
 import EnhancedTableToolbar from '../components/Tables/EnhancedTableToolbar'
 
-import { fetchReportPatientData } from '../actions/index';
-
 const styles = theme => ({
   root: {
     width: "100%",
@@ -58,11 +56,11 @@ const CustomTableCell = withStyles(theme => ({
 
 class DashboardTable extends React.Component {
 
-  async componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps) {
     // console.log("will receive : ", nextProps);
     // userId: this.state.user,
-    await  this.setState({activeSurveysLength:  nextProps.activeSurveys.length}),
-    await this.setState({ tableData:  this.createData(nextProps.activeSurveys) })
+    this.setState({activeSurveysLength:  nextProps.activeSurveys.length}),
+    this.setState({ tableData:  this.createData(nextProps.activeSurveys) })
     if (this.state.tableData) {
        this.setState({ tableDataFiltered: this.filterData(this.createData(nextProps.activeSurveys), this.state.personFilter, this.state.statusFilter, this.state.checked) }) }
   }
@@ -71,8 +69,8 @@ class DashboardTable extends React.Component {
   state = {
     
     redirect: false,
-    patient: "",
-    episode: "",
+    patientId: "",
+    episodeId: "",
 
     activeSurveysLength: 0,
     tableData: [],
@@ -277,9 +275,9 @@ class DashboardTable extends React.Component {
   };
 
   handleRowClick = (event, patientId, episodeId) => {
-    console.log("row clicked: ", event, patientId, episodeId)
-    this.props.fetchReportPatientData(patientId)
+    // console.log("row clicked: ", event, patientId, episodeId)
     this.setState({
+      patientId: patientId,
       episodeId: episodeId,
       redirect: true
     })
@@ -346,9 +344,9 @@ class DashboardTable extends React.Component {
       { id: 'requester', numeric: false, disablePadding: false, label: 'Requester' }
     ];
 
-    const { redirect, episodeId } = this.state;
+    const { redirect, patientId, episodeId } = this.state;
      if (redirect) {
-       const url=`/admin/report/${episodeId}`
+       const url=`/admin/report/${patientId}&${episodeId}`
        return <Redirect to={url}/>;
      }
 
@@ -410,7 +408,7 @@ class DashboardTable extends React.Component {
                           color: d.status.status === "archived" ? "#ffffff" : "#666666"
                                         }}>
                            {d.status.status === "active" || d.status.status === "awaiting review" ? 
-                              <span style={{ textShadow: "1px 0", fontWeight: 600, color: d.status.compliance > 90 ? "green" : d.status.compliance > 75 ? "#ffc200" : "red"}}>
+                              <span style={{ textShadow: "1px 0", fontWeight: 600, color: d.status.compliance >= 90 ? "green" : d.status.compliance >= 70 ? "#ffc200" : "red"}}>
 
                                 {this.statusProgressBar(d.status.progress)}
 
@@ -453,19 +451,15 @@ DashboardTable.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators({ fetchReportPatientData }, dispatch);
-}
-
 const mapStateToProps = (state) => {
-  console.log("State : ", state);
+  //console.log("State : ", state);
   return {
       activeSurveys: state.activeSurveys.activeSurveys.activeList,
       user: state.user
   }
 };
 
-DashboardTable = connect(mapStateToProps, mapDispatchToProps)(DashboardTable)
+DashboardTable = connect(mapStateToProps)(DashboardTable)
 DashboardTable = withStyles(styles, { withTheme: true })(DashboardTable)
 export default DashboardTable
 

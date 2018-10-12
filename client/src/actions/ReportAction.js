@@ -8,11 +8,8 @@ export const fetchReportPatientData = (id) => {
     return(dispatch) => {
         request.then( res => {
             patientInfo = res.data;
-           
             }).then( () => { 
-                console.log("reportpatientINfoaction: ", patientInfo)
                 axios.get(`/api/patient_data/${patientInfo.patient_data_id}`).then( res => {
-                    console.log("reportpatientDataaction: ", res.data)
                     dispatch({
                         type: REPORT_PATIENT_DATA,
                         payload : {

@@ -16,7 +16,7 @@ class FormText extends Component {
                     label={field.label}
                     {...field.input}    
                     margin="normal"
-                    multiline={field.mutliline ===true ? "true" : "false"}
+                    multiline={field.mutliline === true ? true : false}
                     style={{width: "250px"}}
                 />
                 

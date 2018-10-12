@@ -131,7 +131,7 @@ class FindPatientTable extends Component {
 
         if (filteredData.length === 1) {
             this.setState({displayRowActions: filteredData[0]._id }) 
-            this.props.fetchreportPatientData(filteredData[0]._id );
+            this.props.fetchReportPatientData(filteredData[0]._id );
             this.props.displayPatientDetails(filteredData[0]._id )
             return filteredData
         } else {
@@ -228,28 +228,24 @@ class FindPatientTable extends Component {
 
     handleClickDiaryCard = (event, patientId) => {
         console.log("diarycard clicked: ", patientId)
-        this.props.fetchSurveyQuestions()
-        this.props.fetchSurveyPatientDetails(patientId);
         this.setState({
-            redirectURL: `survey`,
+            redirectURL: `survey/${patientId}`,
             redirect: true
         })
     }
 
     handleClickReport = (event, patientId) => {
         console.log("report clicked: ", patientId)
-        this.props.fetchReportPatientData(patientId);
         this.setState({
-            redirectURL: `report/null`,
+            redirectURL: `report/${patientId}&null`,
             redirect: true
         })
     }
 
     handleClickEdit = (event, patientId) => {
         console.log("editclicked: ", patientId)
-        this.props.fetchReportPatientData(patientId);
         this.setState({
-            redirectURL: `updatepatient`,
+            redirectURL: `updatepatient/${patientId}`,
             redirect: true
         })
     }
