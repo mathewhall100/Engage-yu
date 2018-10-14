@@ -9,7 +9,7 @@ class FormTextFocused extends Component {
 
     renderTextField(field) {
 
-        const {meta: {dirty, touched, error}} = field;
+        const {width, meta: {dirty, touched, error}} = field;
         console.log("Field: ", field)
             return (
                 <div>
@@ -17,7 +17,8 @@ class FormTextFocused extends Component {
                         label={field.label}
                             {...field.input}    
                         margin="normal"
-                        style={{width: "250px"}}
+                        multiline={field.mutliline === true ? true : false}
+                        style={{width: `${width}px`}}
                         autoFocus
                     />
                     
@@ -39,6 +40,7 @@ class FormTextFocused extends Component {
             <Field 
                 name={this.props.name}
                 label={this.props.label}
+                width={this.props.width ? this.props.width : "250"}
                 component={this.renderTextField}
                 autoComplete="off"
                 

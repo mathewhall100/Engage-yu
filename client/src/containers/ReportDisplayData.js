@@ -286,16 +286,16 @@ class ReportDisplayData extends Component {
                                             <td>Current Status</td> 
 
                                             { episode.status === "active" && <td className={classes.rightColumn}>
-                                                This diary card is currently active and has not yet been completed. 
-                                                <span style={{ color: this.complianceCalc(episode) >= 90 ? "green" : this.complianceCalc(episode) >= 70 ? "#ffc200" : "red"}}> &nbsp;&nbsp;({this.complianceCalc(episode)}% compliance)</span>
+                                               Curruntly Active 
+                                                <span style={{ color: this.complianceCalc(episode) >= 90 ? "green" : this.complianceCalc(episode) >= 70 ? "#ffc200" : "red"}}> &nbsp;&nbsp;({this.complianceCalc(episode)}% compliance so far.)</span>
                                             </td> }
 
                                             { episode.status === "pending" && <td className={classes.rightColumn}>
-                                                This diary card is pending and has not yet been started by the patient.
+                                               <span style={{color: "red"}}>Pending - awaiting first data.</span>
                                             </td> }
 
                                             { episode.status !== "pending" && episode.status !== "active" && <td className={classes.rightColumn}>
-                                                {episode.status}
+                                                {startCase(episode.status)}
                                                 <span style={{ color: this.complianceCalc(episode) >= 90 ? "green" : this.complianceCalc(episode) >= 70 ? "#ffc200" : "red"}}> &nbsp;&nbsp;({this.complianceCalc(episode)}% compliance)</span>
                                             </td> }
 
@@ -362,7 +362,7 @@ class ReportDisplayData extends Component {
                             </Grid>
 
                             <div className={classes.graphContainer}>
-                                This Diary card has not yet been started.
+                                This Diary card has not yet been started by the patient.
                             </div> 
 
                         </Grid>

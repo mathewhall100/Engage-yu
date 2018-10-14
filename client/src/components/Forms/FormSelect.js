@@ -11,11 +11,11 @@ import DoneIcon from '@material-ui/icons/Done';
 class FormSelect extends Component {  
 
     renderSelect(field) {
-        const {input, label, meta: { pristine, touched, error }, children, ...custom} = field
+        const {input, label, width, meta: { pristine, touched, error }, children, ...custom} = field
         return (
 
             <div>
-                <FormControl style={{minWidth: "250px"}}>
+                <FormControl style={{width: `${width}px`}}>
                     <InputLabel>{label}</InputLabel> 
                     <Select
                         {...input}
@@ -43,11 +43,15 @@ class FormSelect extends Component {
 
         return (
 
-            <Field name={this.props.name} component={this.renderSelect} label={this.props.label}>
+            <Field 
+                name={this.props.name} 
+                component={this.renderSelect} 
+                label={this.props.label}
+                width={this.props.width ? this.props.width : "250"}
+            >
                 {this.props.items.map(item => 
                    <MenuItem key={item.value} value={item.value}>{item.text}</MenuItem>
                 )}
-
             </Field>
 
         )

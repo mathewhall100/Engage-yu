@@ -84,7 +84,7 @@ export default class ListItems extends Component {
 
         <ListItem 
           button
-
+          component={Link} to='/admin/provider'
           selected={this.state.selectedIndex === 6}
           onClick={event => this.handleListItemClick(event, 6)}>
           <ListItemIcon>

@@ -12,7 +12,7 @@ export default {
     },
 
     create: function(providerGroupInfo){
-        console.log("Axios call made to '/api/provider_roup' to 'create'");
+        console.log("Axios call made to '/api/provider_group' to 'create'");
         return axios.post("/api/provider_group", providerGroupInfo);
     },
 

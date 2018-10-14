@@ -7,6 +7,8 @@ import EditPatient from './EditPatient';
 import EnrollPatient from './EnrollPatient';
 import SurveyCreate from './Survey';
 import Report from './Report';
+import Provider from './Provider';
+import ProviderEnrollForm from './ProviderEnrollForm';
 import NotFound from './NotFound';
 
 
@@ -21,6 +23,8 @@ class ConsoleRoutes extends Component {
                   <Route exact path='/admin/dashboard' render={props => <Dashboard {...this.props}></Dashboard>} />
                   <Route exact path='/admin/find' render={props => <FindPatient {...this.props}></FindPatient>} />
                   <Route exact path='/admin/enroll' render={props => <EnrollPatient {...this.props}></EnrollPatient>} />
+                  <Route exact path='/admin/provider' render={props => <Provider {...this.props}> </Provider>} />
+                  <Route exact path='/admin/providerenroll' render={props => <ProviderEnrollForm {...this.props}></ProviderEnrollForm>} />
                   <Route path='/admin/survey/:id' render={props => <SurveyCreate {...this.props}></SurveyCreate>} />
                   <Route path='/admin/report/:id' render={props => <Report {...this.props}></Report>} />
                   <Route path='/admin/updatepatient/:id' render={props => <EditPatient {...this.props}></EditPatient>} />

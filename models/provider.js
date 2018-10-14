@@ -28,41 +28,37 @@ const providerSchema = new Schema({
         }
     },
 
-    provider_group_ref: [{ type: Schema.Types.ObjectId, ref: 'Provider_group' }],
-    provider_group_id: String,
-    provider_group_name: String,
+    provider_group_ref: { type: Schema.Types.ObjectId, ref: 'Provider_group', required: [true, 'No provider group ref supplied'] },
+    provider_group_id:  {type: String, required: [true, 'No provider group id supplied']},
+    provider_group_name:  {type: String, required: [true, 'No provider group name supplied']},
 
     role: { type: String, enum: ['Physician (specialist)', 'Physician (primary care)', 'Physician (hospitalist)', 'Nurse (specialist)', 'other'], required: [true, 'No provider role supplied] '] },
     role_other: {type: String},
 
     office: { 
-        address1: {type: String, required: true }, 
-        address2: {type: String},
-        address3: {type: String}, 
-        address4: {type: String}, 
+        name: {type: String, required: true }, 
+        street: {type: String},
+        city: {type: String, required: true },
         state: {type: String, required: true }, 
         zip: {type: String, required: true }
      },
 
     email: { type: String, unique: true, required: [true, 'No email address supplied'] },
 
-    phone: { 
-        phone1: {
+    phone: [{ 
             phone: {type: String, enum: ['cell', 'office', 'other']},
             number: {type: String, required: [true, 'No phone number supplied' ]},
             ext: Number,
-        },
-        phone2: {
+        },{
             phone: {type: String, enum: ['cell', 'office', 'other']},
             number: String,
             ext: Number,
-        },
-        phone3: {
+        },{
             phone: {type: String, enum: ['cell', 'office', 'other']},
             number: String,
             ext: Number,
         }
-    },
+    ],
 
     custom_questions: [{ type: Schema.Types.ObjectId, ref: 'Question_custom' }]
 

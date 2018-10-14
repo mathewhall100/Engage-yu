@@ -43,7 +43,7 @@ class SurveyPatientDetails extends Component {
 
                     <Grid container spacing={24}>
                         <Grid item xs={3}>
-                        <Typography variant="caption">Patient name</Typography>
+                        <Typography variant="caption">For patient</Typography>
                             <span className={classes.textBold}>{startCase(this.props.patientInfo.firstname)} {startCase(this.props.patientInfo.lastname)}</span>
                         </Grid>
                         <Grid item xs={3}>
@@ -55,7 +55,7 @@ class SurveyPatientDetails extends Component {
                             <span className={classes.textBold}>{this.props.patientInfo.dob}</span>
                         </Grid>
                         <Grid item xs={3}>
-                        <Link to='/admin' className={classes.backbtn}><Button>Back</Button></Link>
+                        <Link to='/admin/find' className={classes.backbtn}><Button>Back</Button></Link>
                         </Grid>
                         
                     </Grid>

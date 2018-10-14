@@ -3,13 +3,14 @@ import { Field } from 'redux-form';
 
 import TextField from '@material-ui/core/TextField'
 import DoneIcon from '@material-ui/icons/Done';
+import { throws } from 'assert';
 
 
 class FormText extends Component {  
 
     renderTextField(field) {
         console.log("text field : ", field);
-    const {meta: {touched, error}} = field;
+    const {width, meta: {touched, error}} = field;
         return (
             <div>
                 <TextField
@@ -17,7 +18,7 @@ class FormText extends Component {
                     {...field.input}    
                     margin="normal"
                     multiline={field.mutliline === true ? true : false}
-                    style={{width: "250px"}}
+                    style={{width: `${width}px`}}
                 />
                 
                 <div style={{fontSize: "13px", color: "red"}}> 
@@ -39,6 +40,7 @@ class FormText extends Component {
                 name={this.props.name}
                 label={this.props.label}
                 multiline={this.props.multiline}
+                width={this.props.width ? this.props.width : "250"}
                 component={this.renderTextField}
                 autoComplete="off"
             />

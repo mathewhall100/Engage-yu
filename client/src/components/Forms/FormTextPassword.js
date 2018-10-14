@@ -15,7 +15,7 @@ class FormTextPassword extends Component {
                     label={field.label}
                         {...field.input}    
                     margin="normal"
-                    style={{width: "250px"}}
+                    style={{width: `${field.width}px`}}
                     type="password"
                     autoComplete="current-password"
                 />
@@ -38,6 +38,7 @@ class FormTextPassword extends Component {
             <Field 
                 name={this.props.name}
                 label={this.props.label}
+                width={this.props.width ? this.props.width : "250"}
                 component={this.renderTextField}
                 
             />

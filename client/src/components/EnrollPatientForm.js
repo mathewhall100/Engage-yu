@@ -3,6 +3,7 @@ import { withRouter, Link, Redirect} from 'react-router-dom';
 import { reset, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import { defaultProps } from 'recompose';
+import { startCase } from 'lodash';
 
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -69,7 +70,7 @@ class EnrollPatientForm extends Component {
                 res.data.providerList.map((provider, index) => {
                     selectItems.push({
                         value: index,
-                        text: `Dr ${provider.firstname} ${provider.lastname}`,
+                        text: `Dr ${startCase(provider.firstname)} ${startCase(provider.lastname)}`,
                         id: provider._id, 
                         group_ref: provider.provider_group_ref,
                         group_id: provider.provider_group_id,
@@ -210,6 +211,7 @@ class EnrollPatientForm extends Component {
                                 <FormTextFocused
                                     name="firstName"
                                     label="Firstname"
+                                    width="270"
                                 />
                             </Grid>
                             <Grid item xs={1}></Grid>
@@ -217,6 +219,7 @@ class EnrollPatientForm extends Component {
                                 <FormText
                                     name="lastName"
                                     label="Lastname"
+                                    width="270"
                                 />
                             </Grid>
                             <Grid item xs={3}></Grid>
@@ -225,6 +228,7 @@ class EnrollPatientForm extends Component {
                                 <FormText
                                     name="dob"
                                     label="DOB (mm-dd-yyyy)"
+                                    width="270"
                                 />
                             </Grid>
                             <Grid item xs={1}></Grid>
@@ -240,6 +244,7 @@ class EnrollPatientForm extends Component {
                                 <FormText
                                     name="email"
                                     label="Email (john.doe@you.com"
+                                    width="270"
                                 />
                             </Grid>
                             <Grid item xs={1}></Grid>
@@ -247,6 +252,7 @@ class EnrollPatientForm extends Component {
                                 <FormText
                                     name="phone" 
                                     label="Phone (000-000-0000)"
+                                    width="270"
                                 />
                             </Grid>
                             <Grid item xs={3}></Grid>
@@ -255,6 +261,7 @@ class EnrollPatientForm extends Component {
                                 <FormText
                                     name="hospId"
                                     label="Hospital Number"
+                                    width="270"
                                 />
                             </Grid>
                             <Grid item xs={1}></Grid>
@@ -263,6 +270,7 @@ class EnrollPatientForm extends Component {
                                 <FormSelect 
                                     name="provider" 
                                     label="Primary Provider"
+                                    width="270"
                                     items={selectItems}
                                 />
                             </Grid>
@@ -272,6 +280,7 @@ class EnrollPatientForm extends Component {
                                 <FormTextPassword
                                     name="password1"
                                     label="Password"
+                                    width="270"
                                 />
                             </Grid>
                             <Grid item xs={1}></Grid>
@@ -279,6 +288,7 @@ class EnrollPatientForm extends Component {
                                 <FormTextPassword
                                     name="password2" 
                                     label="Re-enter Password"
+                                    width="270"
                                     />
                             </Grid>
                             <Grid item xs={3}></Grid>
