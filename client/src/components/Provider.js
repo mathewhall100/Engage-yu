@@ -13,6 +13,10 @@ import { selectConsoleTitle } from '../actions/index'
 import FormSelect from './Forms/FormSelect'
 
 import ProviderDetails from './ProviderDetails'
+import ProviderEdit from './ProviderEdit'
+import ProviderEditRole from './ProviderEditRole'
+import ProviderEditGroup from './ProviderEditGroup'
+import ProviderRemove from './ProviderRemove'
 import ProviderEnrollForm from './ProviderEnrollForm'
 import providerAPI from "../utils/provider.js";
 
@@ -57,7 +61,7 @@ class Provider extends Component {
         providerAPI.findAllByGroup(this.state.providerGroupId)
             .then(res => {
                 console.log("res.data: " + JSON.stringify(res.data.providerList, null, 2 ));
-                
+
                 res.data.providerList.map((provider, index) => {
                     providerList.push({
                         value: provider._id,
@@ -65,6 +69,7 @@ class Provider extends Component {
                     })
                 })
                 this.setState({providerList: providerList})
+                
             })
             .catch(err => {
                 console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
@@ -79,7 +84,11 @@ class Provider extends Component {
         providerList: [],
 
         displayDetails: false,
-        enroll: false
+        editDetails: false,
+        editRole: false,
+        editGroup: false,
+        enrollNew: false,
+        removeprovider: false
     }
 
 
@@ -87,18 +96,91 @@ class Provider extends Component {
         console.log("Submitted values: ", values);
         this.setState({
             providerId: values.provider,
-            displayDetails: true
+            displayDetails: true,
+            editDetails: false,
+            editRole: false,
+            editGroup: false,
+            enrollNew: false,
+            removeProvider: false
         })
     };
 
-    handleEnrollClick = (event) => {
-        this.setState({enroll: true})
+    handleEdit = () => {
+        console.log("handleEdit")
+        this.setState({
+            displayDetails: false,
+            editDetails: true,
+            editRole: false,
+            editGroup: false,
+            enrollNew: false,
+            removeProvider: false
+        })
+    }
+
+    handleRole = () => {
+        console.log("handleRole")
+        this.setState({
+            displayDetails: false,
+            editDetails: false,
+            editRole: true,
+            editGroup: false,
+            enrollNew: false,
+            removeProvider: false
+        })
+    }
+
+    handleGroup = () => {
+        console.log("handleGroup")
+        this.setState({
+            displayDetails: false,
+            editDetails: false,
+            editRole: false,
+            editGroup: true,
+            enrollNew: false,
+            removeProvider: false
+        })
+    }
+
+    handleEnroll = (event) => {
+        console.log("handleEnroll")
+        this.setState({
+            displayDetails: false,
+            editDetails: false,
+            editRole: false,
+            editGroup: false,
+            enrollNew: true,
+            removeProvider: false
+        })
+    }
+
+    handleRemove = () => {
+        console.log("handleRemove")
+        this.setState({
+            displayDetails: false,
+            editDetails: false,
+            editRole: false,
+            editGroup: false,
+            enrollNew: false,
+            removeProvider: true
+        })
+    }
+
+    handleBack = () => {
+        console.log("handleBack")
+        this.setState({
+            displayDetails: true,
+            editDetails: false,
+            editRole: false,
+            editGroup: false,
+            enrollNew: false,
+            removeProvider: false
+        })
     }
 
 
     render () {
 
-        const { displayDetails, enroll, providerList, providerId } = this.state
+        const { displayDetails, editDetails, editRole, editGroup, enrollNew, removeProvider, providerList, providerId } = this.state
         const { handleSubmit, submitting, pristine, classes } = this.props
         
         return (
@@ -129,18 +211,32 @@ class Provider extends Component {
                                         </div>
                                 </Grid>
                                 <Grid item xs={3}>
-                                   <Link to={"/admin/providerenroll"}><Button size="small" type="enroll" className={classes.Btn} onClick={event => this.handleEnrollClick(event)}>Enroll a new provider</Button></Link>
+                                   <Link to={"/admin/providerenroll"}><Button size="small" type="enroll" className={classes.Btn} onClick={event => this.handleEnroll(event)}>Enroll a new provider</Button></Link>
                                 </Grid>
                             </Grid>
                         </form>
                     
                         <br />
 
-                        { displayDetails && <ProviderDetails  providerId={providerId} /> }
+                        { displayDetails && <ProviderDetails  
+                            providerId={providerId} 
+                            handleEdit={this.handleEdit}
+                            handleRole={this.handleRole}
+                            handleGroup={this.handleGroup}
+                            handleRemove={this.handleRemove}
+                            /> }
+
+                        { editDetails && <ProviderEdit handleBack={this.handleBack}/> }
+
+                        { editRole && <ProviderEditRole handleBack={this.handleBack}/> }
+
+                        { editGroup && <ProviderEditGroup handleBack={this.handleBack}/> }
+
+                        { removeProvider && <ProviderRemove handleBack={this.handleBack}/> }
 
                         <br />
 
-                        { enroll && <ProviderEnrollForm /> }
+                        { enrollNew && <ProviderEnrollForm /> }
                         
                     </Card>
                 </div> 

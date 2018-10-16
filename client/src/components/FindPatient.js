@@ -3,6 +3,8 @@ import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import Card from '@material-ui/core/Card'
+
 import { selectConsoleTitle } from '../actions/index'
 import { fetchListPatientsByProvider } from '../actions';
 import FindPatientForm from '../containers/FindPatientForm';
@@ -59,11 +61,19 @@ class FindPatient extends Component {
         return (
                 <div>
 
+                    <Card style={{padding: "20px"}}>
+
                     <FindPatientForm 
                         filterByName={this.filterByName} 
                         filterByNumber={this.filterByNumber} 
                         filterByList={this.filterByList}
                     />
+
+                    <br />
+
+                    { displayDetails && <FindPatientDetails /> }
+
+                    </Card>
 
                     <br />
 
@@ -76,7 +86,7 @@ class FindPatient extends Component {
 
                     <br />
 
-                    { displayDetails && <FindPatientDetails /> }
+                    {/* { displayDetails && <FindPatientDetails /> } */}
                     
                 </div> 
         );

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { REPORT_PATIENT_DATA} from './types';
+import { REPORT_PATIENT_DATA } from './types';
 
 export const fetchReportPatientData = (id) => {
     const url = `/api/patient_info/find/${id}`;

@@ -71,7 +71,7 @@ class EditPatient extends Component {
         // On component mount, fetch names of all providers in provider group to populate primary provider form field
         providerAPI.findAllByGroup(this.state.providerGroupId)
             .then(res => {
-                console.log("res.data: " + JSON.stringify(res.data.providerList, null, 2 ));
+                console.log("res.data: ", res.data);
                 selectItems=[];
                 res.data.providerList.map((provider, index) => {
                         selectItems.push({

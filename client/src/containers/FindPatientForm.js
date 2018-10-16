@@ -74,7 +74,7 @@ class FindPatientForm extends Component {
 
         return (
             <div>
-                <Card style={{padding: "20px"}}>
+                {/* <Card style={{padding: "20px"}}> */}
 
                     <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
                         <Grid container spacing={24}>
@@ -129,7 +129,7 @@ class FindPatientForm extends Component {
 
                         </Grid>
                     </form>
-                </Card>
+                {/* </Card> */}
 
                 <br />
       

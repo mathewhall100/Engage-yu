@@ -7,6 +7,5 @@ export const selectConsoleTitle = (consoleTitle) => {
         { 
         type: CONSOLE_TITLE, 
         payload: consoleTitle
-    });
-    
+    }); 
 }   

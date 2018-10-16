@@ -96,9 +96,11 @@ class ProviderEnrollForm extends Component {
     submit(values) {
         console.log("Submitted values: ", values);
 
-        let phoneNos = [
-            { phone: "office", "number": `${values.phone1.slice(0, values.phone1.indexOf("ext")).trim()}`, "ext":  `${values.phone1.slice((values.phone1.indexOf("ext")+3)).trim()}` }
-        ];
+        let phoneNos = [{
+             phone: "office", 
+            "number": `${values.phone1.slice(0, values.phone1.indexOf("ext")).trim()}`, 
+            "ext":  `${values.phone1.slice((values.phone1.indexOf("ext")+3)).trim()}`
+            }];
         if (values.phone2) {phoneNos.push(
              { phone: "cell", number: `${values.phone2.trim()}`, ext:  ""}
         )}
@@ -241,7 +243,7 @@ class ProviderEnrollForm extends Component {
                             <Grid item xs={12}>
                                     <FormText
                                         name="email"
-                                        label="Email (john.doe@caregroup.com"
+                                        label="Email (john.doe@caregroup.com)"
                                         width="350"
                                     />
                             </Grid>

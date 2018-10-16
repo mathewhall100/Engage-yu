@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { startCase } from 'lodash';
 import moment from 'moment';
 
@@ -10,6 +11,7 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
+import { providerDetails } from '../actions/index'
 import Callback from './Callback'
 import providerAPI from "../utils/provider.js";
 
@@ -39,13 +41,13 @@ const styles = theme => ({
 })
 
 class ProviderDetails extends Component {  
-
+   
     
     componentDidMount() {
-        let provider = [];
         providerAPI.findById(this.props.providerId)
             .then(res => {
                 console.log("res.data: ", res.data);
+                this.props.providerDetails({provider: res.data});
                 this.setState({provider: res.data})
             })
             .catch(err => {
@@ -55,10 +57,10 @@ class ProviderDetails extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        let provider = [];
         providerAPI.findById(nextProps.providerId)
             .then(res => {
                 console.log("res.data: ", res.data);
+                this.props.providerDetails({provider: res.data});
                 this.setState({provider: res.data})
             })
             .catch(err => {
@@ -84,6 +86,25 @@ findNumDiaryCreated = () => {
 
 findNumDiaryReviewed = () => {
 
+}
+
+// Event handlers
+
+clickEdit(event) {
+    console.log("edit provider clicked")
+    this.props.handleEdit()
+}
+clickRole(event) {
+    console.log("Role provider clicked")
+    this.props.handleRole()
+}
+clickGroup(event) {
+    console.log("Group provider clicked")
+    this.props.handleGroup()
+}
+clickRemove(event) {
+    console.log("Remove provider clicked")
+    this.props.handleRemove()
 }
 
 
@@ -167,7 +188,7 @@ findNumDiaryReviewed = () => {
                                                     return (
                                                     <tr key={index}>
                                                             <td style={{width: "200px"}}>{phone.number} {phone.ext && <span>ext. {phone.ext}</span> }</td>
-                                                            <td style={{width: "100px"}}>{phone.phone}</td>
+                                                            <td style={{width: "100px"}}>({phone.phone})</td>
                                                     </tr>
                                                     )
                                                 }) }
@@ -224,9 +245,10 @@ findNumDiaryReviewed = () => {
                { provider && <div>
                    <div styles={{float: "right"}}>
                         <Button size="small" className={classes.btn}>cancel</Button>
-                        <Button size="small" className={classes.btn}>remove provider</Button> 
-                        <Button size="small" className={classes.btn}>update care group</Button> 
-                        <Button size="small" className={classes.btn}>edit details</Button>
+                        <Button size="small" className={classes.btn} onClick={event => this.clickRemove(event)}>remove provider</Button> 
+                        <Button size="small" className={classes.btn} onClick={event => this.clickGroup(event)}>update care group</Button> 
+                        <Button size="small" className={classes.btn} onClick={event => this.clickRole(event)}>update role</Button> 
+                        <Button size="small" className={classes.btn} onClick={event => this.clickEdit(event)}>edit details</Button>
                        
                     </div>
                 </div> }
@@ -235,12 +257,13 @@ findNumDiaryReviewed = () => {
     }
 }
 
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({ providerDetails, }, dispatch);
+}
 
 const mapStateToProps = (state) => {
     // console.log("State : ", state);
     return {
-        patientInfo: state.reportPatientData.reportPatientInfo,
-        patientData: state.reportPatientData.reportPatientData,
         user: state.user
     }
 };
@@ -250,6 +273,6 @@ const mapStateToProps = (state) => {
 //     return (auth);
 // }
 
-ProviderDetails = connect(mapStateToProps)(ProviderDetails)
+ProviderDetails = connect(mapStateToProps, mapDispatchToProps)(ProviderDetails)
 ProviderDetails = withStyles(styles)(ProviderDetails)
 export default ProviderDetails;

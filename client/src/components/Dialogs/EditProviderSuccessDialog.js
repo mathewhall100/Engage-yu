@@ -11,15 +11,26 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
 
-import { fetchReportPatientData } from '../../actions/index';
+import { providerDetails } from '../../actions/index';
+import providerAPI from "../../utils/provider.js";
 
-class EditPatientSuccessDialog extends React.Component {
+class EditProviderSuccessDialog extends React.Component {
     state = {
         open: true
      };
 
     handleClose(event)  {
-        this.props.fetchReportPatientData(this.props.patientId) 
+
+        providerAPI.findById(this.props.providerId)
+            .then(res => {
+                console.log("res.data: ", res.data);
+                this.props.providerDetails({provider: res.data});
+                this.setState({provider: res.data})
+            })
+            .catch(err => {
+                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
+                console.log(err);
+            })
         this.setState({ open: false }) 
     }
 
@@ -40,9 +51,9 @@ class EditPatientSuccessDialog extends React.Component {
             <DialogTitle id="responsive-dialog-title">Success!</DialogTitle>
 
             <DialogContent>
-                <p>Patient details successfully updated and will be effective immediately </p>
-                <p>Only one field can be updated at a time. If you need to update additional fileds for this patient, please click 'More to update'.</p>
-                <p>Click 'Done to return to the patient menu.</p>               
+                <p>Provider details successfully updated and will be effective immediately </p>
+                <p>Only one field can be updated at a time. If you need to update additional fileds for this provider, please click 'More to update'.</p>
+                <p>Click 'Done to return to the provider menu.</p>               
 
                 <br /><br />
 
@@ -59,7 +70,7 @@ class EditPatientSuccessDialog extends React.Component {
   }
 }
 
-EditPatientSuccessDialog.propTypes = {
+EditProviderSuccessDialog.propTypes = {
   fullScreen: PropTypes.bool.isRequired,
 };
 
@@ -71,8 +82,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({ fetchReportPatientData }, dispatch);
+    return bindActionCreators({ providerDetails }, dispatch);
 }
 
-EditPatientSuccessDialog = connect(mapStateToProps, mapDispatchToProps)(EditPatientSuccessDialog)
-export default withMobileDialog()(EditPatientSuccessDialog);
+EditProviderSuccessDialog = connect(mapStateToProps, mapDispatchToProps)(EditProviderSuccessDialog)
+export default withMobileDialog()(EditProviderSuccessDialog);
