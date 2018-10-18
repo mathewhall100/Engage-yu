@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { startCase } from 'lodash';
 // import { bindActionCreators } from 'redux';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -16,11 +17,22 @@ const styles = theme =>({
     root: {
         flexGrow: 1,
     }, 
-
+    layout: {
+        width: 'auto',
+        marginLeft: theme.spacing.unit * 3,
+        marginRight: theme.spacing.unit * 3,
+            [theme.breakpoints.up(1480 + theme.spacing.unit * 3 * 2)]: {
+            width: 1480,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            }
+    },
     flex: {
         flexGrow: 1,
     },
-
+    loseShadow: {
+        boxShadow: "none"
+    },
     welcomeText: {
         marginRight: 20,
     },
@@ -49,7 +61,7 @@ class TopBar extends Component {
     renderProfile(profile, isAuthenticated) {
         return(
             profile && isAuthenticated ?
-                <p><img src={profile.picture} height="40px" alt="profile" style={{verticalAlign: "middle"}} /> Welcome! {profile.name} </p>
+                <p><img src={profile.picture} height="40px" alt="profile" style={{verticalAlign: "middle"}} /> Welcome {startCase(profile.name)} </p>
             : null
         );
     }
@@ -60,33 +72,29 @@ class TopBar extends Component {
         const { classes } = this.props;
 
         return (
-                <div className="classes.root">
+                <div className={isAuthenticated ? classes.root : classes.layout}>
 
-                    <AppBar position="static">
-                        <ToolBar style={{backgroundColor: "#2d404b"}}>
+                    <AppBar position="static" className={isAuthenticated ? null : classes.loseShadow}>
+                        <ToolBar style={{backgroundColor: "#2d404b" }}>
                             <Typography variant="display1" color="inherit" align="left" className={classes.flex}>
                                 Engage-Yu!
                             </Typography>
 
-                            <Typography variant="subheading" color="inherit" align="center" className={classes.flex}>
+                            {isAuthenticated && <Typography variant="subheading" color="inherit" align="center" className={classes.flex}>
                                 Care Group: The Cleveland Practice
-                            </Typography>
+                             </Typography> }
 
                             <Typography variant="subheading" color="inherit" align="right" className={classes.welcomeText}>
                                 {this.renderProfile(profile, isAuthenticated)}
                             </Typography>
-                            <Button color="inherit" className={classes.menuButton}>Help</Button>
-                            {!isAuthenticated ? 
-                            (
-                                <Button color="inherit" className={classes.menuButton} onClick={this.handleLoginClick}>Login</Button>
-                            ):
-                            (
-                                <Button color="inherit" className={classes.menuButton} onClick={this.handleLogoutClick}>Logout</Button>
-                            )
-                            }
-                            
 
-                            
+                            <Button color="inherit" className={classes.menuButton}>Help</Button>
+
+                            {!isAuthenticated ? 
+                                ( <Button color="inherit" className={classes.menuButton} onClick={this.handleLoginClick}>Login</Button> )
+                                :
+                                ( <Button color="inherit" className={classes.menuButton} onClick={this.handleLogoutClick}>Logout</Button> )
+                            }
                         </ToolBar>
                     </AppBar>
 

@@ -17,10 +17,10 @@ const styles = ({
         boxShadow: 'none',
         border: '2px solid #eeeeee',
         position: "relative",
-    },
-    details: {
-        display: 'flex',
-        flexDirection: 'column',
+    },    
+    cover: {
+        height: 200,
+        width: 563,
     },
     content: {
         flex: '1, 0, auto',
@@ -31,11 +31,6 @@ const styles = ({
         padding: 10,
 
     },
-    cover: {
-        height: 200,
-        width: 563,
-    },
-
     bannerButton: {
         position: "absolute",
         bottom: 10,
