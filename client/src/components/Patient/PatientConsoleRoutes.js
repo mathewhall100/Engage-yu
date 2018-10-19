@@ -25,10 +25,10 @@ class PatientConsoleRoutes extends Component {
                 <Switch>
                     <Route exact path="/patient" render={props => <Dashboard {...this.props}> </Dashboard>} />
                     <Route exact path='/patient/dashboard' render={props => <Dashboard {...this.props}></Dashboard>} />
-                    <Route exact path='/patient/history/:episode/:entry' render={props => <Dashboard {...this.props}  test="test this route"></Dashboard>} />
-                    <Route exact path='/patient/complete' render={props => <AfterSurvey {...this.props}></AfterSurvey>} />
-                    <Route exact path='/patient/physician' render={props => <PhysicianInfo {...this.props}></PhysicianInfo>} />
-                    <Route exact path='/patient/history' render={props => <HistorySurvey {...this.props}></HistorySurvey>} />
+                    <Route exact path='/patient/history/:episode/:entry' render={props => <Dashboard {...this.props}></Dashboard>} />
+                    <Route  path='/patient/complete' render={props => <AfterSurvey {...this.props}></AfterSurvey>} />
+                    <Route  path='/patient/physician' render={props => <PhysicianInfo {...this.props}></PhysicianInfo>} />
+                    <Route  path='/patient/history' render={props => <HistorySurvey {...this.props}></HistorySurvey>} />
                     <Route exact path='/patient/report' render={props => <PatientReport {...this.props}></PatientReport>} />
 
                     <Route path="/notfound" component={NotFound} />
@@ -50,4 +50,4 @@ PatientConsoleRoutes.propTypes = {
         push: propTypes.func.isRequired
         }).isRequired,
 }
-export default withRouter(connect(null, mapDispatchToProps, null, {pure:false}) (PatientConsoleRoutes))
+export default withRouter(connect(null, mapDispatchToProps) (PatientConsoleRoutes))

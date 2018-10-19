@@ -36,7 +36,7 @@ const styles = theme => ({
         
     },
     historyExpansionCol : {
-        display: 'inline-flex',
+        display: 'block',
     },
     input: {
         display: 'none',
@@ -46,7 +46,17 @@ const styles = theme => ({
     },
     panelSummary : {
         display: 'flowRoot',
-    }
+    },
+    heading: {
+        fontSize: theme.typography.pxToRem(15),
+    },
+    secondaryHeading: {
+        fontSize: theme.typography.pxToRem(15),
+        color: theme.palette.text.secondary,
+    },
+    column: {
+        flexBasis: '50%',
+    },
 });
 
 class HistorySurvey extends Component {
@@ -74,12 +84,14 @@ class HistorySurvey extends Component {
         return(
             episodes.map((epi, index) => {
 
-                let newObj = _.mapKeys(epi.record, 'record_number');
+                let newObj = _.mapKeys(epi.records, 'record_number');
                 let closestTime = Infinity, closest;
                 let beforeMoment= []; 
                 console.log(newObj);
                 newObj = _.filter(newObj, (o) => {
-                    return (o.valid === false && moment(o.scheduled_datetime, "YYYY-MM-DDTHH:mm").isSame(moment(), 'd') && moment(o.scheduled_datetime, "YYYY-MM-DDTHH:mm").isBefore(moment()));
+                    console.log("Scheduled date time : " + moment(o.scheduled_datetime).format("YYYY-MM-DDTHH:mm") + " and now : " + moment(moment().ISO_8601));
+
+                    return (o.valid === false && moment(o.scheduled_datetime, "YYYY-MM-DDTHH:mm").isSame(moment(), 'd') && moment(moment().ISO_8601).add(4, "hour").isAfter(moment(o.scheduled_datetime, "YYYY-MM-DDTHH:mm")));
                 });
                 console.log("new obj : ", newObj);
                 newObj.forEach((d) => {
@@ -93,28 +105,33 @@ class HistorySurvey extends Component {
                 return(
                     <ExpansionPanel>
                         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                            <Typography className={classes.heading}>Episode {epi.episode_number}</Typography>
+                            <div className={classes.column}>
+                                <Typography className={classes.heading}>Episode {epi.episode_number} </Typography>
+                            </div>
+                            <div className={classes.column}>
+                                <Typography className={classes.secondaryHeading}>({moment(epi.start_date).format("MM-DD-YYYY")} to {moment(epi.end_date).format("MM-DD-YYYY")})</Typography>
+                            </div>
                         </ExpansionPanelSummary>
                         <ExpansionPanelDetails className={classes.panelSummary}>
                             <Typography className={classes.historyExpansionCol}>
                             {epi.records.map( item => {
                                 /* */
                                 return (
-                                    [<Typography>>
+                                    [<Typography>
                                         {item.valid === false ? 
                                             [beforeMoment.includes(item.scheduled_datetime) ?
                                                 <Button variant='outlined' color='secondary' onClick={ () => this.handleOpen(epi.episode_number, item.record_number)} className={classes.button}>
                                                     <Icon aria-label="Edit" >
                                                         <EditIcon />
                                                     </Icon>
-                                                    Record {item.record_number}
+                                                    Edit Record {item.record_number} ({moment(item.scheduled_datetime).format("MM-DD-YYYY hh:mma")})
                                                 </Button>
                                                 : 
-                                                <Button variant='outlined' onClick={() => this.handleOpen(epi.episode_number, item.record_number)}  className={classes.button}>
+                                                <Button variant='outlined' className={classes.button}>
                                                 <Icon aria-label="Warning">
                                                     <WarningIcon />
                                                 </Icon>
-                                                Record {item.record_number}
+                                                    Record {item.record_number} ({moment(item.scheduled_datetime).format("MM-DD-YYYY hh:mma")})
                                             </Button>
                                             ]
                                         : 
@@ -122,7 +139,7 @@ class HistorySurvey extends Component {
                                                 <Icon aria-label="Check" >
                                                     <CheckIcon />
                                                 </Icon>
-                                                Record {item.record_number}
+                                                Record {item.record_number} ({moment(item.scheduled_datetime).format("MM-DD-YYYY hh:mma")})
                                             </Button>
                                     }
                                     </Typography>]
@@ -140,7 +157,6 @@ class HistorySurvey extends Component {
         
     }
     handleRedirect=(episode, entry)=> {
-        console.log("here");
         this.setState({
             episode,
             entry,
@@ -174,7 +190,7 @@ class HistorySurvey extends Component {
                         <DialogTitle id="alert-dialog-title">{"Edit late entry?"}</DialogTitle>
                         <DialogContent>
                             <DialogContentText id="alert-dialog-description">
-                                Proceed to edit this entry {this.state.episode? this.state.episode : null } entry number {this.state.entry ? this.state.entry : null } ?     
+                                Proceed to edit this entry?  (Episode {this.state.episode? this.state.episode : null } entry {this.state.entry ? this.state.entry : null }) ?     
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions>

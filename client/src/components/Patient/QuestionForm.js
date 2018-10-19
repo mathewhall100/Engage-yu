@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import { Link, Redirect, withRouter } from 'react-router-dom';
 import { reset, reduxForm } from 'redux-form';
-
+import _ from 'lodash';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
@@ -45,10 +46,10 @@ const styles = theme => ({
 
 
 class QuestionForm extends Component {
+    state= {redirect : false};
     submit(values){    
-        //console.log("props : " , this.props);
         console.log("Submitted values: ", values);
-        let webURL= window.location.href; 
+        //let webURL= window.location.href; 
         //console.log("URL : " + webURL);
         let episodeEntry, episode, patientDataID, entry, data = {}; 
         let objSubmit = {}
@@ -75,17 +76,29 @@ class QuestionForm extends Component {
             }
             objSubmit.data.push(data);
         }
-        /* pull this from dataEntry
-        _id, 
-        day, 
-        time, 
-        scheduled_datetime, 
-
-
-        */
         
+        if(!_.isEmpty(this.props.match.params)){
+            console.log("found previous record")
+            objSubmit._id = this.props.patientData.episodes[this.props.match.params.episode].records[this.props.match.params.entry]._id;
+            objSubmit.scheduled_datetime = this.props.patientData.episodes[this.props.match.params.episode].records[this.props.match.params.entry].scheduled_datetime;
+            objSubmit.day = this.props.patientData.episodes[this.props.match.params.episode].records[this.props.match.params.entry].day;
+            objSubmit.time = this.props.patientData.episodes[this.props.match.params.episode].records[this.props.match.params.entry].time;
+            objSubmit.episode = this.props.match.params.episode;
+            objSubmit.record_number = this.props.match.params.entry;
+            objSubmit.late = true;
+        }else{
+            console.log("new record")
+            objSubmit.episode = this.props.patientData.episodes[this.props.patientData.episodes.length - 1];
+            objSubmit.day = this.props.patientData.closest.day;
+            objSubmit.time = this.props.patientData.closest.time;
+            objSubmit.late = false;
+            objSubmit.record_number = this.props.patientData.closest.record_number;
+            objSubmit._id = this.props.patientData.closest._id;
+            objSubmit.scheduled_datetime = this.props.patientData.closest.scheduled_datetime;
+        }
 
-        if(webURL.includes("/patient/history")){
+        /* if(webURL.includes("/patient/history")){
+
             episodeEntry = webURL.split('/patient/history/').pop();
             episode = episodeEntry.substr(0, episodeEntry.indexOf("/"));
             objSubmit.episode = episode;
@@ -100,40 +113,23 @@ class QuestionForm extends Component {
             objSubmit.scheduled_datetime = this.props.patientData.closest.scheduled_datetime;
 
 
-        }
-        //console.log("episode and entry = ", episode, entry);
-        this.props.submitForm(patientDataID, objSubmit);
-        /*
-        record_number: { type: Number, required: [true, "No record number"] },
-    valid: { type: Boolean, default: false },
-    day: { type: Number, required: [true, "No record day"] },
-    time: { type: String, required: [true, "No record time"] },
-
-    scheduled_datetime:  {type: Date, required: true},
-    actual_datetime: Date,
-
-    medication_adherance: { type: String, enum: ["yes", "no", "no meds", "unanswered", "not asked"] },
-
-    data: [{
-        question_number: Number,
-        question_answers: [{type: Boolean }]
-    }],
-    late: {type: Boolean, default: false},
-    patient_comments: String
-        */
-
-
+        } */
+        this.props.submitForm(patientDataID,objSubmit.episode, objSubmit._id, objSubmit);
+        this.setState({redirect : true})
     }
 
     renderQuestion = () => {        
         return this.props.arrQuestions.map((item, index) => {
+            //console.log(item);
             const radioItems = [];
             let objRadioItems = {};
             item.answers.map((answer, i) => {
+                //console.log(answer);
                 objRadioItems = {};
                 objRadioItems.value = i;
                 objRadioItems.label = answer;
                 radioItems.push(objRadioItems);
+                //console.log(radioItems);
             })
             return(
                 <div>
@@ -145,8 +141,7 @@ class QuestionForm extends Component {
                         
                     />
                     <hr />
-                </div>
-                
+                </div>  
             )
         });
     }
@@ -154,6 +149,11 @@ class QuestionForm extends Component {
     render(){
         const { handleSubmit, classes, pristine, submitting } = this.props;
         console.log("props in question form : ", this.props);
+        const { redirect } = this.state;
+        if (redirect) {
+            const url = `/patient/complete`;
+            return <Redirect to={url} episode={this.state.episode} entry={this.state.entry} />;
+        }
         return(
             
             <div>
@@ -183,20 +183,22 @@ class QuestionForm extends Component {
         
 }
 
+const formData = {
+    form: 'PatientQuestionnaire', //unique identifier for this form 
+    validate,
+}
+
 function validate(values) {
-    console.log("Error values: ", values) 
+    //console.log("Error values: ", values) 
     const errors = {};  
-    if (!values.id) {
-        errors.id = "Please enter a contact phone number!";   // message to be displayed if invalid
-    }
     return errors;
 }
 function mapStatsToProps(state) {
     return(state);
 }
-export default reduxForm({
-    validate,
-    form : 'PatientQuestionnaire',
-})(
-    connect(mapStatsToProps, { submitForm } )( withStyles(styles)(QuestionForm)
-))
+QuestionForm = connect(mapStatsToProps, {submitForm})(QuestionForm);
+QuestionForm = reduxForm(formData)(QuestionForm);
+QuestionForm = withStyles(styles)(QuestionForm);
+QuestionForm = withRouter(QuestionForm);
+
+export default QuestionForm;

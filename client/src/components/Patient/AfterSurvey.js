@@ -15,6 +15,7 @@ const styles = theme => ({
 class AfterSurvey extends Component {
     render(){
         const { classes } = this.props;
+        console.log("props in after survey : ");
         return(
         <div className={classes.root} elevation={1}>
             <Typography variant='headline' component='h3'>

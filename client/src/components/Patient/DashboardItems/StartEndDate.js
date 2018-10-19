@@ -5,7 +5,7 @@ class StartEndDate extends Component {
 
     render(){
         const {start_time, start_date, end_time, end_date, requesting_provider_firstname, requesting_provider_lastname} = this.props
-        console.log(this.props.start_date);
+        //console.log(this.props.start_date);
         return(
             <div>
                 <p>

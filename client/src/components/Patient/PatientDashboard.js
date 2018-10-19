@@ -37,22 +37,28 @@ class PatientDashboard extends Component {
         redirect : false
     }
     
-    submit(values){
-        
-
-    }
     renderPage = () => {
         //console.log("In render page", this.props.patientData.closestDateTime);
         /* if current episode exist in props proceed to check for date and hour  */
         if(!this.props.patientData.closestDateTime){
             console.log("past the range");
-            //this.props.history.push('/patient/complete')
+            this.setState({redirect : true}, () => {
+                console.log("procded to redirect");
+            });
+            
         }
 
     
     }
     render () {
         const { handleSubmit, classes, pristine, submitting, patientData, patientData : {currentEpisode}, history } = this.props;
+        const { redirect } = this.state;
+        if (redirect) {
+            console.log("redirecting...");
+            const url = `/patient/complete`
+            return <Redirect to={url} no_survey={true}/>;
+        }
+
         //console.log("current episode : ", currentEpisode);
         //console.log("props in patient dashboard : ", this.props);
         this.props.patientData.closestDateTime  ? this.renderPage : null
@@ -103,4 +109,4 @@ PatientDashboard.propTypes = {
 PatientDashboard = connect(mapStatToProps)(PatientDashboard);
 PatientDashboard = withRouter(PatientDashboard);
 
-export default (PatientDashboard);
+export default PatientDashboard;

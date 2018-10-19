@@ -41,7 +41,7 @@ export const patientListItems = (
                 <ListItemText primary='Report' />
             </ListItem>
         </Link>
-        <Link to='/patient/Physician' style={{ textDecoration: 'none', display: 'block' }}>
+        <Link to='/patient/physician' style={{ textDecoration: 'none', display: 'block' }}>
             <ListItem button>
                 <ListItemIcon>
                     <ContactPhoneIcon />

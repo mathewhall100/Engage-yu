@@ -16,7 +16,7 @@ export const fetchUserDetails = (sub) => {
         
         userRole = userInfo.role ? userInfo.role : localStorage.getItem('role');
         userID = userInfo.id ?  userInfo.id : localStorage.getItem('userID');
-
+/*         console.log("User id  : " , userID); */
     }, (error) => console.log(error)).then( () => {
         console.log("user data : ", userID)
         const url = userRole === 'patient' ? `/api/patient_info/find/${userID}` : `/api/provider/${userID}`
@@ -24,6 +24,9 @@ export const fetchUserDetails = (sub) => {
         request.then( res => {
             console.log("In request patient info : ", res.data);
             localStorage.setItem('patientProviderID', res.data.primary_provider_id);
+            if(userRole === 'patient'){
+                localStorage.setItem('patient_data_id', res.data.patient_data_id);
+            }
             dispatch ({
                     type: USER_PROFILE,
                     payload: {

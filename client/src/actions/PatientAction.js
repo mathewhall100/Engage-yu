@@ -5,15 +5,15 @@ import history from '../history'
 import { QUESTIONS, PATIENT_DETAILS, PATIENT_DATA, PATIENT_DATA_FAIL, PATIENT_PROVIDER_INFO, SUBMIT_QUESTIONNAIRES, ERROR_SUBMIT_QUESTIONNAIRES } from './types';
 
 export const fetchPatientData = () => {
-    const user = localStorage.getItem('userID') ? localStorage.getItem('userID') : '';
+    const user = localStorage.getItem('patient_data_id') ? localStorage.getItem('patient_data_id') : '';
     const url = `/api/patient_data/${user}`
     const request = axios.get(url);
     return(dispatch) => {
         //console.log("fetching patient data : " );
         if(user){
-            //console.log("user is : ", user);
+            console.log("user is : ", user);
             request.then( res => {
-                //console.log("patient data : ", res.data);
+                console.log("patient data : ", res.data);
                 console.log(res.data[0].episodes[res.data[0].episodes.length - 1]);
             dispatch({
                 type :  PATIENT_DATA,
@@ -76,9 +76,9 @@ export const fetchProviderInfo = () => {
     }
 }
 
-export const submitForm = (id, objQuestionnaire) => {
+export const submitForm = (id,epi, rec_id, objQuestionnaire) => {
     console.log("submitForm ", objQuestionnaire);
-    const url = `/api/patient_data/record/${id}`;
+    const url = `/api/patient_data/editRecord/${id}/${epi}/${rec_id}`;
     const request = axios.put(url, objQuestionnaire);
 
     return (dispatch) => {
@@ -131,8 +131,9 @@ function getClosestDateTime(currentEpisode) {
 
     } else {
         console.log("past the range");
+        history.push({pathname: '/patient/complete'});
         return null
 
-        //this.props.history.push('/patient/complete')
+        
     }
 }
