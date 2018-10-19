@@ -1,7 +1,15 @@
 {
   "main.css": "static/css/main.65027555.css",
   "main.css.map": "static/css/main.65027555.css.map",
-  "main.js": "static/js/main.ad173cee.js",
-  "main.js.map": "static/js/main.ad173cee.js.map",
-  "static/media/dashboardBannnerImageSmall.PNG": "static/media/dashboardBannnerImageSmall.9b937d21.PNG"
+  "main.js": "static/js/main.4ae7c115.js",
+  "main.js.map": "static/js/main.4ae7c115.js.map",
+  "static/media/MH.jpg": "static/media/MH.fd1301d9.jpg",
+  "static/media/SK.jpg": "static/media/SK.19ffa35c.jpg",
+  "static/media/appleStoreIconImage.PNG": "static/media/appleStoreIconImage.9089fcff.PNG",
+  "static/media/dashboardBannnerImage.PNG": "static/media/dashboardBannnerImage.26e81f31.PNG",
+  "static/media/dashboardBannnerImageSmall.PNG": "static/media/dashboardBannnerImageSmall.9b937d21.PNG",
+  "static/media/doctorPatient.PNG": "static/media/doctorPatient.4eace719.PNG",
+  "static/media/mobileOnly.PNG": "static/media/mobileOnly.f0856fc4.PNG",
+  "static/media/patientMobile.PNG": "static/media/patientMobile.34a0038f.PNG",
+  "static/media/playStoreIconImage.PNG": "static/media/playStoreIconImage.e446e2be.PNG"
 }
