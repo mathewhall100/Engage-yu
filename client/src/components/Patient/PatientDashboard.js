@@ -37,19 +37,12 @@ class PatientDashboard extends Component {
         redirect : false
     }
     
-    renderPage = () => {
-        //console.log("In render page", this.props.patientData.closestDateTime);
-        /* if current episode exist in props proceed to check for date and hour  */
-        if(!this.props.patientData.closestDateTime){
-            console.log("past the range");
-            this.setState({redirect : true}, () => {
-                console.log("procded to redirect");
-            });
-            
+    /* componentDidMount(){
+        console.log("in did mount, check for closest: ", this.props.patientData);
+        if(_.isEmpty(this.props.patientData.closest) || _.isEmpty(this.props.match.params)){
+            this.setState({redirect : true});
         }
-
-    
-    }
+    } */
     render () {
         const { handleSubmit, classes, pristine, submitting, patientData, patientData : {currentEpisode}, history } = this.props;
         const { redirect } = this.state;
@@ -61,7 +54,7 @@ class PatientDashboard extends Component {
 
         //console.log("current episode : ", currentEpisode);
         //console.log("props in patient dashboard : ", this.props);
-        this.props.patientData.closestDateTime  ? this.renderPage : null
+        
         return (
                 <div>
                     <div>
@@ -81,12 +74,24 @@ class PatientDashboard extends Component {
 
                             /> : null }
                         </Typography>
+                        <div>
+                        {!_.isEmpty(patientData.closest) || !_.isEmpty(this.props.match.params)? 
+                            <div>
+                            <Divider />
+                                <Typography component='div' variant='headline'>
+                                    <QuestionForm  {...this.props} dataEntry={this.state.closestDateTime} arrQuestions={this.props.patientData.currentEpisode ? this.props.patientData.currentEpisode.questions : null} />
+                                </Typography>
+                            <Divider />
+                            </div>
                         
-                        <Divider />
-                        <Typography component='div' variant='headline'>
-                            <QuestionForm  {...this.props} dataEntry = {this.state.closestDateTime} arrQuestions={this.props.patientData.currentEpisode ? this.props.patientData.currentEpisode.questions : null} />
-                        </Typography>
-                        <Divider />
+                        : 
+                            <div>
+                                <Typography component='div' variant='headline'>
+                                    Nothing to show here
+                                </Typography>
+                            </div>
+                         }
+                        </div>
                     </div>
                     
                 </div >

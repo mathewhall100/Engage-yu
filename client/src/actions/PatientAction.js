@@ -2,7 +2,8 @@ import axios from 'axios';
 import moment from 'moment';
 import _ from 'lodash';
 import history from '../history' 
-import { QUESTIONS, PATIENT_DETAILS, PATIENT_DATA, PATIENT_DATA_FAIL, PATIENT_PROVIDER_INFO, SUBMIT_QUESTIONNAIRES, ERROR_SUBMIT_QUESTIONNAIRES } from './types';
+import { QUESTIONS, PATIENT_DETAILS, PATIENT_DATA, PATIENT_DATA_FAIL, PATIENT_PROVIDER_INFO, SUBMIT_QUESTIONNAIRES, ERROR_SUBMIT_QUESTIONNAIRES,
+    SUCCESS_EDIT_ACTIVE_STATUS, ERROR_EDIT_ACTIVE_STATUS } from './types';
 
 export const fetchPatientData = () => {
     const user = localStorage.getItem('patient_data_id') ? localStorage.getItem('patient_data_id') : '';
@@ -11,10 +12,10 @@ export const fetchPatientData = () => {
     return(dispatch) => {
         //console.log("fetching patient data : " );
         if(user){
-            console.log("user is : ", user);
+            //console.log("user is : ", user);
             request.then( res => {
-                console.log("patient data : ", res.data);
-                console.log(res.data[0].episodes[res.data[0].episodes.length - 1]);
+                //console.log("patient data : ", res.data);
+                //console.log(res.data[0].episodes[res.data[0].episodes.length - 1]);
             dispatch({
                 type :  PATIENT_DATA,
                 payload : {
@@ -57,14 +58,14 @@ export const fetchQuestions = () => {
     } 
 }
 export const fetchProviderInfo = () => {
-    console.log("fetching provider info")
+    //console.log("fetching provider info")
     const providerID = localStorage.getItem('patientProviderID') ? localStorage.getItem('patientProviderID') : ''; 
 
     const url = `/api/provider/${providerID}`;
     const request = axios.get(url);
     return (dispatch) => {
         request.then( res => {
-            console.log("Fetched provider info : ", res.data)
+            //console.log("Fetched provider info : ", res.data)
             dispatch({
                 type: PATIENT_PROVIDER_INFO,
                 payload : {
@@ -76,14 +77,13 @@ export const fetchProviderInfo = () => {
     }
 }
 
-export const submitForm = (id,epi, rec_id, objQuestionnaire) => {
+export const submitForm = (id,epi, rec_id, objQuestionnaire ) => {
     console.log("submitForm ", objQuestionnaire);
     const url = `/api/patient_data/editRecord/${id}/${epi}/${rec_id}`;
     const request = axios.put(url, objQuestionnaire);
 
     return (dispatch) => {
         request.then( res => {
-            history.push('/patient/complete');
             dispatch({
                 type : SUBMIT_QUESTIONNAIRES,
                 payload : "Thank you for filling out the questionnaires!"
@@ -95,6 +95,27 @@ export const submitForm = (id,epi, rec_id, objQuestionnaire) => {
             })
         })
     }
+}
+
+export const editActiveStatus = (id, status) => {
+    const url = `/api/patient_data/editLastEpisode/${id}/${status}`;
+    const request = axios.put(url);
+    return (dispatch) => {
+        request.then(res => {
+            console.log("successfully edit active status : ", res.data);
+            dispatch({
+                type: SUCCESS_EDIT_ACTIVE_STATUS,
+                payload : 'edited active status'
+            })
+        }, err => {
+            console.log("failed setting active status : ", err);
+            dispatch({
+                type : ERROR_EDIT_ACTIVE_STATUS,
+                payload : 'failed to edit active status'
+            });
+        })
+    }
+   
 }
 
 
@@ -119,7 +140,7 @@ function getClosestDateTime(currentEpisode) {
         });
         console.log("new obj : ", newObj);
         newObj.forEach((d) => {
-            console.log("d : " , d);
+            //console.log("d : " , d);
             if (Math.abs(moment(d.scheduled_datetime).diff(moment())) < closestTime) {
                 closestTime = Math.abs(moment(d.scheduled_datetime).diff(moment()))
                 closest = d
@@ -131,7 +152,7 @@ function getClosestDateTime(currentEpisode) {
 
     } else {
         console.log("past the range");
-        history.push({pathname: '/patient/complete'});
+        //history.push({pathname: '/patient/complete'});
         return null
 
         

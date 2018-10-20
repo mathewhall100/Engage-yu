@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Console from '../Patient/Console';
+import Appbar from '../AppBar';
 
 const styles = theme => ({
     root: {
@@ -28,6 +29,7 @@ class SKBranch extends Component {
     render () {
         return(
             <div>
+                <Appbar/>
                 <Console {...this.props } title={this.props.title} />
             </div>
 
