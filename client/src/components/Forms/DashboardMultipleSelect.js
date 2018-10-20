@@ -32,18 +32,13 @@ const MenuProps = {
 };
 
 const names = [
-
   'pending', 
   'active',
   'awaiting review',
-  'delayed',
-  'cancelled',
-  'actioned',
-  'archived',
-
 ];
 
 class DashboardMultipleSelect extends React.Component {
+  
   state = {
     name: ["active"],
   };
@@ -59,7 +54,6 @@ class DashboardMultipleSelect extends React.Component {
     return (
       <div className={classes.root}>
         <FormControl className={classes.formControl}>
-          {/* <InputLabel htmlFor="select-multiple">Status</InputLabel> */}
           <Select
             multiple
             value={this.state.name}
@@ -83,8 +77,6 @@ class DashboardMultipleSelect extends React.Component {
             ))}
           </Select>
         </FormControl>
-        
-        {/* <p>{this.state.name[1]}</p> */}
       </div>
     );
   }

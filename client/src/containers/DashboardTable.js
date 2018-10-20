@@ -97,34 +97,34 @@ class DashboardTable extends React.Component {
     let compliance = 0;
 
     if (status === "active") {
+      diffDays = moment(moment(), "DD.MM.YYYY").diff(moment(moment(startDate), "DD.MM.YYYY"), 'days') 
+    } else {diffDays = moment(moment(endDate), "DD.MM.YYYY").diff(moment(moment(startDate), "DD.MM.YYYY"), 'days') }
+    // console.log("diff days: ", diffDays)
+    progress = Math.round(((diffDays*entriesPerDay)/records)*100)
+    compliance = entries ? Math.round((entries/(diffDays*entriesPerDay))*100) : 0
+    compliance = compliance > 100 ? 100 : compliance
 
-      if (moment().isAfter(moment(endDate))) {
+    if (status === "active" && (moment().isAfter(moment(endDate)))) {
         return {
           status: "awaiting review",
           compliance: compliance,
           progress: 100,
         }
+      } 
+      else if (status === 'active') {
+        return {
+          status: "active",
+          compliance: compliance,
+          progress: progress
+        }
       }
-
-      diffDays = moment(moment(), "DD.MM.YYYY").diff(moment(moment(startDate), "DD.MM.YYYY"), 'days')
-      progress = Math.round(((diffDays*entriesPerDay)/records)*100)
-      compliance = entries ? Math.round((entries/(diffDays*entriesPerDay))*100) : 0
-      compliance = compliance > 100 ? 100 : compliance
-      return {
-        status: "active",
-        compliance: compliance,
-        progress: progress
-      }
-
-    } else if (status === "awaiting review") {
-      return {
-        status: "awaiting review",
-        compliance: compliance,
-        progress: 100,
-      }
-
-    } else return { status: status }
-
+      else if (status === "awaiting review") { 
+        return {
+          status: "awaiting review",
+          compliance: compliance,
+          progress: 100,
+        }
+      } else return { status: status }
   }
 
   createData = (data) =>  {
@@ -185,14 +185,14 @@ class DashboardTable extends React.Component {
 
   // filter by status
   filterByStatus = (data, filter) => {
-    //console.log("DATATOFILTER2: ", data)
-    //console.log("filter2: ", filter)
+    // console.log("DATATOFILTER2: ", data)
+    // console.log("filter2: ", filter)
 
     let filteredData = [];
     filter.map(f => {
       filteredData = filteredData.concat(data.filter(d => d.status.status === f))
     })
-    //console.log("filtered Data2: ", filteredData)
+    // console.log("filtered Data2: ", filteredData)
     return filteredData;
   };
 

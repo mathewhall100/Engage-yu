@@ -80,7 +80,7 @@ class Provider extends Component {
 
     state = {
         // ProviderGroupId should be replaced with value in local storage
-        providerGroupId: "5b844946d8dc5ce848cd28a6",
+        providerGroupId: "5b846771f6d8b1d2fc8d45b2",
         providerList: [],
 
         displayDetails: false,
