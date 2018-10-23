@@ -57,7 +57,6 @@ class QuestionForm extends Component {
         objSubmit.valid = true;
         objSubmit.actual_datetime = moment().format();
         
-        objSubmit.patient_comments = values.comment;
         let numQuestions = this.props.patientData.currentEpisode.num_questions;
         patientDataID = this.props.patientData.patientDataID; 
         //console.log("num questions : ", numQuestions);
@@ -175,9 +174,6 @@ class QuestionForm extends Component {
                         <Grid container spacing={12} >                            
                            <Grid item xs={12}>
                                  {this.props.arrQuestions ? this.renderQuestion() : null}
-                           </Grid>
-                           <Grid item>
-                                <FormText name='comment' row={"4"} multiline={true} label='additional comment' />
                            </Grid>
                            <Grid>
                              

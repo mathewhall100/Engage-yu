@@ -50,4 +50,4 @@ PatientConsoleRoutes.propTypes = {
         push: propTypes.func.isRequired
         }).isRequired,
 }
-export default withRouter(connect(null, mapDispatchToProps) (PatientConsoleRoutes))
+export default withRouter(connect(null, mapDispatchToProps)(PatientConsoleRoutes))

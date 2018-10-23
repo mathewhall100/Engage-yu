@@ -1,11 +1,11 @@
 import Auth0Lock from 'auth0-lock';
 import jwtDecode from 'jwt-decode';
 
-
+let redirectURI = `http://${window.location.hostname}${window.location.hostname.includes('localhost') ? ":3000" : null}/callback`
 // Configure Auth0 lock
 export const lock = new Auth0Lock('uQdJPDVXxxYgPqJiUoRVnAYFKZudGoHh', 'shikwan.auth0.com', {
     auth: {
-        redirectUrl: window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? 'http://localhost:3000/callback' : 'https://lit-island-56219.herokuapp.com/callback',
+        redirectUrl: redirectURI,
         responseType: 'token id_token'
     },
     theme: {

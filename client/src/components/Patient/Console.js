@@ -11,6 +11,7 @@ import Hidden from '@material-ui/core/Hidden';
 import MenuIcon from '@material-ui/icons/Menu';
 import { fetchQuestions } from '../../actions/PatientAction';
 import Radio from '@material-ui/core/Radio';
+import Button from '@material-ui/core/Button';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -89,6 +90,9 @@ const styles = theme => ({
     group: {
         margin: `${theme.spacing.unit}px 0`,
     },
+    consoleTitle : {
+        display : "block",
+    }
 });
 
 class PatientConsole extends Component {
@@ -96,6 +100,7 @@ class PatientConsole extends Component {
         mobileOpen : false,
         defaultQuestion : '',
         customQuestions : '',
+        left : false,
     };
     componentWillMount() {
         this.props.fetchQuestions();
@@ -105,46 +110,12 @@ class PatientConsole extends Component {
             mobileOpen : !state.mobileOpen
         }));
     }
-    handleDefaultQuestionChange = event => {
-        console.log("default question change")
-        this.setState({ defaultQuestion : event.target.value})
-    }
-    handleCustomQuestionChange = event => {
-        console.log("custom questions change");
-        this.setState({ customQuestions: event.target.value })
-    }
-    renderQuestionnaires(questionnaire, menuButton, formControl, radioGroup, stateName, handleChange) {
-        console.log("in render questionaires : ", this.props);
-        console.log("HERE: ", questionnaire);
-        if (!_.isEmpty(questionnaire)) {
-            return _.map(questionnaire, (q) => {
-                return (
-                    <div key={q._id}>
-                        <FormControl component='fieldset' className={formControl}>
-                            <FormLabel component='legend'>{q.question}</FormLabel>
-                            <RadioGroup 
-                                aria-label='defaultQuestion'
-                                name='defaultQuestion'
-                                value = {stateName}
-                                className={radioGroup}
-                                onChange={handleChange}
-                            >
-                                {_.map(q.answers, (a) => {
-                                    return (
-                                        <FormControlLabel value={a} control={<Radio />} label={a} />
-                                    )
-                                })
-                                }
-                            </RadioGroup>
-                        </FormControl>
-                        
-                    </div>
-                )
-            })
-        } else {
-            return <div>Empty</div>
-        }
-    }
+    toggleDrawer = (side, open) => () => {
+        this.setState({
+            [side]: open,
+        });
+    };
+
     render() {
         const { classes,  auth, } = this.props;
         const drawer = (
@@ -164,47 +135,46 @@ class PatientConsole extends Component {
                             className={classes.navIconHide}
                         >
                             <MenuIcon/>
-                        </IconButton>
-                        {auth.isAuthenticated && auth.profile.name ? 
-                            <div className="classes.consoleTitle">
-                                <Typography variant="title" noWrap>
-                                    Welcome {auth.profile.name}
-                                </Typography>
-                            </div>    
-                            : null
-                        }
-                        
+                            </IconButton>
                     </Toolbar>
                 </AppBar>
                 <Hidden mdUp>
                     <Drawer
                         variant="temporary"
                         open={this.state.mobileOpen}
-                        onClose={this.handleDrawerToggle}
+                        onClick={this.toggleDrawer('left', true)}
                         classes = {{ 
                             paper: classes.drawerPaper,
                         }}
-                        ModalProps={{
-                            keepMounted: true,
-                        }}
+                        
                     >
                         {drawer}
                     </Drawer>
                 </Hidden>
 
                 <Hidden smDown implementation='css'>
-                    <Drawer
-                        variant='permanent'
-                        open
-                        classes={{
-                            paper: classes.drawerPaper,
-                        }}
-                    >
-                        {drawer}
+                    <Drawer open={this.state.left} onClose={this.toggleDrawer('left', false)}>
+                        <div
+                            tabIndex={0}
+                            role="button"
+                            onClick={this.toggleDrawer('left', false)}
+                            onKeyDown={this.toggleDrawer('left', false)}
+                        >
+                            {drawer}
+                        </div>
                     </Drawer>
+                    
                 </Hidden>
                 <main className={classes.content}>
-                        <p>Here</p>
+                    {auth.isAuthenticated && auth.profile.name ?
+                        <div className={classes.consoleTitle}>
+                            <Typography variant="title" noWrap>
+                                Welcome {auth.profile.name}
+                                <Button onClick={this.toggleDrawer('left', true)}>Menu</Button>
+                            </Typography>
+                        </div>
+                        : null
+                    }
                     <PatientConsoleRoutes {...this.props} />
                     
                     
@@ -223,4 +193,4 @@ const mapStateToProps = state => {
     return state;
 }
 
-export default connect(mapStateToProps, { fetchQuestions })(withStyles(styles, { withTheme: true })(PatientConsole))
+export default connect(mapStateToProps, { fetchQuestions })(withStyles(styles)(PatientConsole))

@@ -4,28 +4,18 @@ import jwtDecode from 'jwt-decode';
 
 const LOGIN_SUCCESS_PAGE = '/admin/dashboard';
 const LOGIN_FAILURE_PAGE = '/';
-
+let redirectURI = `http://${window.location.hostname}${window.location.hostname.includes('localhost') ? ":3000" : null}/callback`
 export default class Auth {
     
-    auth0 = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? 
-    new auth0.WebAuth({
-        domain: 'shikwan.auth0.com',
-        clientID: 'uQdJPDVXxxYgPqJiUoRVnAYFKZudGoHh',
-        redirectUri: 'localhost:3000/callback',
-        audience: 'https://shikwan.auth0.com/api/v2/',
-        responseType : 'token id_token',
-        scope : 'openid profile'
-    })
-    :
-        new auth0.WebAuth({
-            domain: 'shikwan.auth0.com',
-            clientID: 'uQdJPDVXxxYgPqJiUoRVnAYFKZudGoHh',
-            redirectUri: 'https://lit-island-56219.herokuapp.com/callback',
-            audience: 'https://shikwan.auth0.com/api/v2/',
-            responseType: 'token id_token',
-            scope: 'openid profile'
-        })
-
+    auth0 = new auth0.WebAuth({
+                domain: 'shikwan.auth0.com',
+                clientID: 'uQdJPDVXxxYgPqJiUoRVnAYFKZudGoHh',
+                redirectUri: redirectURI,
+                audience: 'https://shikwan.auth0.com/api/v2/',
+                responseType : 'token id_token',
+                scope : 'openid profile'
+            })
+    
     constructor() {
         this.login = this.login.bind(this);
     }

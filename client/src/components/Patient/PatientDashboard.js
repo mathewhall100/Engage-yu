@@ -8,8 +8,6 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import { withStyles } from '@material-ui/core/styles';
 import QuestionForm from './QuestionForm';
-import history from '../../history';
-import StartEndDate from './DashboardItems/StartEndDate';
 
 const styles = theme => ({
     root: {
@@ -30,71 +28,45 @@ const styles = theme => ({
         },
         hover: {},
     },
+    fullScreen :  {
+        display: 'flex',
+        justifyContent : 'center',
+        height: "100%"
+    }
 });
 
 class PatientDashboard extends Component {  
     state= {
         redirect : false
     }
-    
-    /* componentDidMount(){
-        console.log("in did mount, check for closest: ", this.props.patientData);
-        if(_.isEmpty(this.props.patientData.closest) || _.isEmpty(this.props.match.params)){
-            this.setState({redirect : true});
-        }
-    } */
     render () {
         const { handleSubmit, classes, pristine, submitting, patientData, patientData : {currentEpisode}, history } = this.props;
         const { redirect } = this.state;
         if (redirect) {
-            console.log("redirecting...");
             const url = `/patient/complete`
             return <Redirect to={url} no_survey={true}/>;
         }
-
-        //console.log("current episode : ", currentEpisode);
-        //console.log("props in patient dashboard : ", this.props);
-        
         return (
+            <Typography component='div' className={classes.fullScreen}>
                 <div>
+                {!_.isEmpty(patientData.closest) || !_.isEmpty(this.props.match.params)? 
                     <div>
-                        <div style={{backgroundColor: "#2d404b"}} />
-                        <Typography component='h1' variant='headline' noWrap>
-                            {this.props.title}
+                    <Divider />
+                        <Typography component='div' variant='headline'>
+                            <QuestionForm  {...this.props} dataEntry={this.state.closestDateTime} arrQuestions={this.props.patientData.currentEpisode ? this.props.patientData.currentEpisode.questions : null} />
                         </Typography>
-                        <Divider />
-                        <Typography component='div'>
-                            {currentEpisode ? <StartEndDate 
-                                start_time={currentEpisode.start_time }  
-                                start_date={currentEpisode.start_date }
-                                end_time = {currentEpisode.end_time }
-                                end_date = {currentEpisode.end_date }
-                                requesting_provider_lastname = {currentEpisode.requesting_provider_lastname }
-                                requesting_provider_firstname= {currentEpisode.requesting_provider_firstname }
-
-                            /> : null }
-                        </Typography>
-                        <div>
-                        {!_.isEmpty(patientData.closest) || !_.isEmpty(this.props.match.params)? 
-                            <div>
-                            <Divider />
-                                <Typography component='div' variant='headline'>
-                                    <QuestionForm  {...this.props} dataEntry={this.state.closestDateTime} arrQuestions={this.props.patientData.currentEpisode ? this.props.patientData.currentEpisode.questions : null} />
-                                </Typography>
-                            <Divider />
-                            </div>
-                        
-                        : 
-                            <div>
-                                <Typography component='div' variant='headline'>
-                                    Nothing to show here
-                                </Typography>
-                            </div>
-                         }
-                        </div>
+                    <Divider />
                     </div>
-                    
-                </div >
+                
+                : 
+                    <div>
+                        <Typography component='div' variant='headline'>
+                            You do not have any diary due at this time. Please check back soon! 
+                        </Typography>
+                    </div>
+                    }
+                </div>
+            </Typography>
         );
     }
 }
@@ -113,5 +85,6 @@ PatientDashboard.propTypes = {
 
 PatientDashboard = connect(mapStatToProps)(PatientDashboard);
 PatientDashboard = withRouter(PatientDashboard);
+PatientDashboard = withStyles(styles)(PatientDashboard);
 
 export default PatientDashboard;
