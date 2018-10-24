@@ -63,7 +63,7 @@ class ProviderEnrollForm extends Component {
         this.props.selectConsoleTitle({title: "Add a new provider"});
 
         // On component mount, fetch names of all providers in provider group to populate primary provider form field
-        provider_groupAPI.findAll(this.state.providerGroupId)
+        provider_groupAPI.findAll()
             .then(res => {
                 console.log("res.data: ", res.data);
                 let careGroupList=[];
@@ -225,7 +225,6 @@ class ProviderEnrollForm extends Component {
                             </Grid>
                             
                             <Grid item xs={4}>
-                           
                                     <FormText
                                     name="officestate"
                                     label="State"
@@ -309,7 +308,7 @@ class ProviderEnrollForm extends Component {
                         <Grid container spacing={24} >
                             <Grid item xs={4}>
                                 <Button type="submit" disabled={submitting || pristine} className={classes.submitBtn}>submit</Button>
-                                <Link to='/admin' className={classes.cancelLnk}><Button className={classes.cancelBtn}>cancel</Button></Link>
+                                <Link to='/admin/provider' className={classes.cancelLnk}><Button className={classes.cancelBtn}>cancel</Button></Link>
                             </Grid>
                             <Grid item xs={8}></Grid>
                         </Grid>

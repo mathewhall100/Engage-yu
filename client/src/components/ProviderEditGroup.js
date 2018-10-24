@@ -62,7 +62,7 @@ class ProviderEdit extends Component {
         this.props.selectConsoleTitle({title: "Update provider care group"});
 
         // On component mount, fetch names of all providers in provider group to populate primary provider form field
-        provider_groupAPI.findAll(this.state.providerGroupId)
+        provider_groupAPI.findAll()
             .then(res => {
                 console.log("res.data: ", res.data);
                 let careGroupList=[];
@@ -85,7 +85,6 @@ class ProviderEdit extends Component {
 
 
     state = {
-
         providerUpdateSuccess: false,
         providerUpdateFailed: false,
 
@@ -135,7 +134,7 @@ class ProviderEdit extends Component {
     }
 
     handleClickBack(event) {
-        this.props.handleBack()
+        this.props.handleAction(1)
     }
 
 
@@ -205,7 +204,6 @@ class ProviderEdit extends Component {
                         <Grid item xs={1}>
                             <Button size="small" className={classes.btn} onClick={event => this.handleClickBack(event)}>Back</Button>
                         </Grid>
-
                     </Grid>
 
                     <br />

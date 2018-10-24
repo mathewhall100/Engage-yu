@@ -87,105 +87,41 @@ class Provider extends Component {
         editDetails: false,
         editRole: false,
         editGroup: false,
-        enrollNew: false,
         removeprovider: false
     }
-
 
     submit(values) {
         console.log("Submitted values: ", values);
         this.setState({
             providerId: values.provider,
-            displayDetails: true,
-            editDetails: false,
-            editRole: false,
-            editGroup: false,
-            enrollNew: false,
-            removeProvider: false
-        })
+         })
+        this.handleAction(1)
     };
 
-    handleEdit = () => {
-        console.log("handleEdit")
+
+    handleAction = (action) => {
+        console.log("handleAction: ", action)
+        let actionArray = [false,false,false,false,false];
+        actionArray[action] = 1;
+
         this.setState({
-            displayDetails: false,
-            editDetails: true,
-            editRole: false,
-            editGroup: false,
-            enrollNew: false,
-            removeProvider: false
+            displayDetails: actionArray[1],
+            editGroup: actionArray[2],
+            editRole: actionArray[3],
+            editDetails: actionArray[4],
+            removeProvider: actionArray[5],
         })
     }
-
-    handleRole = () => {
-        console.log("handleRole")
-        this.setState({
-            displayDetails: false,
-            editDetails: false,
-            editRole: true,
-            editGroup: false,
-            enrollNew: false,
-            removeProvider: false
-        })
-    }
-
-    handleGroup = () => {
-        console.log("handleGroup")
-        this.setState({
-            displayDetails: false,
-            editDetails: false,
-            editRole: false,
-            editGroup: true,
-            enrollNew: false,
-            removeProvider: false
-        })
-    }
-
-    handleEnroll = (event) => {
-        console.log("handleEnroll")
-        this.setState({
-            displayDetails: false,
-            editDetails: false,
-            editRole: false,
-            editGroup: false,
-            enrollNew: true,
-            removeProvider: false
-        })
-    }
-
-    handleRemove = () => {
-        console.log("handleRemove")
-        this.setState({
-            displayDetails: false,
-            editDetails: false,
-            editRole: false,
-            editGroup: false,
-            enrollNew: false,
-            removeProvider: true
-        })
-    }
-
-    handleBack = () => {
-        console.log("handleBack")
-        this.setState({
-            displayDetails: true,
-            editDetails: false,
-            editRole: false,
-            editGroup: false,
-            enrollNew: false,
-            removeProvider: false
-        })
-    }
-
 
     render () {
 
-        const { displayDetails, editDetails, editRole, editGroup, enrollNew, removeProvider, providerList, providerId } = this.state
+        const { displayDetails, editDetails, editRole, editGroup, removeProvider, providerList, providerId } = this.state
         const { handleSubmit, submitting, pristine, classes } = this.props
         
         return (
                 <div>
                     <Card style={{padding: "20px"}}>
+
                         <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
                         <br />
                             <Grid container spacing={24} >
@@ -211,33 +147,23 @@ class Provider extends Component {
                                         </div>
                                 </Grid>
                                 <Grid item xs={3}>
-                                   <Link to={"/admin/providerenroll"}><Button size="small" type="enroll" className={classes.Btn} onClick={event => this.handleEnroll(event)}>Enroll a new provider</Button></Link>
+                                   <Link to={"/admin/providerenroll"}><Button size="small" type="enroll" className={classes.Btn}>Enroll a new provider</Button></Link>
                                 </Grid>
                             </Grid>
                         </form>
                     
                         <br />
 
-                        { displayDetails && <ProviderDetails  
-                            providerId={providerId} 
-                            handleEdit={this.handleEdit}
-                            handleRole={this.handleRole}
-                            handleGroup={this.handleGroup}
-                            handleRemove={this.handleRemove}
-                            /> }
+                        { displayDetails && <ProviderDetails  providerId={providerId} handleAction={this.handleAction}/> }
 
-                        { editDetails && <ProviderEdit handleBack={this.handleBack}/> }
+                        { editDetails && <ProviderEdit handleAction={this.handleAction}/> }
 
-                        { editRole && <ProviderEditRole handleBack={this.handleBack}/> }
+                        { editRole && <ProviderEditRole handleAction={this.handleAction}/> }
 
-                        { editGroup && <ProviderEditGroup handleBack={this.handleBack}/> }
+                        { editGroup && <ProviderEditGroup handleAction={this.handleAction}/> }
 
-                        { removeProvider && <ProviderRemove handleBack={this.handleBack}/> }
+                        { removeProvider && <ProviderRemove handleAction={this.handleAction}/> }
 
-                        <br />
-
-                        { enrollNew && <ProviderEnrollForm /> }
-                        
                     </Card>
                 </div> 
         );
