@@ -93,7 +93,7 @@ class PhysicianInfo extends Component {
         console.log("physician info props : ", physicianInfo);
         return (
                 <div>
-                    My Provider Details
+                <h1>My Provider Details</h1>
                     
 
                     <Card className={classes.card}>

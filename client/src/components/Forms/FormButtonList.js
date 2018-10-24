@@ -3,7 +3,7 @@ import { Field } from 'redux-form';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import purple from '@material-ui/core/colors/purple';
+import lime from '@material-ui/core/colors/lime';
 import green from '@material-ui/core/colors/green';
 import red from '@material-ui/core/colors/red';
 import amber from '@material-ui/core/colors/amber';
@@ -27,17 +27,17 @@ const styles = theme => ({
         },
     },
     button1 : {
-        backgroundColor : purple[500],
+        backgroundColor : lime[500],
         width: '100%',
         borderWith: '5px',
         maxWidth: 360,
         '&:hover': {
-            backgroundColor: purple[700],
+            backgroundColor: lime[700],
             borderColor: '#0062cc',
         },
         '&:focus': {
             boxShadow: 'none',
-            backgroundColor: purple[900],
+            backgroundColor: lime[900],
             borderColor: '#000000',
             borderStyle : 'solid',
             borderWidth : '5px'

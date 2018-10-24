@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { startCase } from 'lodash';
+import { Redirect } from 'react-router-dom';
 // import { bindActionCreators } from 'redux';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -21,10 +21,10 @@ const styles = theme =>({
         width: 'auto',
         marginLeft: theme.spacing.unit * 3,
         marginRight: theme.spacing.unit * 3,
-            [theme.breakpoints.up(1480 + theme.spacing.unit * 3 * 2)]: {
-            width: 1480,
-            marginLeft: 'auto',
-            marginRight: 'auto',
+            [theme.breakpoints.up(1280 + theme.spacing.unit * 3 * 2)]: {
+            maxWidth: 1480,
+                marginLeft: theme.spacing.unit * 3,
+                marginRight: theme.spacing.unit * 3,
             }
     },
     flex: {
@@ -46,7 +46,9 @@ const styles = theme =>({
 });
 
 class TopBar extends Component {  
-    
+    state = {
+        redirect : false,
+    }
     handleLoginClick = () => {
         AuthService.login();
         this.props.loginRequest();
@@ -55,7 +57,7 @@ class TopBar extends Component {
     handleLogoutClick = () => {
         this.props.logoutSuccess();
         AuthService.logout(); // careful, this is a static method
-        <Redirect to ='/' />
+        this.setState({redirect : true});
     };
 
     renderProfile(profile, isAuthenticated) {
@@ -70,7 +72,11 @@ class TopBar extends Component {
         
         const { isAuthenticated, profile } = this.props.auth;
         const { classes } = this.props;
-
+        const { redirect } = this.state;
+        if (redirect) {
+            const url = `/`;
+            return <Redirect to={url} />;
+        }
         return (
                 <div className={isAuthenticated ? classes.root : classes.layout}>
 

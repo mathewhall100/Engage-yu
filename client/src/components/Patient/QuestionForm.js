@@ -14,7 +14,7 @@ import FormRadio from '../Forms/FormRadio';
 import FormCheckBoxList from '../Forms/FormCheckboxList';
 import FormButtonList from '../Forms/FormButtonList';
 import ChkList from '../Forms/FormChkList';
-import {submitForm} from '../../actions/PatientAction';
+import {submitForm, editActiveStatus} from '../../actions/PatientAction';
 const styles = theme => ({
     submitBtn: {
         marginRight: 20,
@@ -51,32 +51,36 @@ class QuestionForm extends Component {
         console.log("Submitted values: ", values);
         //let webURL= window.location.href; 
         //console.log("URL : " + webURL);
-        let episodeEntry, episode, patientDataID, entry, data = {}; 
-        let objSubmit = {}
+        let episodeEntry, episode, patientDataID, entry, activeStatus; 
+        let objSubmit = {};
         objSubmit.data = [];
         objSubmit.valid = true;
         objSubmit.actual_datetime = moment().format();
         
-        objSubmit.patient_comments = values.comment;
         let numQuestions = this.props.patientData.currentEpisode.num_questions;
         patientDataID = this.props.patientData.patientDataID; 
         //console.log("num questions : ", numQuestions);
+
+
         for(let i = 0; i < numQuestions ; i++){
+            let data = {};
             data.question_number = i;
             data.question_answers= [];
+            console.log("working on question number " + data.question_number);
+            
             //console.log(data.question_number);
-            for(let j = 0; j <= 4; j++){
-
-                data.question_number = Object.keys(values)[i];
-                if(values[data.question_number] === j ){
-                    data.question_answers.push(true);
-                }else{
-                    data.question_answers.push(false);
-                }
-            }
-            objSubmit.data.push(data);
+                for (let j = 0; j <= 4; j++) {
+                    if (values[data.question_number] === j) {
+                        data.question_answers.push(true);
+                    } else {
+                        data.question_answers.push(false);
+                    }
+                }    
+                console.log("Data : ", data);
+                objSubmit.data.push(data);
         }
         
+        console.log(objSubmit.data);
         if(!_.isEmpty(this.props.match.params)){
             console.log("found previous record")
             objSubmit._id = this.props.patientData.episodes[this.props.match.params.episode].records[this.props.match.params.entry]._id;
@@ -86,17 +90,24 @@ class QuestionForm extends Component {
             objSubmit.episode = this.props.match.params.episode;
             objSubmit.record_number = this.props.match.params.entry;
             objSubmit.late = true;
+            
         }else{
             console.log("new record")
-            objSubmit.episode = this.props.patientData.episodes[this.props.patientData.episodes.length - 1];
+            objSubmit.episode = parseInt(this.props.patientData.episodes[this.props.patientData.episodes.length - 1].episode_number);
             objSubmit.day = this.props.patientData.closest.day;
             objSubmit.time = this.props.patientData.closest.time;
             objSubmit.late = false;
             objSubmit.record_number = this.props.patientData.closest.record_number;
             objSubmit._id = this.props.patientData.closest._id;
             objSubmit.scheduled_datetime = this.props.patientData.closest.scheduled_datetime;
+            
         }
-
+        if (parseInt(objSubmit.record_number) === parseInt(this.props.patientData.episodes[this.props.patientData.episodes.length - 1].expected_num_records - 1)) {
+            activeStatus = 'awaiting review'
+        } else {
+            activeStatus = 'active';
+        } 
+        console.log("activeStatus : " + activeStatus);
         /* if(webURL.includes("/patient/history")){
 
             episodeEntry = webURL.split('/patient/history/').pop();
@@ -114,7 +125,8 @@ class QuestionForm extends Component {
 
 
         } */
-        this.props.submitForm(patientDataID,objSubmit.episode, objSubmit._id, objSubmit);
+        setTimeout(this.props.submitForm(patientDataID, objSubmit.episode, objSubmit._id, objSubmit), 500);
+        setTimeout(this.props.editActiveStatus(patientDataID),500);
         this.setState({redirect : true})
     }
 
@@ -163,9 +175,6 @@ class QuestionForm extends Component {
                            <Grid item xs={12}>
                                  {this.props.arrQuestions ? this.renderQuestion() : null}
                            </Grid>
-                           <Grid item>
-                                <FormText name='comment' row={"4"} multiline={true} label='additional comment' />
-                           </Grid>
                            <Grid>
                              
                            </Grid>
@@ -196,7 +205,7 @@ function validate(values) {
 function mapStatsToProps(state) {
     return(state);
 }
-QuestionForm = connect(mapStatsToProps, {submitForm})(QuestionForm);
+QuestionForm = connect(mapStatsToProps, {submitForm, editActiveStatus})(QuestionForm);
 QuestionForm = reduxForm(formData)(QuestionForm);
 QuestionForm = withStyles(styles)(QuestionForm);
 QuestionForm = withRouter(QuestionForm);

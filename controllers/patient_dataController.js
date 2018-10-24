@@ -1,5 +1,5 @@
 const db = require("../models");
-
+const moment = require('moment');
 
 module.exports = {
 
@@ -122,81 +122,41 @@ module.exports = {
         //     res.status(422).json('You do not have proper credential to perform this action.')
         // }
     },
-
-    editRecord : function( req, res) {
-        console.log("Patient_data controller called to editRecord : ", req.body);
-
-
-        /* db.Patient_data.update(
-            {
-                "patient_info_id": "5b91d55d83a9cab314dc89c2"
-            }, 
-            {
-                "_id": "5ba6e22d0e2b894417c9dd97",
-                "patient_info_id": "5b91d55d83a9cab314dc89c2",
-                "episodes": [
-                    {
-                        "episode_number": 1,
-                        "requesting_provider_ref": "5b722e30a78fe511a9bf7dd8",
-                        "requesting_provider_id": "5b722e30a78fe511a9bf7dd8",
-                        "requesting_provider_lastname": "melanie",
-                        "requesting_provider_firstname": "jkopff",
-                        "start_date":"2018-09-23T00:45:33.468Z",
-                        "end_date": "2018-09-23T00:45:33.468Z",
-                        "num_days": 3,
-                        "start_time": "1000",
-                        "end_time": "1400",
-                        "interval_mins": 35,
-                        "margin_mins": 15,
-                        "num_questions": 5,
-                        "questions": [
-                            "on",
-                            "off",
-                            "on, non-troubling dyskinesia",
-                            "on, troubling dyskinesia",
-                            "asleep"
-                        ],
-                        "expected_num_records": 15,
-                        "remind_sataus": "on",
-                        "report_to": [
-                            "5b722e30a78fe511a9bf7dd8"
-                        ],
-                        "data" : {
-                            "records" : {
-                                "record_number " : 1,
-                                "question " : 1 ,
-                                "answers" : [ false, false, true, false, false],
-                            }
-                        }
-                    }
-                ]
-            }
+    editActiveStatus : function(req, res) {
+        console.log("Patient_data controller called to 'editActiveStatus");
+        db.Patient_data
+        .find({
+            _id: req.params.id
+        }, { "episodes" : 1 }
         ).then( result => {
-            console.log(result);
-            res.json(result);
-        }).catch ( err => {
-            console.log(err);
-            res.json(err);
-        }) */
-
-        
-        /* db.Patient_data.update(
-            {
-                "patient_info_id": "5b91d55d83a9cab314dc89c1",
-            },
-            {
-                "$push": { "episodes.$[outer].records.$[inner].time": 1523 }
-            },
-            {
-                "arrayFilters": [{ "outer.episode_number": 27.0 }, { "inner._id": "5ba06e3214dba31a98b895d0" }], new: true, upsert: true
+            let episodeSelected = result[0].episodes[result[0].episodes.length-1];
+            if(req.params.status != episodeSelected.status){
+                episodeSelected.status = req.body.status;
             }
-        ).then( data => {
-            console.log(data);
-            res.json(data);
-        }).catch( err => {
-            console.log(err);
-            res.json(err);
-        }) */
+            episodeSelected.num_entries = episodeSelected.num_entries + 1;
+            episodeSelected.last_entry = moment();
+            db.Patient_data
+                .findOneAndUpdate(
+                { _id: req.params.id },
+                { $pop: { "episodes": 1 } }
+                )
+                .then(result => {
+
+                    db.Patient_data
+                        .findOneAndUpdate(
+                        { _id: req.params.id },
+                        { $push: { "episodes": episodeSelected } }
+                        )
+                        .then(result => {
+                            //console.log("RESULT:", result);
+                            res.json(result)
+                        })
+                })
+            }).catch(err => {
+                console.log(`EDIT ACTIVE STATUS CONTROLLER ERROR: ${err}`);
+                res.status(422).json(err);
+            })
+        
     },
     editRecord : function(req, res) {
         console.log("Patient_data controller called to 'editRecord'", req.body);
@@ -211,17 +171,11 @@ module.exports = {
             }, { "episodes": 1 }
             )
             .then(result => {
-
-                
                 let episodeSelected = result[0].episodes[parseInt(req.params.episode)]
-                console.log("episode selected : ", episodeSelected);
                 let records = episodeSelected.records;
-                console.log("record found! , printing the first record.. ", records[0]);
                 // edit the entry here...
                 for(let i =0; i <= records.length-1; i++){
-                    console.log("looping through the records..." + records[i]._id + " , is it identical to " + req.params.record_id)
                     if(records[i]._id == req.params.record_id){
-                        console.log("found the record id, proceed to alter the data")
                         records[i] = req.body;
                     }
                 }
@@ -246,10 +200,11 @@ module.exports = {
                     })
             })
             .catch(err => {
-                console.log(`CONTROLLER ERROR: ${err}`);
+                console.log(`EDIT RECORD CONTROLLER ERROR: ${err}`);
                 res.status(422).json(err);
             })
     },
+    
 
     // add a new record to an episode
     // To be sent req.params.id of patient and req.body of new record data

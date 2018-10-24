@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 import Console from './Console';
+import Appbar from './AppBar';
 
 
 const styles = theme => ({
@@ -23,7 +24,7 @@ class Admin extends Component {
             <React.Fragment>
                 <CssBaseline />
                 <div className={classes.root}>
-
+                        <Appbar />
                         <Console />  
 
                 </div >

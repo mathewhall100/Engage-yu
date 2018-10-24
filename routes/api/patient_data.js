@@ -31,4 +31,9 @@ router
     .route('/editRecord/:id/:episode/:record_id')
     .put(patient_dataController.editRecord);
 
+// Matches with '/api/patient_data/editLastEpisode/'
+router
+    .route('/editLastEpisode/:id/:status')
+    .put(patient_dataController.editActiveStatus);
+
 module.exports = router;
