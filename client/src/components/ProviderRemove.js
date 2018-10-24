@@ -122,7 +122,7 @@ class ProviderRemove extends Component {
     }
 
     handleClickBack(event) {
-        this.props.handleBack()
+        this.props.handleAction(1)
     }
 
 

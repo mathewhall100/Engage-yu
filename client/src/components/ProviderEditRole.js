@@ -116,7 +116,7 @@ class ProviderEdit extends Component {
     }
 
     handleClickBack(event) {
-        this.props.handleBack()
+        this.props.handleAction(1)
     }
 
 
@@ -134,8 +134,11 @@ class ProviderEdit extends Component {
         ]
 
         const renderSelectField = (field) => {
+
             const { input, label, meta: { touched, error }, children, ...custom } = field;
+
             return (
+                
                 <FormControl style={{width: "250px"}}>
                     <InputLabel>My patients</InputLabel>
                     <Select

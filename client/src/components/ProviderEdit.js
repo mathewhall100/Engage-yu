@@ -214,7 +214,7 @@ class ProviderEdit extends Component {
     }
 
     handleClickBack(event) {
-        this.props.handleBack()
+        this.props.handleAction(1)
     }
 
 
@@ -330,7 +330,7 @@ class ProviderEdit extends Component {
                             </Grid>
 
                             <Grid item xs={4}>
-                                {showEditField[0] && !providerUpdateSuccess && <div style={{float: "right",paddingBottom: "15px"}}>
+                                {showEditField[0] && !providerUpdateSuccess && <div style={{float: "right", paddingBottom: "15px"}}>
                                     <div style={{position: "relative", top: "-20px"}}>
                                         <FormTextFocused
                                             name="officename"

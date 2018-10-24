@@ -90,21 +90,9 @@ findNumDiaryReviewed = () => {
 
 // Event handlers
 
-clickEdit(event) {
-    console.log("edit provider clicked")
-    this.props.handleEdit()
-}
-clickRole(event) {
-    console.log("Role provider clicked")
-    this.props.handleRole()
-}
-clickGroup(event) {
-    console.log("Group provider clicked")
-    this.props.handleGroup()
-}
-clickRemove(event) {
+clickAction(event, action) {
     console.log("Remove provider clicked")
-    this.props.handleRemove()
+    this.props.handleAction(action)
 }
 
 
@@ -245,10 +233,10 @@ clickRemove(event) {
                { provider && <div>
                    <div styles={{float: "right"}}>
                         <Button size="small" className={classes.btn}>cancel</Button>
-                        <Button size="small" className={classes.btn} onClick={event => this.clickRemove(event)}>remove provider</Button> 
-                        <Button size="small" className={classes.btn} onClick={event => this.clickGroup(event)}>update care group</Button> 
-                        <Button size="small" className={classes.btn} onClick={event => this.clickRole(event)}>update role</Button> 
-                        <Button size="small" className={classes.btn} onClick={event => this.clickEdit(event)}>edit details</Button>
+                        <Button size="small" className={classes.btn} onClick={event => this.clickAction(event, 2)}>update care group</Button> 
+                        <Button size="small" className={classes.btn} onClick={event => this.clickAction(event, 3)}>update role</Button> 
+                        <Button size="small" className={classes.btn} onClick={event => this.clickAction(event, 4)}>edit details</Button>
+                        <Button size="small" className={classes.btn} onClick={event => this.clickAction(event, 5)}>remove provider</Button> 
                        
                     </div>
                 </div> }

@@ -51,7 +51,6 @@ class ProviderRouteTests extends Component {
     addNewProviderGroup = event => {
         event.preventDefault();
         provider_groupAPI.create({
-
             added_by_ref: this.state.providerId,
             added_by_id:  this.state.providerId,
             added_by_name:  "john heyworth",

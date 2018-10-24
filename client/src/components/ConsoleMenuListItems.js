@@ -29,7 +29,7 @@ export default class ListItems extends Component {
 
     return (
 
-      <div>
+      <div style={{borderBottom: "1px solid #dddddd"}}>
 
         <ListItem 
           button
@@ -68,19 +68,20 @@ export default class ListItems extends Component {
           <ListItemText primary="Enroll New Patient" />
         </ListItem>
 
-        <Divider />
-        <ListSubheader>Admin</ListSubheader>
-
         <ListItem 
           button
-
-          selected={this.state.selectedIndex === 5}
-          onClick={event => this.handleListItemClick(event, 5)}>
+          
+          selected={this.state.selectedIndex === 8}
+          onClick={event => this.handleListItemClick(event, 8)}>
+          
           <ListItemIcon>
-            <WcIcon />
-            </ListItemIcon>
-          <ListItemText primary="Manage Patients" />
+            <BuildIcon />
+          </ListItemIcon>
+          <ListItemText primary="Custom Questions" />
         </ListItem>
+
+        <Divider />
+        <ListSubheader>Admin</ListSubheader>
 
         <ListItem 
           button
@@ -95,28 +96,13 @@ export default class ListItems extends Component {
 
         <ListItem 
           button
-
-          selected={this.state.selectedIndex === 7}
-          onClick={event => this.handleListItemClick(event, 7)}>
+          component={Link} to='/admin/caregroup'
+          selected={this.state.selectedIndex === 9}
+          onClick={event => this.handleListItemClick(event, 9)}>
           <ListItemIcon>
-            <LibraryBooksIcon />
+            <SupervisorAccountIcon />
           </ListItemIcon>
-          <ListItemText primary="Manage Surveys" />
-        </ListItem>
-
-        <Divider />
-        <ListSubheader>Customise</ListSubheader>
-
-        <ListItem 
-          button
-          
-          selected={this.state.selectedIndex === 8}
-          onClick={event => this.handleListItemClick(event, 8)}>
-          
-          <ListItemIcon>
-            <BuildIcon />
-          </ListItemIcon>
-          <ListItemText primary="Custom Questions" />
+          <ListItemText primary="Manage Care Groups" />
         </ListItem>
 
       </div>
