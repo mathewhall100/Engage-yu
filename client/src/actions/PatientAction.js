@@ -77,9 +77,9 @@ export const fetchProviderInfo = () => {
     }
 }
 
-export const submitForm = (id,epi, rec_id, objQuestionnaire ) => {
+export const submitForm = (id,epi, rec_id, new_status, objQuestionnaire ) => {
     console.log("submitForm ", objQuestionnaire);
-    const url = `/api/patient_data/editRecord/${id}/${epi}/${rec_id}`;
+    const url = `/api/patient_data/editRecord/${id}/${epi}/${rec_id}/${new_status}`;
     const request = axios.put(url, objQuestionnaire);
 
     return (dispatch) => {
@@ -98,8 +98,8 @@ export const submitForm = (id,epi, rec_id, objQuestionnaire ) => {
 }
 
 export const editActiveStatus = (id, status) => {
-    const url = `/api/patient_data/editLastEpisode/${id}/${status}`;
-    const request = axios.put(url);
+    const url = `/api/active/${id}`;
+    const request = axios.put(url, status);
     return (dispatch) => {
         request.then(res => {
             console.log("successfully edit active status : ", res.data);

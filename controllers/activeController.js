@@ -76,12 +76,16 @@ module.exports = {
     // Update active last entry
     // To be sent req.params.id of patient to be updated and req.body with new date info
     update: function(req, res) {
+        console.log("req body : ", req.body);
         //console.log(`Requester:  ${req.user}`);
         //if(req.user){
             db.Active
             .findOneAndUpdate(
                 { _id: req.params.id },
-                { $set: { "last_entry": req.body.last_entry }
+                { $set: { 
+                    "last_entry": req.body.last_entry,
+                    "status" : req.body.status,
+                }
                 }
             )
             .then(result => {

@@ -40,6 +40,7 @@ class PatientDashboard extends Component {
         redirect : false
     }
     render () {
+        console.log("Patient Dashboard : " , this.props.patientData);
         const { handleSubmit, classes, pristine, submitting, patientData, patientData : {currentEpisode}, history } = this.props;
         const { redirect } = this.state;
         if (redirect) {
@@ -62,6 +63,9 @@ class PatientDashboard extends Component {
                     <div>
                         <Typography component='div' variant='headline'>
                             You do not have any diary due at this time. Please check back soon! 
+                            <Typography component='div' variant='headline'>
+                                    <QuestionForm  {...this.props} dataEntry={this.state.closestDateTime} arrQuestions={this.props.patientData.currentEpisode ? this.props.patientData.currentEpisode.questions : null} />
+                                </Typography>
                         </Typography>
                     </div>
                     }

@@ -16,7 +16,7 @@ const styles = theme => ({
         maxWidth: 360,
         backgroundColor: theme.palette.background.paper,
     },
-    button0: {
+    button3: {
         backgroundColor: red[500],
         width: '100%',
         borderWith: '5px',
@@ -43,7 +43,7 @@ const styles = theme => ({
             borderWidth : '5px'
         },
     },
-    button2 : {
+    button0 : {
         backgroundColor : green[500],
         width: '100%',
         borderWith: '5px',
@@ -53,7 +53,7 @@ const styles = theme => ({
             borderColor: '#0062cc',
         },
     },
-    button3: {
+    button2: {
         backgroundColor: amber[500],
         width: '100%',
         borderWith: '5px',
