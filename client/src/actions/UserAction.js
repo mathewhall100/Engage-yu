@@ -28,7 +28,10 @@ export const fetchUserDetails = (sub) => {
                 localStorage.setItem('patient_data_id', res.data.patient_data_id);
             }
             if(userRole === 'provider'){
-                localStorage.setItem('provider_id', res.data.id);
+                localStorage.setItem('provider_id', res.data._id);
+                localStorage.setItem('provider_first_name', res.data.firstname);
+                localStorage.setItem('provider_last_name', res.data.lastname);
+                localStorage.setItem('provider_role', res.data.role);
             }
             dispatch ({
                     type: USER_PROFILE,
