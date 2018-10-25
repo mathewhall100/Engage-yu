@@ -14,7 +14,7 @@ import FormRadio from '../Forms/FormRadio';
 import FormCheckBoxList from '../Forms/FormCheckboxList';
 import FormButtonList from '../Forms/FormButtonList';
 import ChkList from '../Forms/FormChkList';
-import {submitForm, editActiveStatus} from '../../actions/PatientAction';
+import {submitForm, editActiveStatus, findActiveByID} from '../../actions/PatientAction';
 const styles = theme => ({
     submitBtn: {
         marginRight: 20,
@@ -49,7 +49,11 @@ class QuestionForm extends Component {
     state= {
             redirect : false,
             question : 0,
-            };
+    };
+    componentDidMount() {
+        console.log("in did mount, the props is : ", this.props);
+        this.props.findActiveByID(this.props.patientData.currentEpisode.active_record_id);
+    }
     submit(values){    
         console.log("Submitted values: ", values);
         //let webURL= window.location.href; 
@@ -116,6 +120,7 @@ class QuestionForm extends Component {
         objActive = {
             last_entry : moment(),
             status : activeStatus,
+            num_entries : parseInt(this.props.patientData.active.num_entries)+1
         }
         /* if(webURL.includes("/patient/history")){
 
@@ -139,7 +144,13 @@ class QuestionForm extends Component {
         this.setState({redirect : true})
     }
 
+    changeQuestionState = (newState) => {
+        this.setState({
+            question : newState,
+        })
+    }
     renderQuestion = () => {        
+        const { handleSubmit, classes, pristine, submitting } = this.props;
         let testQuestion = [
             {
                 "answers": [
@@ -166,8 +177,8 @@ class QuestionForm extends Component {
                 "question": "Are you currently feeling cold?"
             }
         ]
-        //return this.props.arrQuestions.map((item, index) => {
-            return testQuestion.map((item, index) => {
+        return this.props.arrQuestions.map((item, index) => {
+            //return testQuestion.map((item, index) => {
             //console.log(item);
             const radioItems = [];
             let objRadioItems = {};
@@ -180,7 +191,7 @@ class QuestionForm extends Component {
                 //console.log(radioItems);
             })
             return(
-                <div style={{textAlign: "center"}}>
+                <div style={{textAlign: "center", display : `${this.state.question === index ? "block" : "none"}`}}>
                     <FormButtonList
                         hints={item.hints}
                         items={radioItems}
@@ -188,7 +199,18 @@ class QuestionForm extends Component {
                         index={index}
                         
                     />
-                    <Button onClick={()=> this.setState({question : index+1}) }>{this.state.question < this.props.arrQuestions.length ? "Next Question" : "Finish" }</Button>
+                    {this.state.question < this.props.arrQuestions.length -1 ? 
+                        <Button type='button' className={classes.submitBtn} onClick={event => this.changeQuestionState(index+1) } >Next Question</Button>
+                    :
+                        null
+                    }
+                    {this.state.question === this.props.arrQuestions.length - 1 ?
+                        <Button type="submit" disabled={submitting || pristine} className={classes.submitBtn}>Submit</Button>
+                        :
+                        null
+                    }
+
+                    
                     <hr />
                 </div>  
             )
@@ -212,14 +234,6 @@ class QuestionForm extends Component {
                            <Grid item xs={12}>
                                  {this.props.arrQuestions ? this.renderQuestion() : null}
                            </Grid>
-                           <Grid>
-                             
-                           </Grid>
-                           
-                            <Grid item xs={12}>
-                                <Button type="submit" disabled={submitting || pristine} className={classes.submitBtn}>Submit</Button>
-                            </Grid>
-                            <Grid item xs={8}></Grid>
                         </Grid>
                     </form>
                 </Card>
@@ -242,7 +256,7 @@ function validate(values) {
 function mapStatsToProps(state) {
     return(state);
 }
-QuestionForm = connect(mapStatsToProps, {submitForm, editActiveStatus})(QuestionForm);
+QuestionForm = connect(mapStatsToProps, { submitForm, editActiveStatus, findActiveByID})(QuestionForm);
 QuestionForm = reduxForm(formData)(QuestionForm);
 QuestionForm = withStyles(styles)(QuestionForm);
 QuestionForm = withRouter(QuestionForm);

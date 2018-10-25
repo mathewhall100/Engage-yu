@@ -50,8 +50,9 @@ class PatientDashboard extends Component {
         return (
             <Typography component='div' className={classes.fullScreen}>
                 <div>
-                {!_.isEmpty(patientData.closest) || !_.isEmpty(this.props.match.params)? 
+                {(!_.isEmpty(patientData.closest) && patientData.closest.in_future === false )|| !_.isEmpty(this.props.match.params)? 
                     <div>
+                            <div>You are filling in diary for : {moment(patientData.closest.scheduled_datetime).format("MM-DD-YYYY hh:mma")}</div>
                     <Divider />
                         <Typography component='div' variant='headline'>
                             <QuestionForm  {...this.props} dataEntry={this.state.closestDateTime} arrQuestions={this.props.patientData.currentEpisode ? this.props.patientData.currentEpisode.questions : null} />
@@ -62,10 +63,17 @@ class PatientDashboard extends Component {
                 : 
                     <div>
                         <Typography component='div' variant='headline'>
-                            You do not have any diary due at this time. Please check back soon! 
-                            <Typography component='div' variant='headline'>
-                                    <QuestionForm  {...this.props} dataEntry={this.state.closestDateTime} arrQuestions={this.props.patientData.currentEpisode ? this.props.patientData.currentEpisode.questions : null} />
-                                </Typography>
+                            {(!_.isEmpty(patientData.closest) && patientData.closest.in_future) ? 
+                            <div>
+                                Your next entry is at {moment(patientData.closest.scheduled_datetime).format("MM-DD-YYYY hh:mma")}. <br />
+                                Check in later!
+                            </div>
+                            :
+                            <div>
+                                You do not have any diary due at this time. Please check back soon! 
+                            </div>
+                            }
+                            
                         </Typography>
                     </div>
                     }
