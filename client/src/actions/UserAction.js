@@ -27,6 +27,9 @@ export const fetchUserDetails = (sub) => {
             if(userRole === 'patient'){
                 localStorage.setItem('patient_data_id', res.data.patient_data_id);
             }
+            if(userRole === 'provider'){
+                localStorage.setItem('provider_id', res.data.id);
+            }
             dispatch ({
                     type: USER_PROFILE,
                     payload: {
