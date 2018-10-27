@@ -163,6 +163,7 @@ module.exports = {
         console.log("id is  : ", req.params.id);
         console.log("record id is : ", req.params.record_id);
         console.log("episode is : ", req.params.episode);
+        console.log("status is : ", req.params.new_status);
         //console.log(`Requester:  ${req.user}`);
         // if(req.user){
         db.Patient_data

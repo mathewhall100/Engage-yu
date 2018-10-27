@@ -28,7 +28,7 @@ router
 
 // Matches with '/api/patient_data/editRecord/'
 router
-    .route('/editRecord/:id/:episode/:record_id')
+    .route('/editRecord/:id/:episode/:record_id/:status')
     .put(patient_dataController.editRecord);
 
 // Matches with '/api/patient_data/editLastEpisode/'

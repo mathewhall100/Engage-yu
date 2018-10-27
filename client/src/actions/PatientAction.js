@@ -3,7 +3,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import history from '../history' 
 import { QUESTIONS, PATIENT_DETAILS, PATIENT_DATA, PATIENT_DATA_FAIL, PATIENT_PROVIDER_INFO, SUBMIT_QUESTIONNAIRES, ERROR_SUBMIT_QUESTIONNAIRES,
-    SUCCESS_EDIT_ACTIVE_STATUS, ERROR_EDIT_ACTIVE_STATUS } from './types';
+    SUCCESS_EDIT_ACTIVE_STATUS, ERROR_EDIT_ACTIVE_STATUS, ACTIVE_USER } from './types';
 
 export const fetchPatientData = () => {
     const user = localStorage.getItem('patient_data_id') ? localStorage.getItem('patient_data_id') : '';
@@ -77,9 +77,9 @@ export const fetchProviderInfo = () => {
     }
 }
 
-export const submitForm = (id,epi, rec_id, objQuestionnaire ) => {
+export const submitForm = (id,epi, rec_id, new_status, objQuestionnaire ) => {
     console.log("submitForm ", objQuestionnaire);
-    const url = `/api/patient_data/editRecord/${id}/${epi}/${rec_id}`;
+    const url = `/api/patient_data/editRecord/${id}/${epi}/${rec_id}/${new_status}`;
     const request = axios.put(url, objQuestionnaire);
 
     return (dispatch) => {
@@ -97,9 +97,25 @@ export const submitForm = (id,epi, rec_id, objQuestionnaire ) => {
     }
 }
 
+export const findActiveByID = (id) => {
+    const url = `/api/active/${id}`;
+    const request = axios.get(url);
+    return (dispatch) => {
+        request.then( res => {
+            console.log("getting active collection successfully! : ", res.data);
+            dispatch({
+                type: ACTIVE_USER,
+                payload : {active : res.data} 
+            })
+        }, err => {
+            console.log("Error getting active collection : ", err);
+        })
+    }
+}
+
 export const editActiveStatus = (id, status) => {
-    const url = `/api/patient_data/editLastEpisode/${id}/${status}`;
-    const request = axios.put(url);
+    const url = `/api/active/${id}`;
+    const request = axios.put(url, status);
     return (dispatch) => {
         request.then(res => {
             console.log("successfully edit active status : ", res.data);
@@ -118,6 +134,11 @@ export const editActiveStatus = (id, status) => {
    
 }
 
+function closestEntry(curr){
+    let today = moment().utc();
+    console.log("Today : " + today);
+
+}
 
 function getClosestDateTime(currentEpisode) {
     console.log("current episode :  " , currentEpisode);
@@ -126,11 +147,11 @@ function getClosestDateTime(currentEpisode) {
     let setTimeBeforeToday = moment(moment().format('YYYY-MM-DD') + "T" + moment(currentEpisode.start_time, "HHmm").format("HH:mm")).format("YYYY-MM-DDTHH:mm");
     let setTimeAfterToday = moment(moment().format('YYYY-MM-DD') + "T" + moment(currentEpisode.end_time, "HHmm").format("HH:mm")).format("YYYY-MM-DDTHH:mm");
     let newTime = moment().format("YYYY-MM-DDTHH:mm");
-    console.log("start and end date : ", moment(moment().format("YYYY-MM-DDTHH:mm"), "YYYY-MM-DDTHH:mm"), moment(currentEpisode.start_date).utc(), moment(currentEpisode.end_date).utc());
-    console.log("start and end time : ", setTimeBeforeToday, setTimeAfterToday);
+    //console.log("start and end date : ", moment(moment().format("YYYY-MM-DDTHH:mm"), "YYYY-MM-DDTHH:mm"), moment(currentEpisode.start_date).utc(), moment(currentEpisode.end_date).utc());
+    //console.log("start and end time : ", setTimeBeforeToday, setTimeAfterToday);
     let dateInrange = moment(moment().format("YYYY-MM-DDTHH:mm"), "YYYY-MM-DDTHH:mm").isBetween(moment(currentEpisode.start_date, "YYYY-MM-DDTHH:mm"), moment(currentEpisode.end_date, "YYYY-MM-DDTHH:mm"), null, '[]');
     let timeInrange = moment(newTime, "YYYY-MM-DDTHH:mm").isBetween(moment(setTimeBeforeToday, "YYYY-MM-DDTHH:mm"), moment(setTimeAfterToday, "YYYY-MM-DDTHH:mm"), null, '[]');
-    console.log(`date in range ? ${dateInrange} , time in range ? ${timeInrange}`)
+    //console.log(`date in range ? ${dateInrange} , time in range ? ${timeInrange}`)
     if (dateInrange && timeInrange) {
         console.log("proceed to check for the closest time");
         let newObj = _.mapKeys(currentEpisode.records, 'record_number');
@@ -142,8 +163,15 @@ function getClosestDateTime(currentEpisode) {
         newObj.forEach((d) => {
             //console.log("d : " , d);
             if (Math.abs(moment(d.scheduled_datetime).diff(moment())) < closestTime) {
-                closestTime = Math.abs(moment(d.scheduled_datetime).diff(moment()))
-                closest = d
+                closestTime = Math.abs(moment(d.scheduled_datetime).diff(moment(), 'minutes'))
+                console.log("closest time : " + closestTime);
+                if(closestTime <= currentEpisode.margin_mins ){
+                    closest = d;
+                    closest.in_future = false;
+                }else{
+                    closest = d;
+                    closest.in_future = true;
+                }
             }
         })
         console.log("Closest entry : ", closest);
