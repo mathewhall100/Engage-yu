@@ -9,7 +9,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
 
-class ProviderRemoveSuccessDialog extends React.Component {
+class CareGroupAddSuccessDialog extends React.Component {
   state = {
     open: true
   };
@@ -36,12 +36,13 @@ class ProviderRemoveSuccessDialog extends React.Component {
             <DialogTitle id="responsive-dialog-title">Success!</DialogTitle>
 
             <DialogContent>
-                <p>Provider {this.props.name} has been successfully removed</p>
-                <p>Click 'Done' to return to the provider menu</p>
+                <p>New care group, {this.props.name} , successfully added.</p>
+                <br />
+                <p>Click 'Done' to return to the care group menu.</p>
             </DialogContent>
 
             <DialogActions>
-                <Button color="primary" autoFocus component={Link} to='/admin/provider'>
+                <Button color="primary" autoFocus component={Link} to='/admin/caregroup'>
                 Done
                 </Button>
             </DialogActions>
@@ -52,8 +53,8 @@ class ProviderRemoveSuccessDialog extends React.Component {
   }
 }
 
-ProviderRemoveSuccessDialog.propTypes = {
+CareGroupAddSuccessDialog.propTypes = {
   fullScreen: PropTypes.bool.isRequired,
 };
 
-export default withMobileDialog()(ProviderRemoveSuccessDialog);
+export default withMobileDialog()(CareGroupAddSuccessDialog);

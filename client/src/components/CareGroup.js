@@ -3,22 +3,23 @@ import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { reset, reduxForm } from 'redux-form';
-import { startCase } from 'lodash'
+import { startCase } from 'lodash';
 import moment from 'moment';
 
 import { withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography'
+import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import FormSelect from './Forms/FormSelect'
 
-import { selectConsoleTitle } from '../actions/index'
 import FormTextFocused from './Forms/FormTextFocused';
-// import CareGroupRemove from './CareGroupRemove'
-import CareGroupAdd from './CareGroupAdd'
-import CareGroupEditSuccessDialog from './Dialogs/CareGroupEditSuccessDialog';
-import CareGroupEditFailedDialog from './Dialogs/CareGroupEditFailedDialog.js';
+import FormSelect from './Forms/FormSelect';
+import CareGroupDetails from './CareGroupDetails';
+import CareGroupAdd from './CareGroupAdd';
+import CareGroupEdit from './CareGroupEdit';
+import CareGroupRemove from './CareGroupRemove';
+import { selectConsoleTitle } from '../actions/index';
+import providerAPI from "../utils/provider.js";
 import provider_groupAPI from "../utils/provider_group.js";
 
 
@@ -52,37 +53,7 @@ const styles = theme => ({
     cancelLnk: {
         textDecoration: "none",
     },
-    linkBtn: {
-        backgroundColor: "#eeeeee",
-        textDecoration: "none",
-        borderRadius: "5px",
-        padding: "5px",
-        marginLeft: "20px",
-        float: "right",
-        '&:hover': {
-            backgroundColor: "#dddddd",
-        },
-        '&:disabled': {
-            color: 'grey'
-        },
-        hover: {},
-        disabled: {},
-    },
-    removeBtn: {
-        borderRadius: "5px",
-        padding: "5px",
-        marginLeft: "20px",
-        float: "right",
-        color: "#ffffff",
-        textDecoration: "none",
-        backgroundColor: "#c62828",
-        '&:hover': {
-            backgroundColor: "#871c1c",
-        },
-        hover: {},
-    },
-
-});  
+});
 
 
 class CareGroup extends Component {  
@@ -90,83 +61,52 @@ class CareGroup extends Component {
     componentDidMount() {
         this.props.selectConsoleTitle({title: "Manage Care Group"});
 
-        let caregroupList = [];
+        let careGroupList = [];
         provider_groupAPI.findAll()
             .then(res => {
                 console.log("res.data: ", res.data);
 
                 res.data.map((group, index) => {
-                    caregroupList.push({
+                    careGroupList.push({
                         value: index,
                         text: startCase(group.group_name),
-                        caregroupId: group._id,
+                        name: startCase(group.group_name),
+                        id: group._id,
                         enroller: startCase(group.added_by_name),
                         date: moment(group.date_added).format("MMM Do YYYY"), 
                     })
                 })
-                this.setState({caregroupList: caregroupList})
-                
+                this.setState({careGroupList: careGroupList})
             })
             .catch(err => {
                 console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
                 console.log(err);
         })
     };
-    
+
 
     state = {
-        caregroupList: [],
-        caregroup: {},
+        careGroupList: [],
+        careGroup: {},
         caregroupId: "",
+        providerList: [],
 
         displayDetails: false,
         editGroup: false,
         removeGroup: false,
         addGroup: false,
-        showEditField: false
     }
 
     submit(values) {
         console.log("Submitted values: ", values);
+        let careGroup = {};
+        careGroup = this.state.careGroupList[values.caregroup]
         this.setState({
-            caregroup: this.state.caregroupList[values.caregroup]
+            careGroup: careGroup,
+            careGroupId: careGroup.id,
          })
         this.handleAction(0)
     };
-
-    editSubmit(values) {
-        console.log("Submitted edit name: ", values);
-        provider_groupAPI.update(this.state.caregroupId, {
-
-        })
-    }
-
-    handleClickRemove() {
-        console.log("handleClickRemove: ")
-
-        const { provider } = this.props
-
-        provider_groupAPI.delete(this.state.caregroupId)
-        .then(res => {
-            console.log("res.data: ", res.data)
-            this.setState ({caregroupRemoveSuccess: true})   // update success dialog
-        })
-        .catch(err => {
-            console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-            console.log(err);
-            this.setState({caregroupRemoveFailed: true}); // update failed dialog
-        })
-        
-    }
-
-    handleClickEdit(event) {
-        this.setState ({caregroupEditSuccess: false}) 
-        if (this.state.editFieldActive) {
-            // maybe show error message that only one field may be updated at once
-        }
-        this.setState({showEditField: true})
-    }
-
 
     handleAction = (action) => {
         console.log("handleAction: ", action)
@@ -180,62 +120,28 @@ class CareGroup extends Component {
             removeGroup: actionArray[2],
             addGroup: actionArray[3],
         })
-    }
+    };
+
+    handleChangePage = (event, page) => {
+        this.setState({ page });
+    };
+    
+    handleChangeRowsPerPage = event => {
+        this.setState({ rowsPerPage: event.target.value });
+    };
 
     handleClickCancel(event) {
         this.setState({showEditField: false})
+    };
 
-    }
 
     render () {
 
-        const { displayDetails, editGroup, removeGroup, addGroup, caregroupList, caregroup, caregroupId, showEditField, editFieldActive, caregroupEditSuccess, caregroupEditFailed, caregroupRemoveSuccess, caregroupRemoveFailed  } = this.state
+        const { displayDetails, editGroup, removeGroup, addGroup, careGroupList, careGroup, careGroupId } = this.state
         const { handleSubmit, submitting, pristine, classes } = this.props
 
-        const Header = () => {
-            return (
-
-                <div>
-                    <br />
-
-                    <Grid container spacing={24}>
-
-                        <Grid item xs={4}>
-                        <Typography variant="caption">
-                                Care Group name:  
-                            </Typography>
-                            <Typography variant="title">
-                                <span>{startCase(caregroup.text)}</span>
-                            </Typography>
-                        </Grid>
-
-                        <Grid item xs={4}>
-                            <Typography variant="caption">
-                                Added By: 
-                            </Typography>
-                            <Typography variant="subheading">
-                                <span  className={classes.textBold}>Dr. {caregroup.enroller}</span>
-                            </Typography> 
-                        </Grid>
-                        
-                        <Grid item xs={4}>
-                            <Typography variant="caption">
-                                    Date Added
-                            </Typography>
-                            <Typography variant="subheading">
-                                <span className={classes.textBold}>{caregroup.date}</span>
-                            </Typography>
-                        </Grid>
-
-                    </Grid>
-
-                    <br />
-                    <br />
-                </div>
-            )
-        }
-
         return (
+
             <div>
                 <Card style={{padding: "20px"}}>
 
@@ -243,7 +149,7 @@ class CareGroup extends Component {
                         <br />
                         <Grid container spacing={24}>
                             <Grid item xs={2}>
-                                Select existing care group: 
+                                Select care group: 
                             </Grid>
 
                             <Grid item xs={4}>
@@ -251,7 +157,7 @@ class CareGroup extends Component {
                                     <FormSelect 
                                         name="caregroup" 
                                         label="Care Group"
-                                        items={caregroupList}
+                                        items={careGroupList}
                                     /> 
                                 </div>
                             </Grid>
@@ -271,146 +177,14 @@ class CareGroup extends Component {
                 
                     <br />
 
+                    { displayDetails && <CareGroupDetails careGroupId={careGroupId} handleAction={this.handleAction}/> }
 
-                    { (displayDetails || editGroup || removeGroup) && <Card className={classes.root}> 
+                    { editGroup && <CareGroupEdit handleAction={this.handleAction}/> }
 
-                        {displayDetails && <div>
-                            
-                            <Grid container spacing={24}>
+                    { removeGroup && <CareGroupRemove careGroupId={careGroupId} handleAction={this.handleAction}/> }
 
-                                <Grid item xs={12}>
-                                    <Typography variant="title">
-                                        <span>{startCase(caregroup.text)}</span>
-                                    </Typography>
-                                </Grid>
+                    { addGroup && <CareGroupAdd handleAction={this.handleAction}/> }
 
-                                <Grid item xs={4}>
-                                    <Typography variant="caption">
-                                        Added By: 
-                                    </Typography>
-                                    <Typography variant="subheading">
-                                        <span  className={classes.textBold}>Dr. {caregroup.enroller}</span>
-                                    </Typography> 
-                                </Grid>
-                                
-                                <Grid item xs={4}>
-                                    <Typography variant="caption">
-                                            Date Added
-                                    </Typography>
-                                    <Typography variant="subheading">
-                                        <span className={classes.textBold}>{caregroup.date}</span>
-                                    </Typography>
-                                </Grid>
-
-                                <Grid item xs={4}></Grid>
-
-                            </Grid>  
-
-                        </div> }
-                        
-                        
-                        {editGroup && <div>
-
-                            < Header />
-
-                            <br />
-                            <hr />
-                            <br />
-                            <br />
-
-                            <form autoComplete="off" onSubmit={handleSubmit(this.editSubmit.bind(this))}>
-
-                                <Grid container spacing={24}>
-
-                                    <Grid item xs={2}>
-                                        <div className={classes.tableText}>Care Group Name:</div>
-                                    </Grid>
-
-                                    <Grid item xs={3}>
-                                        <div className={classes.tableText}>{caregroup.text}</div>
-                                    </Grid>
-
-                                    <Grid item xs={1}>
-                                        <Button size="small" disabled={submitting || showEditField} className={classes.linkBtn} onClick={event => this.handleClickEdit(event)}>update</Button>
-                                    </Grid>
-
-                                    <Grid item xs={4}>
-                                        {showEditField && !caregroupEditSuccess && <div style={{float: "right", paddingBottom: "15px"}}>
-                                            <div style={{position: "relative", top: "-30px"}}>
-                                                <FormTextFocused
-                                                    name="name"
-                                                    label="New care group name"
-                                                    width="350"
-                                                />
-                                            </div>
-                                        </div> }
-
-                                        {showEditField && caregroupEditSuccess && <div style={{float: "right", color: "green", paddingTop: "10px"}}>
-                                            Successfully updated!
-                                        </div> }
-                                    </Grid>
-
-                                    <Grid item xs={2}>
-                                        {showEditField &&  !caregroupEditSuccess && <span>
-                                            <Button size="small" className={classes.linkBtn} onClick={event => this.handleClickCancel(event)}>Cancel</Button>
-                                            <Button size="small" type="submit" disabled={submitting || pristine} className={classes.linkBtn} >Submit</Button>
-                                        </span> }
-                                    </Grid> 
-                                </Grid>
-                            </form>  
-
-                            <br />
-                            <br /> 
-
-                        </div> }
-
-
-                        {removeGroup && <div> 
-
-                            <Header />
-
-                            <br />
-                            <hr />
-                            <br />
-
-                            <Typography variant="subheading">
-                                <p>Select 'Remove' to remove this caregroup from the list of caregroups held in the application. 'Cancel' to cancel.</p>
-                                <p style={{color: "red"}}>Note, this action cannot be undone. Removed care groups can be re-added to the application by re-entering their details via the add care group page but all individual providers will need re-allocating to the newly added care group. </p>
-                            </Typography>
-
-                            <br />
-                            <br />
-
-                                <Grid container spacing={24}>
-                                    <Grid item xs={2}>
-                                        <div className={classes.tableText}>Remove provider:</div>
-                                    </Grid>
-                                    <Grid item xs={1}>
-                                            <Button size="small" className={classes.Btn} onClick={event => this.handleClickCancel(event)}>Cancel</Button>
-                                            
-                                    </Grid>
-                                    <Grid item xs={1}>
-                                        <Button size="small" className={classes.removeBtn} >Remove</Button>
-                                    </Grid>
-                                    <Grid item xs={8}>
-                                    </Grid>
-                                </Grid>
-
-                            <br />                   
-                            <br />
-
-                        </div> }
-
-                    </Card> } 
-
-                    <br />
-                    <br />
-
-                    { (displayDetails || editGroup || removeGroup) && <div styles={{float: "right"}}>
-                        <Button size="small" className={classes.linkBtn}>cancel</Button>
-                        <Button size="small" className={classes.linkBtn} onClick={event => this.handleAction(2)}>remove care group</Button>  
-                        <Button size="small" className={classes.linkBtn} onClick={event => this.handleAction(1)}>edit care group</Button> 
-                    </div> }
 
                 </Card> 
             </div> 
@@ -419,7 +193,7 @@ class CareGroup extends Component {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle, }, dispatch);
+    return bindActionCreators({ selectConsoleTitle }, dispatch);
 }
 
 const mapStateToProps = (state) => {
@@ -440,4 +214,5 @@ const formData = {
 
 CareGroup = reduxForm(formData)(CareGroup)
 CareGroup = withStyles(styles)(CareGroup)
-export default connect(mapStateToProps, mapDispatchToProps) (CareGroup)
+CareGroup = connect(mapStateToProps, mapDispatchToProps)(CareGroup)
+export default CareGroup

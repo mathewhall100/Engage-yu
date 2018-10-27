@@ -19,13 +19,13 @@ import InputLabel from '@material-ui/core/InputLabel';
 
 import { selectConsoleTitle, providerDetails } from '../actions/index'
 
-import providerAPI from "../utils/provider.js";
 import FormTextFocused from './Forms/FormTextFocused';
 import FormText from './Forms/FormText';
 import FormSelect from './Forms/FormSelect'
 import FormRadio from './Forms/FormRadio'
 import EditProviderSuccessDialog from './Dialogs/EditProviderSuccessDialog';
 import EditProviderFailedDialog from './Dialogs/EditProviderFailedDialog.js';
+import providerAPI from "../utils/provider.js";
 
 let selectItems = [];
 
@@ -264,12 +264,14 @@ class ProviderEdit extends Component {
 
                 <Card className={classes.root}>
 
+                    <br />
+
                     <Grid container spacing={24}>
                         <Grid item xs={3}>
                             <Typography variant="caption">
                                 Provider name
                             </Typography>
-                            <Typography variant="subheading">
+                            <Typography variant="title">
                                 <span className={classes.textBold}>{startCase(provider.firstname)} {startCase(provider.lastname)}</span>
                             </Typography>
                         </Grid>
@@ -317,6 +319,7 @@ class ProviderEdit extends Component {
                     <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
 
                         <Grid container spacing={24}>
+
                             <Grid item xs={1}>
                                 <div className={classes.tableText}>Office:</div>
                             </Grid>
@@ -555,8 +558,6 @@ class ProviderEdit extends Component {
 
                         </Grid>
 
-
-
                     </form>
 
                     <br />                   
@@ -609,10 +610,6 @@ const mapStateToProps = (state) => {
     }
 };
 
-// function mapStateToProps(){
-//     console.log(auth);
-//     return (auth);
-// }
 
 const formData = {
     form: 'EditProviderForm', //unique identifier for this form 

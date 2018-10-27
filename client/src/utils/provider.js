@@ -16,9 +16,9 @@ export default {
         return axios.get("/api/provider/"+id);
     },
 
-    create: function(providerInfo){
+    create: function(info){
         console.log("Axios call made to '/api/provider' to 'create'");
-        return axios.post("/api/provider", providerInfo);
+        return axios.post("/api/provider", info);
     },
 
     remove: function(id){
@@ -26,9 +26,9 @@ export default {
         return axios.delete("/api/provider/"+id);
     },
     
-    update: function(id, providerInfo){
+    update: function(id, info){
         console.log("Axios call made to '/api/provider' to 'update '" + id);
-        return axios.put("/api/provider/"+id, providerInfo);
+        return axios.put("/api/provider/"+id, info);
     },
     
 }

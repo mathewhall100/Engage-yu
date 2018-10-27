@@ -10,6 +10,7 @@ router
 // Matches with "/api/providerGroup/:id"
 router
   .route("/:id")
+  .put(provider_groupController.update)
   .get(provider_groupController.findById)
   .delete(provider_groupController.remove);
 

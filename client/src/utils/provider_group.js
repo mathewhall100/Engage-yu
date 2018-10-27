@@ -11,9 +11,14 @@ export default {
         return axios.get("/api/provider_group/"+id);
     },
 
-    create: function(providerGroupInfo){
+    update: function(id, info){
+        console.log("Axios call made to '/api/provider_group' to 'update'" + id);
+        return axios.put("/api/provider_group/"+id, info);
+    },
+
+    create: function(info){
         console.log("Axios call made to '/api/provider_group' to 'create'");
-        return axios.post("/api/provider_group", providerGroupInfo);
+        return axios.post("/api/provider_group", info);
     },
 
     remove: function(id){

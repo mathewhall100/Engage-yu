@@ -87,4 +87,28 @@ module.exports = {
         // }
     },
 
+    // Update a providers details
+    // To be sent req.params.id of provider to be updated & req.body object of provider's new details
+    update: function(req, res) {
+        console.log("Provider_group controller called to 'update' " + req.params.id);
+        // if(req.user) {
+        let opts = {runValidators: true};
+            db.Provider_group
+                .findOneAndUpdate(
+                    { _id: req.params.id },
+                    req.body, opts
+                    )
+                .then(result => {
+                    console.log(result)
+                    res.json(result)
+                })
+                .catch(err => {
+                    console.log(`CONTROLLER ERROR: ${err}`);
+                    res.status(422).json(err);
+                })
+        // } else {
+        //     res.status(422).json('You do not have proper credential to perform this action.')
+        // }
+    },
+
 };

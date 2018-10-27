@@ -161,12 +161,14 @@ class ProviderEdit extends Component {
 
                 <Card className={classes.root}>
 
+                    <br />
+
                     <Grid container spacing={24}>
                         <Grid item xs={3}>
                             <Typography variant="caption">
                                 Provider name
                             </Typography>
-                            <Typography variant="subheading">
+                            <Typography variant="title">
                                 <span className={classes.textBold}>{startCase(provider.firstname)} {startCase(provider.lastname)}</span>
                             </Typography>
                         </Grid>

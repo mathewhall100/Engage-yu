@@ -73,27 +73,26 @@ class ProviderDetails extends Component {
         provider: null
     }
 
-    componentWillMount() {
+
+
+    findNumPatients = () => {
+
     }
 
-findNumPatients = () => {
+    findNumDiaryCreated = () => {
 
-}
+    }
 
-findNumDiaryCreated = () => {
+    findNumDiaryReviewed = () => {
 
-}
+    }
 
-findNumDiaryReviewed = () => {
+    // Event handlers
 
-}
-
-// Event handlers
-
-clickAction(event, action) {
-    console.log("Remove provider clicked")
-    this.props.handleAction(action)
-}
+    clickAction(event, action) {
+        console.log("Remove provider clicked")
+        this.props.handleAction(action)
+    }
 
 
     render () {
@@ -110,6 +109,8 @@ clickAction(event, action) {
                     { provider === null && < Callback /> }
 
                     { provider && <div>
+
+                        <br />
 
                         <Grid container spacing={24}>
                             <Grid item xs={12}>
@@ -246,7 +247,7 @@ clickAction(event, action) {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ providerDetails, }, dispatch);
+    return bindActionCreators({ providerDetails }, dispatch);
 }
 
 const mapStateToProps = (state) => {
@@ -255,11 +256,6 @@ const mapStateToProps = (state) => {
         user: state.user
     }
 };
-
-// function mapStateToProps(){
-//     console.log(auth);
-//     return (auth);
-// }
 
 ProviderDetails = connect(mapStateToProps, mapDispatchToProps)(ProviderDetails)
 ProviderDetails = withStyles(styles)(ProviderDetails)

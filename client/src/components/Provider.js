@@ -9,19 +9,18 @@ import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import { selectConsoleTitle } from '../actions/index'
-import FormSelect from './Forms/FormSelect'
 
+import FormSelect from './Forms/FormSelect'
 import ProviderDetails from './ProviderDetails'
 import ProviderEdit from './ProviderEdit'
 import ProviderEditRole from './ProviderEditRole'
 import ProviderEditGroup from './ProviderEditGroup'
 import ProviderRemove from './ProviderRemove'
 import ProviderEnrollForm from './ProviderEnrollForm'
+import { selectConsoleTitle } from '../actions/index'
 import providerAPI from "../utils/provider.js";
 
 const styles = theme => ({
-
     submitBtn: {
         marginRight: 20,
         color: "#ffffff",
@@ -171,7 +170,7 @@ class Provider extends Component {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle, }, dispatch);
+    return bindActionCreators({ selectConsoleTitle }, dispatch);
 }
 
 const mapStateToProps = (state) => {
@@ -192,4 +191,5 @@ const formData = {
 
 Provider = reduxForm(formData)(Provider)
 Provider = withStyles(styles)(Provider)
-export default connect(mapStateToProps, mapDispatchToProps) (Provider)
+Provider = connect(mapStateToProps, mapDispatchToProps) (Provider)
+export default Provider

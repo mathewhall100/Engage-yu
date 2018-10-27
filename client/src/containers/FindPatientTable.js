@@ -62,7 +62,7 @@ class FindPatientTable extends Component {
 
 
    async componentWillReceiveProps(nextProps) {
-        console.log("nextProps: ", nextProps)
+        //console.log("nextProps: ", nextProps)
         await this.setState({
             filterName: this.createFilterName(nextProps.filterName),
             filterNumber: this.createFilterNumber(nextProps.filterNumber) 
@@ -127,7 +127,7 @@ class FindPatientTable extends Component {
     // filters   
     filterData = (data) => {
         const filteredData = this.filterByNumber(this.filterByName(data))
-        console.log("filteredData: ", filteredData)
+        //console.log("filteredData: ", filteredData)
 
         if (filteredData.length === 1) {
             this.setState({displayRowActions: filteredData[0]._id }) 

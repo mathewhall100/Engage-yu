@@ -69,40 +69,16 @@ class ProviderRemove extends Component {
 
     componentDidMount() {
         this.props.selectConsoleTitle({title: "Remove provider"});
-
-        // On component mount, fetch names of all providers in provider group to populate primary provider form field
-        provider_groupAPI.findAll(this.state.providerGroupId)
-            .then(res => {
-                console.log("res.data: ", res.data);
-                let careGroupList=[];
-                res.data.map((group, index) => {
-                    careGroupList.push (
-                        {value: index, text: `${startCase(group.group_name)}`, id: group._id}
-                    )
-                })
-                this.setState({careGroupList: careGroupList})
-            })
-            .catch(err => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log(err);
-        })
-    };
-
+    }
 
     state = {
-
         providerRemoveSuccess: false,
         providerRemoveFailed: false,
-
-        editFieldActive: false, 
-        showEditField: []
     }
 
     handleClickRemove() {
         console.log("handleClickRemove: ")
-
         const { provider } = this.props
-
         providerAPI.delete(provider._id)
         .then(res => {
             console.log("res.data: ", res.data)
@@ -113,7 +89,6 @@ class ProviderRemove extends Component {
             console.log(err);
             this.setState({providerRemoveFailed: true}); // update failed dialog
         })
-        
     }
 
     handleClickCancel(event) {
@@ -141,12 +116,14 @@ class ProviderRemove extends Component {
 
                 <Card className={classes.root}>
 
+                    <br />
+
                     <Grid container spacing={24}>
                         <Grid item xs={3}>
                             <Typography variant="caption">
                                 Provider name
                             </Typography>
-                            <Typography variant="subheading">
+                            <Typography variant="title">
                                 <span className={classes.textBold}>{startCase(provider.firstname)} {startCase(provider.lastname)}</span>
                             </Typography>
                         </Grid>
@@ -230,11 +207,6 @@ const mapStateToProps = (state) => {
     }
 };
 
-// function mapStateToProps(){
-//     console.log(auth);
-//     return (auth);
-// }
-
-ProviderRemove = connect(mapStateToProps, mapDispatchToProps)(ProviderRemove)
 ProviderRemove = withStyles(styles)(ProviderRemove)
+ProviderRemove = connect(mapStateToProps, mapDispatchToProps)(ProviderRemove)
 export default ProviderRemove;

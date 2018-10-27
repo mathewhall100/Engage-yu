@@ -9,7 +9,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
 
-class ProviderRemoveSuccessDialog extends React.Component {
+class RemoveProviderFailedDialog extends React.Component {
   state = {
     open: true
   };
@@ -33,16 +33,17 @@ class ProviderRemoveSuccessDialog extends React.Component {
           aria-labelledby="responsive-dialog-title"
         >
 
-            <DialogTitle id="responsive-dialog-title">Success!</DialogTitle>
+            <DialogTitle id="responsive-dialog-title">Failed!</DialogTitle>
 
             <DialogContent>
-                <p>Provider {this.props.name} has been successfully removed</p>
-                <p>Click 'Done' to return to the provider menu</p>
+                <p>A problem was encountered and care group {this.props.name} has not been removed</p>
+                
+                <p>Click 'Cancel' to return to the care group menu</p>
             </DialogContent>
 
             <DialogActions>
-                <Button color="primary" autoFocus component={Link} to='/admin/provider'>
-                Done
+                <Button color="primary" component={Link} to='/admin/caregroup' >
+                Cancel
                 </Button>
             </DialogActions>
 
@@ -52,8 +53,8 @@ class ProviderRemoveSuccessDialog extends React.Component {
   }
 }
 
-ProviderRemoveSuccessDialog.propTypes = {
+RemoveProviderFailedDialog.propTypes = {
   fullScreen: PropTypes.bool.isRequired,
 };
 
-export default withMobileDialog()(ProviderRemoveSuccessDialog);
+export default withMobileDialog()(RemoveProviderFailedDialog);

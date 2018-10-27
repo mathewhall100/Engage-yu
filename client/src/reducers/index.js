@@ -13,6 +13,7 @@ import ActiveSurveysReducer from './ActiveSurveysReducer';
 import ReportReducer from './ReportReducer';
 import ListPatientsByProvider from './PatientListReducer';
 import ProviderReducer from './ProviderReducer';
+import CareGroupReducer from './CareGroupReducer';
 
 export default combineReducers({
     form: formReducer,
@@ -27,5 +28,6 @@ export default combineReducers({
     activeSurveys: ActiveSurveysReducer,
     reportPatientData: ReportReducer,
     listPatientsByProvider: ListPatientsByProvider,
-    provider: ProviderReducer
+    provider: ProviderReducer,
+    careGroup: CareGroupReducer
 });

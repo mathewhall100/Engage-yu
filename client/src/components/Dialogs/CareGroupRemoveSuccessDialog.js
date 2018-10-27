@@ -36,12 +36,12 @@ class ProviderRemoveSuccessDialog extends React.Component {
             <DialogTitle id="responsive-dialog-title">Success!</DialogTitle>
 
             <DialogContent>
-                <p>Provider {this.props.name} has been successfully removed</p>
-                <p>Click 'Done' to return to the provider menu</p>
+                <p>Care group {this.props.name} has been successfully removed</p>
+                <p>Click 'Done' to return to the care group menu</p>
             </DialogContent>
 
             <DialogActions>
-                <Button color="primary" autoFocus component={Link} to='/admin/provider'>
+                <Button color="primary" autoFocus onClick={event => this.handleClose()}>
                 Done
                 </Button>
             </DialogActions>
