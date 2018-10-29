@@ -173,7 +173,7 @@ class HomeContent extends Component {
 
                 <Toolbar variant="dense" className={classes.toolbarSecondary}>
                         {sections.map(section => (
-                        <Typography component="h3" variant="h3" color="inherit" noWrap key={section}>
+                        <Typography component="h3" color="inherit" noWrap key={section}>
                             {section}
                         </Typography>
                     ))}
@@ -197,10 +197,10 @@ class HomeContent extends Component {
 
                 <br />
 
-                <Typography component="h1" variant="h1" className={classes.sectionTitle}>
+                <Typography component="h1" className={classes.sectionTitle}>
                     Mission
                 </Typography>
-                <Typography component="h3" variant="h3" className={classes.firstText}>
+                <Typography component="h3" className={classes.firstText}>
                     Parkinson's disease is complex disorder with diverse symptoms which change throughout the day, between days and with timing and dose of each medication. For both patients with Parkinson's disease and their physicians it is a challenge to keep track, gather and respond to all this symptom information sufficiently well to offer the best care. Engage-Yu mission is to provide easy to use but powerful tools to enhance communication between Parkinson's patients and their physicians so that the right information is available at the right times to make the right care decisions. 
                 </Typography>
                 <br />
@@ -208,7 +208,7 @@ class HomeContent extends Component {
                 <div> 
                     <br />
                     <hr />
-                    <Typography component="h1" variant="h1" className={classes.sectionTitle}>
+                    <Typography component="h1" className={classes.sectionTitle}>
                         Products
                     </Typography>
 
@@ -238,8 +238,8 @@ class HomeContent extends Component {
                                 <CardActions>
                                     <div> 
                                         <br />
-                                        <Button style={{backgroundImage: `url(${appleStoreIconImage})`}} className={classes.cardImgBtns}></Button>
-                                        <Button style={{backgroundImage: `url(${playStoreIconImage})`}} className={classes.cardImgBtns}></Button>
+                                        <Button style={{backgroundImage: `url(${appleStoreIconImage})`}} className={classes.cardImgBtns}> </Button>
+                                        <Button style={{backgroundImage: `url(${playStoreIconImage})`}} className={classes.cardImgBtns}> </Button>
                                     </div>
                                     
                                 </CardActions>
@@ -317,7 +317,7 @@ class HomeContent extends Component {
 
                         <Grid item md={12}>
                   
-                            <Typography component="h1" variant="h1" className={classes.sectionTitle}>
+                            <Typography component="h1" className={classes.sectionTitle}>
                                 Benefits
                             </Typography>
                         </Grid>
@@ -384,10 +384,10 @@ class HomeContent extends Component {
                         </Grid>
 
                          <Grid item md={12}>
-                            <Typography component="h1" variant="h1" className={classes.sectionTitle}>
+                            <Typography component="h1" className={classes.sectionTitle}>
                                 mHealth
                             </Typography>
-                            <Typography component="h3" variant="h3" className={classes.firstText}>
+                            <Typography component="h3" className={classes.firstText}>
                                 Using mobile devices and technologies to provide health services is known as mHealth and is a major new trend in healthcare technology. The benefit of mobile health apps and solutions like engage-yu include improvement in health outcomes, lower error rates and savings in provider time while also reducing overall healthcare costs. With the widespread adoption of smartphones, mobile health apps are easily accessible to almost everyone and their use is increasing rapidly. The mHealth marketplace is predicted to grow from $28 billion in 2018 to over $100 billion by 2023 with more and more patients and providers turning to mHealth soloutions to increase quality and drive down costs.
                             </Typography>
                         </Grid>
@@ -395,7 +395,7 @@ class HomeContent extends Component {
                         
 
                         <Grid item md={12}><hr />
-                            <Typography component="h1" variant="h1" className={classes.sectionTitle}>
+                            <Typography component="h1" className={classes.sectionTitle}>
                                 About us
                             </Typography>
                         </Grid>
@@ -436,11 +436,11 @@ class HomeContent extends Component {
                     </Grid>
 
                      <footer className={classes.footer}>
-                        <Typography variant="h6" align="center" gutterBottom>
+                        <Typography align="center" gutterBottom>
                         Engage-Yu
                         </Typography>
-                        <Typography variant="subtitle1" align="center" color="textSecondary" component="p">
-                        
+                        <Typography align="center" color="textSecondary" component="p">
+                         
                         </Typography>
                     </footer>
 

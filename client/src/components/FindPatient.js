@@ -3,19 +3,47 @@ import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card'
+import Button from '@material-ui/core/Button';
 
-import { selectConsoleTitle } from '../actions/index'
-import { fetchListPatientsByProvider } from '../actions';
+import { selectConsoleTitle, fetchListPatientsByProvider, fetchListPatientsByCareGroup} from '../actions/index'
 import FindPatientForm from '../containers/FindPatientForm';
 import FindPatientTable from '../containers/FindPatientTable';
 import FindPatientDetails from '../components/FindPatientDetails';
+
+const styles = theme => ({
+    root: {
+        padding: "20px"
+    },
+    btn: {
+        backgroundColor: "#eeeeee",
+        textDecoration: "none",
+        borderRadius: "5px",
+        padding: "5px",
+        marginLeft: "15px",
+        float: "right",
+        '&:hover': {
+            backgroundColor: "#dddddd",
+        },
+        '&:disabled': {
+            color: 'grey'
+        },
+        hover: {},
+        disabled: {},
+    },
+})
 
 
 class FindPatient extends Component {  
     
     componentDidMount() {
+        console.log("this.props.patientInfo._id: ", this.props.patientInfo._id)
         this.props.selectConsoleTitle({title: "Find Patient"});
+        //this.props.fetchListPatientsByProvider(localStorage.getItem("provider_id")) 
+
+        if (this.props.patientInfo._id) { this.setState({displayDetails: this.props.patientInfo._id}) }
+        this.props.fetchListPatientsByProvider(localStorage.getItem("provider_id")) 
     }
 
     state = {
@@ -23,16 +51,7 @@ class FindPatient extends Component {
         filterNumber: "",
         filterList: "",
 
-        displayDetails: ""
-    }
-
-    componentWillMount() {
-        if (this.props.user) { this.props.fetchListPatientsByProvider(this.props.user.id) }
-    }
-
-    componentWillReceiveProps(nextProps) {
-        //console.log("nextProps: ", nextProps)
-        if (nextProps.user) { this.props.fetchListPatientsByProvider(nextProps.user.id) }
+        displayDetails: null
     }
 
     filterByName = (value) => {
@@ -47,32 +66,97 @@ class FindPatient extends Component {
 
     filterByList = (value) => {
         console.log("FilterByList: ", value);
+        if (value === "groupPatients") {this.props.fetchListPatientsByCareGroup(localStorage.getItem("provider_group_id")) }
+        else {this.props.fetchListPatientsByCareGroup(localStorage.getItem("provider_id")) }
         this.setState({filterList: value})
     }
 
-    displayPatientDetails = (id) => {
-        this.setState({displayDetails: !this.state.displayDetails ? id : this.state.displayDetails === id ? null : id })
+    displayPatientDetails = (patientId) => {
+        console.log("displayPatientDetails: ", patientId)
+        this.setState({displayDetails: patientId ? patientId : this.state.displayDetails})
     }
 
+    handleClickDiaryCard = (patientId) => {
+        console.log("diarycard clicked: ", patientId)
+        this.setState({
+            redirectURL: `survey/${patientId}`,
+            redirect: true
+        })
+    }
+
+    handleClickReport = (patientId) => {
+        console.log("report clicked: ", patientId)
+        this.setState({
+            redirectURL: `report/${patientId}&null`,
+            redirect: true
+        })
+    }
+
+    handleClickEdit = (patientId) => {
+        console.log("editclicked: ", patientId)
+        this.setState({
+            redirectURL: `updatepatient/${patientId}`,
+            redirect: true
+        })
+    }
+
+    handleClickContact = (patientId) => {
+        console.log("contactclicked: ", patientId)
+        // this.setState({
+        //     redirectURL: `contactpatient/${patientId}`,
+        //     redirect: true
+       //  })
+    }
+
+    handleClickClose = () => {
+        console.log("handleClickClose")
+        this.setState({displayDetails: "" })
+    }
+
+   
     render () {
 
         const { displayDetails } = this.state
+        const { classes } = this.props
+
+        const { redirect, redirectURL} = this.state;
+        
+        console.log("redirectUrl: ", redirectURL)
+        if (redirect) {
+          const url=`/admin/${redirectURL}`
+          return <Redirect to={url}/>;
+        }
         
         return (
                 <div>
 
-                    <Card style={{padding: "20px"}}>
+                    <Card className={classes.root}>
 
-                    <FindPatientForm 
-                        filterByName={this.filterByName} 
-                        filterByNumber={this.filterByNumber} 
-                        filterByList={this.filterByList}
-                    />
+                        <FindPatientForm 
+                            filterByName={this.filterByName} 
+                            filterByNumber={this.filterByNumber} 
+                            filterByList={this.filterByList}
+                        />
 
-                    <br />
+                        <br />
 
-                    { displayDetails && <FindPatientDetails /> }
+                        { displayDetails && <div>
+                        
+                            <FindPatientDetails /> 
 
+                            <br />
+
+                            <Button size="small" className={classes.btn} onClick={event => this.handleClickClose()}>Close</Button>
+                            <Button size="small" className={classes.btn} onClick={event => this.handleClickContact(displayDetails)}>Contact</Button>
+                            <Button size="small" className={classes.btn} onClick={event => this.handleClickEdit(displayDetails)}>Edit details</Button>
+                            <Button size="small" className={classes.btn} onClick={event => this.handleClickReport(displayDetails)}>View reports</Button>
+                            <Button size="small" className={classes.btn} onClick={event => this.handleClickDiaryCard(displayDetails)}>New diary Card</Button>
+                           
+                            
+                            <br />
+
+                        </div> }
+                    
                     </Card>
 
                     <br />
@@ -85,8 +169,6 @@ class FindPatient extends Component {
                     /> 
 
                     <br />
-
-                    {/* { displayDetails && <FindPatientDetails /> } */}
                     
                 </div> 
         );
@@ -94,12 +176,13 @@ class FindPatient extends Component {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle, fetchListPatientsByProvider }, dispatch);
+    return bindActionCreators({ selectConsoleTitle, fetchListPatientsByProvider, fetchListPatientsByCareGroup }, dispatch);
 }
 
 const mapStateToProps = (state) => {
     // console.log("State : ", state);
     return {
+        patientInfo: state.reportPatientData.reportPatientInfo,
         user: state.user
     }
 };
@@ -109,4 +192,6 @@ const mapStateToProps = (state) => {
 //     return (auth);
 // }
 
-export default connect(mapStateToProps, mapDispatchToProps) (FindPatient)
+FindPatient = withStyles(styles)(FindPatient)
+FindPatient = connect(mapStateToProps, mapDispatchToProps) (FindPatient)
+export default FindPatient;

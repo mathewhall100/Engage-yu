@@ -16,13 +16,14 @@ import * as AuthService from '../services/AuthService';
 const styles = theme =>({
     root: {
         flexGrow: 1,
+        width: 'auto'
     }, 
     layout: {
         width: 'auto',
         marginLeft: theme.spacing.unit * 3,
         marginRight: theme.spacing.unit * 3,
             [theme.breakpoints.up(1280 + theme.spacing.unit * 3 * 2)]: {
-            maxWidth: 1480,
+            maxWidth: 1280,
                 marginLeft: theme.spacing.unit * 3,
                 marginRight: theme.spacing.unit * 3,
             }
@@ -63,7 +64,7 @@ class TopBar extends Component {
     renderProfile(profile, isAuthenticated) {
         return(
             profile && isAuthenticated ?
-                <p><img src={profile.picture} height="40px" alt="profile" style={{verticalAlign: "middle"}} /> Welcome {startCase(profile.name)} </p>
+                <p><img src={profile.picture} height="40px" alt="profile" style={{verticalAlign: "middle", borderRadius: "50%"}} /> &nbsp;&nbsp;Welcome, &nbsp;&nbsp;Dr. {startCase(localStorage.getItem("provider_first_name"))} {startCase(localStorage.getItem("provider_last_name"))} </p>
             : null
         );
     }
@@ -87,7 +88,7 @@ class TopBar extends Component {
                             </Typography>
 
                             {isAuthenticated && <Typography variant="subheading" color="inherit" align="center" className={classes.flex}>
-                                Care Group: The Cleveland Practice
+                            Care Group: &nbsp;&nbsp;{startCase(localStorage.getItem("provider_group_name"))}
                              </Typography> }
 
                             <Typography variant="subheading" color="inherit" align="right" className={classes.welcomeText}>

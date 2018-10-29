@@ -200,7 +200,7 @@ class EditPatient extends Component {
         console.log("change select: ", value)
     }
 
-    handleClickEdit(event, field) {
+    handleClickEdit(field) {
         this.setState ({patientUpdateSuccess: false}) 
         if (this.state.editFieldActive) {
             // maybe show error message that only one field may be updated at once
@@ -211,7 +211,7 @@ class EditPatient extends Component {
         this.setState({editFieldActive: true})
     }
 
-    handleClickCancel(event, field) {
+    handleClickCancel() {
         this.setState({showEditField: []})
         this.setState({editFieldActive: false})
     }
@@ -263,7 +263,8 @@ class EditPatient extends Component {
                 </FormControl>
             )
         }
-        
+
+
         return (
 
             <div>
@@ -308,7 +309,7 @@ class EditPatient extends Component {
                             </Typography>
                         </Grid>
                         <Grid item xs={1}>
-                            <Button size="small" className={classes.btn} component={Link} style={{float: "right"}} to='/admin/find'>Back</Button>
+                            <Button size="small" className={classes.btn} component={Link} style={{float: "right"}} to="/admin/find">Back</Button>
                         </Grid>
 
                     </Grid>
@@ -318,7 +319,7 @@ class EditPatient extends Component {
                     <br />
 
                     <Typography variant="title">
-                        Select detail to edit and click 'update'
+                        Click 'update' next to the detail you want to edit. 
                     </Typography>
 
                     <br />
@@ -343,7 +344,7 @@ class EditPatient extends Component {
                                     </Grid>
 
                                     <Grid item xs={1}>
-                                    <Button size="small" disabled={submitting || editFieldActive} className={classes.btn} onClick={event => this.handleClickEdit(event, index)}>update</Button>
+                                    <Button size="small" disabled={submitting || editFieldActive} className={classes.btn} onClick={event => this.handleClickEdit(index)}>update</Button>
                                     </Grid>
 
                                     
@@ -364,7 +365,7 @@ class EditPatient extends Component {
                                     
                                     <Grid item xs={2}>
                                         {showEditField[index] &&  !patientUpdateSuccess && <span>
-                                            <Button size="small" className={classes.btn} onClick={event => this.handleClickCancel(event, 1)}>Cancel</Button>
+                                            <Button size="small" className={classes.btn} onClick={event => this.handleClickCancel()}>Cancel</Button>
                                             <Button size="small" type="submit" disabled={submitting || pristine} className={classes.btn} >Submit</Button>
                                         </span> }
                                     </Grid> 
@@ -391,7 +392,7 @@ class EditPatient extends Component {
                                     </Grid>
 
                                     <Grid item xs={1}>
-                                    <Button size="small" disabled={submitting || editFieldActive} className={classes.btn} onClick={event => this.handleClickEdit(event, 4)}>update</Button>
+                                    <Button size="small" disabled={submitting || editFieldActive} className={classes.btn} onClick={event => this.handleClickEdit(4)}>update</Button>
                                     </Grid>
 
                                     <Grid item xs={3}>
@@ -413,7 +414,7 @@ class EditPatient extends Component {
                                     
                                     <Grid item xs={2}>
                                         {showEditField[4] &&  !patientUpdateSuccess && <span>
-                                            <Button size="small" className={classes.btn} onClick={event => this.handleClickCancel(event)}>Cancel</Button>
+                                            <Button size="small" className={classes.btn} onClick={event => this.handleClickCancel()}>Cancel</Button>
                                             <Button size="small" disabled={submitting || pristine} className={classes.btn} type="submit">Submit</Button>
                                         </span> }
                                     </Grid> 
@@ -438,7 +439,7 @@ class EditPatient extends Component {
                                     </Grid>
 
                                     <Grid item xs={1}>
-                                    <Button size="small" disabled={submitting || editFieldActive} className={classes.btn} onClick={event => this.handleClickEdit(event, 5)}>update</Button>
+                                    <Button size="small" disabled={submitting || editFieldActive} className={classes.btn} onClick={event => this.handleClickEdit(5)}>update</Button>
                                     </Grid>
 
                                     <Grid item xs={3}>
@@ -459,8 +460,8 @@ class EditPatient extends Component {
                                     
                                     <Grid item xs={2}>
                                         {showEditField[5] &&  !patientUpdateSuccess && <span>
-                                            <Button size="small" className={classes.btn} onClick={event => this.handleClickCancel(event, 1)}>Cancel</Button>
-                                            <Button size="small" disabled={submitting || pristine} className={classes.btn} type="submit">Submit</Button>
+                                            <Button size="small" className={classes.btn} onClick={event => this.handleClickCancel()}>Cancel</Button>
+                                            <Button size="small" type="submit" disabled={submitting || pristine} className={classes.btn}>Submit</Button>
                                         </span> }
                                     </Grid> 
 

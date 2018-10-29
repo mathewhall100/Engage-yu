@@ -15,11 +15,11 @@ class Routes extends Component {
         return(
             <div className="App">
                 <Switch>
+                    <Route exact path="/" render={props => <Homepage {...this.props}> </Homepage>} />
+                    <Route path="/patient" render={props => <SK {...this.props} title='Dashboard' ></SK>} />  
                     <Route path='/admin' render={props => <Admin {...this.props}></Admin>} />
-                    <Route exact path='/callback' render={props => <Callback></Callback>} />
-                    <Route path="/patient" render={props => <SK {...this.props} title='Dashboard' ></SK>} />
-                    <Route path="/notfound" component={NotFound} />
-                    <Route exact path="/" render={props => <Homepage {...this.props}> </Homepage>} />    
+                    <Route path='/callback' render={props => <Callback></Callback>} />
+                    <Route path="/notfound" component={NotFound} />  
                     <Route component={NotFound} />
                 </Switch>
             </div>

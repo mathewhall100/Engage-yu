@@ -72,9 +72,9 @@ class CareGroupAdd extends Component {
         console.log("Submitted values: ", values);
         provider_groupAPI.create({
             date_added: new Date(),
-            added_by_ref: "5b844946d8dc5ce848cd28a5",
-            added_by_id: "5b844946d8dc5ce848cd28a5",
-            added_by_name: "user name",
+            added_by_ref: localStorage.getItem("provider_id"),
+            added_by_id: localStorage.getItem("provider_id"),
+            added_by_name: `${localStorage.getItem("provider_first_name")} ${localStorage.getItem("provider_last_name")}`,
             group_name: values.caregroup
         })
         .then(res => {
@@ -128,7 +128,7 @@ class CareGroupAdd extends Component {
                                         Added by:
                                     </Typography>
                                     <Typography variant="subheading">
-                                        <span  className={classes.textBold} >{this.props.user.name}</span>
+                                        <span  className={classes.textBold} >{localStorage.getItem("provider_first_name")} {localStorage.getItem("provider_last_name")}</span>
                                 </Typography >
                             </div>
                             </Grid>
@@ -151,8 +151,8 @@ class CareGroupAdd extends Component {
 
                         <Grid container spacing={24} >
                             <Grid item xs={4}>
-                                <Button type="submit" disabled={submitting || pristine} className={classes.submitBtn}>submit</Button>
-                                <Link to='/admin/caregroup' className={classes.cancelLnk}><Button className={classes.cancelBtn}>cancel</Button></Link>
+                                <Button type="submit" size="small"  disabled={submitting || pristine} className={classes.submitBtn}>submit</Button>
+                                <Link to='/admin/caregroup' className={classes.cancelLnk}><Button size="small" className={classes.cancelBtn}>cancel</Button></Link>
                             </Grid>
                             <Grid item xs={8}></Grid>
                         </Grid>

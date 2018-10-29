@@ -91,12 +91,7 @@ class ProviderRemove extends Component {
         })
     }
 
-    handleClickCancel(event) {
-        this.setState({showEditField: []})
-        this.setState({editFieldActive: false})
-    }
-
-    handleClickBack(event) {
+    handleBack(event) {
         this.props.handleAction(1)
     }
 
@@ -152,7 +147,7 @@ class ProviderRemove extends Component {
                             </Typography>
                         </Grid>
                         <Grid item xs={1}>
-                            <Button size="small" className={classes.btn} onClick={event => this.handleClickBack(event)}>Back</Button>
+                            <Button size="small" className={classes.btn} onClick={event => this.handleBack(event)}>Back</Button>
                         </Grid>
 
                     </Grid>
@@ -175,7 +170,7 @@ class ProviderRemove extends Component {
                                 <div className={classes.tableText}>Remove provider:</div>
                             </Grid>
                             <Grid item xs={1}>
-                                    <Button size="small" className={classes.btn} onClick={event => this.handleClickCancel(event)}>Cancel</Button>
+                                    <Button size="small" className={classes.btn} onClick={event => this.handleBack(event)}>Cancel</Button>
                                     
                             </Grid>
                             <Grid item xs={1}>

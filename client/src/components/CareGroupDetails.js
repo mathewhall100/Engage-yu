@@ -61,6 +61,9 @@ const styles = theme => ({
         hover: {},
         disabled: {},
     },
+    cancelLnk: {
+        textDecoration: "none"
+    },
 });
 
 const CustomTableCell = withStyles(theme => ({
@@ -150,11 +153,6 @@ class CareGroupDetails extends Component {
     handleChangeRowsPerPage = event => {
         this.setState({ rowsPerPage: event.target.value });
     };
-
-    handleCancel(event) {
-        this.setState({showEditField: false})
-    };
-
 
     render () {
 
@@ -268,9 +266,9 @@ class CareGroupDetails extends Component {
                 <br />
 
                 <div styles={{float: "right"}}>
-                    <Button size="small" className={classes.btn} onClick={event => this.handleCancel()}>cancel</Button>
+                    <Button size="small" className={classes.btn} onClick={event => this.handleAction(0)}>cancel</Button>
                     <Button size="small" className={classes.btn} onClick={event => this.handleAction(2)}>remove care group</Button>  
-                    <Button size="small" className={classes.btn} onClick={event => this.handleAction(1)}>edit care group</Button> 
+                    <Button size="small" className={classes.btn} onClick={event => this.handleAction(3)}>edit care group</Button> 
                 </div> 
 
             </div> 

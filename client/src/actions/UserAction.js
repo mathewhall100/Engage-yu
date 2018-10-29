@@ -32,6 +32,8 @@ export const fetchUserDetails = (sub) => {
                 localStorage.setItem('provider_first_name', res.data.firstname);
                 localStorage.setItem('provider_last_name', res.data.lastname);
                 localStorage.setItem('provider_role', res.data.role);
+                localStorage.setItem('provider_group_name', res.data.provider_group_name);
+                localStorage.setItem('provider_group_id', res.data.provider_group_id)
             }
             dispatch ({
                     type: USER_PROFILE,

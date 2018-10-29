@@ -14,6 +14,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 
+import FormText from '../components/Forms/FormText';
+
 class FindPatientForm extends Component {  
   
 
@@ -36,100 +38,99 @@ class FindPatientForm extends Component {
         this.props.filterByList(value)
     }
 
+    renderTextField = (field) =>  {
+        const  { input, label, autofocus, width, name, meta: { touched, error }, ...custom } = field;
+        return (
+            <TextField
+                label={label}
+                value={name}
+                //errorText={touched && error}
+                style={{width: width}}
+                {...input}
+                {...custom}
+            />
+        )
+    }
+
+    renderSelectField = (field) => {
+        const { input, label, meta: { touched, error }, children, ...custom } = field;
+        return (
+            <FormControl style={{width: "250px"}}>
+                <InputLabel></InputLabel>
+                <Select
+                    {...input}
+                    onSelect={(event, index, value) => input.onChange(value)}
+                    children={children} 
+                    {...custom}
+                    displayEmpty
+                />
+            </FormControl>
+        )
+    }
+
 
     render () {
 
         const { handleSubmit, classes,  } = this.props;
 
-        const renderTextField = (field) =>  {
-            const  { input, label, autofocus, width, name, meta: { touched, error }, ...custom } = field;
-            return (
-                <TextField
-                    label={label}
-                    value={name}
-                    //errorText={touched && error}
-                    autoFocus={autofocus}
-                    style={{width: width}}
-                    {...input}
-                    {...custom}
-                />
-            )
-        }
-
-        const renderSelectField = (field) => {
-            const { input, label, meta: { touched, error }, children, ...custom } = field;
-            return (
-                <FormControl style={{width: "250px"}}>
-                    <InputLabel>My patients</InputLabel>
-                    <Select
-                        {...input}
-                        onSelect={(event, index, value) => input.onChange(value)}
-                        children={children} 
-                        {...custom}
-                    />
-                </FormControl>
-            )
-        }
-
-
         return (
+            
             <div>
-                {/* <Card style={{padding: "20px"}}> */}
 
-                    <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
-                        <Grid container spacing={24}>
-                            
-                            <Grid item xs={1} style={{paddingTop: "34px"}}>
-                                <span style={{fontSize: "20px", margin: "20px"}}>Find: </span>
-                            </Grid>
+                <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
+                    <Grid container spacing={24}>
+                        
+                        <Grid item xs={1} style={{paddingTop: "34px"}}>
+                            <span style={{fontSize: "20px", margin: "20px"}}>Find: </span>
+                        </Grid>
 
-                            <Grid item xs={3}>
-                                <Field 
-                                    name={"name"}
-                                    label={"Name"}
-                                    autofocus={true}
-                                    width={"90%"}
-                                    component={renderTextField}
-                                    onChange={(event, value) => this.onChangeName(value)}
-                                />
-                            </Grid>
+                        <Grid item xs={3}>
+                            <Field 
+                                name={"name"}
+                                label={"Name"}
+                                width={"90%"}
+                                component={this.renderTextField}
+                                onChange={(event, value) => this.onChangeName(value)}
+                            />
 
-                            <Grid item xs={2}>
-                                <Field 
-                                    name={"hospId"}
-                                    label={"Hospital Id"}
-                                    width={"90%"}
-                                    component={renderTextField}
-                                    onChange={(event, value) => this.onChangeHospId(value)}
-                                />
-                            </Grid>
-
-                            <Grid item xs={1} style={{paddingTop: "34px"}}>
-                                 <span style={{fontSize: "20px"}}> from </span>
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                <Field
-                                    name="patientFilter"
-                                    component={renderSelectField}
-                                    onChange={(event, value) => this.onChangeFilter(value)}
-                                    label="Filter search"
-                                    autowidth="true"
-                                    >
-                                    <MenuItem key="myPatients" value="myPatients">my patients</MenuItem>
-                                    <MenuItem key="groupPatients" value="groupPatients">all care group patients</MenuItem>
-                                </Field>
-                                
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                {/* <Button type="submit" disabled={submitting || pristine} className={classes.submitBtn}>Submit</Button>
-                                <Link to='/admin' className={classes.cancelLnk}><Button className={classes.cancelBtn}>Cancel</Button></Link> */}
-                            </Grid>
 
                         </Grid>
-                    </form>
-                {/* </Card> */}
+
+                        <Grid item xs={2}>
+                            <Field 
+                                name={"hospId"}
+                                label={"Hospital Id"}
+                                width={"90%"}
+                                component={this.renderTextField}
+                                onChange={(event, value) => this.onChangeHospId(value)}
+                            />
+
+                        </Grid>
+
+                        <Grid item xs={1} style={{paddingTop: "34px"}}>
+                                <span style={{fontSize: "20px"}}> from </span>
+                        </Grid>
+
+                        <Grid item xs={3}>
+                            <Field
+                                name="patientFilter"
+                                component={this.renderSelectField}
+                                onChange={(event, value) => this.onChangeFilter(value)}
+                                label="Filter search"
+                                autowidth="true"
+                                >
+                                <MenuItem disabled key="placeholder" value=""><em><span style={{color: "#aaaaaa"}}>My patients</span></em></MenuItem>
+                                <MenuItem key="myPatients" value="myPatients">my patients</MenuItem>
+                                <MenuItem key="groupPatients" value="groupPatients">all care group patients</MenuItem>
+                            </Field>
+                            
+                        </Grid>
+
+                        <Grid item xs={3}>
+                        </Grid>
+
+                    </Grid>
+                </form>
 
                 <br />
       

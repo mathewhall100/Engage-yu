@@ -100,7 +100,8 @@ class Provider extends Component {
 
     handleAction = (action) => {
         console.log("handleAction: ", action)
-        let actionArray = [false,false,false,false,false];
+        let actionArray = [false,false,false,false,false, false];
+        if (action === 0) {this.props.reset()}
         actionArray[action] = 1;
 
         this.setState({

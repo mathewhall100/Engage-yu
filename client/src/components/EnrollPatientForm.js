@@ -51,10 +51,6 @@ const styles = theme => ({
         },
         hover: {},
     },
-    cancelLnk: {
-        textDecoration: "none",
-    },
-
 });    
 
 
@@ -98,7 +94,6 @@ class EnrollPatientForm extends Component {
         phone: "",
         hospId: "",
         provider: "",
-        enoller: "",
 
         enrollFailed: false,
         enrollSuccess: false
@@ -111,10 +106,9 @@ class EnrollPatientForm extends Component {
 
         patient_infoAPI.createNewPatient({
             date_enrolled: new Date(),
-            enrolled_by_ref: '5b844946d8dc5ce848cd28a4',
-            enrolled_by_id: "5b844946d8dc5ce848cd28a4",
-            enrolled_by_name: `Dr Mathew Hall`,
-            // enrolled_by_name: `Dr. ${localStorage.get('profile.name')}`,
+            enrolled_by_ref: localStorage.getItem("provider_id"),
+            enrolled_by_id: localStorage.getItem("provider_id"),
+            enrolled_by_name: `${localStorage.getItem("provider_first_name")} ${localStorage.getItem("provider_last_name")}`,
 
             patient_data_ref: "000000000000000000000000",
             patient_data_id:  "000000000000000000000000",
@@ -159,7 +153,6 @@ class EnrollPatientForm extends Component {
                         phone: values.phone,
                         hospId: values.hospId,
                         provider: selectItems[values.provider].text,
-                        enroller: "TBA",
                     
                         enrollSuccess: true
                     }); 
@@ -173,6 +166,10 @@ class EnrollPatientForm extends Component {
             })
         })
     };
+
+    handleClearForm() {
+        this.props.reset()
+    }
 
 
     render() {
@@ -297,8 +294,7 @@ class EnrollPatientForm extends Component {
 
                             <Grid item xs={4}>
                                 <Button type="submit" disabled={submitting || pristine} className={classes.submitBtn}>Submit</Button>
-                                {/* <Button className={classes.submitBtn} onClick={event => this.props.history.goBack() }>Cancel</Button> */}
-                                <Link to='/admin' className={classes.cancelLnk}><Button className={classes.cancelBtn}>Cancel</Button></Link>
+                                <Button className={classes.cancelBtn} onClick={event => this.handleClearForm()}>Clear</Button>
                             </Grid>
                             <Grid item xs={8}></Grid>
 

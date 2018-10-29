@@ -12,6 +12,7 @@ import SurveyPatientReducer from './SurveyPatientReducer';
 import ActiveSurveysReducer from './ActiveSurveysReducer';
 import ReportReducer from './ReportReducer';
 import ListPatientsByProvider from './PatientListReducer';
+import ListPatientsByCareGroup from './PatientListGroupReducer';
 import ProviderReducer from './ProviderReducer';
 import CareGroupReducer from './CareGroupReducer';
 
@@ -28,6 +29,7 @@ export default combineReducers({
     activeSurveys: ActiveSurveysReducer,
     reportPatientData: ReportReducer,
     listPatientsByProvider: ListPatientsByProvider,
+    listPatientsByCareGroup: ListPatientsByCareGroup,
     provider: ProviderReducer,
     careGroup: CareGroupReducer
 });

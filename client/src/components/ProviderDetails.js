@@ -233,11 +233,12 @@ class ProviderDetails extends Component {
 
                { provider && <div>
                    <div styles={{float: "right"}}>
-                        <Button size="small" className={classes.btn}>cancel</Button>
+                        <Button size="small" className={classes.btn} onClick={event => this.clickAction(event, 0)}>cancel</Button>
+                        <Button size="small" className={classes.btn} onClick={event => this.clickAction(event, 5)}>remove provider</Button> 
                         <Button size="small" className={classes.btn} onClick={event => this.clickAction(event, 2)}>update care group</Button> 
                         <Button size="small" className={classes.btn} onClick={event => this.clickAction(event, 3)}>update role</Button> 
-                        <Button size="small" className={classes.btn} onClick={event => this.clickAction(event, 4)}>edit details</Button>
-                        <Button size="small" className={classes.btn} onClick={event => this.clickAction(event, 5)}>remove provider</Button> 
+                        <Button size="small" className={classes.btn} onClick={event => this.clickAction(event, 4)}>update details</Button>
+                       
                        
                     </div>
                 </div> }

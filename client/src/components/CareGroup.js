@@ -94,7 +94,6 @@ class CareGroup extends Component {
         displayDetails: false,
         editGroup: false,
         removeGroup: false,
-        addGroup: false,
     }
 
     submit(values) {
@@ -105,20 +104,20 @@ class CareGroup extends Component {
             careGroup: careGroup,
             careGroupId: careGroup.id,
          })
-        this.handleAction(0)
+        this.handleAction(1)
     };
 
     handleAction = (action) => {
         console.log("handleAction: ", action)
         let actionArray = [false,false,false,false];
+        if (action === 0) {this.props.reset()}
         actionArray[action] = 1;
         console.log(actionArray)
 
         this.setState({
-            displayDetails: actionArray[0],
-            editGroup: actionArray[1],
+            displayDetails: actionArray[1],
+            editGroup: actionArray[3],
             removeGroup: actionArray[2],
-            addGroup: actionArray[3],
         })
     };
 

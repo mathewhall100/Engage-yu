@@ -37,42 +37,23 @@ const styles = theme => ({
 
 class FindPatientDetails extends Component {  
 
-    
-    
-    componentDidMount() {
-    }
-
     state = {
     }
 
-    componentWillMount() {
+    findCards = (filter) => {
+        console.log("Patient Data: ", this.props.patientData.length)
+        let cards = [];
+        let tempArray = []
+        if (this.props.patientData.length !== 0) {
+            cards = this.props.patientData.episodes.filter(episode => episode.status === filter)
+            console.log("cards: ", cards)
+            return cards.length
+        } else {return "Loading..."}
     }
-
-    // findActiveDiaryCards = () => {
-    //     const activeCards = this.props.patientData.episodes.filter(episode => episode.status === "active")
-    //     if (activeCards) {
-    //         return <span>Yes (Dates: {moment(activeCards[0].start).format("MMM Do YYYY")}</span>
-    //     } else {return "No active diary cards"}
-    // }
-
-    // findPendingDiaryCards = () => {
-    //     const pendingCards = this.props.patientData.episodes.filter(episode => episode.status === "pending")
-    //     if (pendingCards) {
-    //         return <span>Yes (Dates: {moment(pendingCards[0].start).format("MMM Do YYYY")}</span>
-    //     } else {return "No pending diary cards"}
-    // }
-
-    // findAwaitingDiaryCards = () => {
-    //     const awaitingCards = this.props.patientData.episodes.filter(episode => episode.status === "awaiting review")
-    //     if (awaitingCards) {
-    //         return <span>Yes <span style={{color: "red"}}>*</span>({awaitingCards.length} diary cards for review</span>
-    //     } else {return "No diary cards awaiting review"}
-    // }
-
 
     render () {
         
-        const { patientInfo, classes } = this.props
+        const { patientInfo, patientData, classes } = this.props
         
         return (
         
@@ -164,17 +145,16 @@ class FindPatientDetails extends Component {
                 <Grid container spacing={24}>
                 <Grid item xs={2}>
                         <Typography variant="subheading">
-                            <div>Active diary card: </div>
-                            <div>Pending diary card: </div>
+                            <div>Active diary cards: </div>
+                            <div>Pending diary cards: </div>
                             <div>Awaiting review: </div>
                         </Typography>
                     </Grid>
                     <Grid item xs={10}>
                         <Typography variant="subheading">
-                            {/* <div>{this.findActiveDiaryCards()}</div>
-                            <div>{this.findPendingDiaryCards()}</div>
-                            <div>{this.findAwaitingDiaryCards()}</div> */}
-                            <div></div>
+                            <div>{this.findCards("active")}</div>
+                            <div>{this.findCards("pending")}</div>
+                            <div>{this.findCards("awaiting review")}</div>
                         </Typography>
                     </Grid>
                 </Grid>
@@ -186,7 +166,7 @@ class FindPatientDetails extends Component {
 
 
 const mapStateToProps = (state) => {
-    // console.log("State : ", state);
+    console.log("State : ", state);
     return {
         patientInfo: state.reportPatientData.reportPatientInfo,
         patientData: state.reportPatientData.reportPatientData,

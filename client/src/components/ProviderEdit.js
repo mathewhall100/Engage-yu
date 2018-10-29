@@ -310,7 +310,7 @@ class ProviderEdit extends Component {
                     <br />
 
                     <Typography variant="title">
-                        Select detail to edit and click 'update'
+                        Click 'update' next to the detail you want to edit.
                     </Typography>
 
                     <br />
@@ -325,7 +325,7 @@ class ProviderEdit extends Component {
                             </Grid>
 
                             <Grid item xs={3}>
-                                <div className={classes.tableText}>{provider.office.name}</div>
+                                <div className={classes.tableText}>{startCase(provider.office.name)}</div>
                             </Grid>
 
                             <Grid item xs={1}>
@@ -367,10 +367,10 @@ class ProviderEdit extends Component {
                             </Grid>
 
                             <Grid item xs={3}>
-                                <div className={classes.tableText}>{provider.office.street}</div>
-                                <div className={classes.tableText}>{provider.office.city}</div>
-                                <div className={classes.tableText}>{provider.office.state}</div>
-                                <div className={classes.tableText}>{provider.office.zip}</div>
+                                <div className={classes.tableText}>{startCase(provider.office.street)}</div>
+                                <div className={classes.tableText}>{startCase(provider.office.city)}</div>
+                                <div className={classes.tableText}>{startCase(provider.office.state)}</div>
+                                <div className={classes.tableText}>{startCase(provider.office.zip)}</div>
                             </Grid>
 
                             <Grid item xs={1}>

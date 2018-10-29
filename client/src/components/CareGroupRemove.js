@@ -111,12 +111,8 @@ class CareGroupRemove extends Component {
         })
     }
 
-    handleCancel(event) {
-        this.setState({showEditField: false})
-    };
-
     handleBack(event) {
-        this.props.handleAction(0)
+        this.props.handleAction(1)
     }
 
 
@@ -209,7 +205,7 @@ class CareGroupRemove extends Component {
                                     <div className={classes.tableText}>Remove provider:</div>
                                 </Grid>
                                 <Grid item xs={1}>
-                                        <Button size="small" className={classes.btn} onClick={event => this.handleCancel(event)}>Cancel</Button>
+                                        <Button size="small" className={classes.btn} onClick={event => this.handleBack(event)}>Cancel</Button>
                                         
                                 </Grid>
                                 <Grid item xs={1}>

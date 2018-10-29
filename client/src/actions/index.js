@@ -10,6 +10,7 @@ export * from './SurveyAction';
 export * from './ActiveSurveysAction';
 export * from './ReportAction';
 export * from './ListPatientsByProviderAction';
+export * from './ListPatientsByCareGroupAction';
 export * from './ProviderAction';
 export * from './CareGroupAction';
 

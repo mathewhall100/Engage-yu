@@ -7,7 +7,7 @@ import Appbar from './AppBar';
 import * as AuthService from '../services/AuthService';
 import HomeContent from './HomeContent';
 
-class Home extends Component {
+class Homepage extends Component {
     state= {
         redirect : false,
         role : '',
@@ -49,7 +49,7 @@ class Home extends Component {
         const { auth, user } = this.props;
         const { redirect,  } = this.state;
         if (user.role) {
-            const url = user.role === 'patient' ? `/patient` : [user.role ==='provider' ? `/admin/dashboard` : `/`];
+            const url = user.role === 'patient' ? `/patient` : (user.role ==='provider' ? `/admin/dashboard` : `/`);
             console.log("url : " + url);
             return <Redirect to={url}/>;
         }
@@ -64,7 +64,9 @@ class Home extends Component {
 
 function mapStateToProps(state) {
     console.log("state in homepage : ", state);
-    return state;
+    return {
+        user: state.user
+    }
 };
 
 // const mapDispatchToProps = dispatch => ({
@@ -72,5 +74,5 @@ function mapStateToProps(state) {
 //     logoutSuccess: () => dispatch(authActions.logoutSuccess())
 // });
 
-export default connect(mapStateToProps)(Home);
+export default connect(mapStateToProps)(Homepage);
 // export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Home));

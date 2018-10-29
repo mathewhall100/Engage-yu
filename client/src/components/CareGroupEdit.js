@@ -94,7 +94,7 @@ class CareGroupEdit extends Component {
     };
 
     handleBack(event) {
-        this.props.handleAction(0)
+        this.props.handleAction(1)
     }
 
 
@@ -167,7 +167,7 @@ class CareGroupEdit extends Component {
                     <br />
                     
                     <Typography variant="subheading">
-                        Click 'update' to edit name of care group.
+                        Click 'update' to update care group. 
                     </Typography>
 
                     <br />

@@ -61,29 +61,26 @@ const CustomTableCell = withStyles(theme => ({
 class FindPatientTable extends Component {
 
 
-   async componentWillReceiveProps(nextProps) {
+   componentWillReceiveProps(nextProps) {
         //console.log("nextProps: ", nextProps)
-        await this.setState({
-            filterName: this.createFilterName(nextProps.filterName),
-            filterNumber: this.createFilterNumber(nextProps.filterNumber) 
-        })
+        let data = [];
         if (nextProps.listPatientsByProvider) {
+            if (nextProps.filterList === "groupPatients" && nextProps.listPatientsByCareGroup) {data = this.createData(nextProps.listPatientsByCareGroup)}
+            else {data = this.createData(nextProps.listPatientsByProvider)}
+               
             this.setState({
-                tableData: this.createData(nextProps.listPatientsByProvider),
-                tableDataFiltered: this.filterData(this.createData(nextProps.listPatientsByProvider))
+                tableData: data,
+                tableDataFiltered: this.filterData(data, nextProps.filterName, nextProps.filterNumber, nextProps.filterList)
             })
         }
     }
-
 
     state = {
         redirect: false,
         redirectURL: "",
 
-        patientList: "",
         tableData: [],
         tableDataFiltered: [],
-        filterName: "",
 
         order: 'desc',
         orderBy: 'start',
@@ -116,17 +113,11 @@ class FindPatientTable extends Component {
         return newData;
     };
 
-    createFilterName = (filterName) => {
-        return filterName;
-        }
-
-    createFilterNumber = (filterNumber) => {
-        return filterNumber;
-        }
 
     // filters   
-    filterData = (data) => {
-        const filteredData = this.filterByNumber(this.filterByName(data))
+    filterData = (data, filterName, filterNumber, filterList) => {
+        //console.log("Data to filter: ", data)
+        const filteredData = this.filterByNumber(this.filterByName(data, filterName), filterNumber)
         //console.log("filteredData: ", filteredData)
 
         if (filteredData.length === 1) {
@@ -139,50 +130,50 @@ class FindPatientTable extends Component {
             return filteredData}
       };
 
-    filterByNameAlgorithm(firstname, lastname) {
-         let str = "", nameA = "", nameB = "";
-         str = firstname.toLowerCase().trim() + lastname.toLowerCase().trim();
-
-         if ( str.includes(this.state.filterName.toLowerCase().trim() )) {return true} 
-
-         if (this.state.filterName.includes(" ")) {
-             nameA = this.state.filterName.slice(0, this.state.filterName.indexOf(" ")).toLowerCase().trim()
-             nameB = this.state.filterName.slice(this.state.filterName.indexOf(" ")).toLowerCase().trim()
-             if (firstname.toLowerCase().trim().includes(nameA) && (lastname.toLowerCase().trim().includes(nameB))) {return true}
-             if (firstname.toLowerCase().trim().includes(nameB) && (lastname.toLowerCase().trim().includes(nameA))) {return true}
-         }
-
-         if (this.state.filterName.includes(",")) {
-             nameA = this.state.filterName.slice(0, this.state.filterName.indexOf(",")).toLowerCase().trim().replace(/\W/g, "")
-             nameB = this.state.filterName.slice(this.state.filterName.indexOf(",")+1).toLowerCase().trim().replace(/\W/g, "")
-             if (firstname.toLowerCase().trim().includes(nameA) && (lastname.toLowerCase().trim().includes(nameB))) {return true}
-             if (firstname.toLowerCase().trim().includes(nameB) && (lastname.toLowerCase().trim().includes(nameA))) {return true}
-         } 
-
-         return false
-    } 
-
-    filterByNumberAlgorithm(number) {
-        let str = "";
-        str = number.toLowerCase();
-        if ( str.includes(this.state.filterNumber.toLowerCase().trim()) )  {return true} else {return false}
-    }
-
-    filterByName = (data) => {
+    filterByName = (data, filterName) => {
         let filteredData = [];
         filteredData = data.filter(d => 
-            this.filterByNameAlgorithm(d.firstname, d.lastname) 
+            this.filterByNameAlgorithm(d.firstname, d.lastname, filterName) 
         )
         return filteredData;
     }
 
-    filterByNumber = (data) => {
+    filterByNumber = (data, filterNumber) => {
         let filteredData = [];
         filteredData = data.filter(d =>
-            this.filterByNumberAlgorithm(d.number)
+            this.filterByNumberAlgorithm(d.number, filterNumber)
         )
         return filteredData
     }
+
+    filterByNameAlgorithm(firstname, lastname, filterName) {
+         let str = "", nameA = "", nameB = "";
+         str = firstname.toLowerCase().trim() + lastname.toLowerCase().trim();
+
+         if ( str.includes(filterName.toLowerCase().trim() )) {return true} 
+
+         if (filterName.includes(" ")) {
+             nameA = filterName.slice(0, filterName.indexOf(" ")).toLowerCase().trim()
+             nameB = filterName.slice(filterName.indexOf(" ")).toLowerCase().trim()
+             if (firstname.toLowerCase().trim().includes(nameA) && (lastname.toLowerCase().trim().includes(nameB))) {return true}
+             if (firstname.toLowerCase().trim().includes(nameB) && (lastname.toLowerCase().trim().includes(nameA))) {return true}
+         }
+
+         if (filterName.includes(",")) {
+             nameA = filterName.slice(0, filterName.indexOf(",")).toLowerCase().trim().replace(/\W/g, "")
+             nameB = filterName.slice(filterName.indexOf(",")+1).toLowerCase().trim().replace(/\W/g, "")
+             if (firstname.toLowerCase().trim().includes(nameA) && (lastname.toLowerCase().trim().includes(nameB))) {return true}
+             if (firstname.toLowerCase().trim().includes(nameB) && (lastname.toLowerCase().trim().includes(nameA))) {return true}
+         } 
+         return false
+    } 
+
+    filterByNumberAlgorithm(number, filterNumber) {
+        let str = "";
+        str = number.toLowerCase();
+        if ( str.includes(filterNumber.toLowerCase().trim()) )  {return true} else {return false}
+    }
+
 
     // Sort functions
     desc = (a, b, orderBy) => {
@@ -226,29 +217,29 @@ class FindPatientTable extends Component {
         this.props.displayPatientDetails(rowId)
     }
 
-    handleClickDiaryCard = (event, patientId) => {
-        console.log("diarycard clicked: ", patientId)
-        this.setState({
-            redirectURL: `survey/${patientId}`,
-            redirect: true
-        })
-    }
+    // handleClickDiaryCard = (event, patientId) => {
+    //     console.log("diarycard clicked: ", patientId)
+    //     this.setState({
+    //         redirectURL: `survey/${patientId}`,
+    //         redirect: true
+    //     })
+    // }
 
-    handleClickReport = (event, patientId) => {
-        console.log("report clicked: ", patientId)
-        this.setState({
-            redirectURL: `report/${patientId}&null`,
-            redirect: true
-        })
-    }
+    // handleClickReport = (event, patientId) => {
+    //     console.log("report clicked: ", patientId)
+    //     this.setState({
+    //         redirectURL: `report/${patientId}&null`,
+    //         redirect: true
+    //     })
+    // }
 
-    handleClickEdit = (event, patientId) => {
-        console.log("editclicked: ", patientId)
-        this.setState({
-            redirectURL: `updatepatient/${patientId}`,
-            redirect: true
-        })
-    }
+    // handleClickEdit = (event, patientId) => {
+    //     console.log("editclicked: ", patientId)
+    //     this.setState({
+    //         redirectURL: `updatepatient/${patientId}`,
+    //         redirect: true
+    //     })
+    // }
 
     handleClickContact = (event, id) => {
         console.log("contact clicked: ", id)
@@ -274,7 +265,7 @@ class FindPatientTable extends Component {
             { id: 'dob', numeric: false, disablePadding: false, label: 'DOB' },
             { id: 'number', numeric: false, disablePadding: false, label: 'Hospital Number' },
             { id: 'enrolled', numeric: false, disablePadding: false, label: 'Date Enrolled' },
-            { id: 'actions', numeric: false, disablePadding: false, label: ' ' }
+            // { id: 'actions', numeric: false, disablePadding: false, label: ' ' }
         ]
 
         const { redirect, redirectURL} = this.state;
@@ -318,14 +309,14 @@ class FindPatientTable extends Component {
                                             <CustomTableCell><Typography className={classes.text}>{d.number}</Typography></CustomTableCell>
                                             <CustomTableCell><Typography className={classes.text}>{moment(d.enrolled).format("MMM Do YYYY")}</Typography></CustomTableCell>
 
-                                            <CustomTableCell  style={{width: "450px", paddingRight: "0px"}}>
+                                            {/* <CustomTableCell  style={{width: "450px", paddingRight: "0px"}}>
                                                 {displayRowActions == d._id && <div>
                                                     <Button size="small" className={classes.btn} onClick={event => this.handleClickContact(event, d._id)}>Contact</Button>
                                                     <Button size="small" className={classes.btn} onClick={event => this.handleClickEdit(event, d._id)}>Edit details</Button>
                                                     <Button size="small" className={classes.btn} onClick={event => this.handleClickReport(event, d._id)}>View reports</Button>
                                                     <Button size="small" className={classes.btn} onClick={event => this.handleClickDiaryCard(event, d._id)}>New diary Card</Button>
                                                 </div> }
-                                            </CustomTableCell> 
+                                            </CustomTableCell>  */}
 
                                         </TableRow>
                                     )
@@ -359,11 +350,11 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({ fetchSurveyQuestions, fetchReportPatientData, fetchSurveyPatientDetails }, dispatch);
 }
 
-
 const mapStateToProps = (state) => {
     // console.log("State : ", state);
     return {
         listPatientsByProvider: state.listPatientsByProvider.listPatientsByProvider.patientList,
+        listPatientsByCareGroup: state.listPatientsByCareGroup.listPatientsByCareGroup.patientList,
         user: state.user
     }
 };
