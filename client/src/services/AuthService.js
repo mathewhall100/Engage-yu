@@ -2,6 +2,7 @@ import Auth0Lock from 'auth0-lock';
 import jwtDecode from 'jwt-decode';
 
 let redirectURI = `http://${window.location.hostname}${window.location.hostname.includes('localhost') ? ":3000" : null}/callback`
+
 // Configure Auth0 lock
 export const lock = new Auth0Lock('uQdJPDVXxxYgPqJiUoRVnAYFKZudGoHh', 'shikwan.auth0.com', {
     auth: {

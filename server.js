@@ -11,31 +11,25 @@ const mongoose = require("mongoose");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-
 // Serve up static assets (usually on heroku)
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("client/build"));
 }
 
-
 // Add routes, both API and view
 app.use(routes);
-
 
 // Connect to the Mongo DB 'medmonccfdb'
 mongoose.connect(
   process.env.MONGODB_URI || "mongodb://localhost:27017/medmonccfdb", { useNewUrlParser: true })
-  .then(
-    (res) => {
+  .then((res) => {
      console.log("Connected to Database 'medmonccfdb' Successfully.")
-    }
-  ).catch(() => {
+    })
+  .catch(() => {
     console.log("Connection to database failed.");
   });;
-
 // Set up promises with mongoose
 mongoose.Promise = global.Promise
-
 
 // Send every request to the React app
 // Define any API routes before this runs

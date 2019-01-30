@@ -21,16 +21,13 @@ const styles = {
 function ImageAvatars(props) {
     const { classes } = props;
     return (
-        <div className={classes.row}>
+        <span className={classes.row}>
             {props.size === 'small' ?
-            <Avatar alt={props.name} src={props.image} className={classes.avatar} />
-            :
-            <Avatar
-                alt={props.name} src={props.image}
-                className={classNames(classes.avatar, classes.bigAvatar)}
-            />
+                <Avatar alt={props.name} src={props.image} className={classes.avatar} />
+                :
+                <Avatar alt={props.name} src={props.image} className={classNames(classes.avatar, classes.bigAvatar)} />
             }
-        </div>
+        </span>
     );
 }
 

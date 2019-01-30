@@ -102,7 +102,7 @@ class ReportDisplayData extends Component {
 
 
     async componentDidMount() {
-        console.log("id: ", this.props.episodeId)
+        //console.log("id: ", this.props.episodeId)
         await this.setState({episodes: this.props.patientData.episodes}) 
         if (this.state.episodes) {
             //console.log("episodes: ", this.state.episodes)
@@ -110,7 +110,7 @@ class ReportDisplayData extends Component {
             if (this.props.episodeId === "null") {episode = this.getEpisodeToDisplay(this.state.episodes)[0]}
             else {episode = this.state.episodes.filter(e => e._id === this.props.episodeId)[0]};
         if (episode) {
-            console.log("episode not null: ", episode)
+            //console.log("episode not null: ", episode)
             this.setState({ 
             episode: episode,
             questions: episode.questions,
@@ -124,17 +124,17 @@ class ReportDisplayData extends Component {
     }
 
     async componentWillReceiveProps(nextProps) {
-        console.log("display nextprops: ", nextProps)
-        console.log("id: ", nextProps.episodeId)
+        //console.log("display nextprops: ", nextProps)
+        //console.log("id: ", nextProps.episodeId)
         await this.setState({episodes: nextProps.patientData.episodes}) 
 
         if (this.state.episodes) {
-            console.log("episodes: ", this.state.episodes)
+            //console.log("episodes: ", this.state.episodes)
             let episode= []
             if (nextProps.episodeId === "null") {episode = this.getEpisodeToDisplay(this.state.episodes)[0]}
                 else {episode = this.state.episodes.filter(e => e._id === nextProps.episodeId)[0]};
             if (episode) {
-                console.log("episode not null: ", episode)
+                //console.log("episode not null: ", episode)
                 this.setState({ 
                 episode: episode,
                 questions: episode.questions,
@@ -267,7 +267,7 @@ class ReportDisplayData extends Component {
                         <div className={classes.bold}>
                             Diary Card Details
                         </div>
-                        <Typography variant="body2">
+                        
                             <div className={classes.detailsText}>
 
                                 <table>
@@ -305,7 +305,7 @@ class ReportDisplayData extends Component {
                                 </table>
 
                             </div>
-                        </Typography>
+                        
                     </div> } 
                 </div>
             )
@@ -466,7 +466,7 @@ ReportDisplayData.propTypes = {
   };
 
   const mapStateToProps = (state) => {
-    console.log("State : ", state);
+    // console.log("State : ", state);
     return {
         patientInfo: state.reportPatientData.reportPatientInfo,
         patientData: state.reportPatientData.reportPatientData,

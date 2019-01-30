@@ -1,14 +1,10 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
-import AppBar from './AppBar';
-import Homepage from './Homepage';
-import Admin from './Admin';
-import Callback from './Callback';
+
+import Homepage from './components/Homepage';
+import Admin from './components/Admin';
+import Callback from './components/Callback';
 import NotFound from './NotFound';
-
-import SK from './SKBranch/patients';
-//import MH from './MHBranch/tests'
-
 
 class Routes extends Component { 
     render(){
@@ -16,7 +12,6 @@ class Routes extends Component {
             <div className="App">
                 <Switch>
                     <Route exact path="/" render={props => <Homepage {...this.props}> </Homepage>} />
-                    <Route path="/patient" render={props => <SK {...this.props} title='Dashboard' ></SK>} />  
                     <Route path='/admin' render={props => <Admin {...this.props}></Admin>} />
                     <Route path='/callback' render={props => <Callback></Callback>} />
                     <Route path="/notfound" component={NotFound} />  

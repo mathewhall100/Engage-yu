@@ -39,7 +39,8 @@ class ReportTable extends React.Component {
     render () {
         return (
 
-            <Table style={{ width: '100%'}}>    
+            <Table style={{ width: '100%'}}>   
+
                 <TableHead >
                     <TableRow>
                         <CustomTableCell style={{width: "20%"}}>Time</CustomTableCell>
@@ -79,9 +80,9 @@ class ReportTable extends React.Component {
                         )
                     })}
                 </TableBody>
+
             </Table> 
         )
-
     }
 }
 

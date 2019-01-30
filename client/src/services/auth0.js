@@ -1,5 +1,7 @@
 import Auth0 from 'auth0-js';
+
 let redirectURI = `http://${window.location.hostname}${window.location.hostname.includes('localhost') ? ":3000" : null}/callback`
+
 export default new Auth0.WebAuth({
     domain: 'shikwan.auth0.com',
     clientID: 'uQdJPDVXxxYgPqJiUoRVnAYFKZudGoHh',

@@ -22,11 +22,12 @@ const styles = theme => ({
 
 const ITEM_HEIGHT = 45;
 const ITEM_PADDING_TOP = 8;
+
 const MenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 5 + ITEM_PADDING_TOP,
-      width: 250,
+      width: 450,
     },
   },
 };

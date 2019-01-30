@@ -56,12 +56,12 @@ const styles = theme => ({
     },
     bannerTextBox: {
         marginTop: "100px",
-        float: "right"
+        float: "right",
     },
     bannerTitle: {
-        fontweight: "bold",
+        fontWeight: "bold",
         fontSize: "96px",
-        color: "#28353d"
+        color: theme.palette.primary.main
     },
     bannerText: {
         fontSize: '45.5px',
@@ -141,13 +141,13 @@ const styles = theme => ({
         display: "block",
     },
     footer: {
-
         backgroundColor: "#28353d",
         color: "white",
         marginTop: theme.spacing.unit * 8,
         padding: `${theme.spacing.unit * 6}px 0`,
       },
 });
+
 
 //  
 class HomeContent extends Component {
@@ -168,6 +168,8 @@ class HomeContent extends Component {
             'Contact',
           ];
 
+          
+          
         return(
             <div className={classes.layout}>
 
@@ -183,7 +185,7 @@ class HomeContent extends Component {
 
                         <div className={classes.bannerTextBox}>
 
-                            <Typography noWrap className={classes.bannerTitle}>
+                            <Typography noWrap className={classes.bannerTitle} >
                                 Engage-Yu!
                             </Typography>
                             <hr />

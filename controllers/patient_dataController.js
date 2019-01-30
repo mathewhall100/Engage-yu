@@ -231,7 +231,6 @@ module.exports = {
                         { $pop: {"episodes": 1} } 
                     )
                     .then(result => {
-
                         db.Patient_data
                         .findOneAndUpdate(
                             { _id: req.params.id },
@@ -251,7 +250,6 @@ module.exports = {
         //     res.status(422).json('You do not have proper credential to perform this action.')
         // }
     },
-
 
 };
 

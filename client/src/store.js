@@ -6,7 +6,6 @@ import reducer from './reducers/ReportReducer'
 
 
 const middleware = [thunk]
-
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 const configureStore = composeEnhancers(
@@ -23,7 +22,6 @@ const combinedReducer = persistReducer(config, reducer)
 const createAppStore = () => {
   let store = configureStore(combinedReducer)
   let persistor = persistStore(store)
-
   return { persistor, store }
 }
 

@@ -12,7 +12,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 // import { lighten } from '@material-ui/core/styles/colorManipulator';
 
 
-const CustomTableCell = withStyles(theme => ({
+const CustomTableCell = withStyles(style => ({
   head: {
     padding: "5px",
   },

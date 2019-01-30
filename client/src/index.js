@@ -4,14 +4,12 @@ import { Provider } from 'react-redux';
 import reducers from './reducers';
 import ReduxThunk from 'redux-thunk';
 import { createStore, applyMiddleware } from 'redux';
-import "./index.css";
-import App from "./App";
 import { BrowserRouter } from 'react-router-dom';
 import registerServiceWorker from './registerServiceWorker';
 
 import createAppStore from './store'
 import { PersistGate } from 'redux-persist/es/integration/react'
-import { isNull } from "util";
+import App from "./App";
 
 const { persistor, store } = createAppStore()
 const createStoreWithMiddleware = applyMiddleware(ReduxThunk)(createStore);
@@ -26,4 +24,5 @@ ReactDOM.render(
     </Provider>
     
 , document.getElementById('root'));
+
 registerServiceWorker();

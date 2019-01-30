@@ -11,7 +11,7 @@ import Provider from './Provider';
 import ProviderEnrollForm from './ProviderEnrollForm';
 import CareGroup from './CareGroup';
 import CareGroupAdd from './CareGroupAdd';
-import NotFound from './NotFound';
+import NotFound from '../NotFound';
 
 
 class ConsoleRoutes extends Component { 

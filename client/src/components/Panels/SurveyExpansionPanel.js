@@ -8,37 +8,41 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const styles = theme => ({
-  root: {
-    width: '100%',
-    boxShadow: "none"
+  	root: {
+    	width: '100%',
+    	boxShadow: "none"
     
-  },
-  heading: {
-    fontSize: theme.typography.pxToRem(15),
-    fontWeight: theme.typography.fontWeightRegular,
-  },
+  	},
+  	heading: {
+    	fontSize: theme.typography.pxToRem(15),
+    	fontWeight: theme.typography.fontWeightRegular,
+  	},
 });
 
 function Panel(props) {
-  const { classes } = props;
-  return (
-    <div className={classes.root}>
-      <ExpansionPanel>
-        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography className={classes.heading}>{props.question.slice(0,50)}</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
-          <Typography>
-            <span>
-              Answer options: {props.answers.map((ans, index) => 
-              <span key={index}>({index+1}) {ans} </span>
-            )}
-            </span>
-            <br />
-            <span>Added by:  {props.addedBy}</span>
-          </Typography>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
+  	const { classes } = props;
+  	return (
+    	<div className={classes.root}>
+      	<ExpansionPanel>
+
+        	<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+          		<Typography className={classes.heading}>{props.question.slice(0,50)}</Typography>
+			</ExpansionPanelSummary>
+        
+        	<ExpansionPanelDetails>
+          		<Typography>
+					<span>
+						Answer options: 
+						{props.answers.map((ans, index) => 
+							<span key={index}>({index+1}) {ans} </span>
+						)}
+					</span>
+					<br />
+					<span>Added by:  {props.addedBy}</span>
+				</Typography>
+        	</ExpansionPanelDetails>
+
+      	</ExpansionPanel>
     </div>
   );
 }

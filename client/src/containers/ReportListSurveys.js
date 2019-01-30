@@ -1,377 +1,153 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
 import { startCase } from 'lodash'
 import moment from 'moment';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button'
+import ReportPanel from '../components/Panels/ReportPanel';
 
-import Panel from "../components/Panels/ReportExpansionPanel";
+const status = ["pending", "active", "awaiting review", "actioned", "archived", "cancelled"]
+const tableHeadings = ["start", "end", "timeframe", "interval", "questions", "requested by", "reviewed by", "archived by", "cancelled by"]
+const panelProps = [
+    {status: "pending", slice: -3, actions: ["view", "cancel"]},
+    {status: "active", slice: -3, actions: ["view", "cancel"]},
+    {status: "awaiting review", slice: -3, actions: ["view"]},
+    {status: "actioned", slice: -2, actions: ["view", "archive"]},
+]
 
-
-
-const styles = theme => ({
-    root: {
-      width: "100%",
-      marginTop: theme.spacing.unit*2,
-      paddingLeft: "20px",
-    },
-  });
-
-class ReportPendingSurveys extends Component {
+class ReportListSurveys extends Component {
 
     state = {
         episodes: [],
-        pending: [],
-        active: [],
-        review: [],
-        actioned: [],
-        archived: [],
-        cancelled: [],
-
+        panelStatus: [],
         morePanels: 0
     };
 
-   async componentDidMount() {
-        await this.setState({episodes: this.props.patientData.episodes}) 
-        if (this.state.episodes) {
-            console.log("Episodes: ", this.state.episodes)
-            this.setState({
-                pending: this.state.episodes.filter(episode => episode.status === "pending"),
-                active: this.state.episodes.filter(episode => episode.status === "active"),
-                review: this.state.episodes.filter(episode => episode.status === "awaiting review"),
-                actioned: this.state.episodes.filter(episode => episode.status === "actioned"),
-                archived: this.state.episodes.filter(episode => episode.status === "archived"),
-                cancelled: this.state.episodes.filter(episode => episode.status === "cancelled") 
-             })  
-         }
+   componentWillReceiveProps(nextProps) {
+        if (this.props.patientData !== [nextProps.patientData]) {
+            this.setState({episodes: nextProps.patientData.episodes}, () => this.displayPanels(this.state.episodes) )
+        }
     };
 
-
-   async componentWillReceiveProps(nextProps) {
-        //console.log("NextProps: ", nextProps)
-        await this.setState({episodes: nextProps.patientData.episodes}) 
-        if (this.state.episodes) {
-            //console.log("Episodes: ", this.state.episodes)
-            this.setState({
-                pending: this.state.episodes.filter(episode => episode.status === "pending"),
-                active: this.state.episodes.filter(episode => episode.status === "active"),
-                review: this.state.episodes.filter(episode => episode.status === "awaiting review"),
-                actioned: this.state.episodes.filter(episode => episode.status === "actioned"),
-                archived: this.state.episodes.filter(episode => episode.status === "archived"),
-                cancelled: this.state.episodes.filter(episode => episode.status === "cancelled")
-             })  
-         }
-    };
-
-    createPendingTableData = (data) => {
-        //console.log("creatependingData: ", data)
-
-        let dataItems = [];
-        let dataArray = [];
-    
-        data.map(episode => {
-            dataItems = [ 
-                episode._id,
-                moment(episode.start_date).format("MMM Do YYYY"),
-                moment(episode.end_date).format("MMM Do YYYY"),
-               `${episode.start_time.slice(0,2)}:${episode.start_time.slice(-2)} - ${episode.end_time.slice(0,2)}:${episode.end_time.slice(-2)}`,
-                `${episode.interval_mins} mins`, 
-                episode.questions.length === 1 ? `${episode.questions.length} question` : `${episode.questions.length} questions`,
-                startCase(`Dr. ${episode.requesting_provider_firstname} ${episode.requesting_provider_lastname}`), 
-            ]
-
-           dataArray.push(dataItems)
+    displayPanels = (episodes) => {
+        let panelStatus = []
+        status.map((state, idx) => {
+            panelStatus[idx] = episodes.filter(episode => episode.status === state).length
         })
-        //console.log("dataArray: ", dataArray)
-        return dataArray
+        this.setState({panelStatus: panelStatus})
     }
 
-    createActiveTableData = (data) => {
-       // console.log("createActiveData: ", data)
-
-        let dataItems = [];
-        let dataArray = [];
-    
-        data.map(episode => {
-            dataItems = [ 
-                episode._id,
-                moment(episode.start_date).format("MMM Do YYYY"),
-                moment(episode.end_date).format("MMM Do YYYY"),
-               `${episode.start_time.slice(0,2)}:${episode.start_time.slice(-2)} - ${episode.end_time.slice(0,2)}:${episode.end_time.slice(-2)}`,
-                `${episode.interval_mins} mins`, 
-                episode.questions.length === 1 ? `${episode.questions.length} question` : `${episode.questions.length} questions`,
-                startCase(`Dr. ${episode.requesting_provider_firstname} ${episode.requesting_provider_lastname}`),  
-            ]
-
-           dataArray.push(dataItems)
+    createTableData = (data) => {
+          let dataItems = [];
+          let dataArray = [];
+      
+          data.map(episode => {
+                dataItems = [ 
+                    episode._id,
+                    moment(episode.start_date).format("MMM Do YYYY"),
+                    moment(episode.end_date).format("MMM Do YYYY"),
+                    `${episode.start_time.slice(0,2)}:${episode.start_time.slice(-2)} - ${episode.end_time.slice(0,2)}:${episode.end_time.slice(-2)}`,
+                    `${episode.interval_mins} mins`, 
+                    episode.questions.length === 1 ? `${episode.questions.length} question` : `${episode.questions.length} questions`,
+                    startCase(`Dr. ${episode.requesting_provider_firstname} ${episode.requesting_provider_lastname}`),  
+                ]
+                episode.reviewed_by ? dataItems.push(startCase(`Dr. ${episode.reviewed_by}`)) : null, 
+                episode.archived_by ? dataItems.push(startCase(`Dr. ${episode.archived_by}`)) : null, 
+                episode.cancelled_by ? dataItems.push(startCase(`Dr. ${episode.cancelled_by}`)) : null,
+  
+            dataArray.push(dataItems)
         })
-        //console.log("dataArray: ", dataArray)
-        return dataArray
-    }
-
-    createReviewTableData = (data) => {
-        //console.log("createReviewData: ", data)
-
-        let dataItems = [];
-        let dataArray = [];
-    
-        data.map(episode => {
-            dataItems = [ 
-                episode._id,
-                moment(episode.start_date).format("MMM Do YYYY"),
-                moment(episode.end_date).format("MMM Do YYYY"),
-               `${episode.start_time.slice(0,2)}:${episode.start_time.slice(-2)} - ${episode.end_time.slice(0,2)}:${episode.end_time.slice(-2)}`,
-                `${episode.interval_mins} mins`, 
-                episode.questions.length === 1 ? `${episode.questions.length} question` : `${episode.questions.length} questions`,
-                startCase(`Dr. ${episode.requesting_provider_firstname} ${episode.requesting_provider_lastname}`), 
-            ]
-
-           dataArray.push(dataItems)
-        })
-        //console.log("dataArray: ", dataArray)
-        return dataArray
-    }
-
-    createActionedTableData = (data) => {
-        //console.log("createActionedData: ", data)
-
-        let dataItems = [];
-        let dataArray = [];
-    
-        data.map(episode => {
-            dataItems = [ 
-                episode._id,
-                moment(episode.start_date).format("MMM Do YYYY"),
-                moment(episode.end_date).format("MMM Do YYYY"),
-               `${episode.start_time.slice(0,2)}:${episode.start_time.slice(-2)} - ${episode.end_time.slice(0,2)}:${episode.end_time.slice(-2)}`,
-                `${episode.interval_mins} mins`, 
-                episode.questions.length === 1 ? `${episode.questions.length} question` : `${episode.questions.length} questions`,
-                startCase(`Dr. ${episode.requesting_provider_firstname} ${episode.requesting_provider_lastname}`), 
-                startCase(`Dr. ${episode.reviewed_by}`), 
-            ]
-
-           dataArray.push(dataItems)
-        })
-        //console.log("dataArray: ", dataArray)
-        return dataArray
-    }
-
-    createArchivedTableData = (data) => {
-        //console.log("createArchivedData: ", data)
-
-        let dataItems = [];
-        let dataArray = [];
-    
-        data.map(episode => {
-            dataItems = [ 
-                episode._id,
-                moment(episode.start_date).format("MMM Do YYYY"),
-                moment(episode.end_date).format("MMM Do YYYY"),
-               `${episode.start_time.slice(0,2)}:${episode.start_time.slice(-2)} - ${episode.end_time.slice(0,2)}:${episode.end_time.slice(-2)}`,
-                `${episode.interval_mins} mins`, 
-                episode.questions.length === 1 ? `${episode.questions.length} question` : `${episode.questions.length} questions`,
-                startCase(`Dr. ${episode.requesting_provider_firstname} ${episode.requesting_provider_lastname}`), 
-                startCase(`Dr. ${episode.archived_by}`), 
-            ]
-
-           dataArray.push(dataItems)
-        })
-        //console.log("dataArray: ", dataArray)
-        return dataArray
-    }
-
-    createCancelledTableData = (data) => {
-        //console.log("createCancelledData: ", data)
-
-        let dataItems = [];
-        let dataArray = [];
-    
-        data.map(episode => {
-            dataItems = [ 
-                episode._id,
-                moment(episode.start_date).format("MMM Do YYYY"),
-                moment(episode.end_date).format("MMM Do YYYY"),
-               `${episode.start_time.slice(0,2)}:${episode.start_time.slice(-2)} - ${episode.end_time.slice(0,2)}:${episode.end_time.slice(-2)}`,
-                `${episode.interval_mins} mins`, 
-                episode.questions.length === 1 ? `${episode.questions.length} question` : `${episode.questions.length} questions`,
-                startCase(`Dr. ${episode.requesting_provider_firstname} ${episode.requesting_provider_lastname}`),
-                startCase(`Dr. ${episode.cancelled_by}`), 
-            ]
-
-           dataArray.push(dataItems)
-        })
-        //console.log("dataArray: ", dataArray)
         return dataArray
     }
 
     handleClickMore = () => {
-        //console.log("MorePanels: ", this.state.morePanels)
         this.setState({morePanels: this.state.morePanels ? 0 : 1})
     }
 
-    viewEpisode = (id) => {
-        this.props.changeEpisode(id)
-    }
+    handleActionBtn = (btn, row) => {
+        console.log("Action btn clicked: episode id: ", btn, " : ", row)
+        switch (btn) {
+            case "view":
+            this.props.changeEpisode(row[0])
+                break
+            case "cancel":
+                break
+            case "archive":
+                break
+            default: 
+                null
+        }
+    };
 
     render () {
 
-        const { classes } = this.props;
-       
+        const { episodes, panelStatus, morePanels } = this.state
+
+        const RenderShowMoreBtn = (props) => 
+            <Button onClick={() => this.handleClickMore()} >
+                {morePanels ? "Hide..." : "Show more" }
+            </Button>
+        
+
         return (
-            <div>
+            <React.Fragment>
 
-                {this.state.pending.length > 0 &&
-                        <Panel
-                            title = { `Pending (${this.state.pending.length})` }
-                            tableHeadings = {[
-                                { id: 'start', numeric: false, disablePadding: false, label: 'Start' },
-                                { id: 'end', numeric: false, disablePadding: false, label: 'End' },
-                                { id: 'timeframe', numeric: false, disablePadding: false, label: 'Timeframe' },
-                                { id: 'interval', numeric: false, disablePadding: false, label: 'Interval' },
-                                { id: 'questions', numeric: false, disablePadding: false, label: 'Questions' },
-                                { id: 'requester', numeric: false, disablePadding: false, label: 'Requester' },
-                                
-                            ]}
-                            tableData = {this.createPendingTableData(this.state.pending)}
-
-                            actions = {["view", "cancel"]}
-                            viewEpisode = {this.viewEpisode}
-                        />
-                }
-
-                {this.state.active.length > 0 &&
-                        <Panel
-                            title = { `Currently active (${this.state.active.length})` }
-                            tableHeadings = {[
-                                { id: 'start', numeric: false, disablePadding: false, label: 'Start' },
-                                { id: 'end', numeric: false, disablePadding: false, label: 'End' },
-                                { id: 'timeframe', numeric: false, disablePadding: false, label: 'Timeframe' },
-                                { id: 'interval', numeric: false, disablePadding: false, label: 'Interval' },
-                                { id: 'questions', numeric: false, disablePadding: false, label: 'Questions' },
-                                { id: 'requester', numeric: false, disablePadding: false, label: 'Requester' },   
-                             
-                            ]}
-                            tableData = {this.createActiveTableData(this.state.active)}
-
-                            actions = {["view", "cancel"]}
-                            viewEpisode = {this.viewEpisode}
-                        />
-                }
-
-                {this.state.review.length > 0 &&
-                        <Panel 
-                            title = { `Awaiting review (${this.state.review.length})` }
-                            tableHeadings = {[
-                                { id: 'start', numeric: false, disablePadding: false, label: 'Start' },
-                                { id: 'end', numeric: false, disablePadding: false, label: 'End' },
-                                { id: 'timeframe', numeric: false, disablePadding: false, label: 'Timeframe' },
-                                { id: 'interval', numeric: false, disablePadding: false, label: 'Interval' },
-                                { id: 'questions', numeric: false, disablePadding: false, label: 'Questions' },
-                                { id: 'requester', numeric: false, disablePadding: false, label: 'Requester' },
-                                
-                            ]}
-                            tableData = {this.createReviewTableData(this.state.review)}
-
-                            actions = {["view"]}
-                            viewEpisode = {this.viewEpisode}
-                        />
-                }
-
-                {this.state.actioned.length > 0 &&
-                        <Panel
-                            title = { `Reviewed & actioned (${this.state.actioned.length})` }
-                            tableHeadings = {[
-                                { id: 'start', numeric: false, disablePadding: false, label: 'Start' },
-                                { id: 'end', numeric: false, disablePadding: false, label: 'End' },
-                                { id: 'timeframe', numeric: false, disablePadding: false, label: 'Timeframe' },
-                                { id: 'interval', numeric: false, disablePadding: false, label: 'Interval' },
-                                { id: 'questions', numeric: false, disablePadding: false, label: 'Questions' },
-                                { id: 'requester', numeric: false, disablePadding: false, label: 'Requester' },
-                                { id: 'reviewer', numeric: false, disablePadding: false, label: 'Reviewed By' },
-                                
-                            ]}
-                            tableData = {this.createActionedTableData(this.state.actioned)}
-
-                            actions = {["view", "archive"]}
-                            viewEpisode = {this.viewEpisode}
-                        />
-                }
+                { panelStatus.map((panel, idx) => {
+                    return (
+                        panel > 0 ?
+                            <ReportPanel key={idx}
+                                summary = { `${startCase(panelProps[idx].status)} (${panel})` }
+                                tableHeadings = {tableHeadings.slice(0, panelProps[idx].slice)}
+                                tableData = {this.createTableData(episodes.filter(episode => episode.status === panelProps[idx].status )) }
+                                lastCellRightAlign={true}
+                                lastCellHeading={"Actions"}
+                                actions = {panelProps[idx].actions}
+                                actionBtnAction = {this.handleActionBtn}
+                            />
+                        :  null 
+                    )
+                }) }
 
                 <br />
+                { (panelStatus[4] + panelStatus[5]) > 0 && <RenderShowMoreBtn /> } 
+                <br />
+                <br />
 
-                {this.state.morePanels ? <Button onClick={() => this.handleClickMore()}>Hide...</Button> : <Button onClick={() => this.handleClickMore()}>More...</Button>}
+                { morePanels === 1 && <React.Fragment>
+                    
+                    { panelStatus[4] && <ReportPanel
+                        summary = { `Archived (${panelStatus[4]})` }
+                        tableHeadings = {tableHeadings[0,1,2,3,4,5,7]}
+                        tableData = {this.createTableData(episodes.filter(episode => episode.status === "archived"))}
+                        lastCellRightAlign={true}
+                        lastCellHeading="Actions"
+                        actions = {["view"]}
+                        actionBtnAction = {this.handleActionBtn}
+                    /> }
 
-                <br /><br />
+                    { panelStatus[5] && <ReportPanel
+                        summary = { `Cancelled (${panelStatus[5]})` }
+                        tableHeadings = {tableHeadings[0,1,2,3,4,5,8]}
+                        tableData = {this.createTableData(episodes.filter(episode => episode.status === "cancelled"))}
+                        lastCellRightAlign={true}
+                        lastCellHeading="Actions"
+                        actions = {["view"]}
+                        actionBtnAction = {this.handleActionBtn}
+                    /> }
 
-                {this.state.morePanels ?  
+                </React.Fragment> }
                 
-                    <div>
-
-                        {this.state.archived.length > 0 && 
-                                <Panel
-                                    title = { `Archived (${this.state.archived.length})` }
-                                    tableHeadings = {[
-                                        { id: 'start', numeric: false, disablePadding: false, label: 'Start' },
-                                        { id: 'end', numeric: false, disablePadding: false, label: 'End' },
-                                        { id: 'timeframe', numeric: false, disablePadding: false, label: 'Timeframe' },
-                                        { id: 'interval', numeric: false, disablePadding: false, label: 'Interval' },
-                                        { id: 'questions', numeric: false, disablePadding: false, label: 'Questions' },
-                                        { id: 'requester', numeric: false, disablePadding: false, label: 'Requester' },
-                                        { id: 'archiver', numeric: false, disablePadding: false, label: 'Archived By' },
-                                        
-                                    ]}
-                                    tableData = {this.createArchivedTableData(this.state.archived)}
-
-                                    actions = {["view"]}
-                                    viewEpisode = {this.viewEpisode}
-                                />
-                        } 
-
-                        {this.state.cancelled.length > 0 && 
-                                <Panel
-                                    title = { `Cancelled (${this.state.cancelled.length})` }
-                                    tableHeadings = {[
-                                        { id: 'start', numeric: false, disablePadding: false, label: 'Start' },
-                                        { id: 'end', numeric: false, disablePadding: false, label: 'End' },
-                                        { id: 'timeframe', numeric: false, disablePadding: false, label: 'Timeframe' },
-                                        { id: 'interval', numeric: false, disablePadding: false, label: 'Interval' },
-                                        { id: 'questions', numeric: false, disablePadding: false, label: 'Questions' },
-                                        { id: 'requester', numeric: false, disablePadding: false, label: 'Requester' },
-                                        { id: 'canceller', numeric: false, disablePadding: false, label: 'Cancelled By' },
-                                        
-                                    ]}
-                                    tableData = {this.createCancelledTableData(this.state.cancelled)}
-
-                                    actions = {["view"]}
-                                    viewEpisode = {this.viewEpisode}
-                                />
-                        }
-
-                    </div> : null
-                }
-            </div>
-
+            </React.Fragment>
         );
     }
 }
 
 
-ReportPendingSurveys.propTypes = {
-    classes: PropTypes.object.isRequired,
-  };
-  
-  const mapStateToProps = (state) => {
-    //console.log("State : ", state);
+const mapStateToProps = (state) => {
+    // console.log("State : ", state);
     return {
         patientData: state.reportPatientData.reportPatientData,
-        user: state.user
     }
-  };
-  ReportPendingSurveys = connect(mapStateToProps)(ReportPendingSurveys)
-  ReportPendingSurveys = withStyles(styles, { withTheme: true })(ReportPendingSurveys)
-  export default ReportPendingSurveys
+};
+
+ReportListSurveys = connect(mapStateToProps)(ReportListSurveys)
+export default ReportListSurveys
