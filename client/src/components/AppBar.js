@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { startCase } from 'lodash';
 import { Redirect } from 'react-router-dom';
-// import { bindActionCreators } from 'redux';
 
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
@@ -64,7 +63,10 @@ class TopBar extends Component {
     renderProfile(profile, isAuthenticated) {
         return(
             profile && isAuthenticated ?
-                <p><img src={profile.picture} height="40px" alt="profile" style={{verticalAlign: "middle", borderRadius: "50%"}} /> &nbsp;&nbsp;Welcome, &nbsp;&nbsp;Dr. {startCase(localStorage.getItem("provider_first_name"))} {startCase(localStorage.getItem("provider_last_name"))} </p>
+                <p>
+                    <img src={profile.picture} height="40px" alt="profile" style={{verticalAlign: "middle", borderRadius: "50%"}} /> 
+                     &nbsp;&nbsp;Welcome, &nbsp;&nbsp;Dr. {startCase(localStorage.getItem("provider_first_name"))} {startCase(localStorage.getItem("provider_last_name"))} 
+                </p>
             : null
         );
     }
@@ -83,13 +85,15 @@ class TopBar extends Component {
 
                     <AppBar position="static" className={isAuthenticated ? null : classes.loseShadow}>
                         <ToolBar style={{backgroundColor: "#2d404b" }}>
+
                             <Typography variant="display1" color="inherit" align="left" className={classes.flex}>
                                 Engage-Yu!
                             </Typography>
 
-                            {isAuthenticated && <Typography variant="subheading" color="inherit" align="center" className={classes.flex}>
-                            Care Group: &nbsp;&nbsp;{startCase(localStorage.getItem("provider_group_name"))}
-                             </Typography> }
+                            {isAuthenticated && 
+                                <Typography variant="subheading" color="inherit" align="center" className={classes.flex}>
+                                    Care Group: &nbsp;&nbsp;{startCase(localStorage.getItem("provider_group_name"))}
+                                </Typography> }
 
                             <Typography variant="subheading" color="inherit" align="right" className={classes.welcomeText}>
                                 {this.renderProfile(profile, isAuthenticated)}
@@ -98,10 +102,11 @@ class TopBar extends Component {
                             <Button color="inherit" className={classes.menuButton}>Help</Button>
 
                             {!isAuthenticated ? 
-                                ( <Button color="inherit" className={classes.menuButton} onClick={this.handleLoginClick}>Login</Button> )
+                                <Button color="inherit" className={classes.menuButton} onClick={this.handleLoginClick}>Login</Button> 
                                 :
-                                ( <Button color="inherit" className={classes.menuButton} onClick={this.handleLogoutClick}>Logout</Button> )
+                                <Button color="inherit" className={classes.menuButton} onClick={this.handleLogoutClick}>Logout</Button> 
                             }
+
                         </ToolBar>
                     </AppBar>
 
@@ -112,9 +117,6 @@ class TopBar extends Component {
 
 TopBar.propTypes = {
     classes: PropTypes.object.isRequired,
-    // history: PropTypes.shape({
-    //     push: PropTypes.func.isRequired
-    // }).isRequired,
     auth: PropTypes.shape({
         isAuthenticated: PropTypes.bool.isRequired,
         profile: PropTypes.object,

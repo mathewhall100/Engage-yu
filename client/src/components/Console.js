@@ -13,7 +13,7 @@ import Hidden from '@material-ui/core/Hidden';
 import MenuIcon from '@material-ui/icons/Menu';
 import ListItems from "./ConsoleMenuListItems";
 import ConsoleTitle from '../containers/ConsoleTitle';
-import ConsoleRoutes from './ConsoleRoutes';
+import ConsoleRoutes from '../routes/ConsoleRoutes';
 
 const drawerWidth = 255;
 

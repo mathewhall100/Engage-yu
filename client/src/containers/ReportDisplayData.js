@@ -343,7 +343,7 @@ class ReportDisplayData extends Component {
 
             <div>
 
-                {displayData && questions && episode ? null : <Callback />}
+                {displayData && questions && episode ? null : <Callback />} 
                        
                 {displayData && questions && episode && <Paper className={classes.root}>
 

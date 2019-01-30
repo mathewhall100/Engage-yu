@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import * as AuthService from './services/AuthService';
 import { authActions } from './reducers/modules/auth';
 import { fetchUserDetails, getUserRole, getUserID } from './actions/UserAction';
-import Routes from './Routes';
+import Routes from './routes/Routes';
 
 import { MuiThemeProvider } from '@material-ui/core/styles'
 import theme from './theme'

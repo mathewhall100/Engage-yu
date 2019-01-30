@@ -2,39 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter, Redirect } from 'react-router-dom';
 import {authActions} from '../reducers/modules/auth';
-//import PropTypes from 'prop-types';
-import Appbar from './AppBar';
 import * as AuthService from '../services/AuthService';
-import HomeContent from './HomeContent';
+import Appbar from '../components/AppBar';
+import HomeContent from '../components/HomeContent';
 
 class Homepage extends Component {
     state= {
         redirect : false,
         role : '',
     }
-    // static propTypes = {
-    //     history: PropTypes.shape({
-    //         push: PropTypes.func.isRequired
-    //     }).isRequired,
-    //     auth: PropTypes.shape({
-    //         isAuthenticated: PropTypes.bool.isRequired,
-    //         profile: PropTypes.object,
-    //         error: PropTypes.object
-    //     }).isRequired,
-    //     loginRequest: PropTypes.func.isRequired,
-    //     logoutSuccess: PropTypes.func.isRequired
-    // };
-
-    // handleLoginClick = () => {
-    //     AuthService.login();
-    //     this.props.loginRequest();
-    // };
-
-    // handleLogoutClick = () => {
-    //     this.props.logoutSuccess();
-    //     AuthService.logout(); // careful, this is a static method
-    //     this.props.history.push({ pathname: '/' });
-    // };
     componentDidMount(){
         console.log("props in homepage : ", this.props);
         if(this.props.user.role){
