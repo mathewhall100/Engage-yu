@@ -351,95 +351,84 @@ class DashboardTable extends React.Component {
      }
 
     return (
-      <Paper className={classes.root}>
+        <Paper className={classes.root}>
 
-        <EnhancedTableToolbar 
-          numSelected={selected.length}
-          navLinksSwitch={this.state.personFilter}
-          navLinksFilter={this.navLinksFilter}
-          statusFilter={this.statusFilter}
-          checkedFilter={this.checkedFilter}
-         /> 
+            <EnhancedTableToolbar 
+                numSelected={selected.length}
+                navLinksSwitch={this.state.personFilter}
+                navLinksFilter={this.navLinksFilter}
+                statusFilter={this.statusFilter}
+                checkedFilter={this.checkedFilter}
+            /> 
 
         <div className={classes.tableWrapper}>
-          <Table className={classes.table} aria-labelledby="tableTitle">
+            <Table className={classes.table} aria-labelledby="tableTitle">
 
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onDeSelectAllClick={this.handleDeSelectAllClick}
-              onRequestSort={this.handleRequestSort}
-              rowCount={this.state.activeSurveysLength}
-              displayCheckbox={true}
-              rows={rows}
-            />
+                <EnhancedTableHead
+                    numSelected={selected.length}
+                    order={order}
+                    orderBy={orderBy}
+                    onDeSelectAllClick={this.handleDeSelectAllClick}
+                    onRequestSort={this.handleRequestSort}
+                    rowCount={this.state.activeSurveysLength}
+                    displayCheckbox={true}
+                    rows={rows}
+                    />
 
-            <TableBody>
-              {tableDataFiltered ? (
-                this.stableSort(tableDataFiltered, this.getSorting(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map(d => {
-                  const isSelected = this.isSelected(d._id);
-                  return (
-                    <TableRow
-                      hover
-                      onClick={event => this.handleRowClick(event, d.patientInfoId, d.episodeId)}
-                      tabIndex={-1}
-                      key={d.id}
-                    >
-                      <CustomTableCell padding="checkbox"><Checkbox checked={isSelected} onClick={event => this.handleCheckClick(event, d._id)}/></CustomTableCell>
-                      <CustomTableCell component="th" scope="row" padding="none">{startCase(d.name)}</CustomTableCell> 
-                      <CustomTableCell>{d.number}</CustomTableCell>
-                      <CustomTableCell>{moment(d.start).format("MMM Do YYYY")}</CustomTableCell>
-                      <CustomTableCell>{moment(d.end).format("MMM Do YYYY")}</CustomTableCell>
-                      <CustomTableCell>{d.timeframe}</CustomTableCell>
-                      <CustomTableCell >
-                        <div style={{height: "30px", width: "129px", border: "1px solid #dddddd", paddingLeft: "6px", paddingTop: "2px", paddingRight: "10px", 
-                          backgroundColor: d.status.status === "active" ? "#ffffff" :
-                                           d.status.status === "pending" ? "#ffffff" : 
-                                           d.status.status === "awaiting review" ? "#eeeeee" : 
-                                           d.status.status === "delayed" ? "#ffc200" : 
-                                           d.status.status === "cancelled" ? "#ff0000" : 
-                                           d.status.status === "actioned" ? "#eeeeee" : 
-                                           d.status.status === "archived" ? "#aaaaaa" : "#ffffff",
-                          fontSize: d.status.status === "active" || d.status.status === "awaiting review" ? "18px" : "15px",
-                          paddingTop: d.status.status === "active" || d.status.status === "awaiting review" ? "2px" : "5px",
-                          color: d.status.status === "archived" ? "#ffffff" : "#666666"
+                <TableBody>
+                    {tableDataFiltered ? (
+                        this.stableSort(tableDataFiltered, this.getSorting(order, orderBy))
+                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        .map(d => {
+                            const isSelected = this.isSelected(d._id);
+                            return (
+                                <TableRow hover onClick={event => this.handleRowClick(event, d.patientInfoId, d.episodeId)} tabIndex={-1} key={d.id} >
+                                    <CustomTableCell padding="checkbox"><Checkbox checked={isSelected} onClick={event => this.handleCheckClick(event, d._id)}/></CustomTableCell>
+                                    <CustomTableCell component="th" scope="row" padding="none">{startCase(d.name)}</CustomTableCell> 
+                                    <CustomTableCell>{d.number}</CustomTableCell>
+                                    <CustomTableCell>{moment(d.start).format("MMM Do YYYY")}</CustomTableCell>
+                                    <CustomTableCell>{moment(d.end).format("MMM Do YYYY")}</CustomTableCell>
+                                    <CustomTableCell>{d.timeframe}</CustomTableCell>
+                                    <CustomTableCell >
+                                        <div style={{height: "30px", width: "129px", border: "1px solid #dddddd", paddingLeft: "6px", paddingTop: "2px", paddingRight: "10px", 
+                                            backgroundColor: d.status.status === "active" ? "#ffffff" :
+                                            d.status.status === "pending" ? "#ffffff" : 
+                                            d.status.status === "awaiting review" ? "#eeeeee" : 
+                                            d.status.status === "delayed" ? "#ffc200" : 
+                                            d.status.status === "cancelled" ? "#ff0000" : 
+                                            d.status.status === "actioned" ? "#eeeeee" : 
+                                            d.status.status === "archived" ? "#aaaaaa" : "#ffffff",
+                                            fontSize: d.status.status === "active" || d.status.status === "awaiting review" ? "18px" : "15px",
+                                            paddingTop: d.status.status === "active" || d.status.status === "awaiting review" ? "2px" : "5px",
+                                            color: d.status.status === "archived" ? "#ffffff" : "#666666"
                                         }}>
-                           {d.status.status === "active" || d.status.status === "awaiting review" ? 
-                              <span style={{ textShadow: "1px 0", fontWeight: 600, color: d.status.compliance >= 90 ? "green" : d.status.compliance >= 70 ? "#ffc200" : "red"}}>
+                                            {d.status.status === "active" || d.status.status === "awaiting review" ? 
+                                                <span style={{ textShadow: "1px 0", fontWeight: 600, color: d.status.compliance >= 90 ? "green" : d.status.compliance >= 70 ? "#ffc200" : "red"}}>
+                                                    {this.statusProgressBar(d.status.progress)}
+                                                </span> 
+                                                : d.status.status}       
+                                
+                                        </div>
+                                    </CustomTableCell>
+                                    <CustomTableCell>Dr. {startCase(d.requester)}</CustomTableCell>
+                                </TableRow>
+                            );
+                        })
+                    ) : null}
+                </TableBody>
 
-                                {this.statusProgressBar(d.status.progress)}
-
-                              </span> 
-                          : d.status.status}       
-                        
-                        </div>
-                      </CustomTableCell>
-                      <CustomTableCell>Dr. {startCase(d.requester)}</CustomTableCell>
-                    </TableRow>
-                  );
-                })
-              ) : null}
-            </TableBody>
-
-          </Table>
+            </Table>
         </div>
 
         <TablePagination
-          component="div"
-          count={this.state.activeSurveysLength}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          backIconButtonProps={{
-            'aria-label': 'Previous Page',
-          }}
-          nextIconButtonProps={{
-            'aria-label': 'Next Page',
-          }}
-          onChangePage={this.handleChangePage}
-          onChangeRowsPerPage={this.handleChangeRowsPerPage}
+            component="div"
+            count={this.state.activeSurveysLength}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            backIconButtonProps={{'aria-label': 'Previous Page'}}
+            nextIconButtonProps={{'aria-label': 'Next Page'}}
+            onChangePage={this.handleChangePage}
+            onChangeRowsPerPage={this.handleChangeRowsPerPage}
         />
 
       </Paper>

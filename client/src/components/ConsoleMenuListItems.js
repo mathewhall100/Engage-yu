@@ -4,6 +4,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import Typography from '@material-ui/core/Typography'
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import SearchIcon from '@material-ui/icons/Search';
 import PollIcon from '@material-ui/icons/Poll';
@@ -15,97 +16,61 @@ import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import BuildIcon from '@material-ui/icons/Build';
 import Divider from '@material-ui/core/Divider';
 
+
 export default class ListItems extends Component {
 
-  state = {
-    selectedIndex: 0,
-  }
+	state = {
+		selectedIndex: 0,
+	}
 
-  handleListItemClick = (event, index) => {
-    this.setState({ selectedIndex: index });
-  };
+	handleListItemClick = (event, index) => {
+		this.setState({ selectedIndex: index });
+	};
 
-  render() {
+	render() {
 
-    return (
+		const list = [
+			{title: "Dashboard", icon: <DashboardIcon color="primary" />, lnk: "/admin/dashboard"},
+			{title: "divider", text: "My workflow"},
+			{title: "Find patient", icon: <SearchIcon color="primary" />, lnk: "/admin/find"},
+			{title: "Enroll new patient", icon: <PersonAddIcon color="primary" />, lnk: "/admin/enroll"},
+			{title: "Custom questions", icon: <BuildIcon color="primary" />, lnk: "/admin/dashboard"},
+			{title: "divider", text: "Admin"},
+			{title: "Manage providers", icon: <SupervisorAccountIcon color="primary" />, lnk: "/admin/provider"},
+			{title: "Manage care groups", icon: <SupervisorAccountIcon color="primary" />, lnk: "/admin/caregroup"}
+		]
 
-      <div style={{borderBottom: "1px solid #dddddd"}}>
+		// Render individual list item (navigation link in console menu)
+		const RenderListItem = (props) => 
+			<ListItem 
+				button
+				component={Link} to={`${props.lnk}`}
+				selected={this.state.selectedIndex === props.idx}
+				onClick={event => this.handleListItemClick(event, props.idx)}>
+				<ListItemIcon>
+					{props.icon}
+				</ListItemIcon>
+				<ListItemText primary={props.title}/>
+			</ListItem>
 
-        <ListItem 
-          button
-          component={Link} to='/admin/dashboard'
-          selected={this.state.selectedIndex === 0}
-          onClick={event => this.handleListItemClick(event, 0)}>
-          <ListItemIcon>
-            <DashboardIcon />
-          </ListItemIcon>
-          <ListItemText primary="Dashboard" />
-        </ListItem>
+		// ListItems return (renders console navigation items)
+		return (
+			<React.Fragment>
 
-        <Divider />
-        <ListSubheader>My workflow</ListSubheader>
+				{ list.map((item, idx) => {
+						return (
+							item.title === "divider" ?
+								<React.Fragment>
+									<Divider />
+									<ListSubheader>
+										<Typography variant="button" color="primary">{item.text}</Typography>
+									</ListSubheader>
+								</React.Fragment>
+							: <RenderListItem idx={idx} title={item.title} lnk={item.lnk} icon={item.icon}  /> 
+						)
+				}) }
 
-        <ListItem 
-          button
-          component={Link} to='/admin/find'
-          selected={this.state.selectedIndex === 1}
-          onClick={event => this.handleListItemClick(event, 1)}
-          >
-          <ListItemIcon>
-            <SearchIcon />
-          </ListItemIcon>
-          <ListItemText primary="Existing patient" />
-        </ListItem>
-
-        <ListItem 
-          button
-          component={Link} to='/admin/enroll'
-          selected={this.state.selectedIndex === 3}
-          onClick={event => this.handleListItemClick(event, 3)}> 
-          <ListItemIcon>
-            <PersonAddIcon />
-          </ListItemIcon>
-          <ListItemText primary="Enroll New Patient" />
-        </ListItem>
-
-        <ListItem 
-          button
-          
-          selected={this.state.selectedIndex === 8}
-          onClick={event => this.handleListItemClick(event, 8)}>
-          
-          <ListItemIcon>
-            <BuildIcon />
-          </ListItemIcon>
-          <ListItemText primary="Custom Questions" />
-        </ListItem>
-
-        <Divider />
-        <ListSubheader>Admin</ListSubheader>
-
-        <ListItem 
-          button
-          component={Link} to='/admin/provider'
-          selected={this.state.selectedIndex === 6}
-          onClick={event => this.handleListItemClick(event, 6)}>
-          <ListItemIcon>
-            <SupervisorAccountIcon />
-          </ListItemIcon>
-          <ListItemText primary="Manage Providers" />
-        </ListItem>
-
-        <ListItem 
-          button
-          component={Link} to='/admin/caregroup'
-          selected={this.state.selectedIndex === 9}
-          onClick={event => this.handleListItemClick(event, 9)}>
-          <ListItemIcon>
-            <SupervisorAccountIcon />
-          </ListItemIcon>
-          <ListItemText primary="Manage Care Groups" />
-        </ListItem>
-
-      </div>
-    )
-  }
+			</React.Fragment>
+		)
+	}
 };

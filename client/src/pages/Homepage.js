@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter, Redirect } from 'react-router-dom';
 import {authActions} from '../reducers/modules/auth';
 import * as AuthService from '../services/AuthService';
-import Appbar from '../components/AppBar';
+import Appbar from '../containers/AppBar';
 import HomeContent from '../components/HomeContent';
 
 class Homepage extends Component {
@@ -24,11 +24,11 @@ class Homepage extends Component {
     render () {
         const { auth, user } = this.props;
         const { redirect,  } = this.state;
-        if (user.role) {
-            const url = user.role === 'patient' ? `/patient` : (user.role ==='provider' ? `/admin/dashboard` : `/`);
-            console.log("url : " + url);
-            return <Redirect to={url}/>;
-        }
+        // if (user.role) {
+        //     const url = user.role === 'patient' ? `/patient` : (user.role ==='provider' ? `/admin/dashboard` : `/`);
+        //     console.log("url : " + url);
+        //     return <Redirect to={url}/>;
+        // }
         return(
             <div>
                 <Appbar />
@@ -41,7 +41,7 @@ class Homepage extends Component {
 function mapStateToProps(state) {
     console.log("state in homepage : ", state);
     return {
-        user: state.user
+        // user: state.user
     }
 };
 

@@ -219,7 +219,6 @@ module.exports = {
                 _id: req.params.id}, {"episodes": 1}
             )
             .then(result => {
-
                 console.log("result : ", result[0]);
                 let lastEpisode = result[0].episodes[result[0].episodes.length-1]
                 let records = lastEpisode.records;

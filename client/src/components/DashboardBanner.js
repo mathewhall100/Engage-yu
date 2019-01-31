@@ -11,12 +11,12 @@ import Button from '@material-ui/core/Button';
 
 import bannerImg from '../img/dashboardBannnerImageSmall.PNG';
 
-const styles = ({
+const styles = (theme) => ({
     card: { 
         display: 'flex',
         boxShadow: 'none',
         border: '2px solid #eeeeee',
-        position: "relative",
+        position: "relative"
     },    
     cover: {
         height: 200,
@@ -26,21 +26,16 @@ const styles = ({
         flex: '1, 0, auto',
     },
     bannerText: {
-        position: 'relative',
-        left: -200,
+        position: 'relative', left: -200,
         padding: 10,
-
+        color: theme.palette.grey[700],
     },
     bannerButton: {
-        position: "absolute",
-        bottom: 10,
-        right: 10,
-        color: "#ffffff",
-        backgroundColor: "#2d404b",
-
-
+        position: "absolute", bottom: 10, right: 10,
+        color: theme.palette.common.white,
+        backgroundColor: theme.palette.primary.main,
         '&:hover': {
-            backgroundColor: "#28353d",
+            backgroundColor: theme.palette.primary.dark,
         },
         hover: {},
     },
@@ -49,38 +44,29 @@ const styles = ({
 class DashboardBanner extends Component {  
 
     render () {
-
         const { classes } = this.props
         
-
         return (
-                <div>
-                    <Card className={classes.card}>
-                        <CardMedia
-                            className={classes.cover}
-                            image={bannerImg}
-                        />                       
-                        <CardContent className={classes.content}>
+            <div>
+                <Card className={classes.card}>
 
-                            <Typography variant="display1" noWrap className={classes.bannerText}>
-                                Patient Engagement Solutions
-                            </Typography>
+                    <CardMedia className={classes.cover} image={bannerImg} /> 
 
-                            <Typography variant="display1" noWrap className={classes.bannerText}>
-                                for Parkinson's Disease
-                            </Typography>
-
-                        </CardContent>
-
-                        <Typography align="right">
-                            <Button color="inherit" className={classes.bannerButton}>Learn More</Button>
+                    <CardContent className={classes.content}>
+                        <Typography variant="h4" noWrap className={classes.bannerText}>
+                            Patient Engagement Solutions
                         </Typography>
-
-                    </Card>
-                </div >
+                        <Typography variant="h4" noWrap className={classes.bannerText}>
+                            for Parkinson Disease
+                        </Typography>
+                    </CardContent>
+                    
+                    <Button className={classes.bannerButton}>Learn More</Button>
+                
+                </Card>
+            </div >
         );
     }
 }
-
 
 export default withStyles(styles)(DashboardBanner)

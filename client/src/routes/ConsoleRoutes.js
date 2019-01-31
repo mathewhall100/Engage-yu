@@ -14,7 +14,7 @@ import CareGroupAdd from '../components/CareGroupAdd';
 import NotFound from '../pages/NotFound';
 
 
-class ConsoleRoutes extends Component { 
+export default class ConsoleRoutes extends Component { 
 
     render(){
         return(
@@ -37,5 +37,3 @@ class ConsoleRoutes extends Component {
     }
     
 }
-
-export default (ConsoleRoutes);

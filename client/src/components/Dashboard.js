@@ -6,26 +6,23 @@ import { bindActionCreators } from 'redux';
 import { selectConsoleTitle } from '../actions/index'
 import DashboardBanner from './DashboardBanner';
 import DashboardTable from '../containers/DashboardTable';
-
 import { fetchActiveSurveys } from '../actions/index'
 
 
 class Dashboard extends Component {  
     
     componentDidMount() {
-
         this.props.selectConsoleTitle({title: "Dashboard"});
         this.props.fetchActiveSurveys();
     }
 
     render () {
-        
         return (
-                <div>
-                    <DashboardBanner />
-                    <br />
-                    <DashboardTable /> 
-                </div >
+            <div>
+                <DashboardBanner />
+                <br />
+                <DashboardTable /> 
+            </div >
         );
     }
 }
@@ -39,4 +36,4 @@ function mapStateToProps({auth}){
     return (auth);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps) (Dashboard)
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)
