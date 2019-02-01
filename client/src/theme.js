@@ -8,6 +8,11 @@ const theme = createMuiTheme({
       primary: {
         main: '#2d404b',
         dark: '#28353d'
+      },
+    },
+    breakpoints: {
+      values: {
+        lg: 1380
       }
     }
   })

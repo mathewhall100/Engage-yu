@@ -53,7 +53,10 @@ const styles = theme => ({
 		flexGrow: 1,
 		backgroundColor: theme.palette.background.default,
 		padding: theme.spacing.unit*3,
-		paddingTop: "64px"
+		paddingTop: "64px",
+		[theme.breakpoints.only('md')]: {
+			marginRight: "20px",
+		},
 	},
 });
 

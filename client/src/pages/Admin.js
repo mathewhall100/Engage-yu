@@ -14,7 +14,7 @@ import Appbar from '../containers/AppBar';
 const styles = theme => ({
     root: { 
         flexGrow: 1,
-        minWidth: "1280px"
+        minWidth: "1160px"
     },
 });
 

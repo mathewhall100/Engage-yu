@@ -1,17 +1,14 @@
 import React, { Component } from 'react';
-import moment from 'moment';
 
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { lighten } from '@material-ui/core/styles/colorManipulator';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import FilterListIcon from '@material-ui/icons/FilterList';
-
-import DashboardMultipleSelect from '../Forms/DashboardMultipleSelect';
-
+import InputLabel from '@material-ui/core/InputLabel'
+import MultipleSelect from '../Forms/MultipleSelect';
 
 
 const toolbarStyles = theme => ({
@@ -21,30 +18,36 @@ const toolbarStyles = theme => ({
     spacer: {
       flex: '1',
     },
-    actions: {
-      color: "#666666",
-      marginRight: "20px"
-    },
     selects: {
-      marginRight: "40px",
+      margin: "16px 40px 0 0",
     },
     title: {
       flex: '0 0 auto',
     },
     navLinks: {
       marginRight: "20px",
-      fontSize: "13px",
       textDecoration: "underline",
-      color: "#000000",
+      color: "#666666",
+      fontWeight: 400,
       '&:hover': {
+        color: theme.palette.primary.main,
         cursor: "pointer",
         fontWeight: 500,
+        marginRight: "18.5px"
       },
     },
     customWidth: {
         maxWidth: "100px",
-
-    }
+    },
+    filterIconPosn: {
+        marginLeft: "8px"
+    },
+    filterIconBox: {
+        margin: "28px 16px 0 0",
+    },
+        filterIconStyles: {
+        fontSize: "32px",
+    },
 });
 
 
@@ -59,25 +62,46 @@ class EnhancedTableToolbar extends React.Component {
         navLinksSwitch: ""
     }
       
-    handleNavLinksFilter = (event, filter) => {
-        //console.log("FilterLink: ", filter)
+    handleNavLinksFilter = (filter) => {
         this.setState({navLinksSwitch: filter})
         this.props.navLinksFilter(filter)
     }
 
     handleStatusFilter = filter => {
-        //console.log("FilterStatus: ", filter)
         this.props.statusFilter(filter)
     }
 
-    handleCheckedFilter = event => {
-        //console.log("FilterChecked: ", event)
-        this.props.checkedFilter(event)
+    handleCheckedFilter = () => {
+        this.props.checkedFilter()
     }
 
     render() { 
 
-         const { numSelected, classes } = this.props;
+         const { classes } = this.props;
+         const { navLinksSwitch } = this.state
+
+         const multipleSelectMenuItems = ["active", "awaiting review", "pending"]
+
+         const navLinks = [
+             {tooltip: "Select diary cards requested by me", key: "requester",  text: "As requester"},
+             {tooltip: "Select diary cards where I am the patient's primary provider", key: "rprovider",  text: "As primary provider"},
+             {tooltip: "Select all diary cards where I am the requester or primary provider", key: "all",  text: "All my surveys"},
+
+         ]
+
+         const getNavLinkStyles = (navLinksSwitch, navKey) => {
+            if (navLinksSwitch === navKey) {return {color: "#000000", fontWeight: 500}}
+        }
+
+         const RenderNavLink = (props) => 
+            <Tooltip title={props.tooltip} classes={{tooltip: classes.customWidth}} >
+                <Typography variant="body2" inline
+                    className={classes.navLinks} 
+                    style={getNavLinkStyles(navLinksSwitch, props.navKey)} 
+                    onClick = {() => this.handleNavLinksFilter(props.navKey)}>
+                        {props.text}
+                </Typography> 
+            </Tooltip>
     
         return (
 
@@ -85,42 +109,39 @@ class EnhancedTableToolbar extends React.Component {
                 <div className={classes.title}>
 
                     <span>
-                        <Typography variant="title" id="tableTitle">
-                            My Diary Cards.
+                        <Typography variant="h6" gutterBottom>
+                            My Surveys
                         </Typography>
 
-                        <Typography variant="caption" id="tableTitle">
-
-                            <Tooltip title = "Select diary cards requested by me" classes={{tooltip: classes.customWidth}} enterDelay={300}>
-                                <span className={classes.navLinks} style={{color: this.state.navLinksSwitch === "requester" ? "#000000" : "#888888"}} onClick = {event => this.handleNavLinksFilter(event, "requester")}>As requester</span> 
-                            </Tooltip>
-
-                            <Tooltip title ="Select diary cards where I am the patient's primary provider" classes={{tooltip: classes.customWidth}} enterDelay={300}>
-                                <span className={classes.navLinks} style={{color: this.state.navLinksSwitch === "provider" ? "#000000" : "#888888"}} onClick = {event => this.handleNavLinksFilter(event, "provider")}>As primary provider</span>
-                            </Tooltip>
-
-                            <Tooltip title = "Select all diary cards where I am the requester or primary provider" classes={{tooltip: classes.customWidth}} enterDelay={300}>
-                                <span className={classes.navLinks} style={{color: this.state.navLinksSwitch === "all" ? "#000000" : "#888888"}} onClick = {event => this.handleNavLinksFilter(event, "all")}>All my surveys</span>
-                            </Tooltip>
-
+                        <Typography variant="caption">
+                            { navLinks.map((navLink, idx) => {
+                                return (
+                                    <RenderNavLink 
+                                        key={idx}
+                                        tooltip={navLink.tooltip}
+                                        navKey={navLink.key}
+                                        text={navLink.text}
+                                    />
+                                )
+                            }) }
                         </Typography>
                     </span>
 
                 </div>
         
                 <div className={classes.spacer} />
-        
-                <span className={classes.actions}>Filter by status: </span>
-                
-                <span className={classes.selects}>
-                    <DashboardMultipleSelect selectStatus={this.handleStatusFilter}/> 
+    
+                 <span className={classes.selects}>
+                    <MultipleSelect menuItems={multipleSelectMenuItems} selectStatus={this.handleStatusFilter} />
                 </span>
+
         
-                <Tooltip title="Filter checked"> 
-                    <IconButton aria-label="Filter list" onClick = {event => this.handleCheckedFilter(event)}>
-                        <FilterListIcon />
+                <div className={classes.filterIconBox}>
+                    <Typography variant="caption" >Filter checked</Typography>
+                    <IconButton aria-label="Filter list" className={classes.filterIconPosn} onClick = {() => this.handleCheckedFilter()}>
+                        <FilterListIcon className={classes.filterIconStyles}/>
                     </IconButton>
-                </Tooltip> 
+                </div>
         
             </Toolbar>
             );
@@ -129,7 +150,6 @@ class EnhancedTableToolbar extends React.Component {
 
   EnhancedTableToolbar.propTypes = {
     classes: PropTypes.object.isRequired,
-    numSelected: PropTypes.number.isRequired,
   };
   
   EnhancedTableToolbar = withStyles(toolbarStyles)(EnhancedTableToolbar)
