@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 
 import Dashboard from '../components/Dashboard';
-import FindPatient from '../components/FindPatient';
+import FindPatient from '../containers/FindPatient';
 import EditPatient from '../components/EditPatient';
 import EnrollPatient from '../components/EnrollPatient';
 import SurveyCreate from '../components/Survey';

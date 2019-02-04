@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button'
 import ReportPanel from '../components/Panels/ReportPanel';
 
 const status = ["pending", "active", "awaiting review", "actioned", "archived", "cancelled"]
-const tableHeadings = ["start", "end", "timeframe", "interval", "questions", "requested by", "reviewed by", "archived by", "cancelled by"]
+const tableHeadings = ["start", "end", "timeframe", "interval", "questions", "requested by", "reviewed by", "reviewed by", "cancelled by", ]
 const panelProps = [
     {status: "pending", slice: -3, actions: ["view", "cancel"]},
     {status: "active", slice: -3, actions: ["view", "cancel"]},
@@ -14,18 +14,18 @@ const panelProps = [
     {status: "actioned", slice: -2, actions: ["view", "archive"]},
 ]
 
-class ReportListSurveys extends Component {
+class ReportListSurveys extends Component {   
+    
+    componentWillReceiveProps(nextProps) {
+        if (this.props.patientData !== [nextProps.patientData]) {
+            this.setState({episodes: nextProps.patientData.episodes}, () => this.displayPanels(this.state.episodes) )
+        }
+    };
 
     state = {
         episodes: [],
         panelStatus: [],
-        morePanels: 0
-    };
-
-   componentWillReceiveProps(nextProps) {
-        if (this.props.patientData !== [nextProps.patientData]) {
-            this.setState({episodes: nextProps.patientData.episodes}, () => this.displayPanels(this.state.episodes) )
-        }
+        morePanels: 0,
     };
 
     displayPanels = (episodes) => {
@@ -37,24 +37,25 @@ class ReportListSurveys extends Component {
     }
 
     createTableData = (data) => {
-          let dataItems = [];
           let dataArray = [];
+          let counter = 0;
       
           data.map(episode => {
-                dataItems = [ 
-                    episode._id,
-                    moment(episode.start_date).format("MMM Do YYYY"),
-                    moment(episode.end_date).format("MMM Do YYYY"),
-                    `${episode.start_time.slice(0,2)}:${episode.start_time.slice(-2)} - ${episode.end_time.slice(0,2)}:${episode.end_time.slice(-2)}`,
-                    `${episode.interval_mins} mins`, 
-                    episode.questions.length === 1 ? `${episode.questions.length} question` : `${episode.questions.length} questions`,
-                    startCase(`Dr. ${episode.requesting_provider_firstname} ${episode.requesting_provider_lastname}`),  
-                ]
-                episode.reviewed_by ? dataItems.push(startCase(`Dr. ${episode.reviewed_by}`)) : null, 
-                episode.archived_by ? dataItems.push(startCase(`Dr. ${episode.archived_by}`)) : null, 
-                episode.cancelled_by ? dataItems.push(startCase(`Dr. ${episode.cancelled_by}`)) : null,
-  
-            dataArray.push(dataItems)
+              counter += 1;
+                let newDataObj = { 
+                    "id": counter,
+                    "_id": episode._id,
+                    "start": moment(episode.start_date).format("MMM Do YYYY"),
+                    "end": moment(episode.end_date).format("MMM Do YYYY"),
+                    "timeframe": `${episode.start_time.slice(0,2)}:${episode.start_time.slice(-2)} - ${episode.end_time.slice(0,2)}:${episode.end_time.slice(-2)}`,
+                    "interval": `${episode.interval_mins} mins`, 
+                    "questions": episode.questions.length === 1 ? `${episode.questions.length} question` : `${episode.questions.length} questions`,
+                    "requested by": startCase(`Dr. ${episode.requesting_provider_firstname} ${episode.requesting_provider_lastname}`),
+                    "reviewed by": episode.reviewed_by ? newDataObj.push(startCase(`Dr. ${episode.reviewed_by}`)) : null, 
+                    "archived by": episode.archived_by ? newDataObj.push(startCase(`Dr. ${episode.archived_by}`)) : null, 
+                    "cancelled by": episode.cancelled_by ? newDataObj.push(startCase(`Dr. ${episode.cancelled_by}`)) : null,
+                };
+            dataArray.push(newDataObj)
         })
         return dataArray
     }
@@ -63,11 +64,11 @@ class ReportListSurveys extends Component {
         this.setState({morePanels: this.state.morePanels ? 0 : 1})
     }
 
-    handleActionBtn = (btn, row) => {
+    handleAction = (btn, row) => {
         console.log("Action btn clicked: episode id: ", btn, " : ", row)
         switch (btn) {
             case "view":
-            this.props.changeEpisode(row[0])
+            this.props.changeEpisode(row._id)
                 break
             case "cancel":
                 break
@@ -79,14 +80,7 @@ class ReportListSurveys extends Component {
     };
 
     render () {
-
         const { episodes, panelStatus, morePanels } = this.state
-
-        const RenderShowMoreBtn = (props) => 
-            <Button onClick={() => this.handleClickMore()} >
-                {morePanels ? "Hide..." : "Show more" }
-            </Button>
-        
 
         return (
             <React.Fragment>
@@ -100,15 +94,20 @@ class ReportListSurveys extends Component {
                                 tableData = {this.createTableData(episodes.filter(episode => episode.status === panelProps[idx].status )) }
                                 lastCellRightAlign={true}
                                 lastCellHeading={"Actions"}
-                                actions = {panelProps[idx].actions}
-                                actionBtnAction = {this.handleActionBtn}
+                                lastCellData = {["report actions", panelProps[idx].actions]}
+                                handleActionBtn = {this.handleAction}
                             />
                         :  null 
                     )
                 }) }
 
                 <br />
-                { (panelStatus[4] + panelStatus[5]) > 0 && <RenderShowMoreBtn /> } 
+
+                { (panelStatus[4] + panelStatus[5]) > 0 && 
+                    <Button onClick={() => this.handleClickMore()} >
+                        {morePanels ? "Hide..." : "Show more" }
+                    </Button> } 
+
                 <br />
                 <br />
 
@@ -116,22 +115,22 @@ class ReportListSurveys extends Component {
                     
                     { panelStatus[4] && <ReportPanel
                         summary = { `Archived (${panelStatus[4]})` }
-                        tableHeadings = {tableHeadings[0,1,2,3,4,5,7]}
+                        tableHeadings = {tableHeadings[0,1,2,3,4,5,6,8]}
                         tableData = {this.createTableData(episodes.filter(episode => episode.status === "archived"))}
                         lastCellRightAlign={true}
                         lastCellHeading="Actions"
-                        actions = {["view"]}
-                        actionBtnAction = {this.handleActionBtn}
+                        actions = {["report actions", "view"]}
+                        handleActionBtn = {this.handleAction}
                     /> }
 
                     { panelStatus[5] && <ReportPanel
                         summary = { `Cancelled (${panelStatus[5]})` }
-                        tableHeadings = {tableHeadings[0,1,2,3,4,5,8]}
+                        tableHeadings = {tableHeadings[0,1,2,3,4,5,6,9]}
                         tableData = {this.createTableData(episodes.filter(episode => episode.status === "cancelled"))}
                         lastCellRightAlign={true}
                         lastCellHeading="Actions"
-                        actions = {["view"]}
-                        actionBtnAction = {this.handleActionBtn}
+                        actions = {["report actions", "view"]}
+                        handleActionBtn = {this.handleAction}
                     /> }
 
                 </React.Fragment> }
@@ -150,4 +149,4 @@ const mapStateToProps = (state) => {
 };
 
 ReportListSurveys = connect(mapStateToProps)(ReportListSurveys)
-export default ReportListSurveys
+export default ReportListSurveys;

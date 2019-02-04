@@ -15,14 +15,14 @@ const styles = theme => ({
         width: '100%',
         maxWidth: 360,
         backgroundColor: theme.palette.background.paper,
-    },
-    button3: {
-        backgroundColor: red[500],
+    }, 
+    button0 : {
+        backgroundColor : green[500],
         width: '100%',
         borderWith: '5px',
         maxWidth: 360,
         '&:hover': {
-            backgroundColor: red[700],
+            backgroundColor: green[700],
             borderColor: '#0062cc',
         },
     },
@@ -43,16 +43,7 @@ const styles = theme => ({
             borderWidth : '5px'
         },
     },
-    button0 : {
-        backgroundColor : green[500],
-        width: '100%',
-        borderWith: '5px',
-        maxWidth: 360,
-        '&:hover': {
-            backgroundColor: green[700],
-            borderColor: '#0062cc',
-        },
-    },
+  
     button2: {
         backgroundColor: amber[500],
         width: '100%',
@@ -63,6 +54,16 @@ const styles = theme => ({
             borderColor: '#0062cc',
         },
     },
+    button3: {
+        backgroundColor: red[500],
+        width: '100%',
+        borderWith: '5px',
+        maxWidth: 360,
+        '&:hover': {
+            backgroundColor: red[700],
+            borderColor: '#0062cc',
+        },
+    }, 
     button4: {
         backgroundColor: grey[500],
         width: '100%',

@@ -37,12 +37,15 @@ const styles = theme =>({
         marginRight: 20,
     },
     menuButton: {
-        margin: "4px 0 0 20px",
+        margin: "4px 0 0 10px",
         '&:hover': {
             backgroundColor: "#28353d",
         },
         hover: {},
     },
+    appBarBtns: {
+		float: 'right'
+    }
 });
 
 class TopBar extends Component {  
@@ -78,7 +81,7 @@ class TopBar extends Component {
             return (
                 <Grid container spacing={24}> 
 
-                    <Grid item xs={2} sm={3} md={3} lg={4}>
+                    <Grid item xs={2} sm={3} md={2} lg={3}>
                         <Typography variant="h5" color="inherit" className={classes.logoText}>
                             Engage-Yu!
                         </Typography>
@@ -103,14 +106,20 @@ class TopBar extends Component {
                         </Typography>
                     </Grid>
 
-                    <Grid item xs={3} sm={2} md={2} lg={2}>
-                        <Button color="inherit" className={classes.menuButton}>Help</Button>
-                        <Button color="inherit" className={classes.menuButton} onClick={this.handleLogout}>Logout</Button> 
+                    <Grid item xs={3} sm={2} md={3} lg={3}>
+                        <span className={classes.appBarBtns}>
+                            <Button color="inherit" className={classes.menuButton}>Help</Button>
+                            <Button color="inherit" className={classes.menuButton}>Settings</Button>
+                                {/* settings : show banner
+                                 */}
+                            <Button color="inherit" className={classes.menuButton} onClick={this.handleLogout}>Logout</Button> 
+                        </span>
                     </Grid>
 
                 </Grid>
             )
         }
+        
         // If not logged in 
         const RenderAppBarGuest = (props) => {
             return (

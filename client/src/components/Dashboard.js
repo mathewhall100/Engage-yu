@@ -14,13 +14,25 @@ class Dashboard extends Component {
         this.props.selectConsoleTitle({title: "Dashboard"});
     }
 
+    state = {
+        showBanner: true
+    }
+
+    toggleBanner = () => {
+        this.setState({showBanner: !this.state.showBanner})
+    }
+
     render () {
+        const { showBanner } = this.state
         return (
-            <div>
-                <DashboardBanner />
-                <br />
+            <React.Fragment>
+                { showBanner && <React.Fragment>
+                    <DashboardBanner toggleBanner={this.toggleBanner} /> 
+                    <br />
+                </React.Fragment> }
+                
                 <DashboardTable /> 
-            </div >
+            </React.Fragment >
         );
     }
 }

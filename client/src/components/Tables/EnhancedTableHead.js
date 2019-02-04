@@ -20,13 +20,13 @@ const CustomTableCell = withStyles(style => ({
 
 class EnhancedTableHead extends PureComponent {
 
-		createSortHandler = property => event => {
-			this.props.onRequestSort(event, property);
-		};
+	createSortHandler = property => event => {
+		this.props.onRequestSort(event, property);
+	};
 	
 		render() {
 
-			const { onDeSelectAllClick, order, orderBy, numSelected, displayCheckbox, rowCount } = this.props;
+			const { onDeSelectAllClick, order, orderBy, numSelected, displayCheckbox, rows, rowCount } = this.props;
 	
 			return (
 				<TableHead>
@@ -42,7 +42,7 @@ class EnhancedTableHead extends PureComponent {
 							}
 						</CustomTableCell> }
 
-						{this.props.rows.map(row => {
+						{rows.map(row => {
 							return (
 								<CustomTableCell
 									key={row.id}

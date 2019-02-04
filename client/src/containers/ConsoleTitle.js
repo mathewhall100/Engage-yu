@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography'
 const styles = (theme) => ({
     consoleTitle: {
 		fontWeight: 500,
-		paddingLeft: "4px",
+		paddingLeft: "8px",
 		[theme.breakpoints.up('lg')]: {
 			paddingTop: "10px",
 		}, 
@@ -21,7 +21,7 @@ class ConsoleTitle extends Component {
         const { classes } = this.props
 
         if (!this.props.consoleTitle) {
-            return <div>Dashboard</div>;
+            return <div> &nbsp;Dashboard</div>;
         }
 
         return (

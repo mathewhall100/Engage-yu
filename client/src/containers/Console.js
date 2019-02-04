@@ -11,16 +11,17 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import Hidden from '@material-ui/core/Hidden';
 import MenuIcon from '@material-ui/icons/Menu';
+import ArrowLeftIcon from '@material-ui/icons/ArrowLeft';
 import Divider from '@material-ui/core/Divider';
 
 import ListItems from "../components/ConsoleMenuListItems";
 import ConsoleTitle from './ConsoleTitle';
 import ConsoleRoutes from '../routes/ConsoleRoutes';
 
+
 const drawerWidth = 255;
 
 const styles = theme => ({
-
 	root: {
 		flexGrow: 1,
 		overflow: 'hidden',
@@ -58,6 +59,16 @@ const styles = theme => ({
 			marginRight: "20px",
 		},
 	},
+	arrowIconStyles: {
+		marginBottom: "-12px",
+		padding: 0,
+		fontSize: "56px",
+		color: theme.palette.primary.main,
+		'&:hover': {
+			color: theme.palette.primary.dark,
+			cursor: "pointer"
+		}
+	}
 });
 
 
@@ -71,13 +82,23 @@ class Console extends Component {
 			handleDrawerToggle = () => {
 				this.setState(state => ({ mobileOpen: !state.mobileOpen }));
 			};
-		
+
 			render() {
 				const { classes } = this.props;
+				const { mobileOpen } = this.state;
+
+				const RenderListHead = () => {
+					if (mobileOpen) 
+						return <div align="right" >
+							<ArrowLeftIcon className={classes.arrowIconStyles} onClick={this.handleDrawerToggle}/>
+						</div>
+					return <div style={{marginTop: 9}} />
+
+				};
 		
 				const drawer = (
 					<React.Fragment>
-						<div style={{height: "9px"}} />
+						<RenderListHead />
 						<List>
 							<ListItems />
 						</List>
@@ -100,13 +121,13 @@ class Console extends Component {
 						</AppBar>
 
 						<Hidden lgUp>
-							<Drawer variant="temporary" open={this.state.mobileOpen} onClose={this.handleDrawerToggle} classes={{ paper: classes.drawerPaper }}>
+							<Drawer variant="temporary" open={this.state.mobileOpen} onClose={this.handleDrawerToggle} classes={{paper: classes.drawerPaper}}>
 								{drawer}
 							</Drawer>
 						</Hidden>
 
 						<Hidden mdDown implementation="css">
-							<Drawer variant="permanent" open classes={{ paper: classes.drawerPaper }} >
+							<Drawer variant="permanent" open classes={{paper: classes.drawerPaper}} >
 								{drawer}
 							</Drawer>
 							<Divider />

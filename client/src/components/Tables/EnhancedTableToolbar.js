@@ -8,7 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import InputLabel from '@material-ui/core/InputLabel'
-import MultipleSelect from '../Forms/MultipleSelect';
+import MultipleSelect from '../Forms/MultipleSelectWithChips';
 
 
 const toolbarStyles = theme => ({

@@ -9,36 +9,21 @@ import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import PatientActionBtns from '../components/Buttons/patientActionBtns'
 
 const styles = theme => ({
     root: {
         padding: "20px"
     },
-    textBold: {
-        fontWeight: "bold",
+    fwMedium: {
+        fontWeight: 500,
       },
-    btn: {
-        backgroundColor: "#eeeeee",
-        textDecoration: "none",
-        borderRadius: "5px",
-        padding: "5px",
-        marginLeft: "20px",
-        float: "right",
-        '&:hover': {
-            backgroundColor: "#dddddd",
-        },
-        '&:disabled': {
-            color: 'grey'
-        },
-        hover: {},
-        disabled: {},
-    },
+    hrStyled: {
+        opacity: 0.3
+    }
 })
 
 class FindPatientDetails extends Component {  
-
-    state = {
-    }
 
     findCards = (filter) => {
         console.log("Patient Data: ", this.props.patientData.length)
@@ -51,114 +36,98 @@ class FindPatientDetails extends Component {
         } else {return "Loading..."}
     }
 
+    handleActionBtns = (btn, id) => {
+        this.props.handleActionBtns(btn, id)
+    }
+
     render () {
         
         const { patientInfo, patientData, classes } = this.props
-        
+        const infoH = [
+            {caption: "Hospital number", info: patientInfo.hospital_id},
+            {caption: "DOB", info: patientInfo.dob},
+            {caption: "Enrolled", info: moment(patientInfo.date_enrolled).format("MMM Do YYYY")},
+            {caption: "Status", info: patientInfo.status},
+        ];
+        const infoV = [
+            {caption: ["Email", "Contact phone"], info: [patientInfo.email, patientInfo.phone ]},
+            {caption: ["Primary provider", "Care group"], info: [startCase(`Dr. ${patientInfo.primary_provider_name}`), startCase(`${patientInfo.provider_group_name}`) ]},
+            {caption: ["Active diary cards", "pending diary cards", "awaiting review"], info: [this.findCards("active"), this.findCards("pending"),this.findCards("awaiting review") ]},
+        ];
+
         return (
         
             <Card className={classes.root}>
 
                 <Grid container spacing={24}>
                     <Grid item xs={12}>
-                        <Typography variant="title">
-                            <span>{startCase(patientInfo.firstname)} {startCase(patientInfo.lastname)}</span>
+                        <Typography variant="h6" inline>
+                            {startCase(patientInfo.firstname)} {startCase(patientInfo.lastname)}
+                        </Typography>
+                        <Typography align="right" inline>
+                            <PatientActionBtns 
+                                btns={["close"]} 
+                                id={patientInfo._id}
+                                handleActionBtns={this.handleActionBtns}
+                                />
                         </Typography>
                     </Grid>
                 </Grid>
 
                 <br />
-
+                
                 <Grid container spacing={24}>
-                    <Grid item xs={2}>
-                        <Typography variant="caption">
-                            Hospital number:
-                        </Typography>
-                        <Typography variant="subheading">
-                            <span className={classes.textBold}>{patientInfo.hospital_id}</span>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <Typography variant="caption">
-                            DOB
-                        </Typography>
-                        <Typography variant="subheading">
-                            <span  className={classes.textBold}>{patientInfo.dob}</span>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <Typography variant="caption">
-                            Enrolled
-                        </Typography>
-                        <Typography variant="subheading">
-                            <span  className={classes.textBold}>{moment(patientInfo.date_enrolled).format("MMM Do YYYY")}</span>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={3}>
-                    <Typography variant="caption">
-                            Status
-                        </Typography>
-                        <Typography variant="subheading">
-                            <span  className={classes.textBold}> {patientInfo.status}</span>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={1}>
-                    </Grid>
+                    { infoH.map(info => {
+                        return (
+                            <Grid item xs={2}>
+                                <Typography variant="caption">
+                                    {info.caption}
+                                </Typography>
+                                <Typography variant="subtitle1" className={classes.fwMedium}>
+                                    {info.info}
+                                </Typography>
+                            </Grid>
+                        )
+                    }) }
                 </Grid>
 
                 <br />
 
-                <Grid container spacing={24}>
-                    <Grid item xs={2}>
-                        <Typography variant="subheading">
-                            <div>Email: </div> 
-                            <div>Contact phone</div>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={10}>
-                        <Typography variant="subheading">
-                            <div>{patientInfo.email}</div>
-                            <div>{patientInfo.phone}</div>
-                        </Typography>
-                    </Grid>
-                </Grid>
+                { infoV.map(info => {
+                    return (
+                        <Grid container spacing={24}>
+                            <Grid item xs={2}>
+                                <Typography variant="subtitle1">
+                                    { info.caption.map(caption => {
+                                        return (
+                                            <div>{caption}</div> 
+                                        )
+                                    }) }
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={10}>
+                                <Typography variant="subtitle1" className={classes.fwMedium}>
+                                    { info.info.map(info => {
+                                        return (
+                                            <div>{info}</div> 
+                                        )
+                                    }) }
+                                </Typography>
+                            </Grid>
+                            <br />
+                        </Grid>
+                    )
+                }) }
 
+                <hr className={classes.hrStyled}/>
                 <br />
 
-                <Grid container spacing={24}>
-                <Grid item xs={2}>
-                        <Typography variant="subheading">
-                            <div>Primary provider: </div>
-                            <div>Care group:</div>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={10}>
-                        <Typography variant="subheading">
-                            <div>{startCase(`Dr. ${patientInfo.primary_provider_name}`)}</div>
-                            <div>{startCase(`${patientInfo.provider_group_name}`)}</div>
-                        </Typography>
-                    </Grid>
-                </Grid>
-
+                <PatientActionBtns 
+                    btns={["contact", "edit details", "view reports", "new survey"]} 
+                    id={patientInfo._id}
+                    handleActionBtns={this.handleActionBtns}
+                />
                 <br />
-
-                <Grid container spacing={24}>
-                <Grid item xs={2}>
-                        <Typography variant="subheading">
-                            <div>Active diary cards: </div>
-                            <div>Pending diary cards: </div>
-                            <div>Awaiting review: </div>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={10}>
-                        <Typography variant="subheading">
-                            <div>{this.findCards("active")}</div>
-                            <div>{this.findCards("pending")}</div>
-                            <div>{this.findCards("awaiting review")}</div>
-                        </Typography>
-                    </Grid>
-                </Grid>
-
             </Card>
         );
     }
@@ -173,11 +142,6 @@ const mapStateToProps = (state) => {
         user: state.user
     }
 };
-
-// function mapStateToProps(){
-//     console.log(auth);
-//     return (auth);
-// }
 
 FindPatientDetails = connect(mapStateToProps)(FindPatientDetails)
 FindPatientDetails = withStyles(styles)(FindPatientDetails)

@@ -9,14 +9,13 @@ import { throws } from 'assert';
 class FormText extends Component {  
 
     renderTextField(field) {
-        console.log("text field : ", field);
-    const {width, meta: {touched, error}} = field;
+        // console.log("text field : ", field);
+        const {width, meta: {touched, error}} = field;
         return (
             <div>
                 <TextField
                     label={field.label}
                     {...field.input}    
-                    margin="normal"
                     multiline={field.mutliline === true ? true : false}
                     style={{width: `${width}px`}}
                 />

@@ -14,10 +14,10 @@ const styles = () => ({
   	},
 });
 
-class GenericPanel extends Component {
+class ReportPanel extends Component {
 
 	handleActionBtn = (btn, row) => {
-        this.props.actionBtnAction(btn, row)
+        this.props.handleActionBtn(btn, row)
     }
 
 	render() {
@@ -38,8 +38,8 @@ class GenericPanel extends Component {
 	}
 }
 
-GenericPanel.propTypes = {
+ReportPanel.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(GenericPanel);
+export default withStyles(styles)(ReportPanel);

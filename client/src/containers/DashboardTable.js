@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import axios from "axios";
 import moment from 'moment';
-import { times, startCase } from 'lodash'
+import { times, startCase } from 'lodash';
 
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -16,18 +16,17 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 
-import EnhancedTableHead from '../components/Tables/EnhancedTableHead'
-import EnhancedTableToolbar from '../components/Tables/EnhancedTableToolbar'
+import EnhancedTableHead from '../components/Tables/EnhancedTableHead';
+import EnhancedTableToolbar from '../components/Tables/EnhancedTableToolbar';
 import StatusBar from '../components/Tables/StatusBar'
-import ProgressBar from '../components/Tables/ProgressBar'
-import { fetchActiveSurveys } from '../actions/index'
-import{ createData, createStatus, filterByPerson, filterByStatus, filterByChecked, desc, stableSort, getSorting,  } from '../logic/tableFunctions'
+import ProgressBar from '../components/Tables/ProgressBar';
+import { fetchActiveSurveys } from '../actions/index';
+import { createData, createStatus, filterByPerson, filterByStatus, filterByChecked } from '../logic/dashboardTableFunctions';
+import { desc, stableSort, getSorting } from '../logic/sortFunctions'
 
 const styles = theme => ({
     root: {
         width: "100%",
-        marginTop: theme.spacing.unit * 3,
-        paddingTop: theme.spacing.unit
     },
     tableWrapper: {
         overflowX: 'auto'
@@ -56,16 +55,12 @@ class DashboardTable extends Component {
     componentWillReceiveProps(nextProps) {
         // Load list of activeSurveys from store and create data object
         // Then filter data object by survey status (default: active), scope (deafult: requester only) and checkbox selection (default: none)
-        // Then set numtablerows to number of table rows for use by the table paginator 
         this.setState({ tableData:  createData(nextProps.activeSurveys) },
-         () => this.setState({ tableDataFiltered: this.filterData(this.state.tableData, this.state.personFilter, this.state.statusFilter, this.state.checked) }, 
-            () => this.setState({numTableRows: this.state.tableDataFiltered.length})
-            )
+         () => this.setState({ tableDataFiltered: this.filterData(this.state.tableData, this.state.personFilter, this.state.statusFilter, this.state.checked) }, )
         )
     }
 
     state = {
-        
         redirect: false,
         patientId: "",
         episodeId: "",
@@ -79,7 +74,6 @@ class DashboardTable extends Component {
         selected: [],
         page: 0,
         rowsPerPage: 5,
-        numTableRows: 0,
 
         statusFilter: ["active"],
         personFilter: "requester",
@@ -96,28 +90,20 @@ class DashboardTable extends Component {
     // Refilter in response to user selecting a navLink
     navLinksFilter = (filter) => {
         this.setState({tableDataFiltered: this.filterData(this.state.tableData, filter, this.state.statusFilter, this.state.selected) },
-            () => this.setState({
-                numTableRows: this.state.tableDataFiltered.length,
-                personFilter: filter
-            })
+            () => this.setState({personFilter: filter})
         )
     };
 
     // Refilter in response to user selecting different status 
     statusFilter = (filter) => {
         this.setState({tableDataFiltered: this.filterData(this.state.tableData, this.state.personFilter, filter, this.state.selected) }, 
-            () => this.setState({
-                numTableRows: this.state.tableDataFiltered.length,
-                statusFilter: filter
-            })
+            () => this.setState({statusFilter: filter})
         )
     };
 
     // Refilter in response to user selecting specific surveys using checkboxes
     checkedFilter = () => {
-        this.setState({tableDataFiltered: this.filterData(this.state.tableData, this.state.personFilter, this.state.statusFilter, this.state.selected) }, 
-            () => this.setState({numTableRows: this.state.tableDataFiltered.length})
-        )
+        this.setState({tableDataFiltered: this.filterData(this.state.tableData, this.state.personFilter, this.state.statusFilter, this.state.selected) }, )
     };
 
     // event handlers
@@ -194,14 +180,15 @@ class DashboardTable extends Component {
                             orderBy={orderBy}
                             onDeSelectAllClick={this.handleDeSelectAllClick}
                             onRequestSort={this.handleRequestSort}
-                            rowCount={this.state.numTableRows}
+                            rowCount={this.state.tableDataFiltered.length}
                             displayCheckbox={true}
                             rows={rows}
                             />
 
                         <TableBody>
-                            {tableDataFiltered ? (
-                                stableSort(tableDataFiltered, getSorting(order, orderBy))
+                        {console.log(order, " : ", orderBy)}
+                        {console.log("tableDataFiltered: ", tableDataFiltered)}
+                            { stableSort(tableDataFiltered, getSorting(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map(d => {
                                     return (
@@ -219,7 +206,7 @@ class DashboardTable extends Component {
                                         </TableRow>
                                     );
                                 })
-                            ) : null}
+                            }
                         </TableBody>
 
                     </Table>
@@ -228,7 +215,7 @@ class DashboardTable extends Component {
                 <TablePagination
                     component="div"
                     rowsPerPageOptions={[5, 10, 25]}
-                    count={numTableRows}
+                    count={tableDataFiltered.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     backIconButtonProps={{'aria-label': 'Previous Page'}}
