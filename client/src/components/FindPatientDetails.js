@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { startCase } from 'lodash';
 import moment from 'moment';
@@ -7,7 +6,6 @@ import moment from 'moment';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import PatientActionBtns from '../components/Buttons/patientActionBtns'
 
@@ -25,24 +23,23 @@ const styles = theme => ({
 
 class FindPatientDetails extends Component {  
 
-    findCards = (filter) => {
-        console.log("Patient Data: ", this.props.patientData.length)
-        let cards = [];
-        let tempArray = []
+    findNumSurveys = (filter) => {
+        //console.log("Patient Data: ", this.props.patientData.length)
+        let surveys = [];
         if (this.props.patientData.length !== 0) {
-            cards = this.props.patientData.episodes.filter(episode => episode.status === filter)
-            console.log("cards: ", cards)
-            return cards.length
+            surveys = this.props.patientData.episodes.filter(episode => episode.status === filter)
+            console.log("surveys: ", surveys)
+            return surveys.length
         } else {return "Loading..."}
     }
 
-    handleActionBtns = (btn, id) => {
-        this.props.handleActionBtns(btn, id)
+    handleActionBtns = (btn, _id) => {
+        this.props.handleActionBtns(btn, _id)
     }
 
     render () {
         
-        const { patientInfo, patientData, classes } = this.props
+        const { patientInfo, classes } = this.props
         const infoH = [
             {caption: "Hospital number", info: patientInfo.hospital_id},
             {caption: "DOB", info: patientInfo.dob},
@@ -52,7 +49,7 @@ class FindPatientDetails extends Component {
         const infoV = [
             {caption: ["Email", "Contact phone"], info: [patientInfo.email, patientInfo.phone ]},
             {caption: ["Primary provider", "Care group"], info: [startCase(`Dr. ${patientInfo.primary_provider_name}`), startCase(`${patientInfo.provider_group_name}`) ]},
-            {caption: ["Active diary cards", "pending diary cards", "awaiting review"], info: [this.findCards("active"), this.findCards("pending"),this.findCards("awaiting review") ]},
+            {caption: ["Active diary cards", "pending diary cards", "awaiting review"], info: [this.findNumSurveys("active"), this.findNumSurveys("pending"),this.findNumSurveys("awaiting review") ]},
         ];
 
         return (
@@ -67,7 +64,7 @@ class FindPatientDetails extends Component {
                         <Typography align="right" inline>
                             <PatientActionBtns 
                                 btns={["close"]} 
-                                id={patientInfo._id}
+                                _id={patientInfo._id}
                                 handleActionBtns={this.handleActionBtns}
                                 />
                         </Typography>
@@ -124,7 +121,7 @@ class FindPatientDetails extends Component {
 
                 <PatientActionBtns 
                     btns={["contact", "edit details", "view reports", "new survey"]} 
-                    id={patientInfo._id}
+                    _id={patientInfo._id}
                     handleActionBtns={this.handleActionBtns}
                 />
                 <br />
@@ -135,7 +132,7 @@ class FindPatientDetails extends Component {
 
 
 const mapStateToProps = (state) => {
-    console.log("State : ", state);
+    //console.log("State : ", state);
     return {
         patientInfo: state.reportPatientData.reportPatientInfo,
         patientData: state.reportPatientData.reportPatientData,

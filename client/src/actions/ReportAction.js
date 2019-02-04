@@ -3,6 +3,7 @@ import { REPORT_PATIENT_DATA } from './types';
 
 export const fetchReportPatientData = (id) => {
     if (id === "clear") {
+        localStorage.setItem('patient_id', "");
         return(dispatch) => {
             dispatch({
                 type: REPORT_PATIENT_DATA,
@@ -13,6 +14,8 @@ export const fetchReportPatientData = (id) => {
             })
         }
     } else {
+        // console.log("reportPatientdata action: ", id)
+        localStorage.setItem('patient_id', id);
         const url = `/api/patient_info/find/${id}`;
         const request = axios.get(url)
         let patientInfo;

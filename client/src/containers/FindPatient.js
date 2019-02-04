@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import { selectConsoleTitle, fetchListPatientsByProvider, fetchListPatientsByCareGroup} from '../actions/index';
+import { selectConsoleTitle, fetchListPatientsByProvider, fetchListPatientsByCareGroup, fetchReportPatientData} from '../actions/index';
 import FindPatientForm from '../components/Forms/FindPatientForm';
 import FindPatientTable from './FindPatientTable';
 import FindPatientDetails from '../components/FindPatientDetails';
@@ -47,27 +47,24 @@ class FindPatient extends Component {
         }
     };
 
-    handleActions = (btn, row) => {
-        console.log("handleActions: ", btn, " : ", row._id)
+    handleActions = (btn, _id) => {
+        console.log("handleActions: ", btn, " : ", _id)
         switch (btn) {
             case "close":
-                console.log("close")
+                this.props.fetchReportPatientData("clear");
                 this.setState({displayPatientId: "" });
                 break;
             case "contact":
-                console.log("contact")
                 break;
             case "edit details":
-                console.log("edit details")
-                this.props.history.push(`updatepatient/${row._id}`)
+                this.props.history.push(`updatepatient/${_id}`)
                 break;
             case "view reports":
-                console.log("view reports")
-                this.props.history.push(`report/${row._id}&null`)
+                this.props.fetchReportPatientData(_id);
+                this.props.history.push('report')
                 break;
             case "new survey":
-                console.log("new survey")
-                this.props.history.push(`survey/${row._id}`)
+                this.props.history.push(`survey/${_id}`)
             default: null;
         }
     };
@@ -111,7 +108,7 @@ class FindPatient extends Component {
 };
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle, fetchListPatientsByProvider, fetchListPatientsByCareGroup }, dispatch);
+    return bindActionCreators({ selectConsoleTitle, fetchListPatientsByProvider, fetchListPatientsByCareGroup, fetchReportPatientData }, dispatch);
 };
 
 const mapStateToProps = (state) => {

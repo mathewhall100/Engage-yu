@@ -28,7 +28,7 @@ export default class ConsoleRoutes extends Component {
                 <Route exact path='/admin/caregroup' render={props => <CareGroup {...this.props}></CareGroup>} />
                 <Route exact path='/admin/caregroupadd' render={props => <CareGroupAdd {...this.props}></CareGroupAdd>} />
                 <Route path='/admin/survey/:id' render={props => <SurveyCreate {...this.props}></SurveyCreate>} />
-                <Route path='/admin/report/:id' render={props => <Report {...this.props}></Report>} />
+                <Route path='/admin/report' render={props => <Report {...this.props}></Report>} />
                 <Route path='/admin/updatepatient/:id' render={props => <EditPatient {...this.props}></EditPatient>} />
                 <Route path="/notfound" component={NotFound} />
                 <Route component={NotFound} />

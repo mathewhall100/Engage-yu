@@ -27,16 +27,16 @@ const styles = (theme) => ({
 
 class PatientActionBtns extends PureComponent {
 
-    handleBtnClick = (btn, id) => {
-        this.props.handleActionBtns(btn, id)
+    handleBtnClick = (btn, _id) => {
+        this.props.handleActionBtns(btn, _id)
     }
 
     render() {
-        const {classes, btns, id } = this.props
+        const {classes, btns, _id } = this.props
         return (
             btns.map(btn => {
                 return (
-                    <Button key={btn} size="small" variant="outlined" className={classes.btn} onClick={() => this.handleBtnClick(btn, id)}>
+                    <Button key={btn} size="small" variant="outlined" className={classes.btn} onClick={() => this.handleBtnClick(btn, _id)}>
                         {btn}
                     </Button>
                 )

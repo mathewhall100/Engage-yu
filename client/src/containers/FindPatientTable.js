@@ -76,8 +76,8 @@ class FindPatientTable extends Component {
         this.props.fetchReportPatientData(row._id);
     }
 
-    handleActionBtn = (btn, id) => {
-        this.props.handleActionBtn(btn, id)
+    handleActionBtn = (btn, _id) => {
+        this.props.handleActionBtn(btn, _id)
     }
 
 

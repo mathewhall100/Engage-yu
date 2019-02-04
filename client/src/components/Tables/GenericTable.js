@@ -48,8 +48,8 @@ class GenericTable extends Component {
         if (this.props.hover) {this.props.handleRowClick(row)}
     }
 
-    handleActionBtn = (btn, row) => {
-        this.props.handleActionBtn(btn, row)
+    handleActionBtn = (btn, _id) => {
+        this.props.handleActionBtn(btn, _id)
     }
 
     handleChangePage = (event, page) => { this.setState({ page }) };
@@ -61,7 +61,7 @@ class GenericTable extends Component {
 
     render () {
 
-        const { tableHeadings, lastCellRightAlign, lastCellHeading, tableData, lastCellData, actions, hover, classes } = this.props;
+        const { tableHeadings, lastCellRightAlign, lastCellHeading, tableData, lastCellData, hover, classes } = this.props;
         const { order, orderBy, rowsPerPage, page } = this.state;
 
         const getLastCell = (row) => {
@@ -69,7 +69,7 @@ class GenericTable extends Component {
                 case "report actions":
                     return <ActionBtnGroup actions={lastCellData[1]} row={row} handleActionBtn={this.handleActionBtn} />; break
                 case "find actions":
-                    return <ActionIconGroup row={row} handleActionBtn={this.handleActionBtn} />; break
+                    return <ActionIconGroup _id={row._id} handleActionBtn={this.handleActionBtn} />; break
                 default: return <Typography>{lastCellData[0]}</Typography>
             };
         };

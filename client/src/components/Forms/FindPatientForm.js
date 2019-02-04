@@ -8,11 +8,11 @@ import StreamTextInput from './StreamTextInput';
 import SelectWithChip from './SelectWithChip';
 
 const styles = () => ({
-    textFrom: {
-        margin: '36px 0 0 16px'
+    textSearch: {
+        margin: '32px 0 0 16px'
     },
     textIn: {
-        margin: '36px 16px 0 0'
+        margin: '32px 16px 0 0'
     },
     textInputs: {
         marginTop: "12px"
@@ -26,7 +26,7 @@ class FindPatientForm extends Component {
     onChangeList = (list) => { this.props.filterByList(list) };
 
     render () {
-        const { handleSubmit, classes  } = this.props;
+        const { classes  } = this.props;
         const selectMenuItems = ["my patient list", "all care group patients"]
 
         return (
@@ -34,7 +34,7 @@ class FindPatientForm extends Component {
                 <Grid container spacing={24}>
                     
                     <Grid item xs={2}>
-                        <Typography variant="h6" className={classes.textFrom}>
+                        <Typography variant="h6" className={classes.textSearch}>
                             Search for
                         </Typography>
                     </Grid> 

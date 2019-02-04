@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { startCase } from 'lodash'
-
 import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -26,40 +25,40 @@ const styles = theme => ({
         textDecoration: "none",
         borderRadius: "5px",
     },
-    textBold: {
-        fontWeight: "bold",
-        fontSize: "17px"
-    }
+    fwMedium: {
+        fontWeight: 500,
+      },
   });
 
 class ReportPatientDetails extends Component {
 
     render () {
 
-        const { classes } = this.props;
+        const { classes, patientInfo} = this.props;
+        const info = [
+            { caption: "Patient name", text: `${startCase(patientInfo.firstname)} ${startCase(patientInfo.lastname)}` },
+            { caption: "Hospital number", text: patientInfo.hospital_id },
+            { caption: "DOB", text: patientInfo.dob },
+        ];
        
         return (
             <Paper className={classes.root}>
-
                     <Grid container spacing={24}>
+
+                        { info.map(info => {
+                            return (
+                                <Grid item xs={3}>
+                                    <Typography variant="caption">{info.caption}</Typography>
+                                    <Typography variant="subtitle1" className={classes.fwMedium}>{info.text}</Typography>
+                                </Grid>
+                            )
+                        })}
+
                         <Grid item xs={3}>
-                        <Typography variant="caption">Patient name</Typography>
-                            <span className={classes.textBold}>{startCase(this.props.patientInfo.firstname)} {startCase(this.props.patientInfo.lastname)}</span>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <Typography variant="caption">Hospital number:</Typography>
-                            <span className={classes.textBold}>{this.props.patientInfo.hospital_id}</span>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <Typography variant="caption">DOB</Typography>
-                            <span className={classes.textBold}>{this.props.patientInfo.dob}</span>
-                        </Grid>
-                        <Grid item xs={3}>
-                        <Link to='/admin/find' className={classes.backbtn}><Button>Back</Button></Link>
+                            <Link to='/admin/find' className={classes.backbtn}><Button >Back</Button></Link>
                         </Grid>
                         
                     </Grid>
-
             </Paper>
         );
     }
