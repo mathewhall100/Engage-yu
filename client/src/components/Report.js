@@ -12,6 +12,10 @@ class Report extends Component {
 
     componentDidMount() {
         this.props.selectConsoleTitle({title: "Report"});
+
+        console.log("localstorage: ", localStorage.getItem("patient_id"))
+        console.log("match.params", this.props.match.params)
+        this.setState({episodeId: this.props.match.params.id}, () => console.log("epId: ", this.state.episodeId))
         this.props.fetchReportPatientData(localStorage.getItem("patient_id")) 
     };
 
@@ -32,13 +36,16 @@ class Report extends Component {
     }
 
     render () {
+
+
+        const { episodeId } = this.state
         return (
             <React.Fragment>
 
                 {!this.state.displayPrepareReport && 
                     <React.Fragment>
                         <ReportPatientDetails /> <br />   
-                        <ReportDisplayData  episodeId={this.state.episodeId} handleReportPrep={this.handleReportPrep} /> <br />
+                        <ReportDisplayData  episodeId={episodeId} handleReportPrep={this.handleReportPrep} /> <br />
                         <ReportListSurveys changeEpisode={this.handleChangeEpisode} />
                     </React.Fragment> 
                 }
@@ -56,15 +63,13 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({ selectConsoleTitle, fetchReportPatientData }, dispatch);
 }
 
-// const mapStateToProps = (state) => {
-//     console.log("State : ", state);
-//     return {
-//         patientInfo: state.reportPatientData.reportPatientInfo,
-//         patientData: state.reportPatientData.reportPatientData,
-//         user: state.user
-//     }
-// };
+const mapStateToProps = (state) => {
+    console.log("State : ", state);
+    return {
+        patientInfo: state.reportPatientData.reportPatientInfo,
+    }
+};
 
-Report = connect(null, mapDispatchToProps)(Report)
+Report = connect(mapStateToProps, mapDispatchToProps)(Report)
 Report = withRouter(Report)
 export default Report;

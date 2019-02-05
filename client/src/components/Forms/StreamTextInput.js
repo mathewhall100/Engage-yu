@@ -11,7 +11,6 @@ export default class StreamTextInput extends PureComponent {
      }
 
     renderTextField(field) {
-        console.log("text field : ", field);
         const {name, label, width, input, custom} = field;
         return (
             <TextField

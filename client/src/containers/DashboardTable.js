@@ -19,9 +19,8 @@ import Checkbox from '@material-ui/core/Checkbox';
 import EnhancedTableHead from '../components/Tables/EnhancedTableHead';
 import EnhancedTableToolbar from '../components/Tables/EnhancedTableToolbar';
 import StatusBar from '../components/Tables/StatusBar'
-import ProgressBar from '../components/Tables/ProgressBar';
 import { fetchActiveSurveys } from '../actions/index';
-import { createData, createStatus, filterByPerson, filterByStatus, filterByChecked } from '../logic/dashboardTableFunctions';
+import { createData, filterByPerson, filterByStatus, filterByChecked } from '../logic/dashboardTableFunctions';
 import { desc, stableSort, getSorting } from '../logic/sortFunctions'
 
 const styles = theme => ({
@@ -67,7 +66,6 @@ class DashboardTable extends Component {
 
         tableData: [],
         tableDataFiltered: [],
-        userId: "",
 
         order: 'desc',
         orderBy: 'start',
@@ -78,13 +76,12 @@ class DashboardTable extends Component {
         statusFilter: ["active"],
         personFilter: "requester",
         checked: [], 
-        
-        userId: "5b844946d8dc5ce848cd28a4"
     };
 
-    // Filter table constents functions
+    // Filter table constents functions by provider and status (provider_id in local storage from login)
     filterData = (data, personFilter, statusFilter, checked) => {
-        return filterByChecked( (filterByStatus((filterByPerson(data, this.state.userId, personFilter)), statusFilter)), checked)
+        console.log("providerId ", localStorage.getItem("provider_id"))
+        return filterByChecked( (filterByStatus((filterByPerson(data, localStorage.getItem("provider_id"), personFilter)), statusFilter)), checked)
     };
 
     // Refilter in response to user selecting a navLink
@@ -117,7 +114,8 @@ class DashboardTable extends Component {
     handleDeSelectAllClick = event => { this.setState({ selected: [] }); };
 
     handleRowClick = (patientId, episodeId) => {
-        const url=`/admin/report/${patientId}&${episodeId}`
+        localStorage.setItem("patient_id", patientId)
+        const url=`/admin/report/${episodeId}`
         this.props.history.push(url)
     }
 
@@ -147,7 +145,7 @@ class DashboardTable extends Component {
     render() {
 
         const { classes } = this.props;
-        const { order, orderBy, tableDataFiltered, selected, rowsPerPage, page, numTableRows } = this.state;
+        const { order, orderBy, tableDataFiltered, selected, rowsPerPage, page } = this.state;
 
         const rows = [
             { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
@@ -186,8 +184,6 @@ class DashboardTable extends Component {
                             />
 
                         <TableBody>
-                        {console.log(order, " : ", orderBy)}
-                        {console.log("tableDataFiltered: ", tableDataFiltered)}
                             { stableSort(tableDataFiltered, getSorting(order, orderBy))
                                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                 .map(d => {

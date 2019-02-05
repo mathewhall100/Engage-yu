@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { selectConsoleTitle } from '../actions/index'
+import { selectConsoleTitle, fetchReportPatientData } from '../actions/index'
 import DashboardBanner from './DashboardBanner';
 import DashboardTable from '../containers/DashboardTable';
 
@@ -12,6 +12,7 @@ class Dashboard extends Component {
     componentDidMount() {
         // Save page title to store (picked up and displayed by console component)
         this.props.selectConsoleTitle({title: "Dashboard"});
+        this.props.fetchReportPatientData("clear");
     }
 
     state = {
@@ -38,7 +39,7 @@ class Dashboard extends Component {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle }, dispatch);
+    return bindActionCreators({ selectConsoleTitle, fetchReportPatientData }, dispatch);
 }
 
 function mapStateToProps({auth}){

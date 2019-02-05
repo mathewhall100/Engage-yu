@@ -7,7 +7,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import PatientActionBtns from '../components/Buttons/patientActionBtns'
+import HandleBtns from './Buttons/handleBtns'
 
 const styles = theme => ({
     root: {
@@ -17,7 +17,7 @@ const styles = theme => ({
         fontWeight: 500,
       },
     hrStyled: {
-        opacity: 0.3
+        opacity: 0.1
     }
 })
 
@@ -28,7 +28,6 @@ class FindPatientDetails extends Component {
         let surveys = [];
         if (this.props.patientData.length !== 0) {
             surveys = this.props.patientData.episodes.filter(episode => episode.status === filter)
-            console.log("surveys: ", surveys)
             return surveys.length
         } else {return "Loading..."}
     }
@@ -62,7 +61,7 @@ class FindPatientDetails extends Component {
                             {startCase(patientInfo.firstname)} {startCase(patientInfo.lastname)}
                         </Typography>
                         <Typography align="right" inline>
-                            <PatientActionBtns 
+                            <HandleBtns 
                                 btns={["close"]} 
                                 _id={patientInfo._id}
                                 handleActionBtns={this.handleActionBtns}
@@ -74,9 +73,9 @@ class FindPatientDetails extends Component {
                 <br />
                 
                 <Grid container spacing={24}>
-                    { infoH.map(info => {
+                    { infoH.map((info, idx) => {
                         return (
-                            <Grid item xs={2}>
+                            <Grid item xs={2} key={idx}>
                                 <Typography variant="caption">
                                     {info.caption}
                                 </Typography>
@@ -90,23 +89,23 @@ class FindPatientDetails extends Component {
 
                 <br />
 
-                { infoV.map(info => {
+                { infoV.map((info, index) => {
                     return (
-                        <Grid container spacing={24}>
+                        <Grid container spacing={24} key={index}>
                             <Grid item xs={2}>
                                 <Typography variant="subtitle1">
-                                    { info.caption.map(caption => {
+                                    { info.caption.map((caption, idx) => {
                                         return (
-                                            <div>{caption}</div> 
+                                            <div key={idx}>{caption}</div> 
                                         )
                                     }) }
                                 </Typography>
                             </Grid>
                             <Grid item xs={10}>
                                 <Typography variant="subtitle1" className={classes.fwMedium}>
-                                    { info.info.map(info => {
+                                    { info.info.map((info, idx) => {
                                         return (
-                                            <div>{info}</div> 
+                                            <div key={idx}>{info}</div> 
                                         )
                                     }) }
                                 </Typography>
@@ -119,7 +118,7 @@ class FindPatientDetails extends Component {
                 <hr className={classes.hrStyled}/>
                 <br />
 
-                <PatientActionBtns 
+                <HandleBtns 
                     btns={["contact", "edit details", "view reports", "new survey"]} 
                     _id={patientInfo._id}
                     handleActionBtns={this.handleActionBtns}

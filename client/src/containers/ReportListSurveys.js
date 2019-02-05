@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { startCase } from 'lodash'
 import moment from 'moment';
 import Button from '@material-ui/core/Button'
 import ReportPanel from '../components/Panels/ReportPanel';
+import { fetchReportPatientData } from '../actions/index';
 
 const status = ["pending", "active", "awaiting review", "actioned", "archived", "cancelled"]
 const tableHeadings = ["start", "end", "timeframe", "interval", "questions", "requested by", "reviewed by", "reviewed by", "cancelled by", ]
@@ -14,7 +16,15 @@ const panelProps = [
     {status: "actioned", slice: -2, actions: ["view", "archive"]},
 ]
 
-class ReportListSurveys extends Component {   
+class ReportListSurveys extends Component { 
+    
+    componentDidMount() {
+        if (this.props.patientData) {
+            if (this.props.patientData.length === 0) {
+                this.props.fetchReportPatientData(localStorage.getItem("patient_id")) 
+            } else  this.setState({episodes: this.props.patientData.episodes}, () => this.displayPanels(this.state.episodes) )
+        }
+    };
     
     componentWillReceiveProps(nextProps) {
         if (this.props.patientData !== [nextProps.patientData]) {
@@ -140,6 +150,9 @@ class ReportListSurveys extends Component {
     }
 }
 
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({ fetchReportPatientData }, dispatch);
+}
 
 const mapStateToProps = (state) => {
     // console.log("State : ", state);
@@ -148,5 +161,5 @@ const mapStateToProps = (state) => {
     }
 };
 
-ReportListSurveys = connect(mapStateToProps)(ReportListSurveys)
+ReportListSurveys = connect(mapStateToProps, mapDispatchToProps)(ReportListSurveys)
 export default ReportListSurveys;

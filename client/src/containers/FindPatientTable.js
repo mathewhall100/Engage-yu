@@ -113,7 +113,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 const mapStateToProps = (state) => {
-    console.log("State : ", state);
+    //console.log("State : ", state);
     return {
         listPatientsByProvider: state.listPatientsByProvider.listPatientsByProvider.patientList,
         listPatientsByCareGroup: state.listPatientsByCareGroup.listPatientsByCareGroup.patientList,

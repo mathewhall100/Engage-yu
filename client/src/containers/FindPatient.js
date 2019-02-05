@@ -61,7 +61,7 @@ class FindPatient extends Component {
                 break;
             case "view reports":
                 this.props.fetchReportPatientData(_id);
-                this.props.history.push('report')
+                this.props.history.push('report/0')
                 break;
             case "new survey":
                 this.props.history.push(`survey/${_id}`)

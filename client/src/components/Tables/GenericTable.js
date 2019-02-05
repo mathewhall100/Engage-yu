@@ -16,6 +16,12 @@ import ActionIconGroup from '../Buttons/actionIconGroup'
 
 import { desc, stableSort, getSorting } from '../../logic/sortFunctions'
 
+const styles = () =>  ({
+    root: {
+        width: "100%"
+    }
+})
+
 const CustomTableCell = withStyles(theme => ({
     head: {
         padding: "5px", 
@@ -67,10 +73,12 @@ class GenericTable extends Component {
         const getLastCell = (row) => {
             switch (lastCellData[0]) {
                 case "report actions":
-                    return <ActionBtnGroup actions={lastCellData[1]} row={row} handleActionBtn={this.handleActionBtn} />; break
+                    return <ActionBtnGroup actions={lastCellData[1]} row={row} handleActionBtn={this.handleActionBtn} /> 
+                    break;
                 case "find actions":
-                    return <ActionIconGroup _id={row._id} handleActionBtn={this.handleActionBtn} />; break
-                default: return <Typography>{lastCellData[0]}</Typography>
+                    return <ActionIconGroup _id={row._id} handleActionBtn={this.handleActionBtn} /> 
+                    break;
+                default: return <Typography>{lastCellData[0]}</Typography>;
             };
         };
 
@@ -85,7 +93,7 @@ class GenericTable extends Component {
 
         // GenericTable component return
         return (
-            <div style={{width: "100%"}}>
+            <div className={classes.root}>
 
                 <Table aria-labelledby="tableTitle">
 
@@ -121,7 +129,9 @@ class GenericTable extends Component {
                                     <TableRow hover={hover} onClick={event => this.handleRowClick(row)} tabIndex={-1} key={row.id}>
                                         { tableHeadings.map((heading, idx) => {
                                             return (
-                                                getTableCell(row, idx)
+                                                <React.Fragment key={idx}>
+                                                    {getTableCell(row, idx)}
+                                                </React.Fragment>
                                             )
                                         } )}
 
@@ -161,4 +171,4 @@ GenericTable.propTypes = {
 
 };
 
-export default  withStyles({ withTheme: true })(GenericTable);
+export default  withStyles(styles, { withTheme: true })(GenericTable);

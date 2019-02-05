@@ -10,7 +10,7 @@ const styles = (theme) => ({
         textDecoration: "none",
         borderRadius: "5px",
         borderColor: theme.palette.primary.main,
-        padding: "5px",
+        padding: "5px 8px",
         marginLeft: "15px",
         float: "right",
         '&:hover': {
@@ -25,7 +25,7 @@ const styles = (theme) => ({
 
   });
 
-class PatientActionBtns extends PureComponent {
+class HandleBtns extends PureComponent {
 
     handleBtnClick = (btn, _id) => {
         this.props.handleActionBtns(btn, _id)
@@ -45,9 +45,9 @@ class PatientActionBtns extends PureComponent {
     }
 }
 
-PatientActionBtns.propTypes = {
+HandleBtns.propTypes = {
     classes: PropTypes.object.isRequired,
   
   };
   
-  export default  withStyles(styles)(PatientActionBtns);
+  export default  withStyles(styles)(HandleBtns);

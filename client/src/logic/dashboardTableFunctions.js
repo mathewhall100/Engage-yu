@@ -41,8 +41,10 @@ export const createStatus = (status, records, entries, startDate, endDate, entri
     let compliance = 0;
 
     if (status === "active") {
-    diffDays = moment(moment(), "DD.MM.YYYY").diff(moment(moment(startDate), "DD.MM.YYYY"), 'days') 
-    } else {diffDays = moment(moment(endDate), "DD.MM.YYYY").diff(moment(moment(startDate), "DD.MM.YYYY"), 'days') }
+        diffDays = moment(moment(), "DD.MM.YYYY").diff(moment(moment(startDate), "DD.MM.YYYY"), 'days') 
+    } else {
+        diffDays = moment(moment(endDate), "DD.MM.YYYY").diff(moment(moment(startDate), "DD.MM.YYYY"), 'days') 
+    }
     progress = Math.round(((diffDays*entriesPerDay)/records)*100)
     compliance = entries ? Math.round((entries/(diffDays*entriesPerDay))*100) : 0
     compliance = compliance > 100 ? 100 : compliance

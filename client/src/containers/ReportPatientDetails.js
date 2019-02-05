@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { startCase } from 'lodash'
 import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import LinkBtn from '../components/Buttons/linkBtn'
 
 
 const styles = theme => ({
@@ -18,16 +17,12 @@ const styles = theme => ({
       paddingLeft: "20px",
       marginBottom: "10px"
     },
-    backbtn: {
-        backgroundColor: "#eeeeee",
-        marginRight: "40px",
-        float: "right",
-        textDecoration: "none",
-        borderRadius: "5px",
-    },
     fwMedium: {
         fontWeight: 500,
       },
+    backBtn: {
+        margin: "6px 20px 0 0"
+    }
   });
 
 class ReportPatientDetails extends Component {
@@ -45,17 +40,19 @@ class ReportPatientDetails extends Component {
             <Paper className={classes.root}>
                     <Grid container spacing={24}>
 
-                        { info.map(info => {
+                        { info.map((info, idx) => {
                             return (
-                                <Grid item xs={3}>
+                                <Grid item xs={3} key={idx}>
                                     <Typography variant="caption">{info.caption}</Typography>
-                                    <Typography variant="subtitle1" className={classes.fwMedium}>{info.text}</Typography>
+                                    <Typography variant="h6" className={classes.fwMedium}>{info.text}</Typography>
                                 </Grid>
                             )
                         })}
 
                         <Grid item xs={3}>
-                            <Link to='/admin/find' className={classes.backbtn}><Button >Back</Button></Link>
+                            <Typography align="right" className={classes.backBtn} >
+                                <LinkBtn url='/admin/find' />
+                            </Typography>
                         </Grid>
                         
                     </Grid>

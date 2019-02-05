@@ -59,14 +59,17 @@ export default class ListItems extends Component {
 
 				{ list.map((item, idx) => {
 						return (
-							item.title === "divider" ?
-								<React.Fragment>
-									<Divider />
-									<ListSubheader>
-										<Typography variant="button" color="primary">{item.text}</Typography>
-									</ListSubheader>
-								</React.Fragment>
-							: <RenderListItem idx={idx} title={item.title} lnk={item.lnk} icon={item.icon}  /> 
+							<React.Fragment key={idx}>
+								{ item.title === "divider" ?
+									<React.Fragment>
+										<Divider />
+										<ListSubheader>
+											<Typography variant="button" color="primary">{item.text}</Typography>
+										</ListSubheader>
+									</React.Fragment>
+								: <RenderListItem idx={idx} title={item.title} lnk={item.lnk} icon={item.icon} />  
+								}
+							</React.Fragment>
 						)
 				}) }
 
