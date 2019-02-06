@@ -29,17 +29,17 @@ class ReportBarGraph extends React.Component {
             <React.Fragment>
                 {this.props.displayData && <ResponsiveContainer width="100%" height={this.props.height}>
                 
-                <BarChart data={this.displayGraphCalc(this.props.displayData, this.props.displayQuestion)} margin={{top: 20, right: 30, left: 20, bottom: 30}}>
+                <BarChart data={this.displayGraphCalc(this.props.displayData, this.props.displayQuestion)} margin={{top: 20, right: 0, left: 15, bottom: 30}}>
                     
                     <XAxis dataKey="time" angle={-45} textAnchor="end" fontFamily="Roboto"/>
                     <YAxis hide={true}/>
                     <Legend layout='vertical' align='right' verticalAlign='top' 
                         payload={[
-                            { id: 'ans1', value: this.props.question.answers[0], type: 'square', color: 'green'},
-                            { id: 'ans2', value: this.props.question.answers[1], type: 'square', color: '#ffc200'},
-                            { id: 'ans3', value: this.props.question.answers[2], type: 'square', color: 'orange'},
-                            { id: 'ans4', value: this.props.question.answers[3], type: 'square', color: 'red'},
-                            { id: 'ans5', value: this.props.question.answers[4], type: 'square', color: 'grey'},
+                            { id: 'ans1', value: this.props.question.answers[0], type: 'square', color: 'green' },
+                            { id: 'ans2', value: this.props.question.answers[1], type: 'square', color: '#ffc200' },
+                            { id: 'ans3', value: this.props.question.answers[2], type: 'square', color: 'orange' },
+                            { id: 'ans4', value: this.props.question.answers[3], type: 'square', color: 'red' },
+                            { id: 'ans5', value: this.props.question.answers[4], type: 'square', color: 'grey' },
                         ]} 
                         wrapperStyle={{
                             paddingLeft: "15px",

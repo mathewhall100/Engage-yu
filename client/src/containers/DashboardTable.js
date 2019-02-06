@@ -114,6 +114,7 @@ class DashboardTable extends Component {
     handleDeSelectAllClick = event => { this.setState({ selected: [] }); };
 
     handleRowClick = (patientId, episodeId) => {
+        //console.log("rowClick: ", patientId)
         localStorage.setItem("patient_id", patientId)
         const url=`/admin/report/${episodeId}`
         this.props.history.push(url)

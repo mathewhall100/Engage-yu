@@ -5,18 +5,11 @@ import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import LinkBtn from '../components/Buttons/linkBtn'
+import LinkBtn from '../Buttons/linkBtn'
 
 
 const styles = theme => ({
-    root: {
-      width: "100%",
-      marginTop: theme.spacing.unit*2,
-      paddingLeft: "20px",
-      marginBottom: "10px"
-    },
     fwMedium: {
         fontWeight: 500,
       },
@@ -29,7 +22,7 @@ class ReportPatientDetails extends Component {
 
     render () {
 
-        const { classes, patientInfo} = this.props;
+        const { classes, patientInfo, closeBtn} = this.props;
         const info = [
             { caption: "Patient name", text: `${startCase(patientInfo.firstname)} ${startCase(patientInfo.lastname)}` },
             { caption: "Hospital number", text: patientInfo.hospital_id },
@@ -37,26 +30,24 @@ class ReportPatientDetails extends Component {
         ];
        
         return (
-            <Paper className={classes.root}>
-                    <Grid container spacing={24}>
+            <Grid container spacing={24}>
 
-                        { info.map((info, idx) => {
-                            return (
-                                <Grid item xs={3} key={idx}>
-                                    <Typography variant="caption">{info.caption}</Typography>
-                                    <Typography variant="h6" className={classes.fwMedium}>{info.text}</Typography>
-                                </Grid>
-                            )
-                        })}
-
-                        <Grid item xs={3}>
-                            <Typography align="right" className={classes.backBtn} >
-                                <LinkBtn url='/admin/find' />
-                            </Typography>
+                { info.map((info, idx) => {
+                    return (
+                        <Grid item xs={3} key={idx}>
+                            <Typography variant="caption">{info.caption}</Typography>
+                            <Typography variant="h6" className={classes.fwMedium}>{info.text}</Typography>
                         </Grid>
-                        
-                    </Grid>
-            </Paper>
+                    )
+                })}
+
+                <Grid item xs={3}>
+                    {closeBtn && <Typography align="right" className={classes.backBtn} >
+                        <LinkBtn url='/admin/find' />
+                    </Typography> }
+                </Grid>
+                
+            </Grid>
         );
     }
 }
@@ -70,9 +61,9 @@ ReportPatientDetails.propTypes = {
     //console.log("State : ", state);
     return {
         patientInfo: state.reportPatientData.reportPatientInfo,
-        user: state.user
     }
   };
+
   ReportPatientDetails = connect(mapStateToProps)(ReportPatientDetails)
   ReportPatientDetails = withStyles(styles, { withTheme: true })(ReportPatientDetails)
   export default ReportPatientDetails

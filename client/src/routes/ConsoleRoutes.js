@@ -6,7 +6,7 @@ import FindPatient from '../containers/FindPatient';
 import EditPatient from '../components/EditPatient';
 import EnrollPatient from '../components/EnrollPatient';
 import SurveyCreate from '../components/Survey';
-import Report from '../components/Report';
+import Report from '../components/Report/Report';
 import Provider from '../components/Provider';
 import ProviderEnrollForm from '../components/ProviderEnrollForm';
 import CareGroup from '../components/CareGroup';

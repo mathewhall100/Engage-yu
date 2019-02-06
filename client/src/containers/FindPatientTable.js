@@ -90,7 +90,6 @@ class FindPatientTable extends Component {
         return (
             <React.Fragment>
                 { tableData && <Paper className={classes.root}>
-
                     <GenericTable 
                         tableHeadings={tableHeadings}
                         tableData={this.createTableData(tableDataFiltered)}
@@ -101,7 +100,6 @@ class FindPatientTable extends Component {
                         handleRowClick = {this.handleRowClick}
                         hover={true}
                     />
-
                 </Paper> }
             </React.Fragment>
         );

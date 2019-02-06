@@ -47,7 +47,7 @@ const styles = (theme) => ({
         }
     },
     cancelIconStyles: {
-        color: theme.palette.error.main,
+        color: theme.palette.primary.main,
         fontSize: "30px",
         '&:hover': {
             color: theme.palette.error.dark,

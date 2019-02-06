@@ -18,7 +18,9 @@ const CustomTableCell = withStyles(theme => ({
     head: {
       padding: "5px",
       fontSize: "14px",
-      color: "#000000"
+      color: theme.palette.primary.main,
+      borderBottom: "2px solid",
+      borderColor: theme.palette.primary.main,
     },
     body: {
         padding: '5px',
@@ -72,9 +74,11 @@ class ReportTable extends React.Component {
                         })}
                     </TableRow>
                 </TableHead>  
-
+               
                 <TableBody>
-                    <br />
+
+                    <TableRow style={{height: "15px"}}></TableRow> 
+
                     {this.props.displayData.map((d, index) => {
                         return (
                             <TableRow key={index} style={{height: "40px"}}>

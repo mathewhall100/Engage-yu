@@ -60,7 +60,7 @@ class FindPatient extends Component {
                 this.props.history.push(`updatepatient/${_id}`)
                 break;
             case "view reports":
-                this.props.fetchReportPatientData(_id);
+                localStorage.setItem("patient_id", _id)
                 this.props.history.push('report/0')
                 break;
             case "new survey":

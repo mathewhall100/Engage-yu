@@ -15,7 +15,6 @@ const styles = (theme) => ({
 
 class ConsoleTitle extends Component {
 
-
     render () {
 
         const { classes } = this.props

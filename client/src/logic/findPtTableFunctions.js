@@ -18,7 +18,6 @@ export const createData = (data) => {
         };
         newData.push(newDataObj)
       })
-    // console.log("newData: ", newData)
     return newData;
 };
 

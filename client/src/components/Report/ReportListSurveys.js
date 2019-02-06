@@ -4,8 +4,8 @@ import { bindActionCreators } from 'redux';
 import { startCase } from 'lodash'
 import moment from 'moment';
 import Button from '@material-ui/core/Button'
-import ReportPanel from '../components/Panels/ReportPanel';
-import { fetchReportPatientData } from '../actions/index';
+import ReportPanel from '../Panels/ReportPanel';
+import { fetchReportPatientData } from '../../actions/index';
 
 const status = ["pending", "active", "awaiting review", "actioned", "archived", "cancelled"]
 const tableHeadings = ["start", "end", "timeframe", "interval", "questions", "requested by", "reviewed by", "reviewed by", "cancelled by", ]

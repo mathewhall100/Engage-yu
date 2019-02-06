@@ -9,12 +9,12 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
-import Callback from '../components/Callback';
-import ReportTable from '../components/Tables/ReportTable';
-import ReportBarGraph from '../components/Graphs/ReportBarGraph';
-import { fetchReportPatientData } from '../actions/index';
-import { displayDataCalc, displayGraphCalc} from '../logic/reportFunctions';
-import ReportSurveyDetails from '../components/ReportSurveyDetails';
+import Callback from '../Callback';
+import ReportTable from '../Tables/ReportTable';
+import ReportBarGraph from '../Graphs/ReportBarGraph';
+import { fetchReportPatientData } from '../../actions/index';
+import { displayDataCalc, displayGraphCalc} from '../../logic/reportFunctions';
+import ReportSurveyDetails from './ReportSurveyDetails';
 
 
 const styles = theme => ({
@@ -24,14 +24,6 @@ const styles = theme => ({
         marginBottom: "20px",
         paddingLeft: "20px",
         minHeight: "470px"
-    },
-    btn: {
-        float: "right",
-        padding: "5px",
-        marginTop: "10px",
-        backgroundColor: "#eeeeee",
-        borderColor: theme.palette.primary.main,
-        borderRadius: "5px",
     },
     graphContainer: {
         height: "300px",
@@ -44,6 +36,14 @@ const styles = theme => ({
         padding: "15px",
         border: "1px solid #dddddd",
         overflow: "auto"
+    },    
+    reportBtn: {
+        float: "right",
+        padding: "5px 8px",
+        marginTop: "10px",
+        backgroundColor: "#eeeeee",
+        borderColor: theme.palette.primary.main,
+        borderRadius: "5px",
     },
     questionBtnBox: {
         float: "right",
@@ -66,29 +66,15 @@ const styles = theme => ({
   });
 
 
-class ReportDisplayData extends Component {
+class ReportSummary extends Component {
 
     componentDidMount() {
-        if (this.props.patientData) {
-            if (this.props.patientData.length === 0) {
-                this.props.fetchReportPatientData(localStorage.getItem("patient_id")) 
-            } else {
-                this.setState({episodes: this.props.patientData.episodes}, 
-                    () => this.loadDataForDisplay(this.getEpisode(this.state.episodes, this.props.episodeId)) )
-            }
+        //console.log(this.props.patientId,  " :A: ", this.props.episodeId)
+        if (this.props.patientData && this.props.patientData.episodes) {
+            this.setState({episodes: this.props.patientData.episodes}, 
+                () => this.loadDataForDisplay(this.getEpisode(this.state.episodes, this.props.episodeId)) )
         }
-    };
-
-    componentWillReceiveProps(nextProps) {
-        //console.log("display nextprops: ", nextProps)
-        if (nextProps.patientData !== this.props.patientData) {
-            this.setState({episodes: nextProps.patientData.episodes}, 
-                () => this.loadDataForDisplay(this.getEpisode(this.state.episodes, nextProps.episodeId)) )
-        }
-        if (nextProps.episodeId !== this.props.episodeId) {
-            this.loadDataForDisplay(this.getEpisode(this.state.episodes, nextProps.episodeId))
-         }
-    }
+     }
 
     state = {
         episode: [],
@@ -99,7 +85,6 @@ class ReportDisplayData extends Component {
     };
 
     getEpisode = (episodes, episodeId) => {
-        console.log("getEpisodeId: ", episodeId)
         if (episodeId !== "0") {return episodes.filter(e => e._id === episodeId)[0]  
         } else {
             let ep = [];
@@ -135,50 +120,44 @@ class ReportDisplayData extends Component {
         this.setState({displayQuestion: question})
     }
 
-    handleReportPrepClick = () => {
-        //console.log("episodeId: ", this.state.episode._id)
-        this.props.handleReportPrep(this.state.episode._id)
+    handleFullReportClick = () => {
+        console.log("episode: ", this.state.episode)
+        this.props.handleFullReport(this.state.episode, this.state.questions, this.state.episodeDataForDisplay)
       }
 
-    
-    render () {
 
+    render () {
         const { classes } = this.props;
         const { episode, questions, episodeDataForDisplay, displayQuestion } = this.state;
 
         const RenderQuestionBar = () => {
             return (
-                questions && 
-                    <React.Fragment>
-                        <Typography variant="subtitle2" style={{fontSize: "16px"}}  inline={true}>
-                            Question {displayQuestion+1}: {questions[displayQuestion].question}
-                        </Typography>
-                        <span className={classes.questionBtnBox}>
-                            {questions.map((q, index) => {
-                                return (
-                                    <span 
-                                        className={classes.questionBtns}
-                                        style={{backgroundColor: index === displayQuestion ? '#cccccc' : null}}
-                                        onClick={() => this.handleFilterQuestions(index)}
-                                        key={index}
-                                        >
-                                            {index+1}
-                                    </span>
-                                )
-                            })}
-                        </span>
-                    </React.Fragment> 
+                
+                questions &&
+                    <Typography variant="subtitle2" style={{fontSize: "16px"}}  inline={true}>
+                        Question {displayQuestion+1}: {questions[displayQuestion].question}
+                    
+                    <span className={classes.questionBtnBox}>
+                        {questions.map((q, index) => {
+                            return (
+                                <span 
+                                    className={classes.questionBtns}
+                                    style={{backgroundColor: index === displayQuestion ? '#cccccc' : null}}
+                                    onClick={() => this.handleFilterQuestions(index)}
+                                    key={index}
+                                    >
+                                        {index+1}
+                                </span>
+                            )
+                        })}
+                    </span>  
+                </Typography>
             )
         }
 
         const RenderBtn = (props) => 
-            <Button 
-                className={classes.btn} 
-                variant="outlined" 
-                disabled={props.status === "active" || props.status === "pending" ? true : false} 
-                onClick={() => this.handleReportPrepClick()}
-                >
-                    {props.status === "active" || props.status === "pending" ? "report unavailable" : "prepare report"}
+            <Button variant="outlined" className={classes.reportBtn} onClick={() => this.handleFullReportClick()} >
+                full report
             </Button>
 
         const RenderPendingMsg = (props) => 
@@ -186,32 +165,26 @@ class ReportDisplayData extends Component {
                 This Diary card has not yet been started by the patient.
             </div> 
 
-
         return (  
             <Paper className={classes.root}>
+                {episodeDataForDisplay && questions && episode ? 
 
-                {episodeDataForDisplay && questions && episode ? null : <Callback />} 
-                       
-                {episodeDataForDisplay && questions && episode && 
                     <React.Fragment>
-
                         <Grid container spacing={24}>
                             <Grid item xs={6}>
 
                                 <Grid container spacing={24}>
-
                                     <Grid item xs={9}>
                                         <ReportSurveyDetails episode={episode} />
                                     </Grid>
                                     <Grid item xs={3}>
-                                        <RenderBtn status={episode.status} />
+                                        {episode.status === "pending" || episode.status === "active" ? null : <RenderBtn /> }
                                     </Grid>
                                 </Grid>
 
-                                { episode.status === "pending" ?
-                                    <RenderPendingMsg />
-                                    :
-                                    <div className={classes.graphContainer}>
+
+                                {episode.status === "pending" ? <RenderPendingMsg />
+                                    : <div className={classes.graphContainer}>
                                         <RenderQuestionBar />
                                         <br /><br />
                                         <ReportBarGraph 
@@ -223,13 +196,12 @@ class ReportDisplayData extends Component {
                                         />
                                     </div> 
                                 }
-                            </Grid>
 
+                            </Grid>
                             <Grid item xs={6}>
+
                                 <div className={classes.tableContainer}>
-                                    { episode.status === "pending" ?
-                                        null
-                                        :
+                                    {episode.status !== "pending" ?
                                         <React.Fragment> 
                                             <RenderQuestionBar />
                                             <br /><br />
@@ -240,14 +212,15 @@ class ReportDisplayData extends Component {
                                                 numDays={this.state.episode.num_days}
                                             />
                                         </React.Fragment>
+                                        : null
                                     }
                                 </div>
-                            </Grid> 
 
+                            </Grid>
                         </Grid>
-
                     </React.Fragment>
-                  
+                    : 
+                    <Callback />
                 }
              </Paper> 
         );
@@ -255,22 +228,23 @@ class ReportDisplayData extends Component {
 }
 
 
-ReportDisplayData.propTypes = {
+ReportSummary.propTypes = {
     classes: PropTypes.object.isRequired,
-  };
+};
 
-  function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ fetchReportPatientData }, dispatch);
-}
+function mapDispatchToProps(dispatch) {
+return bindActionCreators({ fetchReportPatientData }, dispatch);
+};
 
-  const mapStateToProps = (state) => {
-    // console.log("State : ", state);
+const mapStateToProps = (state) => {
+// console.log("State : ", state);
     return {
         patientInfo: state.reportPatientData.reportPatientInfo,
         patientData: state.reportPatientData.reportPatientData,
         user: state.user
     }
-  };
-  ReportDisplayData = connect(mapStateToProps, mapDispatchToProps)(ReportDisplayData)
-  ReportDisplayData = withStyles(styles, { withTheme: true })(ReportDisplayData)
-  export default ReportDisplayData
+};
+
+ReportSummary = connect(mapStateToProps, mapDispatchToProps)(ReportSummary)
+ReportSummary = withStyles(styles, { withTheme: true })(ReportSummary)
+export default ReportSummary
