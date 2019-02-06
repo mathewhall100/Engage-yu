@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-
+import { withRouter} from 'react-router-dom';
 import PropTypes from 'prop-types';
+
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
@@ -12,10 +12,8 @@ import Typography from '@material-ui/core/Typography';
 import Callback from '../Callback';
 import ReportTable from '../Tables/ReportTable';
 import ReportBarGraph from '../Graphs/ReportBarGraph';
-import { fetchReportPatientData } from '../../actions/index';
+import ReportSurveyDetails from './reportSurveyDetails';
 import { displayDataCalc, displayGraphCalc} from '../../logic/reportFunctions';
-import ReportSurveyDetails from './ReportSurveyDetails';
-
 
 const styles = theme => ({
     root: {
@@ -69,12 +67,24 @@ const styles = theme => ({
 class ReportSummary extends Component {
 
     componentDidMount() {
-        //console.log(this.props.patientId,  " :A: ", this.props.episodeId)
+        console.log("ReportSummary: CDM-this.props.episodeId", this.props.episodeId)
         if (this.props.patientData && this.props.patientData.episodes) {
+            console.log("ReportSummary: CDM-this.props.patientData.episodes, ", this.props.patientData.episodes)
             this.setState({episodes: this.props.patientData.episodes}, 
                 () => this.loadDataForDisplay(this.getEpisode(this.state.episodes, this.props.episodeId)) )
+        } 
+     };
+
+    componentWillReceiveProps(nextProps) {
+        console.log("ReportSummary: nextProps", nextProps)
+        if (this.props.patientData !== nextProps.patientData) {
+            this.setState({episodes: nextProps.patientData.episodes},
+                () => this.loadDataForDisplay(this.getEpisode(this.state.episodes, nextProps.episodeId)) )
         }
-     }
+        if (this.props.episodeId !== nextProps.episodeId) {
+                this.loadDataForDisplay(this.getEpisode(this.state.episodes, nextProps.episodeId)) 
+        }
+    };
 
     state = {
         episode: [],
@@ -85,7 +95,8 @@ class ReportSummary extends Component {
     };
 
     getEpisode = (episodes, episodeId) => {
-        if (episodeId !== "0") {return episodes.filter(e => e._id === episodeId)[0]  
+        console.log("Report Summary: getEpisode: ", episodes, " : ", episodeId)
+        if (episodeId !== "0") {return episodes.filter(e => e._id === episodeId)[0]
         } else {
             let ep = [];
             let status = ["awaiting review", "active", "actioned", "pending"]
@@ -95,10 +106,10 @@ class ReportSummary extends Component {
             }
         }
         return null
-    }
+    };
 
     loadDataForDisplay = (episode) => {
-        console.log("load data: ", episode)
+        console.log("ReportSummary: loadDataForDisplay: ", episode)
         if (episode) {
             this.setState({
                 episode,             
@@ -112,18 +123,18 @@ class ReportSummary extends Component {
                 )
             }) 
         } else { this.setState({noEpisodes: true}) }
-    }
+    };
 
     // Event handlers
     handleFilterQuestions = (question) => {
         console.log("question: ", question)
         this.setState({displayQuestion: question})
-    }
+    };
 
     handleFullReportClick = () => {
         console.log("episode: ", this.state.episode)
         this.props.handleFullReport(this.state.episode, this.state.questions, this.state.episodeDataForDisplay)
-      }
+    };
 
 
     render () {
@@ -153,14 +164,14 @@ class ReportSummary extends Component {
                     </span>  
                 </Typography>
             )
-        }
+        };
 
-        const RenderBtn = (props) => 
+        const RenderBtn = () => 
             <Button variant="outlined" className={classes.reportBtn} onClick={() => this.handleFullReportClick()} >
                 full report
             </Button>
 
-        const RenderPendingMsg = (props) => 
+        const RenderPendingMsg = () => 
             <div className={classes.graphContainer}>
                 This Diary card has not yet been started by the patient.
             </div> 
@@ -224,27 +235,25 @@ class ReportSummary extends Component {
                 }
              </Paper> 
         );
-    }
-}
+    };
+};
 
 
 ReportSummary.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-function mapDispatchToProps(dispatch) {
-return bindActionCreators({ fetchReportPatientData }, dispatch);
-};
 
 const mapStateToProps = (state) => {
-// console.log("State : ", state);
+    console.log("State : ", state);
     return {
         patientInfo: state.reportPatientData.reportPatientInfo,
         patientData: state.reportPatientData.reportPatientData,
         user: state.user
-    }
+    };
 };
 
-ReportSummary = connect(mapStateToProps, mapDispatchToProps)(ReportSummary)
+ReportSummary = withRouter(ReportSummary)
+ReportSummary = connect(mapStateToProps)(ReportSummary)
 ReportSummary = withStyles(styles, { withTheme: true })(ReportSummary)
 export default ReportSummary

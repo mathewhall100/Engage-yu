@@ -45,9 +45,11 @@ class FindPatientDetails extends Component {
             {caption: "Enrolled", info: moment(patientInfo.date_enrolled).format("MMM Do YYYY")},
             {caption: "Status", info: patientInfo.status},
         ];
-        const infoV = [
-            {caption: ["Email", "Contact phone"], info: [patientInfo.email, patientInfo.phone ]},
-            {caption: ["Primary provider", "Care group"], info: [startCase(`Dr. ${patientInfo.primary_provider_name}`), startCase(`${patientInfo.provider_group_name}`) ]},
+        const infoVLeft = [
+            {caption: ["Email", "Contact phone", "Primary provider", "Care group"], info: [patientInfo.email, patientInfo.phone, startCase(`Dr. ${patientInfo.primary_provider_name}`), startCase(`${patientInfo.provider_group_name}`) ]},
+
+        ];
+        const infoVRight = [
             {caption: ["Active diary cards", "pending diary cards", "awaiting review"], info: [this.findNumSurveys("active"), this.findNumSurveys("pending"),this.findNumSurveys("awaiting review") ]},
         ];
 
@@ -75,7 +77,7 @@ class FindPatientDetails extends Component {
                 <Grid container spacing={24}>
                     { infoH.map((info, idx) => {
                         return (
-                            <Grid item xs={2} key={idx}>
+                            <Grid item xs={3} key={idx}>
                                 <Typography variant="caption">
                                     {info.caption}
                                 </Typography>
@@ -89,32 +91,56 @@ class FindPatientDetails extends Component {
 
                 <br />
 
-                { infoV.map((info, index) => {
-                    return (
-                        <Grid container spacing={24} key={index}>
-                            <Grid item xs={2}>
-                                <Typography variant="subtitle1">
-                                    { info.caption.map((caption, idx) => {
-                                        return (
-                                            <div key={idx}>{caption}</div> 
-                                        )
-                                    }) }
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={10}>
-                                <Typography variant="subtitle1" className={classes.fwMedium}>
-                                    { info.info.map((info, idx) => {
-                                        return (
-                                            <div key={idx}>{info}</div> 
-                                        )
-                                    }) }
-                                </Typography>
-                            </Grid>
-                            <br />
-                        </Grid>
-                    )
-                }) }
-
+                <Grid container spacing={24}>
+                    <Grid item xs={7}>
+                        { infoVLeft.map((info, index) => {
+                            return (
+                                <Grid container spacing={24} key={index}>
+                                    <Grid item xs={4}>
+                                        { info.caption.map((caption, idx) => {
+                                            return (
+                                                <Typography variant="subtitle1" key={idx}>{caption}</Typography> 
+                                            )
+                                        }) }
+                                    </Grid>
+                                    <Grid item xs={8}>
+                                        { info.info.map((info, idx) => {
+                                            return (
+                                                <Typography variant="subtitle1" className={classes.fwMedium} key={idx}>{info}</Typography> 
+                                            )
+                                        }) }
+                                    </Grid>
+                                    <br />
+                                </Grid>
+                            )
+                        }) }
+                    </Grid>
+                    <Grid item xs={5}>
+                    <Typography variant="subtitle1" className={classes.fwMedium} gutterBottom>Recent activity</Typography>
+                        { infoVRight.map((info, index) => {
+                            return (
+                                <Grid container spacing={24} key={index}>
+                                    <Grid item xs={6}>
+                                        { info.caption.map((caption, idx) => {
+                                            return (
+                                                <Typography variant="subtitle1" style={{paddingLeft: "16px"}} key={idx}>{caption}</Typography> 
+                                            )
+                                        }) }
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                            { info.info.map((info, idx) => {
+                                                return (
+                                                    <Typography variant="subtitle1" className={classes.fwMedium} key={idx}>{info}</Typography> 
+                                                )
+                                            }) }
+                                    </Grid>
+                                    <br />
+                                </Grid>
+                            )
+                        }) }
+                    </Grid>
+                </Grid>
+                <br />        
                 <hr className={classes.hrStyled}/>
                 <br />
 

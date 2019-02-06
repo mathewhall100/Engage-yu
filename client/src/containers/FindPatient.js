@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import { selectConsoleTitle, fetchListPatientsByProvider, fetchListPatientsByCareGroup, fetchReportPatientData} from '../actions/index';
+import { selectConsoleTitle, fetchListPatientsByProvider, fetchListPatientsByCareGroup, fetchReportPatientData } from '../actions/index';
 import FindPatientForm from '../components/Forms/FindPatientForm';
 import FindPatientTable from './FindPatientTable';
 import FindPatientDetails from '../components/FindPatientDetails';
@@ -51,7 +51,8 @@ class FindPatient extends Component {
         console.log("handleActions: ", btn, " : ", _id)
         switch (btn) {
             case "close":
-                this.props.fetchReportPatientData("clear");
+                localStorage.setItem("patient_id", "");
+                this.props.fetchReportPatientData([],[])
                 this.setState({displayPatientId: "" });
                 break;
             case "contact":
@@ -108,7 +109,7 @@ class FindPatient extends Component {
 };
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle, fetchListPatientsByProvider, fetchListPatientsByCareGroup, fetchReportPatientData }, dispatch);
+    return bindActionCreators({selectConsoleTitle, fetchListPatientsByProvider, fetchReportPatientData}, dispatch);
 };
 
 const mapStateToProps = (state) => {

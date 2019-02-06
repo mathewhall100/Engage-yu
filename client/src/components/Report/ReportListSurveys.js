@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import axios from 'axios'
 import { startCase } from 'lodash'
 import moment from 'moment';
 import Button from '@material-ui/core/Button'
@@ -19,16 +20,18 @@ const panelProps = [
 class ReportListSurveys extends Component { 
     
     componentDidMount() {
-        if (this.props.patientData) {
-            if (this.props.patientData.length === 0) {
-                this.props.fetchReportPatientData(localStorage.getItem("patient_id")) 
-            } else  this.setState({episodes: this.props.patientData.episodes}, () => this.displayPanels(this.state.episodes) )
-        }
-    };
-    
+        console.log("ReportListSurveys: CDM")
+        if (this.props.patientData && this.props.patientData.episodes) {
+            this.setState({episodes: this.props.patientData.episodes}, 
+                () => this.displayPanels(this.state.episodes) )
+        } 
+     };
+
     componentWillReceiveProps(nextProps) {
+        console.log("ReportListSurveys: CWRP-nextprops: ", nextProps)
         if (this.props.patientData !== [nextProps.patientData]) {
-            this.setState({episodes: nextProps.patientData.episodes}, () => this.displayPanels(this.state.episodes) )
+            this.setState({episodes: nextProps.patientData.episodes}, 
+                () => this.displayPanels(this.state.episodes) )
         }
     };
 

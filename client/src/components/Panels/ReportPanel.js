@@ -9,7 +9,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import GenericTable from '../Tables/GenericTable'
 
 const styles = () => ({
-  	panel: {
+  	root: {
 		width: "100%",
   	},
 });
@@ -23,7 +23,7 @@ class ReportPanel extends Component {
 	render() {
 		const { summary, classes } = this.props
 		return (
-			<ExpansionPanel className={classes.panel}>
+			<ExpansionPanel className={classes.root}>
 
 				<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} >
 					<Typography variant="button">{summary}</Typography>

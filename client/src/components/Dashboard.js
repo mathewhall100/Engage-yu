@@ -12,7 +12,8 @@ class Dashboard extends Component {
     componentDidMount() {
         // Save page title to store (picked up and displayed by console component)
         this.props.selectConsoleTitle({title: "Dashboard"});
-        this.props.fetchReportPatientData("clear");
+        this.props.fetchReportPatientData([],[])
+        this.setState({displayPatientId: "" });
     }
 
     state = {
@@ -27,11 +28,12 @@ class Dashboard extends Component {
         const { showBanner } = this.state
         return (
             <React.Fragment>
-                { showBanner && <React.Fragment>
-                    <DashboardBanner toggleBanner={this.toggleBanner} /> 
-                    <br />
-                </React.Fragment> }
-                
+                { showBanner && 
+                    <React.Fragment>
+                        <DashboardBanner toggleBanner={this.toggleBanner} /> 
+                        <br />
+                    </React.Fragment> 
+                }
                 <DashboardTable /> 
             </React.Fragment >
         );

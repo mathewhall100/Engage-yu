@@ -24,6 +24,7 @@ export default class ListItems extends Component {
 	}
 
 	handleListItemClick = (event, index) => {
+		localStorage.setItem("patient_id", "")
 		this.setState({ selectedIndex: index });
 	};
 

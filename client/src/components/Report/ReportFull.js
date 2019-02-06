@@ -16,9 +16,9 @@ import TooltipBtns from '../Buttons/tooltipBtns'
 import ReportTable from '../Tables/ReportTable';
 import ReportEntriesTable from '../Tables/ReportEntriesTable'
 import ReportBarGraph from '../Graphs/ReportBarGraph';
-import ReportSurveyDetails from './ReportSurveyDetails'
+import ReportSurveyDetails from './reportSurveyDetails'
 import ReportPatientDetails from './ReportPatientDetails'
-import ReportRequestDetails from './ReportRequestDetails'
+import ReportRequestDetails from './reportRequestDetails'
 import { displayDataCalc, displayGraphCalc} from '../../logic/reportFunctions';
 import { selectConsoleTitle } from '../../actions/index';
 

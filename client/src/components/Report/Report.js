@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter} from 'react-router-dom';
+import axios from 'axios';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withStyles } from '@material-ui/core/styles'
@@ -22,28 +23,38 @@ const styles = theme => ({
 class Report extends Component {  
 
     componentDidMount() {
+        console.log("Report CDM")
         this.props.selectConsoleTitle({title: "Summary Report"});
-        this.props.fetchReportPatientData(localStorage.getItem("patient_id"))
-        this.setState({
-            episodeId: this.props.match.params.id,
-            patientId: localStorage.getItem("patient_id")
-        })
         
+        let patientInfo, patientData
+        const url = `/api/patient_info/find/${localStorage.getItem("patient_id")}`
+        axios.get(url)
+        .then( res => {
+            patientInfo = res.data
+            axios.get(`/api/patient_data/${patientInfo.patient_data_id}`)
+            .then( res => {
+                patientData = res.data
+                console.log("axios patientInfo: ", patientInfo)
+                console.log("axios patientData: ", patientData)
+                this.props.fetchReportPatientData(patientInfo, patientData)
+            })
+        })
+        console.log("Report: episode_id ", this.props.match.params.id)
+        this.setState({episodeId: this.props.match.params.id}) 
     };
 
     state = {
         episode: {},
         episodeId: "",
-        patientId: "",
         openFull: false
     }
 
     handleChangeEpisode = (id) => {
+        console.log("Report: handleChangeEpisode: ", id)
         this.setState({episodeId: id})
     }
 
     handleOpenFull = (episode, questions, episodeDataForReport) => {
-        // console.log("fullReport episode:", episode)
         this.props.selectConsoleTitle({title: "Full Report"});
         this.setState({
             episode,
@@ -54,7 +65,6 @@ class Report extends Component {
     }
 
     handleCloseFull = (id) => {
-        // console.log("report episode:", id)
         this.props.selectConsoleTitle({title: "Summary Report"});
         this.setState({episodeId: id}, () =>
             {this.setState({openFull: false}) }
@@ -64,27 +74,25 @@ class Report extends Component {
     render () {
 
         const { classes } = this.props
-        const { openFull } = this.state
-
-        const RenderReportSummary = (props) =>
-            <React.Fragment>
-                <Paper className={classes.detailsContainer}>
-                    <ReportPatientDetails closeBtn={true}/> 
-                </Paper>  
-                <ReportSummary  episodeId={this.state.episodeId} patientId={this.state.patientId} handleFullReport={this.handleOpenFull} /> <br /> 
-                <ReportListSurveys changeEpisode={this.handleChangeEpisode} /> 
-            </React.Fragment> 
-
-        const RenderReportFull = (props) => 
-            <ReportFull 
-                episode={this.state.episode} 
-                questions={this.state.questions}
-                episodeDataForReport={this.state.episodeDataForReport}
-                handleClose={this.handleCloseFull} />
+        const { openFull, episodeId, episode, questions, episodeDataForReport } = this.state
 
         return (
+            <React.Fragment>
+                {openFull && <ReportFull 
+                    episode={episode} 
+                    questions={questions}
+                    episodeDataForReport={episodeDataForReport}
+                    handleClose={this.handleCloseFull}
+                    />
+                }
 
-            openFull ? <RenderReportFull /> : <RenderReportSummary />
+                {!openFull && <React.Fragment>
+                    <Paper className={classes.detailsContainer}><ReportPatientDetails closeBtn={true}/></Paper>  
+                    <ReportSummary  episodeId={episodeId} handleFullReport={this.handleOpenFull} /> <br /> 
+                    <ReportListSurveys changeEpisode={this.handleChangeEpisode} /> 
+                </React.Fragment> }
+
+            </React.Fragment>
         );
     }
 }

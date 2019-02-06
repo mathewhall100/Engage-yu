@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { startCase } from 'lodash'
 import moment from 'moment';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
-export default class ReportRequestDetails extends Component {
+export default class ReportRequestDetails extends PureComponent {
 
     render () {
-        const { classes, episode } = this.props
+        const { episode } = this.props
         return (
             <Grid container spacing={24} style={{paddingTop: "10px"}}>
                 <Grid item xs={6}>

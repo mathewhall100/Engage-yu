@@ -13,7 +13,6 @@ import CareGroup from '../components/CareGroup';
 import CareGroupAdd from '../components/CareGroupAdd';
 import NotFound from '../pages/NotFound';
 
-
 export default class ConsoleRoutes extends Component { 
 
     render(){
