@@ -2,14 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { startCase } from 'lodash'
 import PropTypes from 'prop-types';
-
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import LinkBtn from '../Buttons/linkBtn'
 
-
-const styles = theme => ({
+const styles = () => ({
     fwMedium: {
         fontWeight: 500,
       },

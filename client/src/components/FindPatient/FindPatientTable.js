@@ -1,18 +1,16 @@
 import React, { Component } from 'react';
-import { Router, Link, Redirect} from 'react-router-dom';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { times, startCase } from 'lodash';
+import { startCase } from 'lodash';
 import moment from 'moment';
-
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
-import { createData, filterByName, filterByNumber, filterByNameAlgo, FilterByNumberAlgo  } from '../logic/findPtTableFunctions';
-import { fetchReportPatientData } from '../actions/index';
-import GenericTable from '../components/Tables/GenericTable';
+import { createData, filterByName, filterByNumber, filterByNameAlgo, FilterByNumberAlgo  } from '../../logic/findPtTableFunctions';
+import { fetchReportPatientData } from '../../actions/index';
+import GenericTable from '../Tables/GenericTable';
 
-const styles = theme => ({
+const styles = () => ({
     root: {
         padding: "20px"
     },

@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import { complianceCalc } from '../../logic/reportFunctions';
 
-const styles = (theme) => ({
+const styles = () => ({
     root: {
         width: "100%",
         height: "130px",

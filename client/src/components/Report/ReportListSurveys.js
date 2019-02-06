@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import axios from 'axios'
 import { startCase } from 'lodash'
 import moment from 'moment';
 import Button from '@material-ui/core/Button'
 import ReportPanel from '../Panels/ReportPanel';
 import { fetchReportPatientData } from '../../actions/index';
+
 
 const status = ["pending", "active", "awaiting review", "actioned", "archived", "cancelled"]
 const tableHeadings = ["start", "end", "timeframe", "interval", "questions", "requested by", "reviewed by", "reviewed by", "cancelled by", ]
@@ -121,9 +121,8 @@ class ReportListSurveys extends Component {
                         {morePanels ? "Hide..." : "Show more" }
                     </Button> } 
 
-                <br />
-                <br />
-
+                <br /><br />
+                
                 { morePanels === 1 && <React.Fragment>
                     
                     { panelStatus[4] && <ReportPanel
@@ -151,11 +150,11 @@ class ReportListSurveys extends Component {
             </React.Fragment>
         );
     }
-}
+};
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({ fetchReportPatientData }, dispatch);
-}
+};
 
 const mapStateToProps = (state) => {
     // console.log("State : ", state);

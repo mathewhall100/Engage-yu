@@ -2,13 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter} from 'react-router-dom';
 import PropTypes from 'prop-types';
-
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-
 import Callback from '../Callback';
 import ReportTable from '../Tables/ReportTable';
 import ReportBarGraph from '../Graphs/ReportBarGraph';
@@ -67,7 +65,7 @@ const styles = theme => ({
 class ReportSummary extends Component {
 
     componentDidMount() {
-        console.log("ReportSummary: CDM-this.props.episodeId", this.props.episodeId)
+        // console.log("ReportSummary: CDM-this.props.episodeId", this.props.episodeId)
         if (this.props.patientData && this.props.patientData.episodes) {
             console.log("ReportSummary: CDM-this.props.patientData.episodes, ", this.props.patientData.episodes)
             this.setState({episodes: this.props.patientData.episodes}, 
@@ -76,7 +74,7 @@ class ReportSummary extends Component {
      };
 
     componentWillReceiveProps(nextProps) {
-        console.log("ReportSummary: nextProps", nextProps)
+        // console.log("ReportSummary: nextProps", nextProps)
         if (this.props.patientData !== nextProps.patientData) {
             this.setState({episodes: nextProps.patientData.episodes},
                 () => this.loadDataForDisplay(this.getEpisode(this.state.episodes, nextProps.episodeId)) )
@@ -95,7 +93,7 @@ class ReportSummary extends Component {
     };
 
     getEpisode = (episodes, episodeId) => {
-        console.log("Report Summary: getEpisode: ", episodes, " : ", episodeId)
+        // console.log("Report Summary: getEpisode: ", episodes, " : ", episodeId)
         if (episodeId !== "0") {return episodes.filter(e => e._id === episodeId)[0]
         } else {
             let ep = [];
@@ -109,7 +107,7 @@ class ReportSummary extends Component {
     };
 
     loadDataForDisplay = (episode) => {
-        console.log("ReportSummary: loadDataForDisplay: ", episode)
+        // console.log("ReportSummary: loadDataForDisplay: ", episode)
         if (episode) {
             this.setState({
                 episode,             
@@ -245,7 +243,7 @@ ReportSummary.propTypes = {
 
 
 const mapStateToProps = (state) => {
-    console.log("State : ", state);
+    // console.log("State : ", state);
     return {
         patientInfo: state.reportPatientData.reportPatientInfo,
         patientData: state.reportPatientData.reportPatientData,

@@ -1,15 +1,14 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { startCase } from 'lodash';
 import moment from 'moment';
-
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import HandleBtns from './Buttons/handleBtns'
+import HandleBtns from '../Buttons/handleBtns'
 
-const styles = theme => ({
+const styles = () => ({
     root: {
         padding: "20px"
     },
@@ -21,7 +20,7 @@ const styles = theme => ({
     }
 })
 
-class FindPatientDetails extends Component {  
+class FindPatientDetails extends PureComponent {  
 
     findNumSurveys = (filter) => {
         //console.log("Patient Data: ", this.props.patientData.length)

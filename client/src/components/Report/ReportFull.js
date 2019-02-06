@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { startCase } from 'lodash';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-
 import Callback from '../Callback';
 import TooltipBtns from '../Buttons/tooltipBtns'
 import ReportTable from '../Tables/ReportTable';
@@ -62,7 +59,7 @@ const styles = theme => ({
 class ReportFull extends Component {
 
     componentDidMount() {
-        console.log("full report episode: ", this.props.episode)
+        // console.log("full report episode: ", this.props.episode)
         let episode = this.props.episode
         this.setState({ 
             episode,
@@ -94,7 +91,7 @@ class ReportFull extends Component {
     render () {
 
         const { episode, questions, records, episodeDataForReport } = this.state
-        const { classes, patientInfo, user } = this.props  
+        const { classes } = this.props  
 
         const btns = [
             {tooltip: "Close page", text: "close"},

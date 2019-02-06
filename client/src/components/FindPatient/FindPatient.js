@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import { selectConsoleTitle, fetchListPatientsByProvider, fetchListPatientsByCareGroup, fetchReportPatientData } from '../actions/index';
-import FindPatientForm from '../components/Forms/FindPatientForm';
+import { selectConsoleTitle, fetchListPatientsByProvider, fetchListPatientsByCareGroup, fetchReportPatientData } from '../../actions/index';
+import FindPatientForm from './FindPatientForm';
 import FindPatientTable from './FindPatientTable';
-import FindPatientDetails from '../components/FindPatientDetails';
+import FindPatientDetails from './findPatientDetails';
 
-const styles = theme => ({
+const styles = () => ({
     root: {
         padding: "20px"
     },
@@ -35,9 +35,13 @@ class FindPatient extends Component {
         displayPatientId: null
     };
 
-    filterByName = (value) => { this.setState({filterName: value}) };
+    filterByName = (value) => { 
+        this.setState({filterName: value})
+     };
 
-    filterByNumber= (value) => { this.setState({filterNumber: value}) };
+    filterByNumber= (value) => { 
+        this.setState({filterNumber: value}) 
+    };
 
     filterByList = (value) => {
         if (value === "all care group patients") {
@@ -48,7 +52,7 @@ class FindPatient extends Component {
     };
 
     handleActions = (btn, _id) => {
-        console.log("handleActions: ", btn, " : ", _id)
+        // console.log("handleActions: ", btn, " : ", _id)
         switch (btn) {
             case "close":
                 localStorage.setItem("patient_id", "");
@@ -109,7 +113,7 @@ class FindPatient extends Component {
 };
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({selectConsoleTitle, fetchListPatientsByProvider, fetchReportPatientData}, dispatch);
+    return bindActionCreators({selectConsoleTitle, fetchListPatientsByProvider, fetchListPatientsByCareGroup, fetchReportPatientData}, dispatch);
 };
 
 const mapStateToProps = (state) => {

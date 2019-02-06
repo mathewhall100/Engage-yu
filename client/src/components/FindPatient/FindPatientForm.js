@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Field, reduxForm } from 'redux-form';
+import { reduxForm } from 'redux-form';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import StreamTextInput from './StreamTextInput';
-import SelectWithChip from './SelectWithChip';
+import StreamTextInput from '../Forms/StreamTextInput';
+import SelectWithChip from '../Forms/SelectWithChip';
 
 const styles = () => ({
     textSearch: {
