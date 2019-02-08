@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Field } from 'redux-form';
-
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -8,41 +7,35 @@ import Select from '@material-ui/core/Select';
 import DoneIcon from '@material-ui/icons/Done';
 
 
-class FormSelect extends Component {  
+export default class FormSelect extends Component {  
 
     renderSelect(field) {
-        const {input, label, width, meta: { pristine, touched, error }, children, ...custom} = field
-        return (
+        console.log(field)
 
-            <div>
+        const {input, label, width, meta: { pristine }, children, ...custom} = field
+
+        return (
                 <FormControl style={{width: `${width}px`}}>
+
                     <InputLabel>{label}</InputLabel> 
                     <Select
                         {...input}
-                        onSelect={(event, index, value) => input.onChange(value)}
+                        onSelect={(value) => input.onChange(value)}
                         children={children}
                         {...custom}
                     >
                     </Select>
 
-                    <div style={{fontSize: "13px", color: "red"}}> 
-                        {touched ? error : ''}
-                    </div>
-                    <div style={{fontSize: "13px", color: "green"}}> 
-                        {!pristine ? <DoneIcon /> : ''}
-                    </div>
+                    <span style={{position: "relative", left: "220px", top: "-30px"}}> 
+                        {!pristine ? <DoneIcon style={{fontSize: "28px", color: "green"}}/> : ''}
+                    </span>
 
                 </FormControl>
-            </div>
         )
-        
     };
 
-
     render () {
-
         return (
-
             <Field 
                 name={this.props.name} 
                 component={this.renderSelect} 
@@ -53,9 +46,6 @@ class FormSelect extends Component {
                    <MenuItem key={item.value} value={item.value}>{item.text}</MenuItem>
                 )}
             </Field>
-
         )
     }
 };
-
-export default FormSelect;

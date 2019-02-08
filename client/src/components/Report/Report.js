@@ -3,27 +3,16 @@ import { withRouter} from 'react-router-dom';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { withStyles } from '@material-ui/core/styles'
-import Paper from '@material-ui/core/Paper'
 import ReportPatientDetails from './ReportPatientDetails';
 import ReportSummary from './ReportSummary';
 import ReportListSurveys from './ReportListSurveys';
 import { selectConsoleTitle, fetchReportPatientData } from '../../actions/index';
 import ReportFull from './ReportFull';
 
-const styles = theme => ({
-    detailsContainer: {
-        width: "100%",
-        marginTop: theme.spacing.unit*2,
-        paddingLeft: "20px",
-        marginBottom: "30px"
-    },
-})
-
 class Report extends Component {  
 
     componentDidMount() {
-        console.log("Report CDM")
+        console.log("Report, CDM: ", localStorage.getItem("patient_id"))
         this.props.selectConsoleTitle({title: "Summary Report"});
         
         let patientInfo, patientData
@@ -38,7 +27,12 @@ class Report extends Component {
                 console.log("axios patientData: ", patientData)
                 this.props.fetchReportPatientData(patientInfo, patientData)
             })
+            .catch(err => {
+                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
+                console.log(err);
+            })
         })
+        
         console.log("Report: episode_id ", this.props.match.params.id)
         this.setState({episodeId: this.props.match.params.id}) 
     };
@@ -73,11 +67,11 @@ class Report extends Component {
 
     render () {
 
-        const { classes } = this.props
         const { openFull, episodeId, episode, questions, episodeDataForReport } = this.state
 
         return (
             <React.Fragment>
+                
                 {openFull && <ReportFull 
                     episode={episode} 
                     questions={questions}
@@ -87,7 +81,7 @@ class Report extends Component {
                 }
 
                 {!openFull && <React.Fragment>
-                    <Paper className={classes.detailsContainer}><ReportPatientDetails closeBtn={true}/></Paper>  
+                    <ReportPatientDetails />
                     <ReportSummary  episodeId={episodeId} handleFullReport={this.handleOpenFull} /> <br /> 
                     <ReportListSurveys changeEpisode={this.handleChangeEpisode} /> 
                 </React.Fragment> }
@@ -110,5 +104,4 @@ const mapStateToProps = (state) => {
 
 Report= connect(mapStateToProps, mapDispatchToProps)(Report)
 Report = withRouter(Report)
-Report = withStyles(styles)(Report)
 export default Report;

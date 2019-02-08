@@ -13,7 +13,6 @@ import Button from '@material-ui/core/Button';
 
 import FormText from './Forms/FormText'
 import FormTextFocused from './Forms/FormTextFocused'
-import FormTextPassword from './Forms/FormTextPassword'
 import FormSelect from './Forms/FormSelect'
 import FormRadio from './Forms/FormRadio'
 import { enrollNewPatient } from '../actions';
@@ -287,16 +286,18 @@ class ProviderEnrollForm extends Component {
                             </Grid>
 
                             <Grid item xs={4}>
-                                    <FormTextPassword
+                                    <FormText
                                         name="password1"
                                         label="Password"
+                                        type="passsword"
                                         width="270"
                                     />
                             </Grid>
                             <Grid item xs={8}>
-                                <FormTextPassword
+                                <FormText
                                     name="password2" 
                                     label="Re-enter Password"
+                                    type="password"
                                     width="270"
                                     />
                             </Grid>

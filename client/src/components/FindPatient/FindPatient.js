@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import axios from 'axios';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withStyles } from '@material-ui/core/styles';
@@ -53,25 +54,47 @@ class FindPatient extends Component {
 
     handleActions = (btn, _id) => {
         // console.log("handleActions: ", btn, " : ", _id)
-        switch (btn) {
-            case "close":
-                localStorage.setItem("patient_id", "");
-                this.props.fetchReportPatientData([],[])
-                this.setState({displayPatientId: "" });
-                break;
-            case "contact":
-                break;
-            case "edit details":
-                this.props.history.push(`updatepatient/${_id}`)
-                break;
-            case "view reports":
-                localStorage.setItem("patient_id", _id)
-                this.props.history.push('report/0')
-                break;
-            case "new survey":
-                this.props.history.push(`survey/${_id}`)
-            default: null;
+        if (btn === "close") {
+            localStorage.setItem("patient_id", "");
+            this.props.fetchReportPatientData([],[])
+            this.setState({displayPatientId: "" });
+        } else {
+            let patientInfo, patientData
+            const url = `/api/patient_info/find/${_id}`
+            axios.get(url)
+            .then( res => {
+                patientInfo = res.data
+                axios.get(`/api/patient_data/${patientInfo.patient_data_id}`)
+                .then( res => {
+                    patientData = res.data
+                    console.log("axios patientInfo: ", patientInfo)
+                    console.log("axios patientData: ", patientData)
+                    this.props.fetchReportPatientData(patientInfo, patientData)
+                })
+                .catch(err => {
+                    console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
+                    console.log(err);
+                })
+                
+                switch (btn) {
+                    case "contact":
+                        break;
+                    case "edit details":
+                        localStorage.setItem("patient_id", _id)
+                        this.props.history.push(`updatepatient`)
+                        break;
+                    case "view reports":
+                        localStorage.setItem("patient_id", _id)
+                        this.props.history.push('report/0')
+                        break;
+                    case "new survey":
+                        localStorage.setItem("patient_id", _id)
+                        this.props.history.push(`survey/${_id}`)
+                    default: null;
+                }
+            })
         }
+       
     };
 
     render () {

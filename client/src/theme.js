@@ -9,6 +9,10 @@ const theme = createMuiTheme({
         main: '#2d404b',
         dark: '#28353d'
       },
+      secondary: {
+        main: "#eeeeee",
+        dark: "#dddddd"
+      }
     },
     breakpoints: {
       values: {

@@ -69,13 +69,17 @@ class FindPatientTable extends Component {
                 console.log("axios patientData: ", patientData)
                 this.props.fetchReportPatientData(patientInfo, patientData)
             })
-            localStorage.setItem("patient_id", _id) 
+            .catch(err => {
+                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
+                console.log(err);
+            }) 
         })
+        
+        localStorage.setItem("patient_id", _id) 
     }
 
     // Filters   
     filterData = (data, filterName, filterNumber ) => {
-        
         if (localStorage.getItem("patient_id")) { 
             return data.filter(pt => pt._id === localStorage.getItem("patient_id")) 
         } else {

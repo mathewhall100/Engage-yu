@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
+import { startCase } from 'lodash'
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
@@ -14,7 +15,7 @@ import ReportTable from '../Tables/ReportTable';
 import ReportEntriesTable from '../Tables/ReportEntriesTable'
 import ReportBarGraph from '../Graphs/ReportBarGraph';
 import ReportSurveyDetails from './reportSurveyDetails'
-import ReportPatientDetails from './ReportPatientDetails'
+import PatientDetailsBar from '../Textblocks/patientDetailsBar';
 import ReportRequestDetails from './reportRequestDetails'
 import { displayDataCalc, displayGraphCalc} from '../../logic/reportFunctions';
 import { selectConsoleTitle } from '../../actions/index';
@@ -99,6 +100,11 @@ class ReportFull extends Component {
             {tooltip: "Email report to provider and/or patient", text: "email"},
             {tooltip: "Print report", text: "print"},
         ];
+        const infoItems = [
+            { caption: "Patient name", text: `${startCase(this.props.patientInfo.firstname)} ${startCase(this.props.patientInfo.lastname)}` },
+            { caption: "Hospital number", text: this.props.patientInfo.hospital_id },
+            { caption: "DOB", text: this.props.patientInfo.dob },
+        ];
 
         const RenderSubtitle = (props) =>
             <Typography variant="subtitle1" className={classes.fwMedium} align="center" gutterBottom>
@@ -125,7 +131,7 @@ class ReportFull extends Component {
                                 </Typography>
                             </Grid>
                             <Grid item xs={12}>
-                                 <ReportPatientDetails/> 
+                                 <PatientDetailsBar items={infoItems} closeBtn={false}/> 
                             </Grid>
                             <Grid item xs={6}>
                                 {episode && <ReportSurveyDetails episode={episode}/> }
@@ -218,7 +224,14 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({ selectConsoleTitle }, dispatch);
 }
 
-ReportFull = connect(null, mapDispatchToProps)(ReportFull)
+const mapStateToProps = (state) => {
+    //console.log("State : ", state);
+    return {
+        patientInfo: state.reportPatientData.reportPatientInfo,
+    }
+  };
+
+ReportFull = connect(mapStateToProps, mapDispatchToProps)(ReportFull)
 ReportFull = withRouter(ReportFull)
 ReportFull = withStyles(styles, { withTheme: true })(ReportFull)
 export default ReportFull

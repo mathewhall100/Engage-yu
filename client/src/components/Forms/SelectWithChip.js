@@ -46,7 +46,7 @@ class FormSelectWithChip extends Component {
 		const { classes, menuItems, label, theme } = this.props;
 		const { selected } = this.state
 
-		const getStyles = (item, selection) => {
+		const getStyles = (item, selected) => {
 			return {
                 fontSize: "12px",
 				fontWeight: selected  === item ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium

@@ -31,7 +31,6 @@ class FindPatientForm extends Component {
     onChangeList = (list) => { 
         localStorage.setItem("patient_id", "") 
         this.props.filterByList(list)
-        
     };
 
     render () {

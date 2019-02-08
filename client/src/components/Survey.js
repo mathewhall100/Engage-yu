@@ -34,9 +34,7 @@ class Survey extends Component {
                 <SurveyPatientDetails /> <br />
 
                 <Card style={{paddingLeft: "40px", paddingTop: "20px"}}>
-
                     <SurveyForm patientId={patientId}/>
-
                 </Card >
             </div>
         );

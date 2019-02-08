@@ -1,53 +1,51 @@
 import React, { Component } from 'react';
 import { Field } from 'redux-form';
-
 import TextField from '@material-ui/core/TextField'
 import DoneIcon from '@material-ui/icons/Done';
 
 
-class FormTextFocused extends Component {  
+export default class FormTextFocused extends Component {  
 
     renderTextField(field) {
-
-        const {width, meta: {dirty, touched, error}} = field;
         console.log("Field: ", field)
+
+        const {width, label, meta: {dirty, touched, error}} = field;
+
             return (
-                <div>
+                <React.Fragment>
+
                     <TextField
-                        label={field.label}
-                            {...field.input}    
+                        label={label}
+                        {...field.input}   
+                        onBlur={false} 
                         margin="normal"
                         multiline={field.mutliline === true ? true : false}
                         style={{width: `${width}px`}}
-                        autoFocus
+                        autoFocus={true}
+                        
                     />
-                    
+
+                    {dirty && !error && <span style={{position: "relative", left: "10px", top: "32px"}}> 
+                        <DoneIcon style={{fontSize: "28px", color: "green"}}/>
+                    </span> }
+
                     <div style={{fontSize: "13px", color: "red"}}> 
                         {touched ? error : ''}
                     </div>
-                    <div style={{fontSize: "13px", color: "green"}}> 
-                        {dirty && !error ? <DoneIcon /> : ''}
-                    </div>
 
-                </div>
+                </React.Fragment>
             )
         };
 
     render () {
-
         return (
-
             <Field 
                 name={this.props.name}
                 label={this.props.label}
                 width={this.props.width ? this.props.width : "250"}
                 component={this.renderTextField}
                 autoComplete="off"
-                
             />
-
         )
     }
 }
-
-export default FormTextFocused;

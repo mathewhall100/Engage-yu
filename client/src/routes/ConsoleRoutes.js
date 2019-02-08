@@ -3,8 +3,8 @@ import { Route, Switch } from "react-router-dom";
 
 import Dashboard from '../components/Dashboard';
 import FindPatient from '../components/FindPatient/FindPatient';
-import EditPatient from '../components/EditPatient';
-import EnrollPatient from '../components/EnrollPatient';
+import UpdatePatient from '../components/UpdatePatient/UpdatePatient';
+import EnrollPatient from '../components/Enroll/EnrollPatient';
 import SurveyCreate from '../components/Survey';
 import Report from '../components/Report/Report';
 import Provider from '../components/Provider';
@@ -28,7 +28,7 @@ export default class ConsoleRoutes extends Component {
                 <Route exact path='/admin/caregroupadd' render={props => <CareGroupAdd {...this.props}></CareGroupAdd>} />
                 <Route path='/admin/survey/:id' render={props => <SurveyCreate {...this.props}></SurveyCreate>} />
                 <Route path='/admin/report/:id' render={props => <Report {...this.props}></Report>} />
-                <Route path='/admin/updatepatient/:id' render={props => <EditPatient {...this.props}></EditPatient>} />
+                <Route path='/admin/updatepatient' render={props => <UpdatePatient {...this.props}></UpdatePatient>} />
                 <Route path="/notfound" component={NotFound} />
                 <Route component={NotFound} />
             </Switch>
