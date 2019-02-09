@@ -112,7 +112,7 @@ class UpdatePatient extends Component {
                 console.log("res.data: ", res.data);
                 let selectItems=[];
                 res.data.providerList.map((provider, index) => {
-                        selectItems.push({
+                    selectItems.push({
                         value: index,
                         text: `Dr. ${provider.firstname} ${provider.lastname}`,
                         id: provider._id, 
@@ -366,18 +366,18 @@ const validate = (values) => {
 
     const errors = {};
     // validate inputs from 'values'
-    if (values.firstname && values.firstname.length <3 ) {
-        errors.firstname = "*Please enter a valid name!";   // message to be displayed if invalid
-    } 
-    else if (values.lastname && values.lastname.length <3)  {
-        errors.lastname = "*Please enter a valid name!";   
-    } 
-    else if (values.email && values.email.length < 5) {
-        errors.email = "Please enter a valid email!";   
-    }
-    else if (values.phone && values.phone.length < 12) {
-    errors.phone = "Please enter a contact phone number!";   
-    }
+    if (values.firstname && !/^[a-zA-Z0-9' ]{2,30}$/i.test(values.firstname))  {
+        errors.firstname = "Invalid name. Only characters, numbers and ' allowed"}
+
+    if (values.lastname && !/^[a-zA-Z0-9' ]{2,30}$/i.test(values.lastname))  {
+        errors.lastname = "Invalid name. Only characters, numbers and ' allowed"}    
+
+    if (values.email && !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/i.test(values.email)) {
+        errors.email = "Invalid email address."}     
+
+    if (values.phone && !/^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/i.test(values.phone)) {
+        errors.phone = "*Invalid phone number. Try (123) 456 7891 format" }   
+    
     // If errors is empty, then form good to submit
     // If errors has any properties, redux form assumes form is invalid
     console.log("Errors: ", errors)

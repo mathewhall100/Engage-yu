@@ -148,7 +148,7 @@ class EnrollPatient extends Component {
 
             primary_provider_ref: this.state.providers[values.provider].id,
             primary_provider_id: this.state. providers[values.provider].id,
-            primary_provider_name: this.state.providers[values.provider].text,
+            primary_provider_name: this.state.providers[values.provider].text.slice(3),
 
             provider_group_ref: this.state.providers[values.provider].group_ref,
             provider_group_id: this.state.providers[values.provider].group_id,
