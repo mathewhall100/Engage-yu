@@ -17,22 +17,22 @@ const styles = () => ({
 class PatientDetailsBar extends Component {
 
     render () {
-        const { classes, items, url, closeBtn} = this.props;
+        const { classes, items, url, closeBtn, btnText} = this.props;
         return (
             <Grid container spacing={24}>
 
                 { items.map((i, idx) => {
                     return (
-                        <Grid item xs={Math.floor(12/(items.length+1))} key={idx}>
+                        <Grid item xs={(idx === 0 ? 3 : Math.floor(9/(items.length)))} key={idx}>
                             <Typography variant="caption">{i.caption}</Typography>
                             <Typography variant="h6" className={classes.fwMedium}>{i.text}</Typography>
                         </Grid>
                     )
                 })}
 
-                <Grid item xs={12-items.length*Math.floor(12/(items.length+1))}>
+                <Grid item xs={9-(items.length-1)*Math.floor(9/(items.length))}>
                     {closeBtn && <Typography align="right" className={classes.backBtn} >
-                        <LinkBtn url={url} />
+                        <LinkBtn url={"/admin/find"} text="close"/>
                     </Typography> }
                 </Grid>
                 

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { selectConsoleTitle, fetchReportPatientData } from '../actions/index'
@@ -14,6 +13,7 @@ class Dashboard extends Component {
         this.props.selectConsoleTitle({title: "Dashboard"});
         this.props.fetchReportPatientData([],[])
         this.setState({displayPatientId: "" });
+        localStorage.setItem("patient_id", "")
     }
 
     state = {

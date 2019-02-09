@@ -17,7 +17,7 @@ export default class FormTextFocused extends Component {
                     <TextField
                         label={label}
                         {...field.input}   
-                        onBlur={false} 
+                        onBlur=""
                         margin="normal"
                         multiline={field.mutliline === true ? true : false}
                         style={{width: `${width}px`}}

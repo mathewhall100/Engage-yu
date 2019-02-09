@@ -1,17 +1,33 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles'
 import PropTypes from 'prop-types';
+import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import Typography from '@material-ui/core/Typography';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import LinkBtn from '../Buttons/linkBtn'
 
-const styles = () => ({
+const styles = (theme) => ({
 	root: {
 		maxWidth: "600px"
-	}
+	},
+	btn: { 
+        marginLeft: '0 15px 15px 0',
+        backgroundColor: "#eeeeee",
+        borderColor: theme.palette.primary.main,
+        borderRadius: "5px",
+        textDecoration: "none",
+        '&:hover': {
+            backgroundColor: "#dddddd",
+        },
+        '&:disabled': {
+            color: 'grey'
+        },
+        hover: {},
+        disabled: {},
+    },
 })
 
 class SimpleDialog extends Component {
@@ -38,7 +54,7 @@ class SimpleDialog extends Component {
 								</Typography>
 							</DialogContent>
 						<DialogActions>
-								<Button color="primary" onClick={() => this.setState({ open: false }) }>close</Button> 
+							<Button color="primary" className={classes.btn}onClick={() => this.setState({ open: false }) }>close</Button> 
 						</DialogActions>	
 					</div>
 			</Dialog>

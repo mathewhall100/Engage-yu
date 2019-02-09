@@ -28,13 +28,11 @@ module.exports = {
     //requires caregroup id as searchterm in req.body.searchId
     // Returns json list of provider names only (sorted alphabeltically by last_name)
     findAllByGroup: function(req, res) {
-        console.log("Provider controller called to 'find all by provider group'", req.body );
+        console.log("Provider controller called to 'find all by provider group' ", req.params.id );
         //console.log(`Requester:  ${req.user}`);
         //if(req.user){
             db.Provider
-            .find( {
-                provider_group_id: req.params.id}, 
-                {firstname: 1, lastname: 1, _id: 1, office: 1, role: 1} )
+            .find( {provider_group_id: req.params.id} )
             .sort( {"lastname": 1} )
             .then(providerList => {
                 console.log("RESULT:", providerList)
@@ -56,7 +54,7 @@ module.exports = {
     // Fetch provider details by id
     // To be sent req.params.id with _id of provider to be fetched
     findById: function(req, res) {
-        console.log("Provider controller called to 'findOne'" +req.params.id);
+        console.log("Provider controller called to 'findOne' ", req.params.id);
         // if(req.user) {
             db.Provider
             .findById(req.params.id)
@@ -99,7 +97,7 @@ module.exports = {
     // Remove a provider
     // To be sent req.params.id of resultto be deleted
     remove: function(req, res) {
-        console.log("resultcontroller called to 'remove' " + req.params.id);
+        console.log("resultcontroller called to 'remove' ", req.params.id);
         // if(req.user) {
             db.Provider
             .findByIdAndRemove({_id: req.params.id})
@@ -120,7 +118,7 @@ module.exports = {
     // Update a providers details
     // To be sent req.params.id of provider to be updated & req.body object of provider's new details
     update: function(req, res) {
-        console.log("Provider controller called to 'update' " + req.params.id);
+        console.log("Provider controller called to 'update' ", req.params.id);
         // if(req.user) {
         let opts = {runValidators: true};
             db.Provider

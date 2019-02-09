@@ -250,5 +250,25 @@ module.exports = {
         // }
     },
 
+    // Remove patient data 
+    // To be sent req.params.id of patient data collection to be deleted
+    delete: function(req, res) {
+        console.log("Patient-dataController called to 'remove' " + req.params.id);
+        // if(req.user) {
+            db.Patient_data
+            .findByIdAndRemove({_id: req.params.id})
+            .then(result => {
+                console.log(result);
+                res.json(result)
+            })
+            .catch(err => {
+                console.log(`CONTROLLER ERROR: ${err}`);
+                res.status(422).json(err);
+            })
+        // } else {
+        //     res.status(422).json('You do not have proper credential to perform this action.')
+        // }
+    },
+
 };
 

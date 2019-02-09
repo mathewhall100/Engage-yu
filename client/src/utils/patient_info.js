@@ -72,6 +72,10 @@ export default {
         console.log("Axios call made to '/api/patient_info' to 'updateProviderGroup' ", id);
         return axios.put("/api/patient_info/updateProviderGroup/"+id, info);
     },
+    remove: function(id){
+        console.log("Axios call made to '/api/patient_info' to 'remove' " + id);
+        return axios.delete("/api/patient_info/delete/"+id);
+    },
 
 
 }

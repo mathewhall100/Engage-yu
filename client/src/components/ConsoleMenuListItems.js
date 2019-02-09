@@ -7,12 +7,10 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import Typography from '@material-ui/core/Typography'
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import SearchIcon from '@material-ui/icons/Search';
-import PollIcon from '@material-ui/icons/Poll';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
-import ContactPhoneIcon from '@material-ui/icons/ContactPhone';
-import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
-import WcIcon from '@material-ui/icons/Wc';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
+import DeleteIcon from '@material-ui/icons/Delete';
+import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
 import BuildIcon from '@material-ui/icons/Build';
 import Divider from '@material-ui/core/Divider';
 
@@ -38,7 +36,8 @@ export default class ListItems extends Component {
 			{title: "Custom questions", icon: <BuildIcon color="primary" />, lnk: "/admin/dashboard"},
 			{title: "divider", text: "Admin"},
 			{title: "Manage providers", icon: <SupervisorAccountIcon color="primary" />, lnk: "/admin/provider"},
-			{title: "Manage care groups", icon: <SupervisorAccountIcon color="primary" />, lnk: "/admin/caregroup"}
+			{title: "Manage care groups", icon: <LocalHospitalIcon color="primary" />, lnk: "/admin/caregroup"},
+			{title: "Delete an account", icon: <DeleteIcon color="primary" />, lnk: "/admin/delete"}
 		]
 
 		// Render individual list item (navigation link in console menu)
@@ -68,7 +67,8 @@ export default class ListItems extends Component {
 											<Typography variant="button" color="primary">{item.text}</Typography>
 										</ListSubheader>
 									</React.Fragment>
-								: <RenderListItem idx={idx} title={item.title} lnk={item.lnk} icon={item.icon} />  
+									: 
+									<RenderListItem idx={idx} title={item.title} lnk={item.lnk} icon={item.icon} />  
 								}
 							</React.Fragment>
 						)

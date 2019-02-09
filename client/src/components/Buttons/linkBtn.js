@@ -5,13 +5,12 @@ import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
 const styles = (theme) => ({
-    link: { 
-        textDecoration: "none",
-    },
     btn: { 
+        marginLeft: '15px',
         backgroundColor: "#eeeeee",
         borderColor: theme.palette.primary.main,
         borderRadius: "5px",
+        textDecoration: "none",
         '&:hover': {
             backgroundColor: "#dddddd",
         },
@@ -26,9 +25,9 @@ const styles = (theme) => ({
 class PatientLinkBtn extends PureComponent {
 
     render() {
-        const {classes, url } = this.props
+        const {classes, url, text } = this.props
         return (
-            <Link to={url} className={classes.link}><Button variant="outlined" className={classes.btn}>Back</Button></Link>
+            <Button variant="outlined" className={classes.btn} component={Link} to={url}>{text}</Button>
         )
     }
 }

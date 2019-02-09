@@ -36,4 +36,8 @@ router
     .route('/editLastEpisode/:id/:status')
     .put(patient_dataController.editActiveStatus);
 
+router
+    .route('/delete/:id')
+    .delete(patient_dataController.delete)
+
 module.exports = router;

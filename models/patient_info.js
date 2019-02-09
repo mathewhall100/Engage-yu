@@ -17,7 +17,7 @@ const patient_infoSchema = new Schema({
         validate: {
             validator: function(val) {
                 //should contain between 2 and 12 characters and only letters and numbers
-                let re = /^\d*[a-zA-Z][a-zA-Z\d\s]{2,12}$/
+                let re = /^[a-zA-Z0-9\-]{3,12}$/i
                 return re.test(val);
             },
             message: props => `${props.value} is not a valid hospital id!`
@@ -29,7 +29,7 @@ const patient_infoSchema = new Schema({
         validate: {
             validator: function(val) {
                 //should be between 2 and 30 characters and contain only letters
-                let re = /^[a-zA-Z]{2,30}$/
+                let re = /^[a-zA-Z0-9' ]{2,30}$/
                 return re.test(val);
             },
             message: props => `${props.value} is not a valid name!`
@@ -40,12 +40,14 @@ const patient_infoSchema = new Schema({
         validate: {
             validator: function(val) {
                 //should be between 2 and 30 characters and contain only letters
-                let re = /^[a-zA-Z]{2,30}$/
+                let re = /^[a-zA-Z0-9' ]{2,30}$/
                 return re.test(val);
             },
             message: props => `${props.value} is not a valid name!`
         }
     },
+
+    gender: {type: String, enum: ["male", "female"], required: [true, "No patient gender"]},
 
     dob:  { type: String, required: [true, "No patient date of birth"],
         validate: {
@@ -62,7 +64,7 @@ const patient_infoSchema = new Schema({
         validate: {
             validator: function(val) {
                 //email formatting regex. Must contain letters and numbers, '@' and '.' 
-                let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                let re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
                 return re.test(val);
             },
             message: props => `${props.value} is not a valid email address!`
@@ -73,7 +75,7 @@ const patient_infoSchema = new Schema({
         validate: {
             validator: function(val) {
                 //must be of xxx-xxx-xxxx format with numbers and '-' only
-                let re = /\d{3}-\d{3}-\d{4}/
+                const re =  /^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/
                 return re.test(val);
             },
             message: props => `${props.value} is not a valid phone number!`

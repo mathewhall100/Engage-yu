@@ -38,8 +38,8 @@ router
 
 // Matches with "/api/patient_info/insertRef/:id" 
 router
-.route('/insertRef/:id')
-.put(patient_infoController.insertRef)
+    .route('/insertRef/:id')
+    .put(patient_infoController.insertRef)
 
 // Matches with "/api/patient_info/updateEmail/:id" 
 router
@@ -51,25 +51,30 @@ router
     .route('/updatePhone/:id')
     .put(patient_infoController.updatePhone)
 
-// Matches with "/api/patient_info/updateStatus/:id" 
+// Matches with "/api/patient_info/updateStatus/:id"    
 router
     .route('/updateStatus/:id')
     .put(patient_infoController.updateStatus)
 
 // Matches with "/api/patient_info/updateName/:id" 
 router
-.route('/updateName/:id')
-.put(patient_infoController.updateName)
+    .route('/updateName/:id')
+    .put(patient_infoController.updateName)
 
 // Matches with "/api/patient_info/updateProvider/:id" 
 router
-.route('/updateProvider/:id')
-.put(patient_infoController.updateProvider)
+    .route('/updateProvider/:id')
+    .put(patient_infoController.updateProvider)
 
 // Matches with "/api/patient_info/updateProviderGroup/:id" 
 router
-.route('/updateProviderGroup/:id')
-.put(patient_infoController.updateProviderGroup)
+    .route('/updateProviderGroup/:id')
+    .put(patient_infoController.updateProviderGroup)
+    // Matches with "/api/patient_info/updateName/:id" 
+router
+    .route('/delete/:id')
+    .delete(patient_infoController.delete)
+
 
 
 module.exports = router;

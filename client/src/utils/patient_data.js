@@ -25,5 +25,8 @@ export default {
         console.log("Axios call made to '/api/patient_data' to 'addRecord'");
         return axios.put("/api/patient_data/record/"+id, record);
     },
-
+    remove: function(id){
+        console.log("Axios call made to '/api/patient_info' to 'remove' " + id);
+        return axios.delete("/api/patient_data/delete/"+id);
+    },
 }

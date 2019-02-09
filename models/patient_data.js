@@ -4,7 +4,7 @@ const episodeSchema = require("./schema/episode");
 
 const patient_dataSchema = new Schema({
 
-    patient_info_id: { type: String, unique: true, required: [true, 'No patient_info_ref'] },
+    patient_info_id: { type: String, unique: true, required: [true, 'No patient_info_id'] },
     episodes: [episodeSchema]
 
     },

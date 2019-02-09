@@ -290,7 +290,7 @@ class UpdatePatient extends Component {
 
             <Card className={classes.root}>
                 <Grid container spacing={24} style={{paddingLeft: "10px"}}>
-                    <PatientDetailsBar items={patientDetails} closeBtn={true} url='/admin/find' />
+                    <PatientDetailsBar items={patientDetails} closeBtn={true} />
                 </Grid>
 
                 <br /><hr /><br />
