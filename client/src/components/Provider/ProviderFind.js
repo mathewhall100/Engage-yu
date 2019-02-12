@@ -10,15 +10,15 @@ import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 
-import FormSelect from './Forms/FormSelect'
+import FormSelect from '../Forms/FormSelect'
 import ProviderDetails from './ProviderDetails'
 import ProviderEdit from './ProviderEdit'
 import ProviderEditRole from './ProviderEditRole'
 import ProviderEditGroup from './ProviderEditGroup'
 import ProviderRemove from './ProviderRemove'
-import ProviderEnrollForm from './ProviderEnrollForm'
-import { selectConsoleTitle } from '../actions/index'
-import providerAPI from "../utils/provider.js";
+import ProviderEnrollForm from './ProviderAdd'
+import { selectConsoleTitle } from '../../actions/index'
+import providerAPI from "../../utils/provider.js";
 
 const styles = theme => ({
     submitBtn: {

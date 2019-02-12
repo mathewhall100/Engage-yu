@@ -12,11 +12,11 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
-import { selectConsoleTitle, providerDetails } from '../actions/index'
-import provider_groupAPI from "../utils/provider_group.js"
-import providerAPI from "../utils/provider.js";
-import RemoveProviderSuccessDialog from './Dialogs/RemoveProviderSuccessDialog';
-import RemoveProviderFailedDialog from './Dialogs/RemoveProviderFailedDialog.js';
+import { selectConsoleTitle, providerDetails } from '../../actions/index'
+import provider_groupAPI from "../../utils/provider_group.js"
+import providerAPI from "../../utils/provider.js";
+import RemoveProviderSuccessDialog from '../Dialogs/RemoveProviderSuccessDialog';
+import RemoveProviderFailedDialog from '../Dialogs/RemoveProviderFailedDialog.js';
 
 let selectItems = [];
 

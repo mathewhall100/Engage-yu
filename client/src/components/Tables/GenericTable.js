@@ -124,9 +124,9 @@ class GenericTable extends Component {
                     <TableBody>
                         { stableSort(tableData, getSorting(order, orderBy))
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map(row  => {
+                            .map((row, idx)  => {
                                 return (
-                                    <TableRow hover={hover} onClick={event => this.handleRowClick(row)} tabIndex={-1} key={row.id}>
+                                    <TableRow key={idx} hover={hover} onClick={event => this.handleRowClick(row)} tabIndex={-1} >
                                         { tableHeadings.map((heading, idx) => {
                                             return (
                                                 <React.Fragment key={idx}>

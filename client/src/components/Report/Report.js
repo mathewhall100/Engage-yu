@@ -31,10 +31,9 @@ class Report extends Component {
                 console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
                 console.log(err);
             })
-        })
-        
-        console.log("Report: episode_id ", this.props.match.params.id)
-        this.setState({episodeId: this.props.match.params.id}) 
+        })  
+        console.log("Report: episode_id ", this.props.location.state.episodeId)
+        this.setState({episodeId: this.props.location.state.episodeId}) 
     };
 
     state = {

@@ -16,7 +16,7 @@ const styles = () => ({
         fontWeight: 500,
       },
     hrStyled: {
-        opacity: 0.1
+        opacity: 0.2
     }
 })
 

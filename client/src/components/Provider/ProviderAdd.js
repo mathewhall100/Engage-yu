@@ -11,16 +11,16 @@ import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 
-import FormText from './Forms/FormText'
-import FormTextFocused from './Forms/FormTextFocused'
-import FormSelect from './Forms/FormSelect'
-import FormRadio from './Forms/FormRadio'
-import { enrollNewPatient } from '../actions';
-import ProviderEnrollSuccessDialog from './Dialogs/ProviderEnrollSuccessDialog.js'
-import ProviderEnrollFailedDialog from './Dialogs/ProviderEnrollFailedDialog.js'
-import { selectConsoleTitle } from '../actions/index'
-import providerAPI from "../utils/provider.js";
-import provider_groupAPI from "../utils/provider_group.js";
+import FormText from '../Forms/FormText'
+import FormTextFocused from '../Forms/FormTextFocused'
+import FormSelect from '../Forms/FormSelect'
+import FormRadio from '../Forms/FormRadio'
+import { enrollNewPatient } from '../../actions';
+import ProviderEnrollSuccessDialog from '../Dialogs/ProviderEnrollSuccessDialog.js'
+import ProviderEnrollFailedDialog from '../Dialogs/ProviderEnrollFailedDialog.js'
+import { selectConsoleTitle } from '../../actions/index'
+import providerAPI from "../../utils/provider.js";
+import provider_groupAPI from "../../utils/provider_group.js";
 
 let selectItems = [];
 

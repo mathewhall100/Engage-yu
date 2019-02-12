@@ -17,15 +17,15 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 
-import { selectConsoleTitle, providerDetails } from '../actions/index'
+import { selectConsoleTitle, providerDetails } from '../../actions/index'
 
-import FormTextFocused from './Forms/FormTextFocused';
-import FormText from './Forms/FormText';
-import FormSelect from './Forms/FormSelect'
-import FormRadio from './Forms/FormRadio'
-import EditProviderSuccessDialog from './Dialogs/EditProviderSuccessDialog';
-import EditProviderFailedDialog from './Dialogs/EditProviderFailedDialog.js';
-import providerAPI from "../utils/provider.js";
+import FormTextFocused from '../Forms/FormTextFocused';
+import FormText from '../Forms/FormText';
+import FormSelect from '../Forms/FormSelect'
+import FormRadio from '../Forms/FormRadio'
+import EditProviderSuccessDialog from '../Dialogs/EditProviderSuccessDialog';
+import EditProviderFailedDialog from '../Dialogs/EditProviderFailedDialog.js';
+import providerAPI from "../../utils/provider.js";
 
 let selectItems = [];
 

@@ -81,15 +81,16 @@ class FindPatient extends Component {
                         break;
                     case "edit details":
                         localStorage.setItem("patient_id", _id)
-                        this.props.history.push(`updatepatient`)
+                        this.props.history.push({pathname: 'updatepatient'})
                         break;
                     case "view reports":
                         localStorage.setItem("patient_id", _id)
-                        this.props.history.push('report/0')
+                        this.props.history.push({pathname: 'report', state: {episodeId: '0'} })
                         break;
                     case "new survey":
                         localStorage.setItem("patient_id", _id)
-                        this.props.history.push(`survey/${_id}`)
+                        this.props.history.push({pathname: 'survey', state: {_id} })
+                        // this.props.history.push(`survey/${_id}`)
                     default: null;
                 }
             })
@@ -113,14 +114,11 @@ class FindPatient extends Component {
                     />
                     <br />
 
-                    { displayPatientId && 
-                        <React.Fragment>
-                            <FindPatientDetails handleActionBtns={this.handleActions}/> 
-                        </React.Fragment> 
-                    }
+                    { displayPatientId && <FindPatientDetails handleActionBtns={this.handleActions}/> }
 
-                </Card>
-                 <br />
+                </Card> 
+                
+                <br />
               
                 <FindPatientTable 
                     filterName={this.state.filterName} 

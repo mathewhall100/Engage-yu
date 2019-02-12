@@ -10,7 +10,6 @@ import moment from 'moment';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { selectConsoleTitle, fetchReportPatientData } from '../../actions/index';
 import patient_infoAPI from "../../utils/patient_info.js";
@@ -19,6 +18,7 @@ import FormTextFocused from '../Forms/FormTextFocused';
 import FormSelect from '../Forms/FormSelect'
 import FormRadio from '../Forms/FormRadio'
 import Dialog from '../Dialogs/simpleDialog'
+import SmallBtn from '../Buttons/smallBtn';
 import PatientDetailsBar from '../Textblocks/patientDetailsBar';
 
 
@@ -28,9 +28,6 @@ const dialog = {title: "Whoops, Update Failed!", text: "Unfortueatley the reques
 const styles = theme => ({
     root: {
         padding: "40px"
-    },
-    tableText: {
-        marginTop: "10px"
     },
     fwMedium: {
         fontWeight: 500,
@@ -45,23 +42,6 @@ const styles = theme => ({
     },
     failedText: {
         position: "relative", top: "6px"
-    },
-    smallBtn: { 
-        margin: "10px 0 0 20px",
-        padding: "0 5px",
-        backgroundColor: theme.palette.secondary.main,
-        borderColor: theme.palette.primary.main,
-        borderRadius: "5px",
-        '&:hover': {
-            backgroundColor: theme.palette.secondary.dark,
-            cursor: 'pointer'
-        },
-        '&:disabled': {
-            color: 'grey',
-            cursor: 'disabled'
-        },
-        hover: {},
-        disabled: {},
     },
 })
 
@@ -126,24 +106,6 @@ class UpdatePatient extends Component {
         })
     };
     
-    updateSuccess = (data, index) => {
-        console.log("res.data: ", data)
-        this.fetchPatientDetailsToUpdate()
-        let tempFlag = this.state.successFlag
-        tempFlag[index] = true
-        this.setState({
-            editFieldActive: false,
-            patientUpdateSuccess: true,
-            successFlag: tempFlag
-        })
-        this.props.dispatch(reset('UpdatePatientForm'));  // requires form name
-    }
-
-    updateFailed = (err) => {
-        console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-        console.log(err);
-        this.setState({patientUpdateFailed: true}); // update failed dialog
-    }
 
     submit(values) {
         console.log("Submit: ", values)
@@ -191,22 +153,38 @@ class UpdatePatient extends Component {
         }
     }
 
-    handleBtnClick(index) {
+    updateSuccess = (data, index) => {
+        console.log("res.data: ", data)
+        this.fetchPatientDetailsToUpdate()
+        let tempFlag = this.state.successFlag
+        tempFlag[index] = true
+        this.setState({
+            editFieldActive: false,
+            patientUpdateSuccess: true,
+            successFlag: tempFlag
+        })
+        this.props.dispatch(reset('UpdatePatientForm'));  // requires form name
+    }
+
+    updateFailed = (err) => {
+        console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
+        console.log(err);
+        this.setState({patientUpdateFailed: true}); // update failed dialog
+    }
+
+
+    handleBtn = (index) => {
         if (index === "cancel") {
-            console.log("cancel")
             this.setState({
                 showEditField: [],
                 editFieldActive: false,
                 patientUpdateFailed: false
             })
-            this.props.dispatch(reset('UpdatePatientForm'));  // requires form name
+            this.props.dispatch(reset('UpdatePatientForm'));  // reset the form fields to empty (requires form name)
          } else if (index === "tryagain") {
             this.setState({patientUpdateFailed: false})
         } else {
-            this.setState ({patientUpdateSuccess: false}) 
-            if (this.state.editFieldActive) {
-                // maybe show error message that only one field may be updated at once
-            }
+            this.setState({patientUpdateSuccess: false}) 
             let tempArray = [], tempFlag = []
             tempArray[index] = true
             tempFlag = this.state.successFlag
@@ -273,17 +251,6 @@ class UpdatePatient extends Component {
             }
         }
 
-        const RenderBtn = (props) => 
-            <Button 
-                type={props.type} 
-                variant="outlined"
-                size="small" 
-                className={classes.smallBtn} 
-                disabled={props.disabled} 
-                onClick={() => props.type === "submit" ? null : this.handleBtnClick(props.index)}
-                >
-                    {props.text}
-            </Button>
 
        // UpdatePatient return
         return (
@@ -313,7 +280,7 @@ class UpdatePatient extends Component {
                                     <Typography variant="subtitle1" className={classes.fwMedium} >{field.fieldContent}</Typography>
                                 </Grid>
                                 <Grid item xs={1}>
-                                    <RenderBtn type="button" disabled={submitting || editFieldActive} index={index} text="update" />
+                                    <SmallBtn type="button" disabled={submitting || editFieldActive} index={index} text="update" handleBtn={this.handleBtn}/>
                                 </Grid>
                                 <Grid item xs={3}>
                                     { showEditField[index] && !patientUpdateSuccess && !patientUpdateFailed &&
@@ -334,15 +301,15 @@ class UpdatePatient extends Component {
                                 </Grid>
                                 <Grid item xs={3}>
                                     { showEditField[index] && patientUpdateFailed && 
-                                        <React.Fragment> 
-                                            <RenderBtn type="button" disabled={false} index="cancel" text="cancel" />
-                                            <RenderBtn type="button" disabled={false} index="tryagain" text="try again" />
-                                        </React.Fragment>
+                                        <span> 
+                                            <SmallBtn type="button" disabled={false} index="cancel" text="cancel" handleBtn={this.handleBtn}/>
+                                            <SmallBtn type="button" disabled={false} index="tryagain" text="try again" handleBtn={this.handleBtn}/>
+                                        </span>
                                     }
                                     {showEditField[index] && !patientUpdateSuccess && !patientUpdateFailed &&
                                         <span style={{marginLeft: "10px"}}>
-                                            <RenderBtn type="submit" disabled={pristine} index="" text="submit" /> 
-                                            <RenderBtn type="button" disabled={false} index="cancel" text="cancel" />
+                                            <SmallBtn type="submit" disabled={submitting || pristine} index="" text="submit" /> 
+                                            <SmallBtn type="button" disabled={false} index="cancel" text="cancel" handleBtn={this.handleBtn}/>
                                         </span>
                                     }
                                 </Grid> 

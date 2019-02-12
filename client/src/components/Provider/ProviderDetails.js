@@ -11,9 +11,9 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
-import { providerDetails } from '../actions/index'
-import Callback from './Callback'
-import providerAPI from "../utils/provider.js";
+import { providerDetails } from '../../actions/index'
+import Callback from '../Callback'
+import providerAPI from "../../utils/provider.js";
 
 const styles = theme => ({
     root: {

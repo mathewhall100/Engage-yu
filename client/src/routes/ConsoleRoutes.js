@@ -1,34 +1,29 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
-
 import Dashboard from '../components/Dashboard';
 import FindPatient from '../components/FindPatient/FindPatient';
 import UpdatePatient from '../components/UpdatePatient/UpdatePatient';
 import EnrollPatient from '../components/Enroll/EnrollPatient';
 import SurveyCreate from '../components/Survey';
 import Report from '../components/Report/Report';
-import Provider from '../components/Provider';
-import ProviderEnrollForm from '../components/ProviderEnrollForm';
-import CareGroup from '../components/CareGroup';
-import CareGroupAdd from '../components/CareGroupAdd';
+import Provider from '../components/Provider/ProviderFind';
+import CareGroup from '../components/CareGroup/CareGroup';
 import NotFound from '../pages/NotFound';
 
-export default class ConsoleRoutes extends Component { 
+export default class AdminRoutes extends Component { 
 
     render(){
         return(
             <Switch>
                 <Route exact path="/admin" component={Dashboard} />
                 <Route exact path='/admin/dashboard' component={Dashboard} />
-                <Route exact path='/admin/find' render={props => <FindPatient {...this.props}></FindPatient>} />
-                <Route exact path='/admin/enroll' render={props => <EnrollPatient {...this.props}></EnrollPatient>} />
-                <Route exact path='/admin/provider' render={props => <Provider {...this.props}> </Provider>} />
-                <Route exact path='/admin/providerenroll' render={props => <ProviderEnrollForm {...this.props}></ProviderEnrollForm>} />
-                <Route exact path='/admin/caregroup' render={props => <CareGroup {...this.props}></CareGroup>} />
-                <Route exact path='/admin/caregroupadd' render={props => <CareGroupAdd {...this.props}></CareGroupAdd>} />
-                <Route path='/admin/survey/:id' render={props => <SurveyCreate {...this.props}></SurveyCreate>} />
-                <Route path='/admin/report/:id' render={props => <Report {...this.props}></Report>} />
-                <Route path='/admin/updatepatient' render={props => <UpdatePatient {...this.props}></UpdatePatient>} />
+                <Route exact path='/admin/find' component={FindPatient} />
+                <Route exact path='/admin/enroll' component={EnrollPatient} />
+                <Route path='/admin/provider' component={Provider} />
+                <Route path='/admin/caregroup' component={CareGroup} />
+                <Route exact path='/admin/updatepatient' component={UpdatePatient} />
+                <Route exact path='/admin/survey' component={SurveyCreate} />
+                <Route exact path='/admin/report' component={Report} />
                 <Route path="/notfound" component={NotFound} />
                 <Route component={NotFound} />
             </Switch>

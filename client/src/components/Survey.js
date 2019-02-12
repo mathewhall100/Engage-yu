@@ -14,10 +14,9 @@ class Survey extends Component {
     componentDidMount() {
         this.props.selectConsoleTitle({title: "Create new diary card"});
         this.props.fetchSurveyQuestions()
-        const params = this.props.match.params.id
-        console.log("surveyparams: ", params)
-        this.props.fetchSurveyPatientDetails(params);
-        this.setState({patientId: params})
+        const _id = this.props.location.state._id
+        this.props.fetchSurveyPatientDetails(_id);
+        this.setState({patientId: _id})
     }
 
     state = {
@@ -29,14 +28,15 @@ class Survey extends Component {
         const { patientId } = this.state
         
         return (
-            <div>
+            <React.Fragment>
 
                 <SurveyPatientDetails /> <br />
 
                 <Card style={{paddingLeft: "40px", paddingTop: "20px"}}>
                     <SurveyForm patientId={patientId}/>
                 </Card >
-            </div>
+
+            </React.Fragment>
         );
     }
 }

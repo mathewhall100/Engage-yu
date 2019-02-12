@@ -46,7 +46,7 @@ class ActionBtnGroup extends PureComponent {
     }
 
     render() {
-        const { row, actions, classes } = this.props
+        const { row, actions, classes, disabled } = this.props
         const btns = ["cancel", "archive", "view"]
         return (
             <span>
@@ -57,6 +57,7 @@ class ActionBtnGroup extends PureComponent {
                                 size="small" 
                                 className={btn==="cancel" ? classes.cancelBtn : classes.otherBtn} 
                                 onClick={() => this.handleActionBtn(btn, row)}
+                                disabled={disabled}
                             >
                                 {btn}
                             </Button>
