@@ -1,74 +1,46 @@
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { reset, reduxForm } from 'redux-form';
+import { reduxForm } from 'redux-form';
 import { startCase } from 'lodash'
 
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-
+import Typography from '@material-ui/core/Typography'
 import FormSelect from '../Forms/FormSelect'
 import ProviderDetails from './ProviderDetails'
-import ProviderEdit from './ProviderEdit'
-import ProviderEditRole from './ProviderEditRole'
-import ProviderEditGroup from './ProviderEditGroup'
-import ProviderRemove from './ProviderRemove'
-import ProviderEnrollForm from './ProviderAdd'
+import ActionLnk from '../Buttons/actionLnk'
+import ActionBtn from '../Buttons/actionBtn'
 import { selectConsoleTitle } from '../../actions/index'
 import providerAPI from "../../utils/provider.js";
 
 const styles = theme => ({
-    submitBtn: {
-        marginRight: 20,
-        color: "#ffffff",
-        backgroundColor: "#2d404b",
-        '&:hover': {
-            backgroundColor: "#28353d",
-        },
-        '&:disabled': {
-            color: 'grey'
-        },
-        hover: {},
-        disabled: {},
+    root: {
+        padding: "40px"
     },
-    Btn: {
-        marginRight: 20,
-        color: "#ffffff",
-        textDecoration: "none",
-        backgroundColor: "#2d404b",
-        '&:hover': {
-            backgroundColor: "#28353d",
-        },
-        hover: {},
-    },
-    cancelLnk: {
-        textDecoration: "none",
-    },
+
 
 });  
 
 
-class Provider extends Component {  
+class ProviderFind extends Component {  
     
     componentDidMount() {
         this.props.selectConsoleTitle({title: "Manage Provider"});
 
-        let providerList = [];
-        providerAPI.findAllByGroup(this.state.providerGroupId)
+      
+        providerAPI.findAllByGroup(localStorage.getItem("provider_group_id"))
             .then(res => {
-                console.log("res.data: " + JSON.stringify(res.data.providerList, null, 2 ));
-
-                res.data.providerList.map((provider, index) => {
+                console.log("res.data: " + JSON.stringify(res.data.providerList, null, 2 ));  
+                let providerList = [];
+                res.data.providerList.map(provider => {
                     providerList.push({
                         value: provider._id,
                         text: `Dr ${startCase(provider.firstname)} ${startCase(provider.lastname)}`
                     })
                 })
-                this.setState({providerList: providerList})
-                
+                this.setState({providerList: providerList})    
             })
             .catch(err => {
                 console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
@@ -78,95 +50,62 @@ class Provider extends Component {
     
 
     state = {
-        // ProviderGroupId should be replaced with value in local storage
-        providerGroupId: "5b846771f6d8b1d2fc8d45b2",
+        userGroupId: localStorage.getItem("provider_id"),
         providerList: [],
-
         displayDetails: false,
-        editDetails: false,
-        editRole: false,
-        editGroup: false,
-        removeprovider: false
     }
 
     submit(values) {
         console.log("Submitted values: ", values);
         this.setState({
             providerId: values.provider,
-         })
-        this.handleAction(1)
-    };
-
-
-    handleAction = (action) => {
-        console.log("handleAction: ", action)
-        let actionArray = [false,false,false,false,false, false];
-        if (action === 0) {this.props.reset()}
-        actionArray[action] = 1;
-
-        this.setState({
-            displayDetails: actionArray[1],
-            editGroup: actionArray[2],
-            editRole: actionArray[3],
-            editDetails: actionArray[4],
-            removeProvider: actionArray[5],
+            displayDetails: !this.state.displayDetails
         })
-    }
+    };
 
     render () {
 
-        const { displayDetails, editDetails, editRole, editGroup, removeProvider, providerList, providerId } = this.state
+        const { displayDetails, providerList, providerId } = this.state
         const { handleSubmit, submitting, pristine, classes } = this.props
         
         return (
-                <div>
-                    <Card style={{padding: "20px"}}>
+            <Card className={classes.root}>
+                <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
+                    <Grid container spacing={24}>
 
-                        <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
-                        <br />
-                            <Grid container spacing={24} >
-                                <Grid item xs={2}>
-                                    Select existing provider: 
-                                </Grid>
+                    <Grid item xs={2}>
+                            <Typography variant="subtitle1">Select provider:  </Typography>
+                        </Grid>
 
-                                <Grid item xs={4}>
-                                    <div style={{position: "relative", top: "-15px"}}>
-                                        <FormSelect 
-                                            name="provider" 
-                                            label="Primary Provider"
-                                            items={providerList}
-                                        /> 
-                                    </div>
-                                </Grid>
-                                <Grid item xs={1}>
-                                        <Button size="small" type="submit" disabled={submitting || pristine} className={classes.submitBtn}>Submit</Button>
-                                    </Grid>
-                                <Grid item xs={2}>
-                                        <div style={{textAlign: "center", paddingTop: "10px"}}>
-                                            or 
-                                        </div>
-                                </Grid>
-                                <Grid item xs={3}>
-                                   <Link to={"/admin/providerenroll"}><Button size="small" type="enroll" className={classes.Btn}>Enroll a new provider</Button></Link>
-                                </Grid>
-                            </Grid>
-                        </form>
-                    
-                        <br />
+                        <Grid item xs={4}>
+                            <span style={{position: "relative", top: "-16px"}}>
+                                <FormSelect 
+                                    name="provider" 
+                                    label="Primary provider"
+                                    items={providerList}
+                                /> 
+                            </span>
+                        </Grid>
 
-                        { displayDetails && <ProviderDetails  providerId={providerId} handleAction={this.handleAction}/> }
+                        <Grid item xs={1}>
+                            <ActionBtn type="submit" disabled={submitting || pristine} className={classes.submitBtn} text="submit" />
+                        </Grid>
 
-                        { editDetails && <ProviderEdit handleAction={this.handleAction}/> }
+                        <Grid item xs={2}>
+                            <Typography variant="subtitle1" align="center">or</Typography>
+                        </Grid>
 
-                        { editRole && <ProviderEditRole handleAction={this.handleAction}/> }
+                        <Grid item xs={3}>
+                            <ActionLnk url='/admin/provider/add' disabled={false} text="add new provider" />
+                        </Grid>
 
-                        { editGroup && <ProviderEditGroup handleAction={this.handleAction}/> }
+                    </Grid>
+                </form>
+            
+                { displayDetails && <ProviderDetails  providerId={providerId}/> }
 
-                        { removeProvider && <ProviderRemove handleAction={this.handleAction}/> }
-
-                    </Card>
-                </div> 
-        );
+            </Card>
+        )
     }
 }
 
@@ -174,23 +113,11 @@ function mapDispatchToProps(dispatch) {
     return bindActionCreators({ selectConsoleTitle }, dispatch);
 }
 
-const mapStateToProps = (state) => {
-    // console.log("State : ", state);
-    return {
-        user: state.user
-    }
-};
-
-// function mapStateToProps(){
-//     console.log(auth);
-//     return (auth);
-// }
-
 const formData = {
     form: 'ProviderSelectForm' //unique identifier for this form 
 }
 
-Provider = reduxForm(formData)(Provider)
-Provider = withStyles(styles)(Provider)
-Provider = connect(mapStateToProps, mapDispatchToProps) (Provider)
-export default Provider
+ProviderFind = reduxForm(formData)(ProviderFind)
+ProviderFind = withStyles(styles)(ProviderFind)
+ProviderFind = connect(null, mapDispatchToProps) (ProviderFind)
+export default ProviderFind

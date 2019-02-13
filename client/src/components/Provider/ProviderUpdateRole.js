@@ -17,7 +17,6 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 
 import { selectConsoleTitle, providerDetails } from '../../actions/index'
-
 import providerAPI from "../../utils/provider.js";
 import FormSelect from '../Forms/FormSelect'
 import EditProviderSuccessDialog from '../Dialogs/EditProviderSuccessDialog';

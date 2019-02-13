@@ -11,6 +11,7 @@ export default class ProviderRoutes extends Component {
     render(){
         return(
             <Switch>
+                <Route exact path='/admin/provider' component={ProviderFind} />
                 <Route exact path='/admin/provider/add' component={ProviderAdd} />
                 <Route exact path='/admin/provider/find' component={ProviderFind} />
                 <Route exact path='/admin/provider/remove' component={ProviderRemove} />

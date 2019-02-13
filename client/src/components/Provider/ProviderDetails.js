@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { startCase } from 'lodash';
@@ -8,36 +8,21 @@ import moment from 'moment';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-
-import { providerDetails } from '../../actions/index'
+import HandleBtns from '../Buttons/handleBtns'
+import HrStyled from '../commons/hrStyled'
 import Callback from '../Callback'
+import { providerAction } from '../../actions/index'
+
 import providerAPI from "../../utils/provider.js";
 
 const styles = theme => ({
     root: {
-        padding: "20px"
+        padding: "40px"
     },
     textBold: {
         fontWeight: "bold",
       },
-    btn: {
-        backgroundColor: "#eeeeee",
-        textDecoration: "none",
-        borderRadius: "5px",
-        padding: "5px",
-        marginLeft: "20px",
-        float: "right",
-        '&:hover': {
-            backgroundColor: "#dddddd",
-        },
-        '&:disabled': {
-            color: 'grey'
-        },
-        hover: {},
-        disabled: {},
-    },
 })
 
 class ProviderDetails extends Component {  
@@ -47,21 +32,7 @@ class ProviderDetails extends Component {
         providerAPI.findById(this.props.providerId)
             .then(res => {
                 console.log("res.data: ", res.data);
-                this.props.providerDetails({provider: res.data});
-                this.setState({provider: res.data})
-            })
-            .catch(err => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log(err);
-        })
-    }
-
-    componentWillReceiveProps(nextProps) {
-        providerAPI.findById(nextProps.providerId)
-            .then(res => {
-                console.log("res.data: ", res.data);
-                this.props.providerDetails({provider: res.data});
-                this.setState({provider: res.data})
+                this.props.providerAction(res.data);
             })
             .catch(err => {
                 console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
@@ -70,90 +41,73 @@ class ProviderDetails extends Component {
     }
 
     state = {
-        provider: null
-    }
-
-
-
-    findNumPatients = () => {
-
-    }
-
-    findNumDiaryCreated = () => {
-
-    }
-
-    findNumDiaryReviewed = () => {
-
     }
 
     // Event handlers
-
-    clickAction(event, action) {
-        console.log("Remove provider clicked")
-        this.props.handleAction(action)
+    handleAction = (action) => {
+        switch(action) {
+            case "remove provider":
+                this.props.history.push({
+                    pathname: '/admin/provider/remove',
+                    state: {providerId: this.props.provider._id}
+                })
+                break;
+            case "update details":
+                this.props.history.push({
+                    pathname: '/admin/provider/update',
+                    state: {providerId: this.props.provider._id}
+                })
+                break;
+            case "update role":
+                this.props.history.push({
+                    pathname: '/admin/provider/updategroup',
+                    state: {providerId: this.props.provider._id}
+                })
+                break;
+            case "swap care group":
+                this.props.history.push({
+                    pathname: '/admin/provider/updaterole',
+                    state: {providerId: this.props.provider._id}
+                })
+                break;
+            default: null
+        }
     }
 
 
     render () {
         
-        const { patientInfo, classes } = this.props
-        const { provider } = this.state
-        
+        const { classes, provider } = this.props
+
         return (
+            <Card className={classes.root}>
 
-            <div>
-        
-                <Card className={classes.root}>
-
-                    { provider === null && < Callback /> }
-
-                    { provider && <div>
-
-                        <br />
+                { provider  ?
+                    <React.Fragment>
 
                         <Grid container spacing={24}>
                             <Grid item xs={12}>
-                                <Typography variant="title">
-                                    <span>Dr.{startCase(provider.firstname)} {startCase(provider.lastname)} </span>
-                                </Typography>
+                            <Typography variant="caption">Provider name</Typography>
+                                <Typography variant="title">Dr.{startCase(provider.firstname)} {startCase(provider.lastname)}</Typography>
                             </Grid>
                         </Grid>
 
                         <br />
 
                         <Grid container spacing={24}>
-
                             <Grid item xs={4}>
-                            <Typography variant="caption">
-                                    Role
-                                </Typography>
-                                <Typography variant="subheading">
-                                    <span  className={classes.textBold}>{provider.role}</span>
-                                </Typography> 
+                                <Typography variant="caption">Role</Typography>
+                                <Typography variant="subheading" className={classes.textBold}>{provider.role}</Typography> 
                             </Grid>
 
                             <Grid item xs={4}>
-                                <Typography variant="caption">
-                                    Care Group
-                                </Typography>
-                                <Typography variant="subheading">
-                                    <span className={classes.textBold}>{startCase(provider.provider_group_name)}</span>
-                                </Typography>
+                                <Typography variant="caption">Care group</Typography>
+                                <Typography variant="subheading" className={classes.textBold}>{startCase(provider.provider_group_name)}</Typography>
                             </Grid>
-
-                            <Grid item xs={2}>
-                                <Typography variant="caption">
-                                    Added
-                                </Typography>
-                                <Typography variant="subheading">
-                                    <span  className={classes.textBold}>{moment(provider.date_added).format("MMM Do YYYY")}</span>
-                                </Typography>
+                            <Grid item xs={4}>
+                                <Typography variant="caption">Added</Typography>
+                                <Typography variant="subheading" className={classes.textBold}>{moment(provider.date_added).format("MMM Do YYYY")}</Typography>
                             </Grid>
-
-                            <Grid item xs={2}>
-                            </Grid>
-
                         </Grid>
 
                         <br />
@@ -187,29 +141,30 @@ class ProviderDetails extends Component {
                                 </Typography> 
                             </Grid>
                         </Grid> 
+
                         <br />
 
                         <Grid container spacing={24}>
                             <Grid item xs={2}>
-                                    <Typography variant="subheading">
-                                        <div>Office: </div>
-                                    </Typography>
+                                <Typography variant="subheading">
+                                    <div>Office: </div>
+                                </Typography>
                             </Grid>
                             <Grid item xs={10}>
-                                    <Typography variant="subheading">
-                                        <div>{startCase(provider.office.name)}</div>
-                                        { provider.office.address1 && <div>{startCase(provider.office.addres12)}</div> }
-                                        { provider.office.address2 && <div>{startCase(provider.office.address2)}</div> }
-                                        <div>{startCase(provider.office.city)}</div> 
-                                        <div>{startCase(provider.office.state)}</div>
-                                        <div>{startCase(provider.office.zip)}</div>
-                                    </Typography>
+                                <Typography variant="subheading">
+                                    <div>{startCase(provider.office.name)}</div>
+                                    { provider.office.address1 && <div>{startCase(provider.office.addres12)}</div> }
+                                    { provider.office.address2 && <div>{startCase(provider.office.address2)}</div> }
+                                    <div>{startCase(provider.office.city)}</div> 
+                                    <div>{startCase(provider.office.state)}</div>
+                                    <div>{startCase(provider.office.zip)}</div>
+                                </Typography>
                             </Grid>
                         </Grid>
 
-                            <br />
+                        <br />
 
-                        <Grid container spacing={24}>
+                        {/* <Grid container spacing={24}>
                             <Grid item xs={4}>
                                 <Typography variant="subheading">
                                     <div>Primary provider to: </div>
@@ -225,39 +180,41 @@ class ProviderDetails extends Component {
                                     <div></div>
                                 </Typography>
                             </Grid>
-                        </Grid>
-                    </div> }
-                </Card>
+                        </Grid> */}
 
-                <br />
+                        <br />        
+                        <HrStyled />
+                        <br />
 
-               { provider && <div>
-                   <div styles={{float: "right"}}>
-                        <Button size="small" className={classes.btn} onClick={event => this.clickAction(event, 0)}>cancel</Button>
-                        <Button size="small" className={classes.btn} onClick={event => this.clickAction(event, 5)}>remove provider</Button> 
-                        <Button size="small" className={classes.btn} onClick={event => this.clickAction(event, 2)}>update care group</Button> 
-                        <Button size="small" className={classes.btn} onClick={event => this.clickAction(event, 3)}>update role</Button> 
-                        <Button size="small" className={classes.btn} onClick={event => this.clickAction(event, 4)}>update details</Button>
-                       
-                       
-                    </div>
-                </div> }
-            </div> 
+                        <HandleBtns 
+                            btns={["remove provider", "update role", "swap care group", "update details"]} 
+                            _id={provider._id}
+                            handleActionBtns={this.handleAction}
+                        />   
+
+                    </React.Fragment>
+
+                    : 
+                    
+                    <Callback /> 
+                }
+            </Card>  
         );
     }
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ providerDetails }, dispatch);
+    return bindActionCreators({ providerAction }, dispatch);
 }
 
 const mapStateToProps = (state) => {
     // console.log("State : ", state);
     return {
-        user: state.user
+        provider: state.provider,
     }
 };
 
+ProviderDetails = withRouter(ProviderDetails)
 ProviderDetails = connect(mapStateToProps, mapDispatchToProps)(ProviderDetails)
 ProviderDetails = withStyles(styles)(ProviderDetails)
 export default ProviderDetails;

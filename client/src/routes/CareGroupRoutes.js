@@ -11,6 +11,7 @@ export default class CareGroupRoutes extends Component {
     render(){
         return(
             <Switch>
+                <Route exact path='/admin/caregroup' component={CareGroupFind} />
                 <Route exact path='/admin/caregroup/add' component={CareGroupAdd} />
                 <Route exact path='/admin/caregroup/find' component={CareGroupFind} />
                 <Route exact path='/admin/caregroup/remove' component={CareGroupRemove} />

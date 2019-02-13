@@ -12,7 +12,7 @@ export default class FormSelect extends Component {
     renderSelect(field) {
         console.log(field)
 
-        const {input, label, width, meta: { pristine }, children, ...custom} = field
+        const {input, label, width, meta: { error, dirty, touched }, children, ...custom} = field
 
         return (
                 <FormControl style={{width: `${width}px`}}>
@@ -26,8 +26,12 @@ export default class FormSelect extends Component {
                     >
                     </Select>
 
-                    <span style={{position: "relative", left: "220px", top: "-30px"}}> 
-                        {!pristine ? <DoneIcon style={{fontSize: "28px", color: "green"}}/> : ''}
+                    {dirty && !error && <span style={{position: "relative", left: `${width}px`, top: '-28px'}}> 
+                        &nbsp;&nbsp;<DoneIcon style={{fontSize: "28px", color: "green"}}/>
+                    </span> }
+
+                    <span style={{fontSize: "13px", color: "red", marginTop: "8px"}}> 
+                        {touched ? error : ''}
                     </span>
 
                 </FormControl>

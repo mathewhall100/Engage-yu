@@ -47,7 +47,7 @@ class ActionBtn extends PureComponent {
             <Button 
                 size="small"
                 type={type} 
-                className={text==="cancel" ? classes.cancelBtn : classes.btn} 
+                className={text==="cancel" || text==="clear" ? classes.cancelBtn : classes.btn} 
                 onClick={() => {text==="submit" ? null : this.handleClick(index)} }
                 disabled={disabled}
             >

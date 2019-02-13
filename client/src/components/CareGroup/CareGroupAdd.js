@@ -50,7 +50,7 @@ class CareGroupAdd extends Component {
         .then(res => {
             console.log("res.data: ", res.data)
             this.setState({
-                name: values.caregroup,
+                newCareGroup: values.caregroup,
                 addSuccess: true
             })
         })
@@ -58,8 +58,8 @@ class CareGroupAdd extends Component {
             console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
             console.log(err);
             this.setState({
-                addFailed: true,
-                newCareGroup: values.caregroup
+                newCareGroup: values.caregroup,
+                addFailed: true
             }); 
         })
     };
@@ -101,8 +101,6 @@ class CareGroupAdd extends Component {
                         </Grid>
 
                         <br /> <br />
-                        <HrStyled />
-                        <br />
 
                         <span style={{marginRight: "15px"}}>
                             <ActionBtn type="submit" disabled={submitting || pristine} text="submit" />

@@ -8,8 +8,8 @@ import { startCase } from 'lodash';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import ActionBtn from '../Buttons/actionBtn';
 import FormText from '../Forms/FormText'
 import FormTextFocused from '../Forms/FormTextFocused'
 import FormSelect from '../Forms/FormSelect'
@@ -24,35 +24,7 @@ import patient_dataAPI from "../../utils/patient_data.js";
 
 const styles = () => ({
     root: {
-        paddingTop: "40px",
-        paddingBottom: "30px", 
-        paddingLeft: "18%"
-    },
-    submitBtn: {
-        float: "right",
-        margin: "20px 0 0 20px",
-        paddingLeft: "20px",
-        paddingRight: "20px",
-        color: "#ffffff",
-        backgroundColor: "#2d404b",
-        '&:hover': {
-            backgroundColor: "#28353d",
-        },
-        '&:disabled': {
-            color: 'grey'
-        },
-        hover: {},
-        disabled: {},
-    },
-    cancelBtn: {
-        float: "right",
-        margin: "20px 0 0 20px",
-        color: "#ffffff",
-        backgroundColor: "#c62828",
-        '&:hover': {
-            backgroundColor: "#871c1c",
-        },
-        hover: {},
+        padding: "40px 40px 40px 15%",
     },
 });   
 
@@ -240,12 +212,6 @@ class EnrollPatient extends Component {
                 </Typography>
             </span>
 
-        const Buttons = () => 
-            <div style={{width: "270px", height: '40px'}}>
-                <Button type="submit" disabled={submitting || pristine} className={classes.submitBtn}>Submit</Button>
-                <Button className={classes.cancelBtn} onClick={()=> this.handleClearForm()}>Clear</Button>
-            </div>
-
         const formComponents = [
             <FormTextFocused name="firstname" label="Firstname" width="270" />,
             <FormText name="lastname" label="Lastname" width="270" />,
@@ -259,36 +225,34 @@ class EnrollPatient extends Component {
             <div />,
             <FormText type="password" name="password1" label="Password" width="270" />,
             <FormText type="password" name="password2" label="Re-enter Password" width="270" />,
-            <div />,
-            <Buttons />  
         ]
 
         return (
-            <React.Fragment>
+            <Card className={classes.root}>
+                <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
+                    <Grid container spacing={24} >
+                        {formComponents.map((component, idx) => {
+                            return(
+                                <Grid item xs={6} key={idx} >
+                                    {component}
+                                </Grid>
+                            )
+                        })}
+                    </Grid>
+                    
+                    <br /> <br /> 
 
-                <Card className={classes.root}>
-                    <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
-                         <Grid container spacing={24} >
-                            {formComponents.map((component, idx) => {
-                                return(
-                                    <Grid item xs={6} key={idx} align="left">
-                                        {component}
-                                    </Grid>
-                                )
-                            })}
-                        </Grid>
-                    </form>
-                </Card>
+                    <span style={{marginRight: "15px"}}>
+                        <ActionBtn type="submit" disabled={submitting || pristine} text="submit" />
+                    </span>
+                    <ActionBtn type="button" disabled={pristine} text="clear" handleAction={this.handleClearForm} />
 
-                {enrollSuccess && 
-                    <EnrollSuccessDialog title="Success!" info={newPatientInfo}/>
-                }
+                </form>
 
-                {enrollFailed && 
-                    <SimpleDialog title="Failed!" text="Unfortuneately, a problem was encountered and this patient could not be enrolled at this time. Please go back and check all the details entered are correct and valid and then try again. If the problem persists contact your system administrato" />
-                }
+                {enrollSuccess && <EnrollSuccessDialog title="Success!" info={newPatientInfo}/> }
+                {enrollFailed && <SimpleDialog title="Failed!" text="Unfortuneately, a problem was encountered and the patient could not be enrolled at this time. Please go back and check all the details entered are correct and valid and then try again. If the problem persists then contact the system administrator" /> }
 
-            </React.Fragment>
+            </Card>
         );
     };
 
@@ -297,8 +261,8 @@ class EnrollPatient extends Component {
 
 function validate(values) {
     console.log("Error values: ", values) // -> { object containing all values of form entries } 
+    
     const errors = {};
-
     // validate inputs from 'values' 
     if (!values.firstname) {  errors.firstname = "*Please enter a firstname!"  // message to be displayed if invalid
     } else if (!/^[a-zA-Z0-9' ]{2,30}$/i.test(values.firstname))  {

@@ -22,9 +22,6 @@ import SmallBtn from '../Buttons/smallBtn';
 import PatientDetailsBar from '../Textblocks/patientDetailsBar';
 
 
-const dialog = {title: "Whoops, Update Failed!", text: "Unfortueatley the requested update could not be made. Please check that the new details entered are valid and correct and try again. If the problem persists, conatct the system administrator"}
-
-
 const styles = theme => ({
     root: {
         padding: "40px"
@@ -208,11 +205,13 @@ class UpdatePatient extends Component {
             {caption: "Hospital number", text: patientInfo.hospital_id},
             {caption: "DOB", text: patientInfo.dob},
             {caption: "Date enrolled", text: moment(patientInfo.date_enrolled).format("MMM Do YYYY")},
-        ];       
+        ];
+
         const radioItems = [
             {value: "active", label: "Active"},
             {value: "inactive", label: "Inactive"}
         ];
+        
         const formFields = [{
             rowLabel: "Firstname", 
             fieldContent: startCase(patientInfo.firstname), 
@@ -260,7 +259,7 @@ class UpdatePatient extends Component {
                     <PatientDetailsBar items={patientDetails} closeBtn={true} />
                 </Grid>
 
-                <br /><hr /><br />
+                <br /> <hr /> <br />
 
                 <Typography variant="title" gutterBottom>
                     Click 'update' next to the information you want to edit. 
@@ -321,7 +320,7 @@ class UpdatePatient extends Component {
 
                 <br /><br /> 
                 
-                {patientUpdateFailed && <Dialog title={dialog.title} text={dialog.text} />}                  
+                {patientUpdateFailed && <Dialog title="Whoops, Update Failed!" text="Unfortueatley the requested update could not be made. Please check that the new details entered are valid and correct and try again. If the problem persists, conatct the system administrator"/> }                  
                 
             </Card>
         );

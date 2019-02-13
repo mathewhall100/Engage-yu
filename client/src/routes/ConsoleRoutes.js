@@ -6,7 +6,7 @@ import UpdatePatient from '../components/UpdatePatient/UpdatePatient';
 import EnrollPatient from '../components/Enroll/EnrollPatient';
 import SurveyCreate from '../components/Survey';
 import Report from '../components/Report/Report';
-import Provider from '../components/Provider/ProviderFind';
+import Provider from '../components/Provider/Provider';
 import CareGroup from '../components/CareGroup/CareGroup';
 import NotFound from '../pages/NotFound';
 
