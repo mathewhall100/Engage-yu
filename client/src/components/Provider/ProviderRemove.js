@@ -1,67 +1,22 @@
 import React, { Component } from 'react';
-import { withRouter, Link, Redirect } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Field, reset, reduxForm } from 'redux-form';
 import { startCase } from 'lodash';
-import moment from 'moment';
-
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-
-import { selectConsoleTitle, providerDetails } from '../../actions/index'
-import provider_groupAPI from "../../utils/provider_group.js"
+import ActionBtn from '../Buttons/actionBtn'
+import { selectConsoleTitle, providerAction } from '../../actions/index'
 import providerAPI from "../../utils/provider.js";
-import RemoveProviderSuccessDialog from '../Dialogs/RemoveProviderSuccessDialog';
-import RemoveProviderFailedDialog from '../Dialogs/RemoveProviderFailedDialog.js';
+import Dialog from '../Dialogs/simpleDialog';
+import CallBack from '../Callback'
+import HrStyled from '../commons/hrStyled'
+import ProviderDetailsBar from './providerDetailsBar'
 
-let selectItems = [];
 
 const styles = theme => ({
     root: {
-        padding: "20px"
-    },
-    tableText: {
-       marginTop: "10px"
-    },
-    textBold: {
-        fontWeight: "bold",
-      },
-    btn: {
-        backgroundColor: "#eeeeee",
-        textDecoration: "none",
-        borderRadius: "5px",
-        padding: "5px",
-        marginTop: "10px",
-        marginLeft: "20px",
-        float: "right",
-        '&:hover': {
-            backgroundColor: "#dddddd",
-            cursor: 'pointer'
-        },
-        '&:disabled': {
-            color: 'grey',
-            cursor: 'disabled'
-        },
-        hover: {},
-        disabled: {},
-    },
-    removeBtn: {
-        borderRadius: "5px",
-        padding: "5px",
-        marginTop: "10px",
-        marginLeft: "20px",
-        float: "right",
-        color: "#ffffff",
-        textDecoration: "none",
-        backgroundColor: "#c62828",
-        '&:hover': {
-            backgroundColor: "#871c1c",
-        },
-        hover: {},
+        padding: "40px"
     },
 })
 
@@ -72,133 +27,95 @@ class ProviderRemove extends Component {
     }
 
     state = {
-        providerRemoveSuccess: false,
-        providerRemoveFailed: false,
+        removeSuccess: false,
+        removeFailed: false,
     }
 
-    handleClickRemove() {
-        console.log("handleClickRemove: ")
-        const { provider } = this.props
-        providerAPI.delete(provider._id)
+    handleRemove() {
+        console.log("handleRemove: ")
+        providerAPI.delete(this.props.provider._id)
         .then(res => {
             console.log("res.data: ", res.data)
-            this.setState ({providerRemoveSuccess: true})   // update success dialog
+            this.setState ({removeSuccess: true})   // update success dialog
         })
         .catch(err => {
             console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
             console.log(err);
-            this.setState({providerRemoveFailed: true}); // update failed dialog
+            this.setState({removeFailed: true}); // update failed dialog
         })
     }
 
-    handleBack(event) {
-        this.props.handleAction(1)
+    handlecancel = () => {
+        this.props.history.push({
+            pathname: 'admin/provider/find'
+        })
     }
 
 
     render () {
         
-        const { submitting, pristine, provider, handleSubmit, classes } = this.props
-        const { providerRemoveFailed, providerRemoveSuccess} = this.state
+        const { provider, classes } = this.props
+        const { removeFailed, removeSuccess} = this.state
 
         return (
+            <Card className={classes.root}>
 
-            <div>
+                {provider && provider._id ? 
+                    <React.Fragment>
 
-                {providerRemoveSuccess && <RemoveProviderSuccessDialog providerName={`Dr. ${startCase(provider.firstname)} ${startCase(provider.lastname)}`} />}
+                        <ProviderDetailsBar provider={provider} />
 
-                {providerRemoveFailed && <removeProviderFailedDialog />} 
+                        <br /> <hr /> <br />
 
-                <Card className={classes.root}>
+                        <Typography variant="body1" gutterBottom>
+                            Select 'Remove' to remove this provider from the list of providers held in the application. 'Cancel' to cancel.
+                        </Typography>
+                        <Typography variant="body1" gutterBottom color="error">
+                            Note, this action cannot be undone. Removed providers can be added back by re-entering all their details via the 'new provider' page.
+                        </Typography>
 
-                    <br />
-
-                    <Grid container spacing={24}>
-                        <Grid item xs={3}>
-                            <Typography variant="caption">
-                                Provider name
-                            </Typography>
-                            <Typography variant="title">
-                                <span className={classes.textBold}>{startCase(provider.firstname)} {startCase(provider.lastname)}</span>
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={2}>
-                            <Typography variant="caption">
-                                Role:
-                            </Typography>
-                            <Typography variant="subheading">
-                                <span className={classes.textBold}>{provider.role}</span>
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <Typography variant="caption">
-                                Care group
-                            </Typography>
-                            <Typography variant="subheading">
-                                <span className={classes.textBold}>{provider.provider_group_name}</span>
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <Typography variant="caption">
-                                Added
-                            </Typography>
-                            <Typography variant="subheading">
-                                <span  className={classes.textBold}>{moment(provider.date_added).format("MMM Do YYYY")}</span>
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={1}>
-                            <Button size="small" className={classes.btn} onClick={event => this.handleBack(event)}>Back</Button>
-                        </Grid>
-
-                    </Grid>
-
-                    <br />
-                    <hr />
-                    <br />
-
-                    <Typography variant="subheading">
-                        <p>Select 'Remove' to remove this provider from the list of providers held in the application. 'Cancel' to cancel.</p>
-                        <p>Note, this action cannot be undone. Removed providers can be added back by re-entering all their details via the 'new provider' page</p>
-                    </Typography>
-
-                    <br />
-                    <br />
-
-
-                        <Grid container spacing={24}>
-                            <Grid item xs={2}>
-                                <div className={classes.tableText}>Remove provider:</div>
-                            </Grid>
-                            <Grid item xs={1}>
-                                    <Button size="small" className={classes.btn} onClick={event => this.handleBack(event)}>Cancel</Button>
+                        <br /> <HrStyled /> <br />
                                     
-                            </Grid>
-                            <Grid item xs={1}>
-                                <Button size="small" className={classes.removeBtn} >Remove</Button>
-                            </Grid>
-                            <Grid item xs={8}>
-                            </Grid>
-                        </Grid>
+                        <span style={{marginRight: "15px"}}>
+                            <ActionBtn type ="button" disabled={false} text="cancel" handleAction={this.handleCancel} />
+                        </span>
+                        <ActionBtn type="button" disabled={false} text="delete" handleAction={this.handledelete} />
 
-                    <br />                   
-                    <br />
+                        {removeSuccess && <Dialog providerName={`Dr. ${startCase(provider.firstname)} ${startCase(provider.lastname)}`} />}
+                        {removeFailed && <Dialog />} 
 
-                </Card>
-            </div>
+                    </React.Fragment>
+                    :
+                    <CallBack />
+                }
+
+                {removeSuccess && 
+                    <Dialog 
+                        title="Success!" 
+                        text={`provider ${provider.firstname} ${provider.lastname} has been successfully deleted`}
+                    />
+                }
+                {removeFailed && 
+                    <Dialog 
+                        title="Failed!" 
+                        text={`A problem occurred and provider ${provider.firstname} ${provider.lastname}  could not be deleted at this time. Please check that this is an appropriate action and try again if required. If the problem persists, contact the system administrator.`} 
+                    />
+                }
+
+            </Card>
         );
     }
 }
 
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle, providerDetails }, dispatch);
+    return bindActionCreators({ selectConsoleTitle, providerAction }, dispatch);
 }
 
 const mapStateToProps = (state) => {
     console.log("State : ", state);
     return {
-        provider: state.provider.provider,
-        user: state.user
+        provider: state.provider,
     }
 };
 

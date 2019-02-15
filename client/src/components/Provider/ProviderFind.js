@@ -29,12 +29,11 @@ class ProviderFind extends Component {
     componentDidMount() {
         this.props.selectConsoleTitle({title: "Manage Provider"});
 
-      
-        providerAPI.findAllByGroup(localStorage.getItem("provider_group_id"))
+        providerAPI.findAll()
             .then(res => {
-                console.log("res.data: " + JSON.stringify(res.data.providerList, null, 2 ));  
+                console.log("res.dataP: ", res.data);  
                 let providerList = [];
-                res.data.providerList.map(provider => {
+                res.data.map(provider => {
                     providerList.push({
                         value: provider._id,
                         text: `Dr ${startCase(provider.firstname)} ${startCase(provider.lastname)}`

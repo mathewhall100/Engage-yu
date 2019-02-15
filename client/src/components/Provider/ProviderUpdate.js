@@ -4,620 +4,352 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Field, reset, reduxForm } from 'redux-form';
 import { startCase } from 'lodash';
-import moment from 'moment';
 
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-
-import { selectConsoleTitle, providerDetails } from '../../actions/index'
-
+import { selectConsoleTitle, providerAction } from '../../actions/index'
 import FormTextFocused from '../Forms/FormTextFocused';
-import FormText from '../Forms/FormText';
-import FormSelect from '../Forms/FormSelect'
-import FormRadio from '../Forms/FormRadio'
-import EditProviderSuccessDialog from '../Dialogs/EditProviderSuccessDialog';
-import EditProviderFailedDialog from '../Dialogs/EditProviderFailedDialog.js';
+import StateSelect from '../Forms/StateSelect'
 import providerAPI from "../../utils/provider.js";
-
-let selectItems = [];
+import CallBack from '../Callback'
+import Dialog from '../Dialogs/simpleDialog'
+import SmallBtn from '../Buttons/smallBtn';
+import ProviderDetailsBar from './providerDetailsBar';
+import { validateName } from '../../logic/formValidations'
 
 const styles = theme => ({
     root: {
-        padding: "20px"
+        padding: "40px"
     },
-    tableText: {
-       marginTop: "10px"
+    fwMedium: {
+        fontWeight: 500,
     },
-    textBold: {
-        fontWeight: "bold",
-      },
-    btn: {
-        backgroundColor: "#eeeeee",
-        textDecoration: "none",
-        borderRadius: "5px",
-        padding: "5px",
-        marginTop: "10px",
-        marginLeft: "20px",
-        float: "right",
-        '&:hover': {
-            backgroundColor: "#dddddd",
-            cursor: 'pointer'
-        },
-        '&:disabled': {
-            color: 'grey',
-            cursor: 'disabled'
-        },
-        hover: {},
-        disabled: {},
+    formElement: {
+        position: "relative",
+        left: "15px"
+    },
+    successText: {
+        color: "green", 
+        position: "relative", top: "6px"
+    },
+    failedText: {
+        position: "relative", top: "6px"
     },
 })
 
-class ProviderEdit extends Component {  
+
+class ProviderUpdate extends Component {  
 
     componentDidMount() {
         this.props.selectConsoleTitle({title: "Update provider details"});
-    };
-
-    componentWillReceiveProps(nextProps) {
+        this.fetchProviderDetailsToUpdate(this.props.location.state.providerId)
         this.setState({editFieldActive: false})
-    }
-
+    };
+    
 
     state = {
-
-        providerUpdateSuccess: false,
-        providerUpdateFailed: false,
-
         editFieldActive: false, 
-        showEditField: []
+        showEditField: [],
+        updateSuccess: false,
+        updateFailed: false,
     }
 
+    // Fetch provider info using provider_id and ensure loaded into store
+    fetchProviderDetailsToUpdate = (id) => {
+        providerAPI.findById(id)
+        .then(res => {
+            console.log("res.data: ", res.data);
+            this.props.providerAction(res.data);
+        })
+        .catch(err => {
+            console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
+            console.log(err);
+        })
+    };
 
     submit(values) {
         console.log("Submit: ", values)
+        const { provider } = this.props
 
-        const { provider, reset } = this.props
-
-        if (values.officename) {
-            providerAPI.update(this.props.provider._id, {
+        if (values.officename || values.officestreet || values.officecity || values.officestate || values.officezip) {
+            providerAPI.update(provider._id, {
                 office: {
-                    name: values.officename,
-                    street: this.props.provider.office.street,
-                    city: this.props.provider.office.city,
-                    state: this.props.provider.office.state,
-                    zip: this.props.provider.office.zip
+                    name: values.officename ? values.officename : provider.office.name,
+                    street: values.officestreet ? values.officestreet : provider.office.street,
+                    city: values.officecity ? values.officecity : provider.office.city,
+                    state: values.officestate ? values.officestate : provider.office.state,
+                    zip: values.officezip ? values.officezip : provider.office.zip
                 }
             })
-            .then(res => {
-                console.log("res.data: ", res.data)
-                this.props.reset()
-                this.setState ({providerUpdateSuccess: true})   // update success dialog
-            })
-            .catch(err => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log(err);
-                this.setState({providerUpdateFailed: true}); // update failed dialog
-            })
-        } else if (values.officestreet || values.officecity || values.officestate || values.officezip) {
-            providerAPI.update(this.props.provider._id, {
-                office: {
-                    name: this.props.provider.office.name,
-                    street: values.officestreet ? values.officestreet : this.props.provider.office.street,
-                    city: values.officecity ? values.officecity : this.props.provider.office.city,
-                    state: values.officestate ? values.officestate : this.props.provider.office.state,
-                    zip: values.officezip ? values.officezip : this.props.provider.office.zip
-                }
-            })
-            .then(res => {
-                console.log("res.data: ", res.data)
-                this.props.reset()
-                this.setState ({providerUpdateSuccess: true})   // update success dialog
-            })
-            .catch(err => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log(err);
-                this.setState({providerUpdateFailed: true}); // update failed dialog
-            })
+            .then(res => {this.updateSuccess(res.data) })
+            .catch(err => {this.updateFailed(err)})
         } else if (values.email) {
-            providerAPI.update(this.props.provider._id, {
+            providerAPI.update(provider._id, {
                 email: values.email,
             })
-            .then(res => {
-                console.log("res.data: ", res.data)
-                this.props.reset()
-                this.setState ({providerUpdateSuccess: true})   // update success dialog
-            })
-            .catch(err => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log(err);
-                this.setState({providerUpdateFailed: true}); // update failed dialog
-            })
-        } else if (values.phone1 || values.phone2 || values.phone3) {
-
-            let phone = [{
-                phone: "office", 
-                number: values.phone1 ? `${values.phone1.slice(0, values.phone1.indexOf("ext")).trim()}` : provider.phone[0].number, 
-                ext:  values.phone1 ? `${values.phone1.slice((values.phone1.indexOf("ext")+3)).trim()}` : provider.phone[0].ext
-            }];
-            if (values.phone2) {
-                phone.push({
+           .then(res => {this.updateSuccess(res.data, 5) })
+           .catch(err => {this.updateFailed(err)})
+        } else if (values.phone2 || values.phone2 || values.phone3) {
+            providerAPI.update(provider._id, {
+                phone: [{
+                    phone: "office", 
+                    number: values.phone1 ? `${values.phone1.slice(0, values.phone1.indexOf("ext")).trim()}` : provider.phone[0].number, 
+                    ext:  values.phone1 ? `${values.phone1.slice((values.phone1.indexOf("ext")+3)).trim()}` : provider.phone[0].ext
+                    }, {
                     phone: "cell", 
-                    number: values.phone2, 
-                    }) 
-                }
-                else if (provider.phone[1]) {
-                    phone.push({
-                        phone: "cell", 
-                        number: provider.phone[1].number,
-                    })
-                }
-            if (values.phone3) {
-                phone.push({
+                    number: values.phone2 ? values.phone2 : provider.phone[1].number,
+                    ext: "" 
+                    }, {
                     phone: "other", 
-                    number: values.phone3, 
-                    }) 
-                }
-                else if (provider.phone[2]) {
-                    phone.push({
-                        phone: "cell", 
-                        number: provider.phone[2].number,
-                    })
-                }
-            console.log("phone: ", phone)
-            providerAPI.update(this.props.provider._id, {
-                phone: phone
+                    number: values.phone3 ? `${values.phone3.slice(0, values.phone3.indexOf("ext")).trim()}` : provider.phone[2].number,
+                    ext:  values.phone3 ? `${values.phone3.slice((values.phone3.indexOf("ext")+3)).trim()}` : provider.phone[2].ext
+                }]
             })
-            .then(res => {
-                console.log("res.data: " + JSON.stringify(res.data, null, 2 ))
-                this.props.reset()
-                this.setState ({providerUpdateSuccess: true})   // update success dialog
-            })
-            .catch(err => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log(err);
-                this.setState({providerUpdateFailed: true}); // update failed dialog
-            })
-        }
+            .then(res => {this.updateSuccess(res.data, 2) })
+            .catch(err => {this.updateFailed(err)})
+        } 
+    };
 
+    updateSuccess = (data) => {
+        console.log("res.data: ", data)
+        this.fetchProviderDetailsToUpdate(this.props.provider._id)
+        this.setState({
+            editFieldActive: false,
+            updateSuccess: true,
+        })
+        this.props.reset('providerUpdateForm');  // reset the form fields to empty (requires form name)
     }
 
-    onChangeText(value) {
-        console.log("change text: ", value)
+    updateFailed = (err) => {
+        console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
+        console.log(err);
+        this.setState({updateFailed: true}); // update failed dialog
     }
 
-    onChangeSelect(value) {
-        console.log("change select: ", value)
-    }
-
-    handleClickEdit(event, field) {
-        this.setState ({providerUpdateSuccess: false}) 
-        if (this.state.editFieldActive) {
-            // maybe show error message that only one field may be updated at once
-        }
+    // Event handlers
+    handleUpdate = (index) => {
+        this.setState({updateSuccess: false}) 
         let tempArray = []
-        tempArray[field] = true
-        this.setState({showEditField: tempArray})
-        this.setState({editFieldActive: true})
+        tempArray[index] = true
+        this.setState({
+            showEditField: tempArray,
+            editFieldActive: true,
+        })
+    } 
+    
+    handleCancel = () => {
+        this.setState({
+            showEditField: [],
+            editFieldActive: false,
+            updateFailed: false
+        })
+        this.props.reset('providerUpdateForm');  // reset the form fields to empty (requires form name)
     }
 
-    handleClickCancel(event, field) {
-        this.setState({showEditField: []})
-        this.setState({editFieldActive: false})
+    handleTryAgain = () => {
+        this.setState({updateFailed: false})
     }
-
-    handleClickBack(event) {
-        this.props.handleAction(1)
-    }
-
 
     render () {
         
         const { submitting, pristine, provider, handleSubmit, classes } = this.props
-        const { editFieldActive, showEditField, providerUpdateFailed, providerUpdateSuccess } = this.state
+        const { editFieldActive, showEditField, updateFailed, updateSuccess } = this.state
 
-
-        const renderTextField = (field) =>  {
-            const  { input, label, autofocus, width, name, meta: { touched, error }, ...custom } = field;
-            return (
-                <TextField
-                    label={label}
-                    value={name}
-                    //errorText={touched && error}
-                    autoFocus={autofocus}
-                    style={{width: width}}
-                    {...input}
-                    {...custom}
-                />
-            )
+        const getFormFields = (provider) => {
+            return [{
+                rowLabel: "Office", 
+                fieldContent: startCase(provider.office.name), 
+                formElement: <FormTextFocused name="officename" label="New office" width={215}/>
+                },{
+                rowLabel: "Address", 
+                fieldContent: startCase(provider.office.street), 
+                formElement: <FormTextFocused name="officestreet" label="Street" width={215}/>
+                },{
+                rowLabel: "", 
+                fieldContent: startCase(provider.office.city), 
+                formElement: <FormTextFocused name="officecity" label="City" width={215}/>
+                },{
+                rowLabel: "", 
+                fieldContent: startCase(provider.office.state), 
+                formElement: <StateSelect name="officestate"/>
+                },{
+                rowLabel: "", 
+                fieldContent: startCase(provider.office.zip), 
+                formElement: <FormTextFocused name="officezip" label="Zip" width={215}/>
+                },{
+                rowLabel: "Email",
+                fieldContent: provider.email,
+                formElement:  <FormTextFocused name="email" label="Email" width={215}/>
+                },{
+                rowLabel: "Office phone",
+                fieldContent: `${provider.phone[0].number} ${provider.phone[0].ext ? `ext: ${provider.phone[0].ext}` : ""}`,
+                formElement:  <FormTextFocused name="phone1"  label="Office phone (000-000-0000)" width={215}/>
+                },{
+                rowLabel: "Cell",
+                fieldContent: `${provider.phone[1].number}`,
+                formElement:  <FormTextFocused name="phone2"  label="Cell" width={215}/>
+                },{
+                rowLabel: "Other phone/pager",
+                fieldContent: `${provider.phone[2].number} ${provider.phone[2].ext ? `ext: ${provider.phone[2].ext}` : ""}`,
+                formElement:  <FormTextFocused name="phone3" label="Other phone/pager" width={215} />
+            }];
+        }
+      
+        const getPositioning = (element) => {
+            console.log(element)
+            if (element.includes("Select")) {return {top: "-12px"}}
+            else if (element.includes("Radio")) {return {top: "-24px"}}
+            else return {top: "-28px"}
         }
 
-        const renderSelectField = (field) => {
-            const { input, label, meta: { touched, error }, children, ...custom } = field;
-            return (
-                <FormControl style={{width: "250px"}}>
-                    <InputLabel>My patients</InputLabel>
-                    <Select
-                        {...input}
-                        onSelect={(event, index, value) => input.onChange(value)}
-                        children={children} 
-                        {...custom}
-                    />
-                </FormControl>
-            )
-        }
-        
+
+
+
+        // providerUpdate return
         return (
+            <Card className={classes.root}>
 
-            <div>
+                {provider && provider._id ? 
+                    <React.Fragment>
+ 
+                        <ProviderDetailsBar provider={provider} />
 
-                {providerUpdateSuccess && <EditProviderSuccessDialog providerId={provider._id}/>}
+                        <Typography variant="title" gutterBottom>
+                            Click 'update' next to the information you want to edit. 
+                        </Typography>
 
-                {providerUpdateFailed && <EditProviderFailedDialog />} 
+                        <br />
 
-                <Card className={classes.root}>
+                        <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
 
-                    <br />
+                            {getFormFields(provider).map((field, index) => {
+                                return (
+                                    <Grid container spacing={8} key={index}>
+                                        <Grid item xs={2}>
+                                            <Typography variant="subtitle1" >{field.rowLabel}</Typography>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            <Typography variant="subtitle1" className={classes.fwMedium} >{field.fieldContent}</Typography>
+                                        </Grid>
+                                        <Grid item xs={1}>
+                                            <SmallBtn type="button" disabled={submitting || editFieldActive} index={index} text="update" handleBtn={this.handleUpdate}/>
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            { showEditField[index] && !updateSuccess && !updateFailed &&
+                                                <span className={classes.formElement} style={getPositioning(field.formElement.type.name)} >      
+                                                    {field.formElement}
+                                                </span> 
+                                            }
+                                            { showEditField[index] && updateSuccess &&
+                                                <Typography variant="subtitle1" align="center" className={classes.successText}>
+                                                    Successfully updated!
+                                                </Typography> 
+                                            }
+                                            { showEditField[index] && updateFailed && 
+                                                <Typography variant="subtitle1" align="center" color="error" className={classes.failedText}>
+                                                    Update failed!
+                                                </Typography> 
+                                            }
+                                        </Grid>
+                                        <Grid item xs={3}>
+                                            { showEditField[index] && updateFailed && 
+                                                <span> 
+                                                    <SmallBtn type="button" disabled={false} index="cancel" text="cancel" handleBtn={this.handleCancel}/>
+                                                    <SmallBtn type="button" disabled={false} index="tryagain" text="try again" handleBtn={this.handleTryAgain}/>
+                                                </span>
+                                            }
+                                            {showEditField[index] && !updateSuccess && !updateFailed &&
+                                                <span style={{marginLeft: "10px"}}>
+                                                    <SmallBtn type="submit" disabled={submitting || pristine} index="" text="submit" /> 
+                                                    <SmallBtn type="button" disabled={false} index="cancel" text="cancel" handleBtn={this.handleCancel}/>
+                                                </span>
+                                            }
+                                        </Grid> 
+                                    </Grid>
+                                )
+                            }) }
 
-                    <Grid container spacing={24}>
-                        <Grid item xs={3}>
-                            <Typography variant="caption">
-                                Provider name
-                            </Typography>
-                            <Typography variant="title">
-                                <span className={classes.textBold}>{startCase(provider.firstname)} {startCase(provider.lastname)}</span>
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={2}>
-                            <Typography variant="caption">
-                                Role:
-                            </Typography>
-                            <Typography variant="subheading">
-                                <span className={classes.textBold}>{provider.role}</span>
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <Typography variant="caption">
-                                Care group
-                            </Typography>
-                            <Typography variant="subheading">
-                                <span className={classes.textBold}>{provider.provider_group_name}</span>
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <Typography variant="caption">
-                                Added
-                            </Typography>
-                            <Typography variant="subheading">
-                                <span  className={classes.textBold}>{moment(provider.date_added).format("MMM Do YYYY")}</span>
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={1}>
-                            <Button size="small" className={classes.btn} style={{float: "right"}} onClick={event => this.handleClickBack(event)}>Back</Button>
-                        </Grid>
+                        </form>
 
-                    </Grid>
+                    {updateSuccess && 
+                        <Dialog 
+                            title="Success!" 
+                            text={`New provider, ${startCase(provider.firstname)} ${startCase(provider.lastname)} has been successfully updated `} 
+                        /> 
+                    }
+                    {updateFailed && 
+                        <Dialog 
+                            title="Failed!" 
+                            text={`Unfortuneately a problem occurred and this provider could not be updated at this time. Please check the dtails you have entered and try again. If the problem persists, contact the syste administrator`}
+                        />
+                    } 
 
-                    <br />
-                    <hr />
-                    <br />
-
-                    <Typography variant="title">
-                        Click 'update' next to the detail you want to edit.
-                    </Typography>
-
-                    <br />
-                    <br />
-
-                    <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
-
-                        <Grid container spacing={24}>
-
-                            <Grid item xs={1}>
-                                <div className={classes.tableText}>Office:</div>
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                <div className={classes.tableText}>{startCase(provider.office.name)}</div>
-                            </Grid>
-
-                            <Grid item xs={1}>
-                            <Button size="small" disabled={submitting || editFieldActive} className={classes.btn} onClick={event => this.handleClickEdit(event, 0)}>update</Button>
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                {showEditField[0] && !providerUpdateSuccess && <div style={{float: "right", paddingBottom: "15px"}}>
-                                    <div style={{position: "relative", top: "-20px"}}>
-                                        <FormTextFocused
-                                            name="officename"
-                                            label="New office"
-                                            width="350"
-                                        />
-                                    </div>
-                                </div> }
-
-                                {showEditField[0] && providerUpdateSuccess && <div style={{float: "right", color: "green", paddingTop: "10px"}}>
-                                    Successfully updated!
-                                </div> }
-                            </Grid>
-                            
-                            <Grid item xs={2}>
-                                {showEditField[0] &&  !providerUpdateSuccess && <span>
-                                    <Button size="small" className={classes.btn} onClick={event => this.handleClickCancel(event, 1)}>Cancel</Button>
-                                    <Button size="small" type="submit" disabled={submitting || pristine} className={classes.btn} >Submit</Button>
-                                </span> }
-                            </Grid> 
-
-                            <Grid item xs={1}>
-                            </Grid>
-
-                        </Grid>
-
-
-                         <Grid container spacing={24}>
-                            <Grid item xs={1}>
-                                <div className={classes.tableText}>Address</div>
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                <div className={classes.tableText}>{startCase(provider.office.street)}</div>
-                                <div className={classes.tableText}>{startCase(provider.office.city)}</div>
-                                <div className={classes.tableText}>{startCase(provider.office.state)}</div>
-                                <div className={classes.tableText}>{startCase(provider.office.zip)}</div>
-                            </Grid>
-
-                            <Grid item xs={1}>
-                                <Button size="small" disabled={submitting || editFieldActive} className={classes.btn} onClick={event => this.handleClickEdit(event, 1)}>update</Button>
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                {showEditField[1] && !providerUpdateSuccess && <div style={{float: "right",paddingBottom: "15px"}}>
-                                    <div style={{position: "relative", top: "-20px"}}>
-                                        <FormTextFocused
-                                            name="officestreet"
-                                            label="Street"
-                                            width="350"
-                                        />
-                                    </div>
-                                    <div style={{position: "relative", top: "-20px"}}>
-                                        <FormText
-                                            name="officecity"
-                                            label="City"
-                                        />
-                                    </div>
-                                    <div style={{position: "relative", top: "-20px"}}>
-                                        <FormText
-                                            name="officestate"
-                                            label="State"
-                                        />
-                                    </div>
-                                    <div style={{position: "relative", top: "-20px"}}>
-                                        <FormText
-                                            name="officezip"
-                                            label="Zip"
-                                        />
-                                    </div>
-                                </div> }
-
-                                {showEditField[1] && providerUpdateSuccess && <div style={{float: "right", color: "green", paddingTop: "10px"}}>
-                                    Successfully updated!
-                                </div> }
-                            </Grid>
-                            
-                            <Grid item xs={2}>
-                                {showEditField[1] &&  !providerUpdateSuccess && <span>
-                                    <Button size="small" className={classes.btn} onClick={event => this.handleClickCancel(event, 1)}>Cancel</Button>
-                                    <Button size="small" type="submit" disabled={submitting || pristine} className={classes.btn} >Submit</Button>
-                                </span> }
-                            </Grid> 
-
-                            <Grid item xs={1}>
-                            </Grid>
-                        </Grid>
-
-
-                        <Grid container spacing={24}>
-                            <Grid item xs={1}>
-                                <div className={classes.tableText}>Email:</div>
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                <div className={classes.tableText}>{provider.email}</div>
-                            </Grid>
-
-                            <Grid item xs={1}>
-                            <Button size="small" disabled={submitting || editFieldActive} className={classes.btn} onClick={event => this.handleClickEdit(event, 2)}>update</Button>
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                {showEditField[2] && !providerUpdateSuccess && <div style={{float: "right",paddingBottom: "15px"}}>
-                                    <div style={{position: "relative", top: "-20px"}}>
-                                        <FormTextFocused
-                                            name="email"
-                                            label="New email address (john.doe@caregroup.com)"
-                                            width="350"
-                                        />
-                                    </div>
-                                </div> }
-
-                                {showEditField[2] && providerUpdateSuccess && <div style={{float: "right", color: "green", paddingTop: "10px"}}>
-                                    Successfully updated!
-                                </div> }
-                            </Grid>
-                            
-                            <Grid item xs={2}>
-                                {showEditField[2] &&  !providerUpdateSuccess && <span>
-                                    <Button size="small" className={classes.btn} onClick={event => this.handleClickCancel(event, 2)}>Cancel</Button>
-                                    <Button size="small" type="submit" disabled={submitting || pristine} className={classes.btn} >Submit</Button>
-                                </span> }
-                            </Grid> 
-
-                            <Grid item xs={1}>
-                            </Grid>
-
-                        </Grid>
-
-                         <Grid container spacing={24}>
-                            <Grid item xs={1}>
-                                <div className={classes.tableText}>Phone:</div>
-                            </Grid>
-
-                            <Grid item xs={3}>
-                                    <table className={classes.tableText}>
-                                        <tbody>
-                                            <tr>
-                                                <td style={{width: "60px"}}>
-                                                    <div style={{marginBottom: "10px"}}>   
-                                                       {provider.phone[0].phone}
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div style={{marginBottom: "10px"}}>  
-                                                        {provider.phone[0].number} {provider.phone[0].ext ? `ext ${provider.phone[0].ext}` : "" } 
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            { provider.phone[1] && <tr>
-                                                <td>
-                                                    <div style={{marginBottom: "10px"}}>  
-                                                        {provider.phone[1].phone}
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div style={{marginBottom: "10px"}}> 
-                                                        {provider.phone[1].number} {provider.phone[1].ext ? `ext ${provider.phone[1].ext}` : "" }   
-                                                    </div>
-                                                </td>
-                                            </tr> }
-                                            {provider.phone[2] && <tr>
-                                                <td>
-                                                     <div style={{marginBottom: "10px"}}>  
-                                                        {provider.phone[2].phone}
-                                                    </div>
-                                                </td>
-                                                <td style={{marginBottom: "10px"}}> 
-                                                    {provider.phone[2].number} {provider.phone[1].ext ? `ext ${provider.phone[2].ext}` : "" }   
-                                                </td>
-                                            </tr> }
-                                        </tbody>
-                                    </table>
-                            </Grid>
-
-                            <Grid item xs={1}>
-                            <Button size="small" disabled={submitting || editFieldActive} className={classes.btn} onClick={event => this.handleClickEdit(event, 3)}>update</Button>
-                            </Grid>
-
-                            <Grid item xs={4}>
-                                {showEditField[3] && !providerUpdateSuccess && <div style={{float: "right",paddingBottom: "15px"}}>
-                                    <div style={{position: "relative", top: "-20px"}}>
-                                        <FormTextFocused
-                                            name="phone1"
-                                            label="New Office phone (000-000-0000 ext 0000)"
-                                            width="320"
-                                        />
-                                    </div>
-
-                                    <div style={{position: "relative", top: "-20px"}}>
-                                        <FormText
-                                            name="phone2"
-                                            label="Cell (000-000-0000)"
-                                            width="320"
-                                        />
-                                    </div> 
-
-                                    <div style={{position: "relative", top: "-20px"}}>
-                                        <FormText
-                                            name="phone3"
-                                            label="Other (000-000-0000)"
-                                            width="320"
-                                        />
-                                    </div> 
-                                </div> }
-
-                                {showEditField[3] && providerUpdateSuccess && <div style={{float: "right", color: "green", paddingTop: "10px"}}>
-                                    Successfully updated!
-                                </div> }
-                            </Grid>
-                            
-                            <Grid item xs={2}>
-                                {showEditField[3] &&  !providerUpdateSuccess && <span>
-                                    <Button size="small" className={classes.btn} onClick={event => this.handleClickCancel(event, 3)}>Cancel</Button>
-                                    <Button size="small" type="submit" disabled={submitting || pristine} className={classes.btn} >Submit</Button>
-                                </span> }
-                            </Grid> 
-
-                            <Grid item xs={1}>
-                            </Grid>
-
-                        </Grid>
-
-                    </form>
-
-                    <br />                   
-                    <br />
-
-                </Card>
-            </div>
+                    </React.Fragment>
+                    :
+                    <CallBack />
+                }
+            </Card>
         );
     }
 }
 
+
 const validate = (values) => {
-    console.log("Error values: ", values) // -> { object containing all values of form entries } 
+    console.log("Error values: ", values) 
     const errors = {};
-
     // validate inputs from 'values'
+
+    errors.officename = validateName(values.officename)
+
+    if (!values.officestreet) {errors.officestreet = "*Please enter an office address!"
+    } else if (!/^[a-zA-Z0-9' ]{2,30}$/i.test(values.officestreet))  {
+        errors.officestreet = "*Invalid address. Only characters and numbers allowed"}
+
+    if (!values.officecity) {errors.officecity = "*Please enter an office address!"
+    } else if (!/^[a-zA-Z' ]{2,30}$/i.test(values.officecity))  {
+        errors.officecity = "*Invalid address. Only characters allowed"}
+
+    if (!values.officezip) {errors.officezip = "*Please enter an zip code!"
+    } else if (!/^[0-9]{5}$/i.test(values.officezip))  {
+        errors.officezip = "*Invalid zip code. Must be 5 numbers."}
     
-    if (values.firstname && values.firstname.length <3 ) {
-        errors.firstname = "*Please enter a valid name!";   // message to be displayed if invalid
-    } 
+    if (values.email && !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/i.test(values.email)) {
+        errors.email = "Invalid email address."}
 
-    else if (values.lastname && values.lastname.length <3)  {
-        errors.lastname = "*Please enter a valid name!";   // message to be displayed if invalid
-    } 
+    if (values.phone1 && !/^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/i.test(values.phone1)) {
+        errors.phone1 = "*Invalid phone number. Try (123) 456 7891 format" }
 
-    else if (values.email && values.email.length < 5) {
-        errors.email = "Please enter a valid email!";   // message to be displayed if invalid
-    }
+    if (values.phone2 && !/^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/i.test(values.phone2)) {
+        errors.phone2 = "*Invalid phone number. Try (123) 456 7891 format" }
 
-    else if (values.phone && values.phone.length < 12) {
-    errors.phone = "Please enter a contact phone number!";   // message to be displayed if invalid
-    }
+    if (values.phone3 && !/^[a-zA-Z0-9 ]{2,15}$/i.test(values.phone3)) {
+        errors.phone3 = "*Invalid phone or pager" }
 
-    // If errors is empty, then form good to submit
-    // If errors has any properties, redux form assumes form is invalid
     console.log("Errors: ", errors)
     return errors;
 
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle, providerDetails }, dispatch);
+    return bindActionCreators({ selectConsoleTitle, providerAction }, dispatch);
 }
 
 const mapStateToProps = (state) => {
     console.log("State : ", state);
     return {
-        provider: state.provider.provider,
-        user: state.user
+        provider: state.provider,
     }
 };
 
-
 const formData = {
-    form: 'EditProviderForm', //unique identifier for this form 
-    //validate,      
+    form: 'providerUpdateForm', //unique identifier for this form 
+    validate,      
 }
 
-ProviderEdit = connect(mapStateToProps, mapDispatchToProps)(ProviderEdit)
-ProviderEdit = reduxForm(formData)(ProviderEdit)
-ProviderEdit = withStyles(styles)(ProviderEdit)
-ProviderEdit = withRouter(ProviderEdit)
-export default ProviderEdit;
+ProviderUpdate = connect(mapStateToProps, mapDispatchToProps)(ProviderUpdate)
+ProviderUpdate = reduxForm(formData)(ProviderUpdate)
+ProviderUpdate = withStyles(styles)(ProviderUpdate)
+ProviderUpdate = withRouter(ProviderUpdate)
+export default ProviderUpdate;

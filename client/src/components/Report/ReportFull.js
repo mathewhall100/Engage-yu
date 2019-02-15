@@ -15,7 +15,7 @@ import ReportTable from '../Tables/ReportTable';
 import ReportEntriesTable from '../Tables/ReportEntriesTable'
 import ReportBarGraph from '../Graphs/ReportBarGraph';
 import ReportSurveyDetails from './reportSurveyDetails'
-import PatientDetailsBar from '../Textblocks/patientDetailsBar';
+import DetailsBar from '../Textblocks/detailsBar';
 import ReportRequestDetails from './reportRequestDetails'
 import { displayDataCalc, displayGraphCalc} from '../../logic/reportFunctions';
 import { selectConsoleTitle } from '../../actions/index';
@@ -92,7 +92,7 @@ class ReportFull extends Component {
     render () {
 
         const { episode, questions, records, episodeDataForReport } = this.state
-        const { classes } = this.props  
+        const { classes, patientInfo } = this.props  
 
         const btns = [
             {tooltip: "Close page", text: "close"},
@@ -100,10 +100,11 @@ class ReportFull extends Component {
             {tooltip: "Email report to provider and/or patient", text: "email"},
             {tooltip: "Print report", text: "print"},
         ];
-        const infoItems = [
-            { caption: "Patient name", text: `${startCase(this.props.patientInfo.firstname)} ${startCase(this.props.patientInfo.lastname)}` },
-            { caption: "Hospital number", text: this.props.patientInfo.hospital_id },
-            { caption: "DOB", text: this.props.patientInfo.dob },
+        const patientDetails = [
+            {spacing: 3, caption: "Patient name", text: `${startCase(patientInfo.firstname)} ${startCase(patientInfo.lastname)}`},
+            {spacing: 3, caption: "Hospital number", text: patientInfo.hospital_id},
+            {spacing: 3, caption: "DOB", text: patientInfo.dob},
+            {spacing: 3, caption: "", text: ""}
         ];
 
         const RenderSubtitle = (props) =>
@@ -131,7 +132,7 @@ class ReportFull extends Component {
                                 </Typography>
                             </Grid>
                             <Grid item xs={12}>
-                                 <PatientDetailsBar items={infoItems} closeBtn={false}/> 
+                                 <DetailsBar items={patientDetails}/> 
                             </Grid>
                             <Grid item xs={6}>
                                 {episode && <ReportSurveyDetails episode={episode}/> }

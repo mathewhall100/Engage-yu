@@ -19,7 +19,7 @@ import FormSelect from '../Forms/FormSelect'
 import FormRadio from '../Forms/FormRadio'
 import Dialog from '../Dialogs/simpleDialog'
 import SmallBtn from '../Buttons/smallBtn';
-import PatientDetailsBar from '../Textblocks/patientDetailsBar';
+import DetailsBar from '../Textblocks/detailsBar';
 
 
 const styles = theme => ({
@@ -55,10 +55,9 @@ class UpdatePatient extends Component {
     state = {
         editFieldActive: false,
         showEditField: [],
-        successFlag: [],
         selectItems: [],
-        PatientUpdateSuccessDialog: false,
-        PatientUpdateFailedDialog: false
+        updateSuccess: false,
+        updateFailed: false
     }
 
     // Fetch patient info using patient_id in local storage and ensure loaded into store
@@ -88,11 +87,10 @@ class UpdatePatient extends Component {
             .then(res => {
                 console.log("res.data: ", res.data);
                 let selectItems=[];
-                res.data.providerList.map((provider, index) => {
+                res.data.providerList.map(provider => {
                     selectItems.push({
-                        value: index,
+                        value: provider._id,
                         text: `Dr. ${provider.firstname} ${provider.lastname}`,
-                        id: provider._id, 
                     })
                     this.setState({selectItems})
                 })
@@ -106,43 +104,44 @@ class UpdatePatient extends Component {
 
     submit(values) {
         console.log("Submit: ", values)
+        const { patientInfo } = this.props
 
         if (values.firstname) {
-            patient_infoAPI.updateName(this.props.patientInfo._id, {
+            patient_infoAPI.updateName(patientInfo._id, {
                 firstname: values.firstname,
-                lastname: this.props.patientInfo.lastname
+                lastname: patientInfo.lastname
             })
             .then(res => {this.updateSuccess(res.data, 0) })
             .catch(err => {this.updateFailed(err)})
         } else if (values.lastname) {
-            patient_infoAPI.updateName(this.props.patientInfo._id, {
-                firstname: this.props.patientInfo.firstname,
+            patient_infoAPI.updateName(patientInfo._id, {
+                firstname: patientInfo.firstname,
                 lastname: values.lastname
             })
             .then(res => {this.updateSuccess(res.data, 1) })
             .catch(err => {this.updateFailed(err) })
         } else if (values.email) {
-            patient_infoAPI.updateEmail(this.props.patientInfo._id, {
+            patient_infoAPI.updateEmail(patientInfo._id, {
                 email: values.email,
             })
             .then(res => {this.updateSuccess(res.data, 2) })
             .catch(err => {this.updateFailed(err) })
         } else if (values.phone) {
-            patient_infoAPI.updatePhone(this.props.patientInfo._id, {
+            patient_infoAPI.updatePhone(patientInfo._id, {
                 phone: values.phone,
             })
             .then(res => {this.updateSuccess(res.data, 3) })
             .catch(err => {this.updateFailed(err) })
         } else if (values.provider) {
-            patient_infoAPI.updateProvider(this.props.patientInfo._id, {
-                primary_provider_ref: this.state.selectItems[values.provider].id,
-                primary_provider_id: this.state.selectItems[values.provider].id,
+            patient_infoAPI.updateProvider(patientInfo._id, {
+                primary_provider_ref: values.provider,
+                primary_provider_id: values.provider,
                 primary_provider_name: this.state.selectItems[values.provider].text.slice(3),
             })
             .then(res => {this.updateSuccess(res.data, 4) })
             .catch(err => {this.updateFailed(err) })
         } else if (values.status) {
-            patient_infoAPI.updateStatus(this.props.patientInfo._id, {
+            patient_infoAPI.updateStatus(patientInfo._id, {
                 status: values.status
             })
             .then(res => {this.updateSuccess(res.data, 5) })
@@ -153,85 +152,83 @@ class UpdatePatient extends Component {
     updateSuccess = (data, index) => {
         console.log("res.data: ", data)
         this.fetchPatientDetailsToUpdate()
-        let tempFlag = this.state.successFlag
-        tempFlag[index] = true
         this.setState({
             editFieldActive: false,
-            patientUpdateSuccess: true,
-            successFlag: tempFlag
+            updateSuccess: true,
         })
-        this.props.dispatch(reset('UpdatePatientForm'));  // requires form name
+        this.props.reset('patientUpdateForm');  // reset the form fields to empty (requires form name)
     }
 
     updateFailed = (err) => {
         console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
         console.log(err);
-        this.setState({patientUpdateFailed: true}); // update failed dialog
+        this.setState({updateFailed: true}); // update failed dialog
     }
 
 
-    handleBtn = (index) => {
-        if (index === "cancel") {
-            this.setState({
-                showEditField: [],
-                editFieldActive: false,
-                patientUpdateFailed: false
-            })
-            this.props.dispatch(reset('UpdatePatientForm'));  // reset the form fields to empty (requires form name)
-         } else if (index === "tryagain") {
-            this.setState({patientUpdateFailed: false})
-        } else {
-            this.setState({patientUpdateSuccess: false}) 
-            let tempArray = [], tempFlag = []
-            tempArray[index] = true
-            tempFlag = this.state.successFlag
-            tempFlag[index] = false
-            this.setState({
-                showEditField: tempArray,
-                successFlag: tempFlag,
-                editFieldActive: true,
-            })
-        } 
-    };
+    // Event handlers
+    handleUpdate = (index) => {
+        this.setState({updateSuccess: false}) 
+        let tempArray = []
+        tempArray[index] = true
+        this.setState({
+            showEditField: tempArray,
+            editFieldActive: true,
+        })
+    } 
+    
+    handleCancel = () => {
+        this.setState({
+            showEditField: [],
+            editFieldActive: false,
+            updateFailed: false
+        })
+        this.props.reset('patientUpdateForm');  // reset the form fields to empty (requires form name)
+    }
+
+    handleTryAgain = () => {
+        this.setState({updateFailed: false})
+    }
 
 
     render () {
         
         const { submitting, pristine, patientInfo, handleSubmit, classes } = this.props
-        const { selectItems, editFieldActive, successFlag, showEditField, patientUpdateFailed, patientUpdateSuccess } = this.state
+        const { selectItems, editFieldActive, successFlag, showEditField, updateFailed, updateSuccess } = this.state
 
         const patientDetails = [
-            {caption: "Current name", text: `${startCase(patientInfo.firstname)} ${startCase(patientInfo.lastname)}`  },
-            {caption: "Hospital number", text: patientInfo.hospital_id},
-            {caption: "DOB", text: patientInfo.dob},
-            {caption: "Date enrolled", text: moment(patientInfo.date_enrolled).format("MMM Do YYYY")},
+            {spacing: 3, caption: "Current name", text: `${startCase(patientInfo.firstname)} ${startCase(patientInfo.lastname)}`  },
+            {spacing: 2, caption: "Hospital number", text: patientInfo.hospital_id},
+            {spacing: 2, caption: "DOB", text: patientInfo.dob},
+            {spacing: 2, caption: "Date enrolled", text: moment(patientInfo.date_enrolled).format("MMM Do YYYY")},
+            {spacing: 3, caption: "btn", text: "close", url: "admin/find"}
         ];
 
         const radioItems = [
             {value: "active", label: "Active"},
             {value: "inactive", label: "Inactive"}
         ];
-        
+
         const formFields = [{
             rowLabel: "Firstname", 
             fieldContent: startCase(patientInfo.firstname), 
-            formElement: <FormTextFocused name="firstname" label="New firstname" width={200}/>
+            formElement: <FormTextFocused name="firstname" label="New firstname" width={215}/>
             },{
             rowLabel: "Lastname", 
             fieldContent: startCase(patientInfo.lastname), 
-            formElement: <FormTextFocused name="lastname" label="New lastname" width={200}/>
+            formElement: <FormTextFocused name="lastname" label="New lastname" width={215}/>
             },{
             rowLabel: "Email", 
             fieldContent: patientInfo.email, 
-            formElement: <FormTextFocused name="email" label="New email address" width={200}/>
+            formElement: <FormTextFocused name="email" label="New email address" width={215}/>
             },{
             rowLabel: "Phone", 
             fieldContent: patientInfo.phone, 
-            formElement: <FormTextFocused name="phone" label="New phone number" width={150}/>
+            formElement: <FormTextFocused name="phone" label="New phone number" width={215}/>
             },{
             rowLabel: "Primary Provider", 
             fieldContent: `Dr. ${startCase(patientInfo.primary_provider_name)}`, 
-            formElement: <FormSelect name="provider" label="Primary Provider" items={selectItems} width={200}/>
+            formElement: <FormSelect name="provider" label="Primary Provider" items={selectItems} width={215}/>
             },{
             rowLabel: "Patient Status",
             fieldContent: patientInfo.status,
@@ -239,24 +236,18 @@ class UpdatePatient extends Component {
             }
         ];
 
-        const getPositioning = (index) => {
-            switch (index) {
-                case 4: 
-                    return {top: '-8px'}
-                case 5: 
-                    return {top: '-2px'}
-                default: 
-                    return {top: "-24px" }
-            }
+        const getPositioning = (element) => {
+            console.log(element)
+            if (element.includes("Select")) {return {top: "-12px"}}
+            else if (element.includes("Radio")) {return {top: "-2px"}}
+            else return {top: "-28px"}
         }
-
 
        // UpdatePatient return
         return (
-
             <Card className={classes.root}>
                 <Grid container spacing={24} style={{paddingLeft: "10px"}}>
-                    <PatientDetailsBar items={patientDetails} closeBtn={true} />
+                    <DetailsBar items={patientDetails} />
                 </Grid>
 
                 <br /> <hr /> <br />
@@ -279,36 +270,36 @@ class UpdatePatient extends Component {
                                     <Typography variant="subtitle1" className={classes.fwMedium} >{field.fieldContent}</Typography>
                                 </Grid>
                                 <Grid item xs={1}>
-                                    <SmallBtn type="button" disabled={submitting || editFieldActive} index={index} text="update" handleBtn={this.handleBtn}/>
+                                    <SmallBtn type="button" disabled={submitting || editFieldActive} index={index} text="update" handleBtn={this.handleUpdate}/>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    { showEditField[index] && !patientUpdateSuccess && !patientUpdateFailed &&
-                                        <span className={classes.formElement} style={getPositioning(index)} >      
+                                    { showEditField[index] && !updateSuccess && !updateFailed &&
+                                        <span className={classes.formElement} style={getPositioning(field.formElement.type.name)} >      
                                             {field.formElement}
                                         </span> 
                                     }
-                                    { ((showEditField[index] && patientUpdateSuccess) || successFlag[index]) &&
+                                    { showEditField[index] && updateSuccess &&
                                         <Typography variant="subtitle1" align="center" className={classes.successText}>
                                             Successfully updated!
                                         </Typography> 
                                     }
-                                    { showEditField[index] && patientUpdateFailed && 
+                                    { showEditField[index] && updateFailed && 
                                         <Typography variant="subtitle1" align="center" color="error" className={classes.failedText}>
                                             Update failed!
                                         </Typography> 
                                     }
                                 </Grid>
                                 <Grid item xs={3}>
-                                    { showEditField[index] && patientUpdateFailed && 
+                                    { showEditField[index] && updateFailed && 
                                         <span> 
-                                            <SmallBtn type="button" disabled={false} index="cancel" text="cancel" handleBtn={this.handleBtn}/>
-                                            <SmallBtn type="button" disabled={false} index="tryagain" text="try again" handleBtn={this.handleBtn}/>
+                                            <SmallBtn type="button" disabled={false} index="" text="cancel" handleBtn={this.handleCancel}/>
+                                            <SmallBtn type="button" disabled={false} index="" text="try again" handleBtn={this.handleTryAgain}/>
                                         </span>
                                     }
-                                    {showEditField[index] && !patientUpdateSuccess && !patientUpdateFailed &&
+                                    {showEditField[index] && !updateSuccess && !updateFailed &&
                                         <span style={{marginLeft: "10px"}}>
                                             <SmallBtn type="submit" disabled={submitting || pristine} index="" text="submit" /> 
-                                            <SmallBtn type="button" disabled={false} index="cancel" text="cancel" handleBtn={this.handleBtn}/>
+                                            <SmallBtn type="button" disabled={false} index="" text="cancel" handleBtn={this.handleCancel}/>
                                         </span>
                                     }
                                 </Grid> 
@@ -320,7 +311,7 @@ class UpdatePatient extends Component {
 
                 <br /><br /> 
                 
-                {patientUpdateFailed && <Dialog title="Whoops, Update Failed!" text="Unfortueatley the requested update could not be made. Please check that the new details entered are valid and correct and try again. If the problem persists, conatct the system administrator"/> }                  
+                {updateFailed && <Dialog title="Whoops, Update Failed!" text="Unfortueatley the requested update could not be made. Please check that the new details entered are valid and correct and try again. If the problem persists, conatct the system administrator"/> }                  
                 
             </Card>
         );
@@ -364,7 +355,7 @@ const mapStateToProps = (state) => {
 };
 
 const formData = {
-    form: 'UpdatePatientForm', //unique identifier for this form 
+    form: 'patientUpdateForm', //unique identifier for this form 
     validate,      
 }
 

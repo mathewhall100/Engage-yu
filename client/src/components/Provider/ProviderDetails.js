@@ -14,6 +14,7 @@ import HrStyled from '../commons/hrStyled'
 import Callback from '../Callback'
 import { providerAction } from '../../actions/index'
 
+
 import providerAPI from "../../utils/provider.js";
 
 const styles = theme => ({
@@ -58,15 +59,9 @@ class ProviderDetails extends Component {
                     state: {providerId: this.props.provider._id}
                 })
                 break;
-            case "update role":
+            case "reassign care group":
                 this.props.history.push({
                     pathname: '/admin/provider/updategroup',
-                    state: {providerId: this.props.provider._id}
-                })
-                break;
-            case "swap care group":
-                this.props.history.push({
-                    pathname: '/admin/provider/updaterole',
                     state: {providerId: this.props.provider._id}
                 })
                 break;
@@ -187,7 +182,7 @@ class ProviderDetails extends Component {
                         <br />
 
                         <HandleBtns 
-                            btns={["remove provider", "update role", "swap care group", "update details"]} 
+                            btns={["remove provider", "reassign care group", "update details"]} 
                             _id={provider._id}
                             handleActionBtns={this.handleAction}
                         />   

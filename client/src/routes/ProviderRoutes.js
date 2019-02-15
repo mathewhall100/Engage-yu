@@ -4,6 +4,7 @@ import ProviderAdd from '../components/Provider/ProviderAdd';
 import ProviderFind from '../components/Provider/ProviderFind';
 import ProviderRemove from '../components/Provider/ProviderRemove';
 import ProviderUpdate from '../components/Provider/ProviderUpdate';
+import ProviderUpdateGroup from '../components/Provider/ProviderUpdateGroup';
 import NotFound from '../pages/NotFound';
 
 export default class ProviderRoutes extends Component { 
@@ -16,6 +17,7 @@ export default class ProviderRoutes extends Component {
                 <Route exact path='/admin/provider/find' component={ProviderFind} />
                 <Route exact path='/admin/provider/remove' component={ProviderRemove} />
                 <Route exact path='/admin/provider/update' component={ProviderUpdate} />
+                <Route exact path='/admin/provider/updategroup' component={ProviderUpdateGroup} />
                 <Route path="/notfound" component={NotFound} />
                 <Route component={NotFound} />
             </Switch>

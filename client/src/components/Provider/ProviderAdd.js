@@ -12,6 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import FormText from '../Forms/FormText'
 import FormTextFocused from '../Forms/FormTextFocused'
 import FormSelect from '../Forms/FormSelect'
+import StateSelect from '../Forms/StateSelect'
 import ProviderAddSuccessDialog from '../Dialogs/ProviderAddSuccessDialog'
 import SimpleDialog from '../Dialogs/simpleDialog'
 import ActionBtn from '../Buttons/actionBtn'
@@ -132,20 +133,6 @@ class ProviderEnrollForm extends Component {
             {id: "5", value: 'other', text: 'other'}
         ]
 
-        const states = [
-            'Alabama','Alaska','American Samoa','Arizona','Arkansas','California','Colorado','Connecticut','Delaware','District of Columbia','Federated States of Micronesia','Florida','Georgia','Guam','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky','Louisiana','Maine','Marshall Islands','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York','North Carolina','North Dakota','Northern Mariana Islands','Ohio','Oklahoma','Oregon','Palau','Pennsylvania','Puerto Rico','Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virgin Island','Virginia','Washington','West Virginia','Wisconsin','Wyoming'
-        ]
-
-        const getStatesList = (states) => {
-            let obj = {}
-            let statesList=[]
-            states.map((state, index) => {
-                obj = {id: index, value: state, text: state}
-                statesList.push(obj)
-            })
-            return statesList
-        }        
-        
         const PwdText = () =>  
             <Typography variant="subtitle2" style={{width: "95%"}}><br />
                 Asign a temporary passsword for this provider now which they will use, together with their email address, to login for the first time.  
@@ -157,10 +144,10 @@ class ProviderEnrollForm extends Component {
             <FormText name="lastname" label="Lastname" width="320" />,
             <FormText name="officename" label="Office/Hospital" width="320" />,
             <FormText name="officestreet" label="Address (street)" width="320" />,
-            <FormText name="officeother" label="Address (optional)" width="320" />,
             <FormText name="officecity" label="City" width="320" />,
-            <div style={{paddingTop: "32px"}}><FormSelect name="officestate" label="State" width="320" items={getStatesList(states)} /></div>,
+            <div style={{paddingTop: "32px"}}><StateSelect name="officestate"/></div>,
             <FormText name="officezip" label="Zip" width="320" />,
+            <div />,
             <FormText name="email" label="Email (john.doe@caregroup.com)" width="320" />,
             <FormText name="phone1" label="Office phone (000-000-0000)" width="320" />,
             <FormText name="phone2" label="Cell (optional)" width="320" />,
@@ -220,18 +207,15 @@ function validate(values) {
         errors.lastname = "Invalid name. Only characters, numbers and ' allowed"} 
 
     if (!values.officename) {errors.officename = "*Please enter an office address!"
-    } else if (!/^[a-zA-Z0-9\-]$/i.test(values.officename))  {
+    } else if (!/^[a-zA-Z0-9' ]{2,30}$/i.test(values.officename))  {
         errors.officename = "*Invalid address. Only characters, numbers and '-' allowed"}
 
     if (!values.officestreet) {errors.officestreet = "*Please enter an office address!"
-    } else if (!/^[a-zA-Z0-9\-]$/i.test(values.officestreet))  {
+    } else if (!/^[a-zA-Z0-9' ]{2,30}$/i.test(values.officestreet))  {
         errors.officestreet = "*Invalid address. Only characters and numbers allowed"}
 
-   if (!/^[a-zA-Z0-9\-]$/i.test(values.officeother))  {
-        errors.officeother = "*Invalid address. Only characters allowed"}
-
     if (!values.officecity) {errors.officecity = "*Please enter an office address!"
-    } else if (!/^[a-zA-Z]$/i.test(values.officecity))  {
+    } else if (!/^[a-zA-Z' ]{2,30}$/i.test(values.officecity))  {
         errors.officecity = "*Invalid address. Only characters allowed"}
 
     if (!values.officezip) {errors.officezip = "*Please enter an zip code!"

@@ -4,7 +4,7 @@ import { startCase } from 'lodash'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper'
-import PatientDetailsBar from '../Textblocks/patientDetailsBar';
+import DetailsBar from '../Textblocks/detailsBar';
 
 const styles = theme => ({
     detailsContainer: {
@@ -21,15 +21,16 @@ class ReportPatientDetails extends Component {
     render () {
 
         const { classes, patientInfo} = this.props;
-        const infoItems = [
-            { caption: "Patient name", text: `${startCase(patientInfo.firstname)} ${startCase(patientInfo.lastname)}` },
-            { caption: "Hospital number", text: patientInfo.hospital_id },
-            { caption: "DOB", text: patientInfo.dob },
+        const patientDetails = [
+            {spacing: 3, caption: "Patient name", text: `${startCase(patientInfo.firstname)} ${startCase(patientInfo.lastname)}`},
+            {spacing: 3, caption: "Hospital number", text: patientInfo.hospital_id},
+            {spacing: 3, caption: "DOB", text: patientInfo.dob},
+            {spacing: 3, caption: "btn", text: "close", url: '/admin/find'}
         ];
        
         return (
             <Paper className={classes.detailsContainer}>    
-                <PatientDetailsBar items={infoItems} closeBtn={true} url='/admin/find' />
+                <DetailsBar items={patientDetails} />
             </Paper>
         );
     }
