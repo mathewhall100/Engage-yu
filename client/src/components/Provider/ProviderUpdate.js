@@ -16,26 +16,13 @@ import providerAPI from "../../utils/provider.js";
 import CallBack from '../Callback'
 import Dialog from '../Dialogs/simpleDialog'
 import SmallBtn from '../Buttons/smallBtn';
+import UpdateFormUnit from '../Forms/UpdateFormUnit'
 import ProviderDetailsBar from './providerDetailsBar';
-import { validateName } from '../../logic/formValidations'
+import { validateIsRequired, validateName, validateZip, validateEmail, validatePhone, validatePhoneOther } from '../../logic/formValidations'
 
 const styles = theme => ({
     root: {
         padding: "40px"
-    },
-    fwMedium: {
-        fontWeight: 500,
-    },
-    formElement: {
-        position: "relative",
-        left: "15px"
-    },
-    successText: {
-        color: "green", 
-        position: "relative", top: "6px"
-    },
-    failedText: {
-        position: "relative", top: "6px"
     },
 })
 
@@ -85,12 +72,14 @@ class ProviderUpdate extends Component {
             })
             .then(res => {this.updateSuccess(res.data) })
             .catch(err => {this.updateFailed(err)})
+
         } else if (values.email) {
             providerAPI.update(provider._id, {
                 email: values.email,
             })
            .then(res => {this.updateSuccess(res.data, 5) })
            .catch(err => {this.updateFailed(err)})
+
         } else if (values.phone2 || values.phone2 || values.phone3) {
             providerAPI.update(provider._id, {
                 phone: [{
@@ -116,7 +105,7 @@ class ProviderUpdate extends Component {
         console.log("res.data: ", data)
         this.fetchProviderDetailsToUpdate(this.props.provider._id)
         this.setState({
-            editFieldActive: false,
+            // editFieldActive: false,
             updateSuccess: true,
         })
         this.props.reset('providerUpdateForm');  // reset the form fields to empty (requires form name)
@@ -128,34 +117,18 @@ class ProviderUpdate extends Component {
         this.setState({updateFailed: true}); // update failed dialog
     }
 
-    // Event handlers
-    handleUpdate = (index) => {
-        this.setState({updateSuccess: false}) 
-        let tempArray = []
-        tempArray[index] = true
+    outcomeReset = () => {
         this.setState({
-            showEditField: tempArray,
-            editFieldActive: true,
-        })
-    } 
-    
-    handleCancel = () => {
-        this.setState({
-            showEditField: [],
-            editFieldActive: false,
+            updateSuccess: false,
             updateFailed: false
         })
-        this.props.reset('providerUpdateForm');  // reset the form fields to empty (requires form name)
     }
 
-    handleTryAgain = () => {
-        this.setState({updateFailed: false})
-    }
 
     render () {
         
-        const { submitting, pristine, provider, handleSubmit, classes } = this.props
-        const { editFieldActive, showEditField, updateFailed, updateSuccess } = this.state
+        const { provider, handleSubmit, classes } = this.props
+        const { updateFailed, updateSuccess } = this.state
 
         const getFormFields = (provider) => {
             return [{
@@ -197,16 +170,6 @@ class ProviderUpdate extends Component {
             }];
         }
       
-        const getPositioning = (element) => {
-            console.log(element)
-            if (element.includes("Select")) {return {top: "-12px"}}
-            else if (element.includes("Radio")) {return {top: "-24px"}}
-            else return {top: "-28px"}
-        }
-
-
-
-
         // providerUpdate return
         return (
             <Card className={classes.root}>
@@ -223,62 +186,20 @@ class ProviderUpdate extends Component {
                         <br />
 
                         <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
-
-                            {getFormFields(provider).map((field, index) => {
-                                return (
-                                    <Grid container spacing={8} key={index}>
-                                        <Grid item xs={2}>
-                                            <Typography variant="subtitle1" >{field.rowLabel}</Typography>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            <Typography variant="subtitle1" className={classes.fwMedium} >{field.fieldContent}</Typography>
-                                        </Grid>
-                                        <Grid item xs={1}>
-                                            <SmallBtn type="button" disabled={submitting || editFieldActive} index={index} text="update" handleBtn={this.handleUpdate}/>
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            { showEditField[index] && !updateSuccess && !updateFailed &&
-                                                <span className={classes.formElement} style={getPositioning(field.formElement.type.name)} >      
-                                                    {field.formElement}
-                                                </span> 
-                                            }
-                                            { showEditField[index] && updateSuccess &&
-                                                <Typography variant="subtitle1" align="center" className={classes.successText}>
-                                                    Successfully updated!
-                                                </Typography> 
-                                            }
-                                            { showEditField[index] && updateFailed && 
-                                                <Typography variant="subtitle1" align="center" color="error" className={classes.failedText}>
-                                                    Update failed!
-                                                </Typography> 
-                                            }
-                                        </Grid>
-                                        <Grid item xs={3}>
-                                            { showEditField[index] && updateFailed && 
-                                                <span> 
-                                                    <SmallBtn type="button" disabled={false} index="cancel" text="cancel" handleBtn={this.handleCancel}/>
-                                                    <SmallBtn type="button" disabled={false} index="tryagain" text="try again" handleBtn={this.handleTryAgain}/>
-                                                </span>
-                                            }
-                                            {showEditField[index] && !updateSuccess && !updateFailed &&
-                                                <span style={{marginLeft: "10px"}}>
-                                                    <SmallBtn type="submit" disabled={submitting || pristine} index="" text="submit" /> 
-                                                    <SmallBtn type="button" disabled={false} index="cancel" text="cancel" handleBtn={this.handleCancel}/>
-                                                </span>
-                                            }
-                                        </Grid> 
-                                    </Grid>
-                                )
-                            }) }
-
+                            <UpdateFormUnit 
+                                formFields={getFormFields(provider)}
+                                outcomeReset={this.outcomeReset}
+                                updateSuccess={updateSuccess} 
+                                updateFailed={updateFailed}
+                            />
                         </form>
 
-                    {updateSuccess && 
+                    {/* {updateSuccess && 
                         <Dialog 
                             title="Success!" 
                             text={`New provider, ${startCase(provider.firstname)} ${startCase(provider.lastname)} has been successfully updated `} 
                         /> 
-                    }
+                    } */}
                     {updateFailed && 
                         <Dialog 
                             title="Failed!" 
@@ -298,38 +219,21 @@ class ProviderUpdate extends Component {
 
 const validate = (values) => {
     console.log("Error values: ", values) 
-    const errors = {};
-    // validate inputs from 'values'
-
-    errors.officename = validateName(values.officename)
-
-    if (!values.officestreet) {errors.officestreet = "*Please enter an office address!"
-    } else if (!/^[a-zA-Z0-9' ]{2,30}$/i.test(values.officestreet))  {
-        errors.officestreet = "*Invalid address. Only characters and numbers allowed"}
-
-    if (!values.officecity) {errors.officecity = "*Please enter an office address!"
-    } else if (!/^[a-zA-Z' ]{2,30}$/i.test(values.officecity))  {
-        errors.officecity = "*Invalid address. Only characters allowed"}
-
-    if (!values.officezip) {errors.officezip = "*Please enter an zip code!"
-    } else if (!/^[0-9]{5}$/i.test(values.officezip))  {
-        errors.officezip = "*Invalid zip code. Must be 5 numbers."}
+    const errors = {};  // error accumulator
     
-    if (values.email && !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/i.test(values.email)) {
-        errors.email = "Invalid email address."}
-
-    if (values.phone1 && !/^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/i.test(values.phone1)) {
-        errors.phone1 = "*Invalid phone number. Try (123) 456 7891 format" }
-
-    if (values.phone2 && !/^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/i.test(values.phone2)) {
-        errors.phone2 = "*Invalid phone number. Try (123) 456 7891 format" }
-
-    if (values.phone3 && !/^[a-zA-Z0-9 ]{2,15}$/i.test(values.phone3)) {
-        errors.phone3 = "*Invalid phone or pager" }
+    // validate inputs from 'values'
+    errors.officename = validateName(values.officename)
+    errors.officestreet = validateName(values.officestreet)
+    errors.officecity = validateName(values.officecity)
+    errors.officestate = validateIsRequired(values.officestate)
+    errors.officezip = validateZip(values.officezip)
+    errors.email = validateEmail(values.email)
+    errors.phone1 = validatePhone(values.phone1)
+    errors.phone2 = validatePhone(values.phone2)
+    errors.phone3 = validatePhoneOther(values.phone3)
 
     console.log("Errors: ", errors)
     return errors;
-
 }
 
 function mapDispatchToProps(dispatch) {
