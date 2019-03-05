@@ -14,12 +14,13 @@ import FormText from '../Forms/FormText'
 import FormTextFocused from '../Forms/FormTextFocused'
 import FormSelect from '../Forms/FormSelect'
 import FormRadio from '../Forms/FormRadio'
-import SimpleDialog from '../Dialogs/simpleDialog'
+import Dialog from '../Dialogs/simpleDialog'
 import EnrollSuccessDialog from '../Dialogs/EnrollSuccessDialog.js'
 import { selectConsoleTitle } from '../../actions/index';
 import providerAPI from "../../utils/provider.js";
 import patient_infoAPI from "../../utils/patient_info.js";
 import patient_dataAPI from "../../utils/patient_data.js";
+import { validateName, validateDOB, validateGender, validateHospId, validateEmail, validatePhone, validateStatus, validatePassword, validatePasswords } from '../../logic/formValidations';
 
 
 const styles = () => ({
@@ -70,7 +71,7 @@ class EnrollPatient extends Component {
     }
 
     defaultProviderList = () => {
-    console.log("default provider list")
+        console.log("default provider list")
         return [{
             value: 0,
             text: `Dr ${startCase(localStorage.getItem("provider_first_name"))} ${startCase(localStorage.getItem("provider_last_name"))}`,
@@ -105,11 +106,9 @@ class EnrollPatient extends Component {
             enrolled_by_ref: localStorage.getItem("provider_id"),
             enrolled_by_id: localStorage.getItem("provider_id"),
             enrolled_by_name: `${localStorage.getItem("provider_first_name")} ${localStorage.getItem("provider_last_name")}`,
-
             patient_data_ref: "000000000000000000000000",
             patient_data_id:  "000000000000000000000000",
             status: "active",
-
             hospital_id: values.hospId,
             firstname: values.firstname,
             lastname: values.lastname,
@@ -117,11 +116,9 @@ class EnrollPatient extends Component {
             dob: values.dob,
             email: values.email,
             phone: values.phone,
-
             primary_provider_ref: this.state.providers[values.provider].id,
             primary_provider_id: this.state. providers[values.provider].id,
             primary_provider_name: this.state.providers[values.provider].text.slice(3),
-
             provider_group_ref: this.state.providers[values.provider].group_ref,
             provider_group_id: this.state.providers[values.provider].group_id,
             provider_group_name: this.state.providers[values.provider].group_name
@@ -162,7 +159,7 @@ class EnrollPatient extends Component {
 
     // When enroll fails, need to remove any documents created during the sequence of database actions
     enrollFailedCleanup = (info_id, data_id, err) => {
-        console.log(`OOPS2! A fatal problem occurred and your request could not be completed`);
+        console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
         console.log(err);
         console.log("Enroll fail cleanup: ", info_id, " : ", data_id)
         if (info_id) {
@@ -229,6 +226,7 @@ class EnrollPatient extends Component {
 
         return (
             <Card className={classes.root}>
+
                 <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
                     <Grid container spacing={24} >
                         {formComponents.map((component, idx) => {
@@ -239,18 +237,19 @@ class EnrollPatient extends Component {
                             )
                         })}
                     </Grid>
-                    
                     <br /> <br /> 
-
                     <span style={{marginRight: "15px"}}>
                         <ActionBtn type="submit" disabled={submitting || pristine} text="submit" />
                     </span>
                     <ActionBtn type="button" disabled={pristine} text="clear" handleAction={this.handleClearForm} />
-
                 </form>
 
                 {enrollSuccess && <EnrollSuccessDialog title="Success!" info={newPatientInfo}/> }
-                {enrollFailed && <SimpleDialog title="Failed!" text="Unfortuneately, a problem was encountered and the patient could not be enrolled at this time. Please go back and check all the details entered are correct and valid and then try again. If the problem persists then contact the system administrator" /> }
+                {enrollFailed && <Dialog
+                    title="Failed!" 
+                    text="Unfortuneately, a problem was encountered and the patient could not be enrolled at this time. Please go back and check all the details entered are correct and valid and then try again. If the problem persists then contact the system administrator" 
+                    />
+                }
 
             </Card>
         );
@@ -261,51 +260,20 @@ class EnrollPatient extends Component {
 
 function validate(values) {
     console.log("Error values: ", values) // -> { object containing all values of form entries } 
-    
-    const errors = {};
-    // validate inputs from 'values' 
-    if (!values.firstname) {  errors.firstname = "*Please enter a firstname!"  // message to be displayed if invalid
-    } else if (!/^[a-zA-Z0-9' ]{2,30}$/i.test(values.firstname))  {
-        errors.firstname = "Invalid name. Only characters, numbers and ' allowed"} 
-
-    if (!values.lastname) {errors.lastname = "*Please enter a lastname!" 
-    } else if (!/^[a-zA-Z0-9' ]{2,30}$/i.test(values.lastname))  {
-        errors.lastname = "Invalid name. Only characters, numbers and ' allowed"} 
-
-    if (!values.hospId) {errors.hospId = "*Please enter a hospital identification!"
-    } else if (!/^[a-zA-Z0-9\-]{3,12}$/i.test(values.hospId))  {
-        errors.hospId = "*Invalid name. Only characters, numbers and '-' allowed"} 
-
-    if (!values.dob) { errors.dob = "*Please enter a date of birth!"  
-    } else if (!/^(0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])[\/\-]\d{4}$/i.test(values.dob)) {
-        errors.dob = "Invalid date. Use either mm/dd/yyyy or mm-dd-yyyy"
-    } else if (parseInt(values.dob.slice(-4)) < 1920 || parseInt(values.dob.slice(-4)) > parseInt(new Date().getFullYear())-16) {
-        errors.dob = `Invalid dateof birth (must be between 1920 and ${(parseInt(new Date().getFullYear())-16)})`}
-
-    if (!values.email) {errors.email = "*Please enter an email!"
-    } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/i.test(values.email)) {
-        errors.email = "Invalid email address."}
-
-    if (!values.phone) { errors.phone = "*Please enter a contact phone number!"; 
-    } else if (!/^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/i.test(values.phone)) {
-        errors.phone = "*Invalid phone number. Try (123) 456 7891 format" }
-
-    if (!values.gender) {errors.gender = "*Please select a gender!"} 
-
-    if (!values.provider && values.provider !== 0) {errors.provider = "*Please select a primary provider!"  }
-
-    if (!values.password1) {errors.password1 = "*Please enter a password (min 8 characters)"
-    } else if (values.password1.length < 8) {
-        errors.password1 = "Password must be at least 8 characters"}
-
-    if (!values.password2) {errors.password2 = "*Please enter a matching password"
-    } else if (values.password2.length < 8) {
-        errors.password2 = "*Password must be at least 8 characters"
-    } else if (values.password1 && values.password2 && values.password1 !== values.password2) {
-         errors.password2 ="*Entered passwords do not match"}
-
+    const errors = {}; // error accumulator
+    // validate inputs from 'values'
+    errors.firstname = validateName(values.firstname, true)
+    errors.lastname = validateName(values.lastname, true)
+    errors.dob = validateDOB(values.dob, true)
+    errors.hospId = validateHospId(values.hospId, true)
+    errors.gender = validateGender(values.gender, true)
+    errors.email = validateEmail(values.email, true)
+    errors.phone = validatePhone(values.phone, true)
+    errors.provider = validateName(values.provider, true)
+    errors.status = validateStatus(values.status, true)
+    errors.password1 = validatePassword(values.password1, true)
+    errors.password2 = validatePasswords(values.password1, values.password2)
     // If errors is empty, then form good to submit
-    // If errors has any properties, redux form assumes form is invalid
     console.log("Errors: ", errors)
     return errors;
 }

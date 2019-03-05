@@ -44,7 +44,7 @@ class UpdateFormUnit extends Component {
             updFailed: false,
             updSuccess: true
         })
-        this.props.reset('providerUpdateForm');  // reset the form fields to empty (requires form name)
+        this.props.reset('updateForm');  // reset the form fields to empty (requires form name)
     }
 
     updateFailed = () => {
@@ -53,7 +53,7 @@ class UpdateFormUnit extends Component {
             updFailed: true,
             updSuccess: false
         })
-        this.props.reset('providerUpdateForm');  // reset the form fields to empty (requires form name)
+        this.props.reset('updateForm');  // reset the form fields to empty (requires form name)
     }
 
     // Event handlers
@@ -76,7 +76,7 @@ class UpdateFormUnit extends Component {
             updFailed: false,
             updSuccess: false
         })
-        this.props.reset('providerUpdateForm');  // reset the form fields to empty (requires form name)
+        this.props.reset('updateForm');  // reset the form fields to empty (requires form name)
     }
 
     handleTryAgain = () => {
@@ -90,27 +90,26 @@ class UpdateFormUnit extends Component {
     const getPositioning = (element) => {
         console.log(element)
         if (element.includes("Select")) {return {top: "-12px"}}
-        else if (element.includes("Radio")) {return {top: "-24px"}}
+        else if (element.includes("Radio")) {return {top: "-2px"}}
         else return {top: "-28px"}
     }
 
 
         return (
             <React.Fragment>
-                
                 {formFields.map((field, index) => {
                     return (
                         <Grid container spacing={8} key={index}>
 
-                            <Grid item xs={2}>
-                                <Typography variant="subtitle1" >{field.rowLabel}</Typography>
+                            <Grid item xs={2} >
+                                <Typography variant="subtitle1" style={{position: "relative", top: "8px"}}>{field.rowLabel}</Typography>
                             </Grid>
 
                             <Grid item xs={3}>
-                                <Typography variant="subtitle1" className={classes.fwMedium} >{field.fieldContent}</Typography>
+                                <Typography variant="subtitle1" className={classes.fwMedium} style={{position: "relative", top: "8px"}}>{field.fieldContent}</Typography>
                             </Grid>
 
-                            <Grid item xs={1}>
+                            <Grid item xs={1} >
                                 <SmallBtn type="button" disabled={submitting || editFieldActive} index={index} text="update" handleBtn={this.handleUpdate}/>
                             </Grid>
 
@@ -156,7 +155,7 @@ class UpdateFormUnit extends Component {
 }
 
 const formData = {
-    form: 'providerUpdateForm', //unique identifier for this form      
+    form: 'updateForm', //unique identifier for this form      
 }
 
 UpdateFormUnit = reduxForm(formData)(UpdateFormUnit)

@@ -14,8 +14,11 @@ export default class careGroupDetailsBar extends PureComponent {
             {spacing: 2, caption: "btn", text: "close", url: "find"}
         ];
 
-        return(
-            <DetailsBar items={careGroupDetails} />
+        return (
+            <React.Fragment>
+                <DetailsBar items={careGroupDetails} />
+                <br /> <hr /> <br /> <br />
+            </React.Fragment>
         )
     }
 

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { withRouter, Link, Redirect } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { Field, reset, reduxForm } from 'redux-form';
@@ -7,7 +6,6 @@ import { startCase } from 'lodash';
 
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { selectConsoleTitle, providerAction } from '../../actions/index'
 import FormTextFocused from '../Forms/FormTextFocused';
@@ -15,10 +13,9 @@ import StateSelect from '../Forms/StateSelect'
 import providerAPI from "../../utils/provider.js";
 import CallBack from '../Callback'
 import Dialog from '../Dialogs/simpleDialog'
-import SmallBtn from '../Buttons/smallBtn';
 import UpdateFormUnit from '../Forms/UpdateFormUnit'
 import ProviderDetailsBar from './providerDetailsBar';
-import { validateIsRequired, validateName, validateZip, validateEmail, validatePhone, validatePhoneOther } from '../../logic/formValidations'
+import { validateName, validateZip, validateState, validateEmail, validatePhone, validatePhoneOther } from '../../logic/formValidations'
 
 const styles = theme => ({
     root: {
@@ -31,14 +28,9 @@ class ProviderUpdate extends Component {
 
     componentDidMount() {
         this.props.selectConsoleTitle({title: "Update provider details"});
-        this.fetchProviderDetailsToUpdate(this.props.location.state.providerId)
-        this.setState({editFieldActive: false})
     };
     
-
     state = {
-        editFieldActive: false, 
-        showEditField: [],
         updateSuccess: false,
         updateFailed: false,
     }
@@ -104,10 +96,7 @@ class ProviderUpdate extends Component {
     updateSuccess = (data) => {
         console.log("res.data: ", data)
         this.fetchProviderDetailsToUpdate(this.props.provider._id)
-        this.setState({
-            // editFieldActive: false,
-            updateSuccess: true,
-        })
+        this.setState({updateSuccess: true})
         this.props.reset('providerUpdateForm');  // reset the form fields to empty (requires form name)
     }
 
@@ -117,6 +106,7 @@ class ProviderUpdate extends Component {
         this.setState({updateFailed: true}); // update failed dialog
     }
 
+    // reset the success/failed flag
     outcomeReset = () => {
         this.setState({
             updateSuccess: false,
@@ -170,7 +160,7 @@ class ProviderUpdate extends Component {
             }];
         }
       
-        // providerUpdate return
+        // ProviderUpdate return
         return (
             <Card className={classes.root}>
 
@@ -179,11 +169,9 @@ class ProviderUpdate extends Component {
  
                         <ProviderDetailsBar provider={provider} />
 
-                        <Typography variant="title" gutterBottom>
-                            Click 'update' next to the information you want to edit. 
-                        </Typography>
+                        <Typography variant="title" gutterBottom>Click 'update' next to the information you want to edit.</Typography>
 
-                        <br />
+                        <br /> <br />
 
                         <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
                             <UpdateFormUnit 
@@ -194,23 +182,20 @@ class ProviderUpdate extends Component {
                             />
                         </form>
 
-                    {/* {updateSuccess && 
-                        <Dialog 
-                            title="Success!" 
-                            text={`New provider, ${startCase(provider.firstname)} ${startCase(provider.lastname)} has been successfully updated `} 
-                        /> 
-                    } */}
-                    {updateFailed && 
-                        <Dialog 
-                            title="Failed!" 
-                            text={`Unfortuneately a problem occurred and this provider could not be updated at this time. Please check the dtails you have entered and try again. If the problem persists, contact the syste administrator`}
-                        />
-                    } 
+                        <br /> <br />
+
+                        {updateFailed && 
+                            <Dialog 
+                                title="Failed!" 
+                                text={`Unfortuneately a problem occurred and this provider could not be updated at this time. Please check the dtails you have entered and try again. If the problem persists, contact the syste administrator`}
+                            />
+                        } 
 
                     </React.Fragment>
                     :
                     <CallBack />
                 }
+
             </Card>
         );
     }
@@ -220,18 +205,17 @@ class ProviderUpdate extends Component {
 const validate = (values) => {
     console.log("Error values: ", values) 
     const errors = {};  // error accumulator
-    
     // validate inputs from 'values'
     errors.officename = validateName(values.officename)
     errors.officestreet = validateName(values.officestreet)
     errors.officecity = validateName(values.officecity)
-    errors.officestate = validateIsRequired(values.officestate)
+    errors.officestate = validateState(values.officestate)
     errors.officezip = validateZip(values.officezip)
     errors.email = validateEmail(values.email)
     errors.phone1 = validatePhone(values.phone1)
     errors.phone2 = validatePhone(values.phone2)
     errors.phone3 = validatePhoneOther(values.phone3)
-
+    // If errors is empty, then form good to submit
     console.log("Errors: ", errors)
     return errors;
 }
@@ -248,12 +232,11 @@ const mapStateToProps = (state) => {
 };
 
 const formData = {
-    form: 'providerUpdateForm', //unique identifier for this form 
-    validate,      
+    form: 'updateForm', //unique identifier for this form 
+    validate     
 }
 
 ProviderUpdate = connect(mapStateToProps, mapDispatchToProps)(ProviderUpdate)
 ProviderUpdate = reduxForm(formData)(ProviderUpdate)
 ProviderUpdate = withStyles(styles)(ProviderUpdate)
-ProviderUpdate = withRouter(ProviderUpdate)
 export default ProviderUpdate;

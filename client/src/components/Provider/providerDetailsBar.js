@@ -18,7 +18,7 @@ export default class providerDetailsBar extends PureComponent {
         return(
             <React.Fragment>
                 <DetailsBar items={providerDetails} />
-                <br /> <hr /> <br />
+                <br /> <hr /> <br /> <br />
             </React.Fragment>
         )
     }

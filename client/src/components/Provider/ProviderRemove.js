@@ -65,8 +65,6 @@ class ProviderRemove extends Component {
 
                         <ProviderDetailsBar provider={provider} />
 
-                        <br /> <hr /> <br />
-
                         <Typography variant="body1" gutterBottom>
                             Select 'Remove' to remove this provider from the list of providers held in the application. 'Cancel' to cancel.
                         </Typography>

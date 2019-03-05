@@ -14,11 +14,12 @@ import FormTextFocused from '../Forms/FormTextFocused'
 import FormSelect from '../Forms/FormSelect'
 import StateSelect from '../Forms/StateSelect'
 import ProviderAddSuccessDialog from '../Dialogs/ProviderAddSuccessDialog'
-import SimpleDialog from '../Dialogs/simpleDialog'
+import Dialog from '../Dialogs/simpleDialog'
 import ActionBtn from '../Buttons/actionBtn'
 import { selectConsoleTitle } from '../../actions/index'
 import providerAPI from "../../utils/provider.js";
 import provider_groupAPI from "../../utils/provider_group.js";
+import { validateIsRequired, validateName, validateZip, validateState, validateEmail, validatePhone, validatePhoneOther, validatePassword, validatePasswords } from '../../logic/formValidations'
 
 
 const styles = theme => ({
@@ -162,8 +163,8 @@ class ProviderEnrollForm extends Component {
 
         return (
             <Card className={classes.root}>
-                <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
 
+                <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
                     <Grid container spacing={24}>
                         {formComponents.map((component, idx) => {
                             return(
@@ -173,18 +174,20 @@ class ProviderEnrollForm extends Component {
                             )
                         }) }
                     </Grid>
-
                     <br /> <br />
-
                     <span style={{marginRight: "15px"}}>
                         <ActionBtn type="submit" disabled={submitting || pristine} text="submit" />
                     </span>
                     <ActionBtn type="button" disabled={pristine} url='/admin/provider/find' text="clear" handleAction={this.handleClearForm} />
-
                 </form>
 
                 {addSuccess && <ProviderAddSuccessDialog  info={newProviderInfo} /> }
-                {addFailed && <SimpleDialog title="failed!" text="Unfortuneately, a problem was encountered and the provider could not be added at this time. Please go back and check all the details entered are correct and valid and then try again. If the problem persists then contact the system administrator" /> }
+                {addFailed &&
+                    <Dialog 
+                        title="failed!" 
+                        text="Unfortuneately, a problem was encountered and the provider could not be added at this time. Please go back and check all the details entered are correct and valid and then try again. If the problem persists then contact the system administrator" 
+                    />
+                }
 
             </Card>
         );
@@ -195,68 +198,26 @@ class ProviderEnrollForm extends Component {
 
 function validate(values) {
     console.log("Error values: ", values) // -> { object containing all values of form entries } 
-    
-    const errors = {};
-    // validate inputs from 'values'
-    if (!values.firstname) {  errors.firstname = "*Please enter a firstname!"  // message to be displayed if invalid
-    } else if (!/^[a-zA-Z0-9' ]{2,30}$/i.test(values.firstname))  {
-        errors.firstname = "Invalid name. Only characters, numbers and ' allowed"} 
-
-    if (!values.lastname) {errors.lastname = "*Please enter a lastname!" 
-    } else if (!/^[a-zA-Z0-9' ]{2,30}$/i.test(values.lastname))  {
-        errors.lastname = "Invalid name. Only characters, numbers and ' allowed"} 
-
-    if (!values.officename) {errors.officename = "*Please enter an office address!"
-    } else if (!/^[a-zA-Z0-9' ]{2,30}$/i.test(values.officename))  {
-        errors.officename = "*Invalid address. Only characters, numbers and '-' allowed"}
-
-    if (!values.officestreet) {errors.officestreet = "*Please enter an office address!"
-    } else if (!/^[a-zA-Z0-9' ]{2,30}$/i.test(values.officestreet))  {
-        errors.officestreet = "*Invalid address. Only characters and numbers allowed"}
-
-    if (!values.officecity) {errors.officecity = "*Please enter an office address!"
-    } else if (!/^[a-zA-Z' ]{2,30}$/i.test(values.officecity))  {
-        errors.officecity = "*Invalid address. Only characters allowed"}
-
-    if (!values.officezip) {errors.officezip = "*Please enter an zip code!"
-    } else if (!/^[0-9]{5}$/i.test(values.officezip))  {
-        errors.officezip = "*Invalid zip code. Must be 5 numbers."}
-
-    if (!values.officestate) {errors.officestate= "*Please select a state!"  }
-
-    if (!values.email) {errors.email = "*Please enter an email!"
-    } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/i.test(values.email)) {
-        errors.email = "Invalid email address."}
-
-    if (!values.phone1) { errors.phone1 = "*An office phone number is required!"; 
-    } else if (!/^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/i.test(values.phone1)) {
-        errors.phone1 = "*Invalid phone number. Try (123) 456 7891 format" }
-
-    if (!/^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/i.test(values.phone2)) {
-        errors.phone = "*Invalid phone number. Try (123) 456 7891 format" }
-
-    if (!/^0-9\-]{3,12}$/i.test(values.phone3)) {
-        errors.phone = "*Invalid phone/pager. Only numbers, brackets and '-' allowed "}
-
-    if (!values.caregroup) {errors.caregroup = "*Please select a caregroup!"  }
-
-    if (!values.role) {errors.role = "*Please select a role!"  }
-
-    if (!values.password1) {errors.password1 = "*Please enter a password (min 8 characters)"
-    } else if (values.password1.length < 8) {
-        errors.password1 = "Password must be at least 8 characters"}
-
-    if (!values.password2) {errors.password2 = "*Please enter a matching password"
-    } else if (values.password2.length < 8) {
-        errors.password2 = "*Password must be at least 8 characters"
-    } else if (values.password1 && values.password2 && values.password1 !== values.password2) {
-            errors.password2 ="*Entered passwords do not match"}
-
+    const errors = {}; // error accumulator
+    // validate inputs from 'values'; true=required
+    errors.firstname = validateName(values.firstname, true)
+    errors.lastname = validateName(values.lastname, true)
+    errors.officename = validateName(values.officename, true)
+    errors.officestreet = validateName(values.officestreet, true)
+    errors.officecity = validateName(values.officecity, true)
+    errors.officestate = validateState(values.officestate, true)
+    errors.officezip = validateZip(values.officezip, true)
+    errors.email = validateEmail(values.email, true)
+    errors.phone1 = validatePhone(values.phone1, true)
+    errors.phone2 = validatePhone(values.phone2, false)
+    errors.phone3 = validatePhoneOther(values.phone3, false)
+    errors.caregroup = validateIsRequired(values.caregroup)
+    errors.role = validateIsRequired(values.role)
+    errors.password1 = validatePassword(values.password1, true)
+    errors.password2 = validatePasswords(values.password1, values.password2)
     // If errors is empty, then form good to submit
-    // If errors has any properties, redux form assumes form is invalid
     console.log("Errors: ", errors)
     return errors;
-
 }
 
 function mapDispatchToProps(dispatch) {
