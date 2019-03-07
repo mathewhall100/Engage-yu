@@ -12,7 +12,7 @@ export default class providerDetailsBar extends PureComponent {
             {spacing: 2, caption: "Hospital number", text: patient.hospital_id},
             {spacing: 2, caption: "DOB", text: patient.dob},
             {spacing: 2, caption: "Date enrolled", text: moment(patient.date_enrolled).format("MMM Do YYYY")},
-            {spacing: 3, caption: "btn", text: "close", url: "admin/find"}
+            {spacing: 3, caption: "btn", text: "close", url: "/admin/find"}
         ];
 
         return(

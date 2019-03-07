@@ -4,21 +4,19 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import { startCase } from 'lodash';
-
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Typography from '@material-ui/core/Typography';
 import { selectConsoleTitle, fetchReportPatientData } from '../../actions/index';
 import patient_infoAPI from "../../utils/patient_info.js";
-import providerAPI from "../../utils/provider.js";
 import FormTextFocused from '../Forms/FormTextFocused';
-import FormSelect from '../Forms/FormSelect'
+import ProviderSelect from '../Forms/ProviderSelect'
 import FormRadio from '../Forms/FormRadio'
 import Dialog from '../Dialogs/simpleDialog'
 import PatientDetailsBar from './patientDetailsBar';
 import UpdateFormUnit from '../Forms/UpdateFormUnit'
 import CallBack from '../Callback'
-import { validateName, validateEmail, validatePhone, validateStatus } from '../../logic/formValidations'
+import { validateName, validateEmail, validatePhone, validateStatus, validateIsRequired } from '../../logic/formValidations'
 
 
 const styles = theme => ({
@@ -30,16 +28,13 @@ const styles = theme => ({
 class UpdatePatient extends Component {  
 
     componentDidMount() {
-        console.log("UpdatePatient, CDM: ", localStorage.getItem("patient_id"))
-        this.props.selectConsoleTitle({title: "Update patient details"});
+        this.props.selectConsoleTitle({title: "Update Patient Details"});
         this.fetchPatientDetailsToUpdate()
-        this.fetchProviders()
     }    
     
     state = {
-        providerList: [],
-        updateSuccess: false,
-        updateFailed: false
+        success: false,
+        failed: false
     }
 
     // Fetch patient info using patient_id in local storage and ensure loaded into store
@@ -62,27 +57,6 @@ class UpdatePatient extends Component {
             })
         })
     };
-
-    // Fetch names of all providers in provider group to populate primary provider form field
-    fetchProviders = () => {
-        providerAPI.findAll()
-            .then(res => {
-                console.log("res.data: ", res.data);
-                let providerList=[];
-                res.data.map(provider => {
-                    providerList.push({
-                        value: provider._id,
-                        text: `Dr. ${provider.firstname} ${provider.lastname}`,
-                    })
-                    this.setState({providerList})
-                })
-            })
-            .catch(err => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log(err);
-        })
-    };
-    
 
     submit(values) {
         console.log("Submit: ", values)
@@ -116,9 +90,9 @@ class UpdatePatient extends Component {
             .catch(err => {this.updateFailed(err) })
         } else if (values.provider) {
             patient_infoAPI.updateProvider(patientInfo._id, {
-                primary_provider_ref: values.provider,
-                primary_provider_id: values.provider,
-                primary_provider_name: this.state.providerList.filter(p => p.value === values.provider)[0].text.slice(3),
+                primary_provider_ref: values.provider[0],
+                primary_provider_id: values.provider[0],
+                primary_provider_name: `${values.provider[1]} ${values.provider[2]}`,
             })
             .then(res => {this.updateSuccess(res.data, 4) })
             .catch(err => {this.updateFailed(err) })
@@ -134,21 +108,21 @@ class UpdatePatient extends Component {
     updateSuccess = (data) => {
         console.log("res.data: ", data)
         this.fetchPatientDetailsToUpdate()
-        this.setState({updateSuccess: true})
+        this.setState({success: true})
         this.props.reset('updateForm');  // reset the form fields to empty (requires form name)
     }
 
     updateFailed = (err) => {
         console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
         console.log(err)
-        this.setState({updateFailed: true}); // update failed dialog
+        this.setState({failed: true}); // update failed dialog
     }
 
     // reset the success/failed flag
     outcomeReset = () => {
         this.setState({
-            updateSuccess: false,
-            updateFailed: false
+            success: false,
+            failed: false
         })
     }
 
@@ -156,7 +130,7 @@ class UpdatePatient extends Component {
     render () {
         
         const { patientInfo, handleSubmit, classes } = this.props
-        const { providerList, updateFailed, updateSuccess } = this.state
+        const { failed, success } = this.state
 
         const getFormFields = (patientInfo) => [
             {
@@ -178,7 +152,7 @@ class UpdatePatient extends Component {
             },{
                 rowLabel: "Primary Provider", 
                 fieldContent: `Dr. ${startCase(patientInfo.primary_provider_name)}`, 
-                formElement: <FormSelect name="provider" label="Primary Provider" items={providerList} width={215}/>
+                formElement: <ProviderSelect />
             },{
                 rowLabel: "Patient Status",
                 fieldContent: patientInfo.status,
@@ -197,30 +171,24 @@ class UpdatePatient extends Component {
 
                 {patientInfo && patientInfo._id ? 
                     <React.Fragment>
-
                         <PatientDetailsBar patient={patientInfo} />
-
                         <Typography variant="title" gutterBottom>Click 'update' next to the information you want to edit.</Typography>
-
                         <br /> <br />
-
                         <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
                             <UpdateFormUnit 
                                 formFields={getFormFields(patientInfo)}
                                 outcomeReset={this.outcomeReset}
-                                updateSuccess={updateSuccess} 
-                                updateFailed={updateFailed}
+                                updateSuccess={success} 
+                                updateFailed={failed}
                             />
                         </form>
-
                         <br /> <br /> 
-                        
-                        {updateFailed && 
+                        {failed && 
                             <Dialog 
                                 title="Whoops, Update Failed!" 
                                 text="Unfortueatley the requested update could not be made. Please check that the new details entered are valid and correct and try again. If the problem persists, conatct the system administrator"
                             /> 
-                        } 
+                        }
                     </React.Fragment>
                     :
                     <CallBack />      
@@ -239,7 +207,7 @@ const validate = (values) => {
     errors.lastname = validateName(values.lastname)
     errors.email = validateEmail(values.email)
     errors.phone = validatePhone(values.phone)
-    errors.provider = validateName(values.provider)
+    errors.provider = validateIsRequired(values.provider)
     errors.status = validateStatus(values.status)
     // If errors is empty, then form good to submit
     console.log("Errors: ", errors)

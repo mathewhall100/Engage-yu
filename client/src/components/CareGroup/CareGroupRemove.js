@@ -38,8 +38,8 @@ class CareGroupRemove extends Component {
     }
 
     state = {
-       removeSuccess: false,
-       removeFailed: false,
+       success: false,
+       failed: false,
        providerList: []
     }
 
@@ -67,12 +67,12 @@ class CareGroupRemove extends Component {
         provider_groupAPI.remove(this.props.careGroup._id)
         .then(res => {
             console.log("res.data: ", res.data)
-            this.setState ({deleteSuccess: true})   // update success dialog
+            this.setState ({success: true})   // update success dialog
         })
         .catch(err => {
             console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
             console.log(err);
-            this.setState({deleteFailed: true}); // update failed dialog
+            this.setState({failed: true}); // update failed dialog
         })
     }
 
@@ -84,7 +84,7 @@ class CareGroupRemove extends Component {
 
     render () {
 
-        const { deleteSuccess, deleteFailed, providerList } = this.state
+        const { success, failed, providerList } = this.state
         const { classes, careGroup } = this.props
 
         return (
@@ -95,23 +95,21 @@ class CareGroupRemove extends Component {
 
                         <CareGroupDetailsBar careGroup={careGroup} />
 
-                        <br /> <hr /> <br />
-
                         { providerList.length ?
                             <React.Fragment>
-                                <Typography variant="body1" gutterBottom>
+                                <Typography variant="subtitle1" gutterBottom>
                                     There are still {providerList.length} providers in this care group.
                                 </Typography>
-                                <Typography variant="body1" gutterBottom color='error'>
+                                <Typography variant="subtitle1" gutterBottom color='error'>
                                     You cannot delete a care group with active providers. Please use the manage provider menu  to transfer all remaining providers to other care groups and then you can delete this care group from the application.
                                 </Typography>
                             </React.Fragment>
                             :
                             <React.Fragment>
-                                <Typography variant="body1" gutterBottom>
+                                <Typography variant="subtitle1" gutterBottom>
                                     Select 'delete' to delete this caregroup from the list of caregroups held in the application.
                                 </Typography>
-                                <Typography variant="body1" gutterBottom color='error'>
+                                <Typography variant="subtitle1" gutterBottom color='error'>
                                     Note, this action cannot be undone. deleted care groups can be re-added to the application by re-entering their details via the add care group page but all individual providers will need re-allocating to the newly added care group.
                                 </Typography>
                             
@@ -129,13 +127,13 @@ class CareGroupRemove extends Component {
                     <CallBack /> 
                 }
 
-                {deleteSuccess && 
+                {success && 
                     <Dialog 
                         title="Success!" 
                         text={`Care group '${careGroup.group_name}' has been successfully deleted`}
                     />
                 }
-                {deleteFailed && 
+                {failed && 
                     <Dialog 
                         title="Failed!" 
                         text={`A problem occurred and care group '${careGroup.group_name}' could not be deleted at this time. Please check that this is an appropriate action and try again if required. If the problem persists, contact the system administrator.`} 

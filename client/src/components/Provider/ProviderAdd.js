@@ -3,8 +3,6 @@ import { withRouter } from 'react-router-dom';
 import { reset, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { startCase } from 'lodash';
-
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Typography from '@material-ui/core/Typography'
@@ -12,13 +10,14 @@ import Grid from '@material-ui/core/Grid';
 import FormText from '../Forms/FormText'
 import FormTextFocused from '../Forms/FormTextFocused'
 import FormSelect from '../Forms/FormSelect'
+import CareGroupSelect from '../Forms/CareGroupSelect'
 import StateSelect from '../Forms/StateSelect'
 import ProviderAddSuccessDialog from '../Dialogs/ProviderAddSuccessDialog'
 import Dialog from '../Dialogs/simpleDialog'
 import ActionBtn from '../Buttons/actionBtn'
+import ActionLnk from '../Buttons/actionLnk'
 import { selectConsoleTitle } from '../../actions/index'
 import providerAPI from "../../utils/provider.js";
-import provider_groupAPI from "../../utils/provider_group.js";
 import { validateIsRequired, validateName, validateZip, validateState, validateEmail, validatePhone, validatePhoneOther, validatePassword, validatePasswords } from '../../logic/formValidations'
 
 
@@ -32,35 +31,14 @@ const styles = theme => ({
 class ProviderEnrollForm extends Component {
 
     componentDidMount() {
-        this.props.selectConsoleTitle({title: "Add new provider"});
-
-        // On component mount, fetch names of care groups to populate form field
-        provider_groupAPI.findAll()
-            .then(res => {
-                console.log("res.data: ", res.data);
-                let careGroupList=[];
-                res.data.map(group => {
-                    careGroupList.push ({
-                        value: group._id,
-                        text: `${startCase(group.group_name)}`, 
-                    })
-                })
-                this.setState({careGroupList: careGroupList})
-            })
-            .catch(err => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log(err);
-        })
+        this.props.selectConsoleTitle({title: "Add New Provider"});
     };
     
-
     state = {
-        careGroupList: [],
         newProviderInfo: "",
-        addFailed: false,
-        addSuccess: false,
+        failed: false,
+        success: false,
     };
-
 
     // handle form submission and saving data to database
     submit(values) {
@@ -69,9 +47,9 @@ class ProviderEnrollForm extends Component {
             date_added: new Date(),
             firstname: values.firstname,
             lastname: values.lastname,
-            provider_group_ref: values.caregroup,
-            provider_group_id: values.caregroup,
-            provider_group_name: this.state.careGroupList[values.caregroup].text,
+            provider_group_ref: values.caregroup[0],
+            provider_group_id: values.caregroup[0],
+            provider_group_name: values.caregroup[1],
             role: values.role, 
             office: {
                 name: values.officename,
@@ -87,7 +65,7 @@ class ProviderEnrollForm extends Component {
             console.log("res.data: ", res.data)
             this.setState({
                 newProviderInfo: res.data,
-                addSuccess: true
+                success: true
             })
         })
         .catch(err => {
@@ -95,7 +73,7 @@ class ProviderEnrollForm extends Component {
             console.log(err);
             this.setState({
                 newProvider: `${values.firstname} ${values.lastname}`,
-                addFailed: true
+                failed: true
             })
         })
     };
@@ -124,14 +102,14 @@ class ProviderEnrollForm extends Component {
     render() {
 
         const { handleSubmit, classes, pristine, submitting } = this.props;
-        const { careGroupList, addSuccess, addFailed, newProviderInfo} = this.state;
+        const { success, failed, newProviderInfo} = this.state;
 
         const roleList =  [
             {id: "1", value: 'Physician (specialist)', text: 'Physician (specialist)' },
             {id: "2", value: 'Physician (hospitalist)', text: 'Physician (specialist)' },
             {id: "3", value: 'Physician (primary care)', text: 'Physician (primary care)' },
             {id: "4", value: 'Nurse (specialist)', text: 'Nurse (specialist)'},
-            {id: "5", value: 'other', text: 'other'}
+            {id: "5", value: 'Other', text: 'Other'}
         ]
 
         const PwdText = () =>  
@@ -154,7 +132,7 @@ class ProviderEnrollForm extends Component {
             <FormText name="phone2" label="Cell (optional)" width="320" />,
             <FormText name="phone3" label="Other phone/pager" width="320" />,
             <div style={{paddingTop: "32px"}}><FormSelect name="role" label="Role" width="320" items={roleList} /></div>,
-            <div style={{paddingTop: "32px"}}><FormSelect name="caregroup" label="CareGroup" width="320" items={careGroupList} /></div>,
+            <div style={{paddingTop: "32px"}}><CareGroupSelect width="320" /></div>,
             <PwdText />,
             <div />,
             <FormText name="password1" label="Password" type="passsword" width="320" />,
@@ -178,11 +156,14 @@ class ProviderEnrollForm extends Component {
                     <span style={{marginRight: "15px"}}>
                         <ActionBtn type="submit" disabled={submitting || pristine} text="submit" />
                     </span>
-                    <ActionBtn type="button" disabled={pristine} url='/admin/provider/find' text="clear" handleAction={this.handleClearForm} />
+                    <span style={{marginRight: "15px"}}>
+                        <ActionBtn type="button" disabled={pristine} url='/admin/provider/find' text="clear" handleAction={this.handleClearForm} />
+                    </span>
+                    <ActionLnk disabled={false} url='/admin/provider/find' text="cancel" />
                 </form>
 
-                {addSuccess && <ProviderAddSuccessDialog  info={newProviderInfo} /> }
-                {addFailed &&
+                {success && <ProviderAddSuccessDialog  info={newProviderInfo} /> }
+                {failed &&
                     <Dialog 
                         title="failed!" 
                         text="Unfortuneately, a problem was encountered and the provider could not be added at this time. Please go back and check all the details entered are correct and valid and then try again. If the problem persists then contact the system administrator" 
@@ -223,7 +204,6 @@ function validate(values) {
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({ selectConsoleTitle, }, dispatch);
 }
-
 
 const formData = {
         form: 'EnrollProviderForm', //unique identifier for this form 

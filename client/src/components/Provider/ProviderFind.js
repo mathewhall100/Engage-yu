@@ -2,25 +2,20 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { reduxForm } from 'redux-form';
-import { startCase } from 'lodash'
-
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography'
-import FormSelect from '../Forms/FormSelect'
+import ProviderSelect from '../Forms/ProviderSelect'
 import ProviderDetails from './ProviderDetails'
 import ActionLnk from '../Buttons/actionLnk'
 import ActionBtn from '../Buttons/actionBtn'
 import { selectConsoleTitle } from '../../actions/index'
-import providerAPI from "../../utils/provider.js";
 
 const styles = theme => ({
     root: {
         padding: "40px"
     },
-
-
 });  
 
 
@@ -28,26 +23,8 @@ class ProviderFind extends Component {
     
     componentDidMount() {
         this.props.selectConsoleTitle({title: "Manage Provider"});
-
-        providerAPI.findAll()
-            .then(res => {
-                console.log("res.dataP: ", res.data);  
-                let providerList = [];
-                res.data.map(provider => {
-                    providerList.push({
-                        value: provider._id,
-                        text: `Dr ${startCase(provider.firstname)} ${startCase(provider.lastname)}`
-                    })
-                })
-                this.setState({providerList: providerList})    
-            })
-            .catch(err => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log(err);
-        })
     };
     
-
     state = {
         userGroupId: localStorage.getItem("provider_id"),
         providerList: [],
@@ -57,14 +34,14 @@ class ProviderFind extends Component {
     submit(values) {
         console.log("Submitted values: ", values);
         this.setState({
-            providerId: values.provider,
+            providerId: values.provider[0],
             displayDetails: !this.state.displayDetails
         })
     };
 
     render () {
 
-        const { displayDetails, providerList, providerId } = this.state
+        const { displayDetails, providerId } = this.state
         const { handleSubmit, submitting, pristine, classes } = this.props
         
         return (
@@ -72,17 +49,13 @@ class ProviderFind extends Component {
                 <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
                     <Grid container spacing={24}>
 
-                    <Grid item xs={2}>
-                            <Typography variant="subtitle1">Select provider:  </Typography>
+                        <Grid item xs={2}>
+                            <Typography variant="h6">Select Provider:</Typography>
                         </Grid>
 
                         <Grid item xs={4}>
-                            <span style={{position: "relative", top: "-16px"}}>
-                                <FormSelect 
-                                    name="provider" 
-                                    label="Primary provider"
-                                    items={providerList}
-                                /> 
+                            <span style={{position: "relative", top: "-16px", left: "20px"}}>
+                                <ProviderSelect />
                             </span>
                         </Grid>
 

@@ -27,7 +27,7 @@ class FindPatient extends Component {
     componentWillReceiveProps(nextProps) {
         if (nextProps.patientInfo !== this.props.patientInfo) {
             this.setState({displayPatientId: nextProps.patientInfo._id}) 
-        } else {this.setState({displayPatientId: null}) }
+        } 
     };
 
     state = {

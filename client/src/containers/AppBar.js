@@ -82,9 +82,7 @@ class TopBar extends Component {
                 <Grid container spacing={24}> 
 
                     <Grid item xs={2} sm={3} md={2} lg={3}>
-                        <Typography variant="h5" color="inherit" className={classes.logoText}>
-                            Engage-Yu!
-                        </Typography>
+                        <Typography variant="h5" color="inherit" className={classes.logoText}>Engage-Yu!</Typography>
                     </Grid>
 
                     <Grid item xs={4} sm={3} md={4} lg={3}>
@@ -126,9 +124,7 @@ class TopBar extends Component {
                 <Grid container spacing={24}>
 
                     <Grid item xs={10}>
-                        <Typography variant="h5" color="inherit" >
-                            Engage-Yu!
-                        </Typography>
+                        <Typography variant="h5" color="inherit" >Engage-Yu!</Typography>
                     </Grid>
                     
                     <Grid item xs={2}>

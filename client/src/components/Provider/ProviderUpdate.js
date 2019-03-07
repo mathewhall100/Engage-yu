@@ -31,8 +31,8 @@ class ProviderUpdate extends Component {
     };
     
     state = {
-        updateSuccess: false,
-        updateFailed: false,
+        success: false,
+        failed: false,
     }
 
     // Fetch provider info using provider_id and ensure loaded into store
@@ -96,21 +96,21 @@ class ProviderUpdate extends Component {
     updateSuccess = (data) => {
         console.log("res.data: ", data)
         this.fetchProviderDetailsToUpdate(this.props.provider._id)
-        this.setState({updateSuccess: true})
+        this.setState({success: true})
         this.props.reset('providerUpdateForm');  // reset the form fields to empty (requires form name)
     }
 
     updateFailed = (err) => {
         console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
         console.log(err);
-        this.setState({updateFailed: true}); // update failed dialog
+        this.setState({failed: true}); // update failed dialog
     }
 
     // reset the success/failed flag
     outcomeReset = () => {
         this.setState({
-            updateSuccess: false,
-            updateFailed: false
+            success: false,
+            failed: false
         })
     }
 
@@ -118,7 +118,7 @@ class ProviderUpdate extends Component {
     render () {
         
         const { provider, handleSubmit, classes } = this.props
-        const { updateFailed, updateSuccess } = this.state
+        const { failed, success } = this.state
 
         const getFormFields = (provider) => {
             return [{
@@ -177,14 +177,14 @@ class ProviderUpdate extends Component {
                             <UpdateFormUnit 
                                 formFields={getFormFields(provider)}
                                 outcomeReset={this.outcomeReset}
-                                updateSuccess={updateSuccess} 
-                                updateFailed={updateFailed}
+                                updateSuccess={success} 
+                                updateFailed={failed}
                             />
                         </form>
 
                         <br /> <br />
 
-                        {updateFailed && 
+                        {failed && 
                             <Dialog 
                                 title="Failed!" 
                                 text={`Unfortuneately a problem occurred and this provider could not be updated at this time. Please check the dtails you have entered and try again. If the problem persists, contact the syste administrator`}

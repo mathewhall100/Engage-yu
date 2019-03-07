@@ -4,7 +4,6 @@ import { reset, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { startCase } from 'lodash';
-
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
@@ -12,16 +11,14 @@ import Typography from '@material-ui/core/Typography';
 import ActionBtn from '../Buttons/actionBtn';
 import FormText from '../Forms/FormText'
 import FormTextFocused from '../Forms/FormTextFocused'
-import FormSelect from '../Forms/FormSelect'
 import FormRadio from '../Forms/FormRadio'
 import Dialog from '../Dialogs/simpleDialog'
 import EnrollSuccessDialog from '../Dialogs/EnrollSuccessDialog.js'
 import { selectConsoleTitle } from '../../actions/index';
-import providerAPI from "../../utils/provider.js";
 import patient_infoAPI from "../../utils/patient_info.js";
 import patient_dataAPI from "../../utils/patient_data.js";
-import { validateName, validateDOB, validateGender, validateHospId, validateEmail, validatePhone, validateStatus, validatePassword, validatePasswords } from '../../logic/formValidations';
-
+import { validateIsRequired, validateName, validateDOB, validateGender, validateHospId, validateEmail, validatePhone, validateStatus, validatePassword, validatePasswords } from '../../logic/formValidations';
+import ProviderSelect from '../Forms/ProviderSelect'
 
 const styles = () => ({
     root: {
@@ -34,71 +31,24 @@ class EnrollPatient extends Component {
 
     componentDidMount() {
         this.props.selectConsoleTitle({title: "Enroll New Patient"});
-
-        // On component mount, fetch names of all providers in provider group to populate primary provider form field
-        let selectItems = [];
-        providerAPI.findAllByGroup(localStorage.getItem("provider_group_id"))
-        .then(res => {
-            console.log("res.data: ", res.data);        
-            res.data.providerList.map((provider, idx) => {
-                selectItems.push({
-                    value: idx,
-                    text: `Dr ${startCase(provider.firstname)} ${startCase(provider.lastname)}`,
-                    id: provider._id, 
-                    group_ref: provider.provider_group_ref,
-                    group_id: provider.provider_group_id,
-                    group_name: provider.provider_group_name,
-                })
-            })
-            console.log("selectItems: ", selectItems)
-            if (selectItems && selectItems.length < 1) {
-                selectItems = this.defaultProviderList()
-            }
-            this.setState({providers: selectItems})
-        })
-        .catch(err => {
-            console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-            console.log(err);
-            this.setState({providers: this.defaultProviderList()})
-        })
-    };
+    }
 
     comonentWillReceiveProps(nextProps) {
         this.setState({
-            enrollSuccess: false,
-            enrollFailed: false
+            success: false,
+            failed: false
         })
-    }
-
-    defaultProviderList = () => {
-        console.log("default provider list")
-        return [{
-            value: 0,
-            text: `Dr ${startCase(localStorage.getItem("provider_first_name"))} ${startCase(localStorage.getItem("provider_last_name"))}`,
-            id: localStorage.getItem("provider._id"), 
-            group_ref: localStorage.getItem("provider_group_ref"),
-            group_id: localStorage.getItem("provider_group_ref"),
-            group_name: localStorage.getItem("provider_group_name")
-            },{
-            value: 1,
-            text: `N/A (enter later)`,
-            id: "000000000000000000000000",
-            group_ref: "000000000000000000000000",
-            group_id: "000000000000000000000000",
-            group_name: ""
-        }]
-    };
-
+    }    
+    
     state = {
-        providers: [],
-        enrollFailed: false,
-        enrollSuccess: false
+        failed: false,
+        success: false,
+        newPatientInfo: {}
     };
 
-
-    // Handle form submission and save data to database
-    submit(values) {
-        console.log("Submitted values: ", values);
+     //Handle form submission and save data to database
+        submit(values) {
+            console.log("Submitted values: ", values);
 
         // First save to patientInfo collection
         patient_infoAPI.createNewPatient({
@@ -116,12 +66,12 @@ class EnrollPatient extends Component {
             dob: values.dob,
             email: values.email,
             phone: values.phone,
-            primary_provider_ref: this.state.providers[values.provider].id,
-            primary_provider_id: this.state. providers[values.provider].id,
-            primary_provider_name: this.state.providers[values.provider].text.slice(3),
-            provider_group_ref: this.state.providers[values.provider].group_ref,
-            provider_group_id: this.state.providers[values.provider].group_id,
-            provider_group_name: this.state.providers[values.provider].group_name
+            primary_provider_ref: values.provider[0],
+            primary_provider_id: values.provider[0],
+            primary_provider_name: `${startCase(values.provider[1])} ${startCase(values.provider[2])}`,
+            provider_group_ref: values.provider[3],
+            provider_group_id: values.provider[4],
+            provider_group_name: values.provider[5]
         })
         .then(res_info => {
             console.log("res_info.data: ", res_info.data)
@@ -141,7 +91,7 @@ class EnrollPatient extends Component {
                     localStorage.setItem("patient_id", res_info.data._id)
                     this.setState({
                         newPatientInfo: res_info.data,
-                        enrollSuccess: true
+                        success: true
                     })
                 })
                 .catch(err => { 
@@ -157,7 +107,7 @@ class EnrollPatient extends Component {
         })
     };
 
-    // When enroll fails, need to remove any documents created during the sequence of database actions
+    // When enroll fails, need to remove any documents created during the sequence of enroll database actions
     enrollFailedCleanup = (info_id, data_id, err) => {
         console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
         console.log(err);
@@ -183,7 +133,7 @@ class EnrollPatient extends Component {
             })
         }
         localStorage.setItem("patient_id", "")
-        this.setState({enrollFailed: true}); 
+        this.setState({failed: true}); 
     }
 
     // Clear form entries and reset values using Redux Form 'reset'.
@@ -195,30 +145,18 @@ class EnrollPatient extends Component {
     render() {
 
         const { handleSubmit, classes, pristine, submitting } = this.props;
-        const { providers, enrollSuccess, enrollFailed, newPatientInfo } = this.state;
-
-        const radioItems = [
-            {value: "male", label: "Male"},
-            {value: "female", label: "Female"}
-        ];
-
-        const PwdText = () =>
-            <span>
-                <Typography variant="subtitle2" style={{width: "95%"}}><br />
-                    Asign a temporary passsword for this patient now which they will use, together with their email address, to login for the first time.
-                </Typography>
-            </span>
+        const { success, failed, newPatientInfo } = this.state;
 
         const formComponents = [
             <FormTextFocused name="firstname" label="Firstname" width="270" />,
             <FormText name="lastname" label="Lastname" width="270" />,
             <FormText name="dob" label="DOB (mm-dd-yyyy or mm/dd/yyyy)" width="270" />,
-            <div style={{position: "relative", top: "40px"}}><FormRadio name="gender" items={radioItems} /></div>,
+            <div style={{position: "relative", top: "40px"}}><FormRadio name="gender" items={[{value: "male", label: "Male"},{value: "female", label: "Female"}]} /></div>,
             <FormText name="email"label="Email (john.doe@you.com" width="270" />,
             <FormText name="phone" label="Contact phone "width="270" />,
             <FormText name="hospId" label="Hospital Number" width="270" />,
-            <div style={{position: "relative", top: "20px"}}><FormSelect name="provider" label="Primary Provider" width="200" items={providers} /></div>,
-            <PwdText />,
+            <div style={{position: "relative", top: "20px"}}><ProviderSelect /></div>,
+            <Typography variant="subtitle2" style={{width: "95%"}}><br />Asign a temporary passsword for this patient now which they will use, together with their email address, to login for the first time.</Typography>,
             <div />,
             <FormText type="password" name="password1" label="Password" width="270" />,
             <FormText type="password" name="password2" label="Re-enter Password" width="270" />,
@@ -244,8 +182,8 @@ class EnrollPatient extends Component {
                     <ActionBtn type="button" disabled={pristine} text="clear" handleAction={this.handleClearForm} />
                 </form>
 
-                {enrollSuccess && <EnrollSuccessDialog title="Success!" info={newPatientInfo}/> }
-                {enrollFailed && <Dialog
+                {success && <EnrollSuccessDialog title="Success!" info={newPatientInfo}/> }
+                {failed && <Dialog
                     title="Failed!" 
                     text="Unfortuneately, a problem was encountered and the patient could not be enrolled at this time. Please go back and check all the details entered are correct and valid and then try again. If the problem persists then contact the system administrator" 
                     />
@@ -269,7 +207,7 @@ function validate(values) {
     errors.gender = validateGender(values.gender, true)
     errors.email = validateEmail(values.email, true)
     errors.phone = validatePhone(values.phone, true)
-    errors.provider = validateName(values.provider, true)
+    errors.provider = validateIsRequired(values.provider)
     errors.status = validateStatus(values.status, true)
     errors.password1 = validatePassword(values.password1, true)
     errors.password2 = validatePasswords(values.password1, values.password2)

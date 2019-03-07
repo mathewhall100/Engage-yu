@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { startCase } from 'lodash';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import Typography from '@material-ui/core/Typography';
@@ -27,8 +26,8 @@ class ProviderRemove extends Component {
     }
 
     state = {
-        removeSuccess: false,
-        removeFailed: false,
+        success: false,
+        failed: false,
     }
 
     handleRemove() {
@@ -36,12 +35,12 @@ class ProviderRemove extends Component {
         providerAPI.delete(this.props.provider._id)
         .then(res => {
             console.log("res.data: ", res.data)
-            this.setState ({removeSuccess: true})   // update success dialog
+            this.setState ({success: true})   // update success dialog
         })
         .catch(err => {
             console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
             console.log(err);
-            this.setState({removeFailed: true}); // update failed dialog
+            this.setState({failed: true}); // update failed dialog
         })
     }
 
@@ -55,7 +54,7 @@ class ProviderRemove extends Component {
     render () {
         
         const { provider, classes } = this.props
-        const { removeFailed, removeSuccess} = this.state
+        const { failed, success} = this.state
 
         return (
             <Card className={classes.root}>
@@ -65,10 +64,10 @@ class ProviderRemove extends Component {
 
                         <ProviderDetailsBar provider={provider} />
 
-                        <Typography variant="body1" gutterBottom>
+                        <Typography variant="subtitle1" gutterBottom>
                             Select 'Remove' to remove this provider from the list of providers held in the application. 'Cancel' to cancel.
                         </Typography>
-                        <Typography variant="body1" gutterBottom color="error">
+                        <Typography variant="subtitle1" gutterBottom color="error">
                             Note, this action cannot be undone. Removed providers can be added back by re-entering all their details via the 'new provider' page.
                         </Typography>
 
@@ -79,21 +78,18 @@ class ProviderRemove extends Component {
                         </span>
                         <ActionBtn type="button" disabled={false} text="delete" handleAction={this.handledelete} />
 
-                        {removeSuccess && <Dialog providerName={`Dr. ${startCase(provider.firstname)} ${startCase(provider.lastname)}`} />}
-                        {removeFailed && <Dialog />} 
-
                     </React.Fragment>
                     :
                     <CallBack />
                 }
 
-                {removeSuccess && 
+                {success && 
                     <Dialog 
                         title="Success!" 
                         text={`provider ${provider.firstname} ${provider.lastname} has been successfully deleted`}
                     />
                 }
-                {removeFailed && 
+                {failed && 
                     <Dialog 
                         title="Failed!" 
                         text={`A problem occurred and provider ${provider.firstname} ${provider.lastname}  could not be deleted at this time. Please check that this is an appropriate action and try again if required. If the problem persists, contact the system administrator.`} 

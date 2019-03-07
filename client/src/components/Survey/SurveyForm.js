@@ -24,15 +24,15 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Slider from '@material-ui/lab/Slider';
 
-import SurveyRadio from '../components/Forms/SurveyRadio.js';
-import SurveyStartDate from '../components/Forms/SurveyStartDate.js';
-import Panel from '../components/Panels/SurveyExpansionPanel.js';
+import SurveyRadio from './SurveyRadio';
+import SurveyStartDate from './SurveyStartDate';
+import Panel from '../Panels/SurveyExpansionPanel.js';
 
 // import { fetchSurveyQuestions, fetchSurveyPatientDetails } from '../actions/index.js';
-import patient_dataAPI from "../utils/patient_data.js";
-import activeAPI from "../utils/active.js";
-import SurveySaveSuccessDialog from '../components/Dialogs/SurveySaveSuccessDialog.js'
-import SurveySaveFailedDialog from '../components/Dialogs/SurveySaveFailedDialog.js'
+import patient_dataAPI from "../../utils/patient_data.js";
+import activeAPI from "../../utils/active.js";
+import SurveySaveSuccessDialog from '../Dialogs/SurveySaveSuccessDialog.js'
+import SurveySaveFailedDialog from '../Dialogs/SurveySaveFailedDialog.js'
 
 //Form styles
 const styles = theme => ({

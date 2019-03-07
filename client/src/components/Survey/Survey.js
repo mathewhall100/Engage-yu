@@ -5,9 +5,9 @@ import { bindActionCreators } from 'redux';
 
 import Card from '@material-ui/core/Card';
 
-import SurveyForm from '../containers/SurveyForm'
-import { selectConsoleTitle, fetchSurveyQuestions, fetchSurveyPatientDetails } from '../actions'
-import SurveyPatientDetails from '../containers/SurveyPatientDetails';
+import SurveyForm from './SurveyForm'
+import { selectConsoleTitle, fetchSurveyQuestions, fetchSurveyPatientDetails } from '../../actions'
+import SurveyPatientDetails from './SurveyPatientDetails';
 
 class Survey extends Component {  
 

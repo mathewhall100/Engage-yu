@@ -74,7 +74,6 @@ class FindPatientTable extends Component {
                 console.log(err);
             }) 
         })
-        
         localStorage.setItem("patient_id", _id) 
     }
 

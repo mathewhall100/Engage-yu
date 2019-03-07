@@ -11,7 +11,7 @@ import Card from '@material-ui/core/Card';
 import Grid from '@material-ui/core/Grid';
 import ActionLnk from '../Buttons/actionLnk'
 import ActionBtn from '../Buttons/actionBtn'
-import FormSelect from '../Forms/FormSelect';
+import CareGroupSelect from '../Forms/CareGroupSelect';
 import CareGroupDetails from './CareGroupDetails';
 import { selectConsoleTitle } from '../../actions/index';
 import provider_groupAPI from "../../utils/provider_group.js";
@@ -28,28 +28,9 @@ class CareGroup extends Component {
     
     componentDidMount() {
         this.props.selectConsoleTitle({title: "Manage Care Group"});
-
-        provider_groupAPI.findAll()
-            .then(res => {
-                console.log("res.data: ", res.data);
-                let careGroupList = [];
-                res.data.map(group => {
-                    careGroupList.push({
-                        value: group._id,
-                        text: startCase(group.group_name),
-                    })
-                })
-                this.setState({careGroupList: careGroupList})
-            })
-            .catch(err => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log(err);
-        })
-    };
-
+    }
 
     state = {
-        careGroupList: [],
         caregroupId: "",
         displayDetails: false,
     }
@@ -57,7 +38,7 @@ class CareGroup extends Component {
     submit(values) {
         console.log("Submitted values: ", values);
         this.setState({
-            careGroupId: values.caregroup,
+            careGroupId: values.caregroup[0],
             displayDetails: !this.state.displayDetails
         })
     };
@@ -65,7 +46,7 @@ class CareGroup extends Component {
    
     render () {
 
-        const { displayDetails, careGroupList, careGroupId } = this.state
+        const { displayDetails, careGroupId } = this.state
         const { handleSubmit, submitting, pristine, classes } = this.props
 
         return (
@@ -74,16 +55,12 @@ class CareGroup extends Component {
                     <Grid container spacing={24}>
 
                         <Grid item xs={2}>
-                            <Typography variant="subtitle1"> Select care group: </Typography>
+                        <Typography variant="h6">Select Group:</Typography>
                         </Grid>
 
                         <Grid item xs={4}>
-                            <span style={{position: "relative", top: "-16px"}}>
-                                <FormSelect 
-                                    name="caregroup" 
-                                    label="Care Group"
-                                    items={careGroupList}
-                                /> 
+                            <span style={{position: "relative", top: "-16px", left: "20px"}}>
+                                <CareGroupSelect width={280}/>
                             </span>
                         </Grid>
 

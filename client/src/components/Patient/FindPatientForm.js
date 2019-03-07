@@ -7,14 +7,14 @@ import StreamTextInput from '../Forms/StreamTextInput';
 import SelectWithChip from '../Forms/SelectWithChip';
 
 const styles = () => ({
-    textSearch: {
-        margin: '32px 0 0 16px'
+    textPosn: {
+        margin: '20px 0 0 16px'
     },
     textIn: {
-        margin: '32px 16px 0 0'
+        margin: '20px 16px 0 0'
     },
-    textInputs: {
-        marginTop: "12px"
+    selectPosn: {
+        marginTop: '-12px'
     }
 });
 
@@ -42,12 +42,10 @@ class FindPatientForm extends Component {
                 <Grid container spacing={24}>
                     
                     <Grid item xs={2}>
-                        <Typography variant="h6" className={classes.textSearch}>
-                            Search for
-                        </Typography>
+                        <Typography variant="h6" className={classes.textPosn}>Search for</Typography>
                     </Grid> 
                     
-                    <Grid item xs={2} className={classes.textInputs}>
+                    <Grid item xs={2} >
                          <StreamTextInput 
                             name="name"
                             label="Name"
@@ -56,7 +54,11 @@ class FindPatientForm extends Component {
                         /> 
                     </Grid>
 
-                    <Grid item xs={2} className={classes.textInputs}>
+                    <Grid item xs={1}>
+                        <Typography variant="h6" className={classes.textPosn}>or</Typography>
+                    </Grid>
+
+                    <Grid item xs={2} >
                         <StreamTextInput
                             name={"hospId"}
                             label={"Hospital Id"}
@@ -67,18 +69,17 @@ class FindPatientForm extends Component {
                     </Grid>
 
                     <Grid item xs={1}>
-                        <Typography variant="h6" align="right" className={classes.textIn}>
-                            in
-                        </Typography>
+                        <Typography variant="h6" align="right" className={classes.textIn}>in</Typography>
                     </Grid>
 
-                    <Grid item xs={3}>
+                    <Grid item xs={3} className={classes.selectPosn}>
                         <SelectWithChip menuItems={selectMenuItems} selected={this.onChangeList} />
                     </Grid>
 
-                    <Grid item xs={3}></Grid>
+                    <Grid item xs={1}></Grid>
                     
                 </Grid>
+                <br />
             </form>
         );
     }

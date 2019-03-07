@@ -24,7 +24,7 @@ export const validateHospId = (value, required=false) => {
 export const validateDOB = (value, required=false) => {
     console.log("value: ", value)
     if (!value) {if (required) return "*Required field"; else return ""}
-    else if (!/^[0-9]{5}$/i.test(value))  {
+    else if (!/^(0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])[\/\-]\d{4}$/i.test(value))  {
         return "*Invalid date of birth."
     } else return ""
 }
