@@ -17,14 +17,14 @@ class FormDatePicker extends Component {
             
             <div>
                 <TextField
-                    label={field.label}
+                    //label={field.label}
                     {...field.input}
                     type="date"
                     //defaultValue={field.defaultValue}
                     style={{marginLeft: "theme.spacing.unit", marginRight: "theme.spacing.unit", width: 250,}}
-                    InputLabelProps={{
-                        shrink: true,
-                    }}
+                    // InputLabelProps={{
+                    //     shrink: true,
+                    // }}
                 />
 
                  <div style={{fontSize: "13px", color: "red"}}> 

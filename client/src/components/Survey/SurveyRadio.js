@@ -1,27 +1,33 @@
 import React, { Component } from 'react';
 import { Field } from 'redux-form';
-
 import FormLabel from '@material-ui/core/FormLabel';
 import { FormControlLabel } from '@material-ui/core';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
+import Typography from '@material-ui/core/Typography'
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+
+const radioTheme = createMuiTheme({
+    palette: {
+        secondary: { main: '#009900' }, // This is just green.A700 as hex.
+      },
+})
 
 
-class SurveyRadio extends Component {  
-    
+export default class FormRadio extends Component {  
+
     renderRadioGroup(field) {
-        
-        const {title, input, meta: { pristine, touched, error }, children} = field 
+        console.log(field)
 
+        const { input, children } = field
+        
         return (
-            <div>
-                <br />
-                <FormLabel component="legend" >{title}</FormLabel>
+            <MuiThemeProvider theme={radioTheme}>
                 <RadioGroup
                     {...input}
                     {...children}
-                    onChange={(event, value) => input.onChange(value)}
-                    style={{ display: 'flex', flexDirection: 'row'}}
+                    onChange={(value) => input.onChange(value)}
+                    style={{ display: 'flex', flexDirection: 'row', justifyContent: "space-between"}}
                 >
                     {children.map(child => 
                         <FormControlLabel 
@@ -33,23 +39,21 @@ class SurveyRadio extends Component {
                         />
                     )}
                 </RadioGroup>
-            </div>
+            </MuiThemeProvider>
         )
-        
     };
 
     render () {
-
         return (
-
-            <Field name={this.props.name} component={this.renderRadioGroup} title={this.props.title}>
-                {this.props.items.map(item =>  
-                    <Radio key={item.value} value={item.value} label={item.label} />
-                )}
+            <Field 
+                name={this.props.name} 
+                label={this.props.label}
+                component={this.renderRadioGroup}
+                >
+                    {this.props.items.map(item =>  
+                        <Radio key={item.value} value={item.value} label={item.label} />
+                    )}
             </Field>
-
         )
     }
 };
-
-export default SurveyRadio;

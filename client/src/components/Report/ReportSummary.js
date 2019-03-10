@@ -65,16 +65,13 @@ const styles = theme => ({
 class ReportSummary extends Component {
 
     componentDidMount() {
-        // console.log("ReportSummary: CDM-this.props.episodeId", this.props.episodeId)
         if (this.props.patientData && this.props.patientData.episodes) {
-            console.log("ReportSummary: CDM-this.props.patientData.episodes, ", this.props.patientData.episodes)
             this.setState({episodes: this.props.patientData.episodes}, 
                 () => this.loadDataForDisplay(this.getEpisode(this.state.episodes, this.props.episodeId)) )
         } 
      };
 
     componentWillReceiveProps(nextProps) {
-        // console.log("ReportSummary: nextProps", nextProps)
         if (this.props.patientData !== nextProps.patientData) {
             this.setState({episodes: nextProps.patientData.episodes},
                 () => this.loadDataForDisplay(this.getEpisode(this.state.episodes, nextProps.episodeId)) )

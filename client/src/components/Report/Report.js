@@ -12,7 +12,6 @@ import ReportFull from './ReportFull';
 class Report extends Component {  
 
     componentDidMount() {
-        console.log("Report, CDM: ", localStorage.getItem("patient_id"))
         this.props.selectConsoleTitle({title: "Summary Report"});
         
         let patientInfo, patientData

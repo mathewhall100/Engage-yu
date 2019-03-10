@@ -15,13 +15,13 @@ const episodeSchema = new Schema({
 
     start_date: { type: Date, required: [true, "No episode start date"] },
     end_date: { type: Date, required: [true, "No episode end date"] }, 
-    num_days: { type: Number, min: 1, max: 365, required: [true, "No episode number of days"] },
+    num_days: { type: Number, min: 1, max: 30, required: [true, "No episode number of days"] },
     start_time: { type: String, required: [true, "No timeframe start"] },
     end_time: { type: String, required: [true,  "No timeframe end"] },
     interval_mins: { type: Number, enum: [ 30, 60, 120, 240 ], required: [true, "No timeframe interval"] },
     margin_mins: { type: Number, min: 5, max: 60, default: 15 },
      
-    num_questions: { type: Number, min: 1, max: 25, required: true },
+    num_questions: { type: Number, min: 1, max: 12, required: true },
     questions: [
         questionSchema
     ],

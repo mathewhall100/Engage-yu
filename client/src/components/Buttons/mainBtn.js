@@ -22,8 +22,6 @@ class MainBtn extends PureComponent {
     }
 }
 
-
-
 Panel.propTypes = {
     classes: PropTypes.object.isRequired,
   

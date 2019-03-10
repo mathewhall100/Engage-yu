@@ -1,82 +1,42 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react'
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { startCase } from 'lodash'
-
 import PropTypes from 'prop-types';
+import Card from '@material-ui/core/Card'
+import DetailsBar from '../Textblocks/detailsBar'
+import { startCase } from 'lodash';
 
-import { withStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-
-
-const styles = theme => ({
-    root: {
-      width: "100%",
-      marginTop: theme.spacing.unit*2,
-      paddingLeft: "20px",
-      marginBottom: "10px"
-    },
-    backbtn: {
-        backgroundColor: "#eeeeee",
-        marginRight: "40px",
-        float: "right",
-        textDecoration: "none",
-        borderRadius: "5px",
-    },
-    textBold: {
-        fontWeight: "bold",
-        fontSize: "17px"
-    }
-  });
-
-class SurveyPatientDetails extends Component {
+class SurveyPatientDetails extends PureComponent {
 
     render () {
 
-        const { classes } = this.props;
-       
-        return (
-            <Paper className={classes.root}>
+        const patientDetails = [
+            {spacing: 3, caption: "For patient", text: `${startCase(this.props.patientInfo.firstname)} ${startCase(this.props.patientInfo.lastname)}`},
+            {spacing: 2, caption: "Hospital number", text: this.props.patientInfo.hospital_id},
+            {spacing: 3, caption: "DOB", text: this.props.patientInfo.dob},
+            {spacing: 4, caption: "btn", text: "close", url: "find"}
+        ];
 
-                    <Grid container spacing={24}>
-                        <Grid item xs={3}>
-                        <Typography variant="caption">For patient</Typography>
-                            <span className={classes.textBold}>{startCase(this.props.patientInfo.firstname)} {startCase(this.props.patientInfo.lastname)}</span>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <Typography variant="caption">Hospital number:</Typography>
-                            <span className={classes.textBold}>{this.props.patientInfo.hospital_id}</span>
-                        </Grid>
-                        <Grid item xs={3}>
-                            <Typography variant="caption">DOB</Typography>
-                            <span className={classes.textBold}>{this.props.patientInfo.dob}</span>
-                        </Grid>
-                        <Grid item xs={3}>
-                        <Link to='/admin/find' className={classes.backbtn}><Button>Back</Button></Link>
-                        </Grid>
-                        
-                    </Grid>
-
-            </Paper>
-        );
+        return(
+            <Card style={{padding: "0 20px 0 40px"}}>
+                <br />
+                <DetailsBar items={patientDetails} />
+                <br />
+            </Card>
+        )
     }
-}
 
+}
 
 SurveyPatientDetails.propTypes = {
     classes: PropTypes.object.isRequired,
-  };
-  
-  const mapStateToProps = (state) => {
-    console.log("StateA : ", state);
+};
+
+const mapStateToProps = (state) => {
+    //console.log("State : ", state);
     return {
-        patientInfo: state.surveyPatient.surveyPatientInfo,
-        user: state.user
+        patientInfo: state.reportPatientData.reportPatientInfo,
     }
-  };
-  SurveyPatientDetails = connect(mapStateToProps)(SurveyPatientDetails)
-  SurveyPatientDetails = withStyles(styles, { withTheme: true })(SurveyPatientDetails)
-  export default SurveyPatientDetails
+};
+
+SurveyPatientDetails = connect(mapStateToProps)(SurveyPatientDetails)
+export default SurveyPatientDetails

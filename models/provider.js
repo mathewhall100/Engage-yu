@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-
+const custom_question_listSchema = require("./schema/custom_question_list");
 const Schema = mongoose.Schema;
 
 const providerSchema = new Schema({
@@ -60,7 +60,7 @@ const providerSchema = new Schema({
         }
     ],
 
-    custom_questions: [{ type: Schema.Types.ObjectId, ref: 'Question_custom' }]
+    custom_question_lists: [custom_question_listSchema]
 
     },
 
@@ -82,7 +82,5 @@ handleError = (error, doc, next) => {
 providerSchema.post('save', handleError);
 providerSchema.post('findOneAndUpdate', handleError);
 
-
 var Provider = mongoose.model('Provider', providerSchema);
-
 module.exports = Provider;

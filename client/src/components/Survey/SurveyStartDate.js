@@ -1,37 +1,37 @@
 import React, { Component } from 'react';
 import { Field } from 'redux-form';
-
 import FormLabel from '@material-ui/core/FormLabel';
 import { FormControlLabel, Grid } from '@material-ui/core';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import SurveyDatePicker from './SurveyDatePicker';;
-
+import SurveyDatePicker from './SurveyDatePicker';
+import Typography from '@material-ui/core/Typography'
 
 
 class SurveyStartDate extends Component {  
     
     renderRadioGroup(field) {
 
-        const {title, input, meta: { pristine, touched, error }, children} = field 
-        //console.log(field)
+        const {title, input, children} = field 
 
         return (
 
-                <Grid container spacing={8}>
+                <Grid container spacing={24}>
 
-                    <Grid item xs={5}>
-                    <br />
-                    <FormLabel component="legend" >{title}</FormLabel>
+                    <Grid item xs={4}>
+
+                        <FormLabel component="legend" >
+                            <Typography variant="subtitle1" style={{fontWeight:  500 }}>Diary Card Start</Typography>
+                        </FormLabel>
+
                         <RadioGroup
                             {...input}
                             {...children}
-                            onChange={(event, value) => input.onChange(value)}
+                            onChange={(value) => input.onChange(value)}
                             style={{ display: 'flex', flexDirection: 'row'}}
                         >
                             {children.map(child => 
                                 <FormControlLabel 
-                                    key={child.props.label}
                                     value={child.props.value}
                                     control={<Radio />} 
                                     label={child.props.label} 
@@ -41,15 +41,13 @@ class SurveyStartDate extends Component {
                         </RadioGroup>
                     </Grid>
 
-                    <Grid item xs={5}>
-                        <div style={{marginTop: "20px"}}>
-                            {field.input.value === "date" &&
-                                <SurveyDatePicker
-                                    name="datePick"
-                                    label="Select a start date"
-                                    // default={new Date().toISOString().slice(0,10)}
-                                />}
-                        </div> 
+                    <Grid item xs={6}>
+                        <br /> 
+                        {field.input.value === "date" &&
+                            <SurveyDatePicker
+                                name="datePick"
+                                label="Select a start date"
+                            />}
                     </Grid>
 
                     <Grid item xs={2}></Grid>
@@ -63,8 +61,8 @@ class SurveyStartDate extends Component {
         return (
 
             <Field name={this.props.name} component={this.renderRadioGroup} title={this.props.title}>
-                <Radio key="nowOn" value="nowOn" label="Patient select" />
-                <Radio key="date" value="date" label="Specific date" />
+                <Radio value="nowOn" label="Patient select" />
+                <Radio value="date" label="Specific date" />
             </Field>
 
         )

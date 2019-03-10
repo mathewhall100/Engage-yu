@@ -10,45 +10,34 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 const styles = theme => ({
   	root: {
     	width: '100%',
-    	boxShadow: "none"
-    
+        marginBottom: "15px"
   	},
   	heading: {
-    	fontSize: theme.typography.pxToRem(15),
-    	fontWeight: theme.typography.fontWeightRegular,
+    	fontSize: theme.typography.pxToRem(16),
+		fontWeight: theme.typography.fontWeightMedium,
+		marginLeft: "15px"
   	},
 });
 
-function Panel(props) {
-  	const { classes } = props;
+const SimplePanel = (props) => {
+  	const { classes, title, content} = props;
   	return (
-    	<div className={classes.root}>
-      	<ExpansionPanel>
+      	<ExpansionPanel className={classes.root}>
 
         	<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-          		<Typography className={classes.heading}>{props.question.slice(0,50)}</Typography>
+          		<Typography inline className={classes.heading}>{title}</Typography>
 			</ExpansionPanelSummary>
         
         	<ExpansionPanelDetails>
-          		<Typography>
-					<span>
-						Answer options: 
-						{props.answers.map((ans, index) => 
-							<span key={index}>({index+1}) {ans} </span>
-						)}
-					</span>
-					<br />
-					<span>Added by:  {props.addedBy}</span>
-				</Typography>
+          		<Typography variant="subtitle2" >{content}</Typography>
         	</ExpansionPanelDetails>
 
       	</ExpansionPanel>
-    </div>
   );
 }
 
-Panel.propTypes = {
+SimplePanel.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Panel);
+export default withStyles(styles)(SimplePanel);
