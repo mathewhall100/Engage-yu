@@ -8,7 +8,6 @@ import UserReducer from './UserReducer';
 import DashboardReducer from './DashboardReducer';
 import ConsoleTitleReducer from './ConsoleTitleReducer';
 import SurveyQuestionsReducer from './SurveyQuestionsReducer';
-import SurveyPatientReducer from './SurveyPatientReducer';
 import ActiveSurveysReducer from './ActiveSurveysReducer';
 import ReportReducer from './ReportReducer';
 import ListPatientsByProvider from './PatientListReducer';
@@ -25,7 +24,6 @@ export default combineReducers({
     consoleTitle: ConsoleTitleReducer,
     patientData: PatientReducer,
     surveyQuestions: SurveyQuestionsReducer,
-    surveyPatient: SurveyPatientReducer,
     activeSurveys: ActiveSurveysReducer,
     reportPatientData: ReportReducer,
     listPatientsByProvider: ListPatientsByProvider,

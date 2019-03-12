@@ -16,35 +16,56 @@ const styles = () => ({
 
 class PatientDetailsBar extends Component {
 
+
+    getSpacing = (grid) => { 
+        let itemsConcat = ""
+        let gridL = 0
+        this.props.items.map((i) => {itemsConcat += i.text})
+        if (itemsConcat.length > 70) {gridL = 10}
+            else if (itemsConcat.length > 45) {gridL = 8}
+            else {gridL = 6}
+        if (grid === "large") return gridL
+            else return (12-gridL)
+    }
+
     render () {
         const { classes, items, url } = this.props;
         return (
             <Grid container spacing={24}>
-
-                { items.map((i, idx) => {
-                    return (
-                        <Grid item xs={i.spacing} key={idx}>
-                            {i.caption !== "btn" ?
-                                <React.Fragment>
-                                    <Typography variant="caption">{i.caption}</Typography>
-                                    <Typography variant="h6" className={classes.fwMedium}>{i.text}</Typography>
-                                </React.Fragment>
-                                :
-                                <React.Fragment>
-                                     {i.text === "close" ?
-                                        <Typography align="right" className={classes.backBtn} >
-                                            <LinkBtn url={i.url} text="close"/>
-                                        </Typography>
-                                        : 
-                                        i.text ? i.text : null 
+                <Grid item xs={this.getSpacing("large")}>
+                    <div style={{display: 'flex', flexDirection: 'row', justifyContent: "space-between"}}>
+                        { items.map((i, idx) => {
+                            return (
+                                <React.Fragment index={idx}>
+                                    {i.caption !== "btn" ?
+                                        <div>
+                                            <Typography variant="caption">{i.caption}</Typography>
+                                            <Typography variant="h6" className={classes.fwMedium}>{i.text}</Typography>
+                                        </div>
+                                        : null 
                                     }
                                 </React.Fragment>
-                            }
-                        </Grid>
-                    )
-                })}
+                            )
+                         })}
+                    </div>
+                </Grid>
+                <Grid item xs={this.getSpacing("small")}>  
+                    { items.map((i, idx) => {
+                        return (
+                            <React.Fragment>      
+                                {i.text === "close" ?
+                                    <Typography align="right" className={classes.backBtn} >
+                                        <LinkBtn url={i.url} text="close"/>
+                                    </Typography>
+                                    : null 
+                                }
+
+                            </React.Fragment>
+                        )
+                    })} 
+                </Grid>
             </Grid>
-        );
+        )
     }
 }
 

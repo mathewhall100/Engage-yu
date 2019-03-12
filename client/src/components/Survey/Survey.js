@@ -3,21 +3,18 @@ import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import axios from 'axios';
-
 import Card from '@material-ui/core/Card';
-
 import SurveyForm from './SurveyForm'
-import { selectConsoleTitle, fetchSurveyQuestions, fetchReportPatientData } from '../../actions'
+import { selectConsoleTitle, fetchSurveyQuestions, fetchReportPatientData, providerAction } from '../../actions'
 import SurveyPatientDetails from './SurveyPatientDetails';
 
 class Survey extends Component {  
 
     componentDidMount() {
         this.props.selectConsoleTitle({title: "Create New Diary Card"});
-        this.props.fetchSurveyQuestions()
 
         let patientInfo, patientData
-        const url = `/api/patient_info/find/${localStorage.getItem("patient_id")}`
+        let url = `/api/patient_info/find/${localStorage.getItem("patient_id")}`
         axios.get(url)
         .then( res => {
             patientInfo = res.data
@@ -33,7 +30,38 @@ class Survey extends Component {
                 console.log(err);
             })
         })  
-    };
+
+        let defaultQuestion, customQuestions
+        url = `/api/question_default`
+        axios.get(url)
+        .then( res => {
+            defaultQuestion = res.data;
+            axios.get('/api/question_custom')
+            .then( res => {
+                customQuestions = res.data
+                console.log("axios defaultQuestion: ", defaultQuestion)
+                console.log("axios customQuestions: ", customQuestions)
+                this.props.fetchSurveyQuestions(defaultQuestion, customQuestions)
+            })
+            .catch(err => {
+                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
+                console.log(err);
+            })
+        })
+
+        let provider
+        url = `/api/provider/${localStorage.getItem("provider_id")}`
+        axios.get(url)
+        .then(res => {
+            provider = res.data
+            console.log("axios provider: ", provider);
+            this.props.providerAction(provider);
+        })
+        .catch(err => {
+            console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
+            console.log(err);
+        })
+    }
 
     render () {
 
@@ -52,7 +80,7 @@ class Survey extends Component {
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle, fetchReportPatientData, fetchSurveyQuestions }, dispatch);
+    return bindActionCreators({ selectConsoleTitle, fetchReportPatientData, fetchSurveyQuestions, providerAction}, dispatch);
 }
 
 function mapStateToProps({auth}){

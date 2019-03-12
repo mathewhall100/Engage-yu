@@ -23,18 +23,15 @@ const styles = theme =>({
         width: "100%",
     },
     logoText: {
-        marginTop: "4px"
+        margin: "4px 0 0 12px"
     },
     text: {
         marginTop: "12px",
-        [theme.breakpoints.down('md')]: {
-			textAlign: 'right',
-		},
     },
     avatar: {
         verticalAlign: "middle", 
         borderRadius: "50%",
-        marginRight: 20,
+        margin: "0 20px",
     },
     menuButton: {
         margin: "4px 0 0 10px",
@@ -44,7 +41,8 @@ const styles = theme =>({
         hover: {},
     },
     appBarBtns: {
-		float: 'right'
+        float: 'right',
+        marginRight: "10px"
     }
 });
 
@@ -79,20 +77,16 @@ class TopBar extends Component {
         // Also displays user profile if present (profile=true)
         const RenderAppBarAuthUser = (props) => {
             return (
-                <Grid container spacing={24}> 
+                <div style={{width: "100%", display: 'flex', flexDirection: 'row', justifyContent: "space-between"}}>
 
-                    <Grid item xs={2} sm={3} md={2} lg={3}>
-                        <Typography variant="h5" color="inherit" className={classes.logoText}>Engage-Yu!</Typography>
-                    </Grid>
+                    <Typography variant="h5" color="inherit" className={classes.logoText}>Engage-Yu!</Typography>
 
-                    <Grid item xs={4} sm={3} md={4} lg={3}>
-                        <Typography variant="subtitle2"  color="inherit" className={classes.text}>
+                    <div>
+                        <Typography variant="subtitle2"  align="right" color="inherit" inline className={classes.text}>
                             Care Group: &nbsp;&nbsp;{startCase(localStorage.getItem("provider_group_name"))}
                         </Typography> 
-                    </Grid>
 
-                    <Grid item xs={3}>
-                        <Typography variant="subtitle2" color="inherit" >
+                        <Typography variant="subtitle2" inline color="inherit" >
                             {profile ? 
                                 <span>
                                     <img src={profile.picture} height="45px" alt="profile" className={classes.avatar}/> 
@@ -102,19 +96,16 @@ class TopBar extends Component {
                                 <span>Error: this user has no profile</span>
                             }  
                         </Typography>
-                    </Grid>
+                    </div>
 
-                    <Grid item xs={3} sm={2} md={3} lg={3}>
-                        <span className={classes.appBarBtns}>
-                            <Button color="inherit" className={classes.menuButton}>Help</Button>
-                            <Button color="inherit" className={classes.menuButton}>Settings</Button>
-                                {/* settings : show banner
-                                 */}
-                            <Button color="inherit" className={classes.menuButton} onClick={this.handleLogout}>Logout</Button> 
-                        </span>
-                    </Grid>
+                    <div className={classes.appBarBtns}>
+                        <Button color="inherit" className={classes.menuButton}>Help</Button>
+                        <Button color="inherit" className={classes.menuButton}>Settings</Button>
+                        <Button color="inherit" className={classes.menuButton} onClick={this.handleLogout}>Logout</Button> 
+                    </div>
 
-                </Grid>
+                </div>
+           
             )
         }
         

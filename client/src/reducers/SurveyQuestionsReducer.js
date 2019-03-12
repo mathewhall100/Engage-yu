@@ -14,7 +14,7 @@ export default (state = INITIAL_STATE, action) => {
         case SURVEY_QUESTIONS :
             return { 
                 surveyDefaultQuestion: action.payload.surveyDefaultQuestion, 
-                surveyCustomQuestions: action.payload.surveyCustomQuestions,
+                surveyCustomQuestions: action.payload.surveyCustomQuestions.questionList,
             };
         default:
             return state;

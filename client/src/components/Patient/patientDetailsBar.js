@@ -8,11 +8,11 @@ export default class providerDetailsBar extends PureComponent {
     render () {
         const { patient } = this.props
         const patientDetails = [
-            {spacing: 3, caption: "Current name", text: `${startCase(patient.firstname)} ${startCase(patient.lastname)}`  },
-            {spacing: 2, caption: "Hospital number", text: patient.hospital_id},
-            {spacing: 2, caption: "DOB", text: patient.dob},
-            {spacing: 2, caption: "Date enrolled", text: moment(patient.date_enrolled).format("MMM Do YYYY")},
-            {spacing: 3, caption: "btn", text: "close", url: "/admin/find"}
+            {caption: "Current name", text: `${startCase(patient.firstname)} ${startCase(patient.lastname)}`  },
+            {caption: "Hospital number", text: patient.hospital_id},
+            {caption: "DOB", text: patient.dob},
+            {caption: "Date enrolled", text: moment(patient.date_enrolled).format("MMM Do YYYY")},
+            {caption: "btn", text: "close", url: "/admin/find"}
         ];
 
         return(

@@ -14,8 +14,30 @@ export const durations = [
 export const startDates = [
     {value: "today", label: "Today"},
     {value: "tomorrow", label: "Tomorrow"},
-    {value: "date", label: "Select:"}
+    {value: "date", label: "Select date: "}
 ]
+
+export const frequencies = [
+    {value: "30", label: "30 mins" },
+    {value: "60", label: "60 mins" },
+    {value: "120", label: "120 mins" },
+]
+
+export const timeMargins = [
+    {value: "5", label: "5 mins" },
+    {value: "10", label: "10 mins" },
+    {value: "15", label: "15 mins" },
+    {value: "20", label: "20 mins" },
+    {value: "30", label: "30 mins" },
+]
+
+export const reminders = [
+    {value: "5", label: "5 mins before" },
+    {value: "10", label: "10 mins before" },
+    {value: "15", label: "15 mins before" },
+    {value: "off", label: "off" },
+]
+
 
 export const createRecordsArray = (startDate, startTime, duration, frequency, entriesPerDay) => {
 

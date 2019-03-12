@@ -10,7 +10,7 @@ const styles = theme => ({
     detailsContainer: {
         width: "100%",
         marginTop: theme.spacing.unit*2,
-        paddingLeft: "20px",
+        padding: "10px 20px",
         marginBottom: "30px"
     },
 })
@@ -22,10 +22,10 @@ class ReportPatientDetails extends Component {
 
         const { classes, patientInfo} = this.props;
         const patientDetails = [
-            {spacing: 3, caption: "Patient name", text: `${startCase(patientInfo.firstname)} ${startCase(patientInfo.lastname)}`},
-            {spacing: 3, caption: "Hospital number", text: patientInfo.hospital_id},
-            {spacing: 3, caption: "DOB", text: patientInfo.dob},
-            {spacing: 3, caption: "btn", text: "close", url: '/admin/find'}
+            {caption: "Patient name", text: `${startCase(patientInfo.firstname)} ${startCase(patientInfo.lastname)}`},
+            {caption: "Hospital number", text: patientInfo.hospital_id},
+            {caption: "DOB", text: patientInfo.dob},
+            {caption: "btn", text: "close", url: '/admin/find'}
         ];
        
         return (

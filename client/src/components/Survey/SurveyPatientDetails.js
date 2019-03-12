@@ -10,10 +10,10 @@ class SurveyPatientDetails extends PureComponent {
     render () {
 
         const patientDetails = [
-            {spacing: 3, caption: "For patient", text: `${startCase(this.props.patientInfo.firstname)} ${startCase(this.props.patientInfo.lastname)}`},
-            {spacing: 2, caption: "Hospital number", text: this.props.patientInfo.hospital_id},
-            {spacing: 3, caption: "DOB", text: this.props.patientInfo.dob},
-            {spacing: 4, caption: "btn", text: "close", url: "find"}
+            {caption: "For patient", text: `${startCase(this.props.patientInfo.firstname)} ${startCase(this.props.patientInfo.lastname)}`},
+            {caption: "Hospital number", text: this.props.patientInfo.hospital_id},
+            {caption: "DOB", text: this.props.patientInfo.dob},
+            {caption: "btn", text: "close", url: "find"}
         ];
 
         return(

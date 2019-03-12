@@ -11,6 +11,13 @@ const radioTheme = createMuiTheme({
     palette: {
         secondary: { main: '#009900' }, // This is just green.A700 as hex.
       },
+    overrides: {
+        MuiFormControlLabel: {
+            label: {
+                fontWeight: 500
+            }
+        }
+    }
 })
 
 
@@ -19,7 +26,7 @@ export default class FormRadio extends Component {
     renderRadioGroup(field) {
         console.log(field)
 
-        const { input, children } = field
+        const { input, evenSpace, children } = field
         
         return (
             <MuiThemeProvider theme={radioTheme}>
@@ -27,7 +34,7 @@ export default class FormRadio extends Component {
                     {...input}
                     {...children}
                     onChange={(value) => input.onChange(value)}
-                    style={{ display: 'flex', flexDirection: 'row', justifyContent: "space-between"}}
+                    style={{ display: 'flex', flexDirection: 'row', justifyContent: evenSpace ? "space-between" : null}}
                 >
                     {children.map(child => 
                         <FormControlLabel 
@@ -48,11 +55,13 @@ export default class FormRadio extends Component {
             <Field 
                 name={this.props.name} 
                 label={this.props.label}
-                component={this.renderRadioGroup}
+                component={this.renderRadioGroup} 
+                evenSpace={this.props.evenSpace}
                 >
                     {this.props.items.map(item =>  
-                        <Radio key={item.value} value={item.value} label={item.label} />
+                        <Radio key={item.value} value={item.value} label={item.label}/>
                     )}
+                   
             </Field>
         )
     }

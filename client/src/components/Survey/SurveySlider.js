@@ -6,6 +6,7 @@ import Slider from '@material-ui/lab/Slider';
 import { createMuiTheme, MuiThemeProvider} from '@material-ui/core/styles'
 
 const styles = {
+	// AM/PM vs 24HR toggle styles
 	toggleClock: {
 		float: "right",
 		padding: "2px 5px 2px 5px",
@@ -43,7 +44,6 @@ const styles = {
         height: 60,
 		tableLayout: "fixed",
 		border: "2px solid #333",
-		borderRight: "2px solid #333",
         borderCollapse: "collapse",
         textAlign: "center",
         fontSize: 12,
@@ -100,66 +100,63 @@ class SurveySlider extends React.Component {
 		toggleClock: "24hr",
 		sliderValue1: 0,
 		sliderValue2: 20,
-	
-        sliderTouched: null,
 	};
 
-	    // Slider controls
+	// Slider controls
 
-		handleSliderChange1 = (event, sliderValue1) => {
-			this.setState({ sliderValue1: sliderValue1 > (this.state.sliderValue2-1) ? this.state.sliderValue2 - 1 : sliderValue1 });
-			this.setState({ sliderTouched: 1})
-		};
-		
-		handleSliderChange2 = (event, sliderValue2) => {
-			this.setState({ sliderValue2: sliderValue2 < (this.state.sliderValue1 + 1) ? this.state.sliderValue1 + 1 : sliderValue2 });
-			this.setState({ sliderTouched: 1})
-		};
+	handleSliderChange1 = (event, sliderValue1) => {
+		this.setState({sliderValue1: sliderValue1 > (this.state.sliderValue2-1) ? this.state.sliderValue2 - 1 : sliderValue1})
+		this.props.sliderValues(sliderValue1, this.state.sliderValue2)
+	};
+	
+	handleSliderChange2 = (event, sliderValue2) => {
+		this.setState({ sliderValue2: sliderValue2 < (this.state.sliderValue1 + 1) ? this.state.sliderValue1 + 1 : sliderValue2})
+		this.props.sliderValues(this.state.sliderValue1, sliderValue2)
+	};
 
-		toggleClock = () => {
-			this.setState({
-				toggleClock: this.state.toggleClock === "24hr" ?  "am/pm" : "24hr",
-				sliderTimes: this.state.toggleClock === "24hr" ? sliderTimes24HR : sliderTimesAMPM
-			})
-
-		}
+	toggleClock = () => {
+		this.setState({
+			toggleClock: this.state.toggleClock === "24hr" ?  "am/pm" : "24hr",
+			sliderTimes: this.state.toggleClock === "24hr" ? sliderTimes24HR : sliderTimesAMPM
+		})
+	}
 
 	render() {
 		const { classes } = this.props;
 		const { sliderValue1, sliderValue2 } = this.state;
 
 		return (
+			<React.Fragment>
 
-			<div>
 				<div>
 					<Typography className={classes.slider1Hint} variant="body2" inline gutterBottom >Start time (slide blue dot)</Typography>
-					<span className={classes.toggleClock} onClick={() => this.toggleClock()}><span style={{color: this.state.toggleClock === "24hr" ? "black" : null}}>AM/PM</span></span>
+
 					<span className={classes.toggleClock} onClick={() => this.toggleClock()}><span style={{color: this.state.toggleClock === "am/pm" ? "black" : null}}>24HR</span></span>
+					<span className={classes.toggleClock} onClick={() => this.toggleClock()}><span style={{color: this.state.toggleClock === "24hr" ? "black" : null}}>AM/PM</span></span>
+					
 					<MuiThemeProvider theme={sliderTheme}>
 							<Slider className={classes.slider1} name="slider1" value={sliderValue1} min={0} max={20} step={1} onChange={this.handleSliderChange1} />
 					</MuiThemeProvider>
-					
-					
 				</div>
 
 				<table className={classes.sliderTable}>
-						<tbody>
-							<tr>
-								{this.state.sliderTimes.map((time, index) => {
-									return(
-										<td key={index}
-												className={this.state.sliderValue1 > index || this.state.sliderValue2 < index ? classes.tableCellInactive : classes.tableCellActive}
-										> 
-											<span className={this.state.sliderValue1 > index || this.state.sliderValue2 < index ? classes.tableNumeralInactive : classes.tableNumeralActive}>
-												{time.slice(0, time.length-2)}
-												<br />
-												<span style={{fontSize: "14px"}}>{time.slice(-2)}</span>
-											</span>
-										</td>
-									)
-								})}
-							</tr> 
-						</tbody>
+					<tbody>
+						<tr>
+							{this.state.sliderTimes.map((time, index) => {
+								return(
+									<td key={index}
+											className={this.state.sliderValue1 > index || this.state.sliderValue2 < index ? classes.tableCellInactive : classes.tableCellActive}
+									> 
+										<span className={this.state.sliderValue1 > index || this.state.sliderValue2 < index ? classes.tableNumeralInactive : classes.tableNumeralActive}>
+											{time.slice(0, time.length-2)}
+											<br />
+											<span style={{fontSize: "14px"}}>{time.slice(-2)}</span>
+										</span>
+									</td>
+								)
+							})}
+						</tr> 
+					</tbody>
 				</table>
 
 				<div>
@@ -169,7 +166,7 @@ class SurveySlider extends React.Component {
 					<Typography className={classes.slider2Hint} variant="body2" gutterBottom align="right" >End time (slide blue dot) </Typography>
 				</div>
 
-		</div>
+		</React.Fragment>
 
 		);
 	}
