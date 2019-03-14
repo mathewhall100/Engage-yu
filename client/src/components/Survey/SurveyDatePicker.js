@@ -17,7 +17,7 @@ class FormDatePicker extends Component {
                 <TextField
                     {...field.input}
                     type="date"
-                    style={{margin: "7px 0 0 -8px", fontSize: "11px", fontWeight: 500}}
+                    style={{margin: "7px 0 0 -4px", fontSize: "11px", fontWeight: 500}}
                     disabled={disabled}
                     value={disabled ? "" : value}
                     InputProps={{

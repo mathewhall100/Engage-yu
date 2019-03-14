@@ -24,7 +24,7 @@ const radioTheme = createMuiTheme({
 export default class FormRadio extends Component {  
 
     renderRadioGroup(field) {
-        console.log(field)
+        //console.log(field)
 
         const { input, evenSpace, children } = field
         

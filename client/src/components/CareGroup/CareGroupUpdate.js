@@ -10,7 +10,7 @@ import { selectConsoleTitle, careGroupAction } from '../../actions/index'
 import CareGroupDetailsBar from './CareGroupDetailsBar'
 import FormTextFocused from '../Forms/FormTextFocused';
 import UpdateFormUnit from '../Forms/UpdateFormUnit'
-import Dialog from '../Dialogs/simpleDialog';
+import Dialog from '../Dialogs/SimpleDialog';
 import CallBack from '../Callback';
 import provider_groupAPI from "../../utils/provider_group.js";
 import { validateName } from '../../logic/formValidations'

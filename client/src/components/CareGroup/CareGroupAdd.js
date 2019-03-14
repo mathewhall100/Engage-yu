@@ -12,7 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import ActionLnk from '../Buttons/actionLnk'
 import ActionBtn from '../Buttons/actionBtn'
 import FormTextFocused from '../Forms/FormTextFocused'
-import Dialog from '../Dialogs/simpleDialog'
+import Dialog from '../Dialogs/SimpleDialog'
 import { selectConsoleTitle } from '../../actions/index'
 import provider_groupAPI from "../../utils/provider_group.js";
 import { validateName } from '../../logic/formValidations'

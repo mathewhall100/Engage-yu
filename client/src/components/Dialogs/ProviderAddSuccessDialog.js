@@ -26,7 +26,6 @@ class ProviderAddSuccessDialog extends React.Component {
 
   handleClose = () => {
     this.setState({ open: false });
-    
   };
 
   render() {
@@ -46,7 +45,7 @@ class ProviderAddSuccessDialog extends React.Component {
                 <DialogTitle id="responsive-dialog-title">Success!</DialogTitle>
 
                 <DialogContent>
-                    <Typography variant="body1">New provider successfully added with the following details:</Typography>
+                <Typography variant="subtitle1">New provider successfully added with the following details:</Typography>
                         <br /><br />
                         <Grid container spacing={24} >
                             <Grid item xs={6}>
@@ -68,7 +67,7 @@ class ProviderAddSuccessDialog extends React.Component {
                             </Grid>
                         </Grid>
                     <br /><br />
-                    <Typography variant="body1">
+                    <Typography variant="subtitle1">>
                         Click 'done' to return to dashboard or, if any of the details above are incorrect, click 'edit' to make changes.
                     </Typography>
                 </DialogContent>

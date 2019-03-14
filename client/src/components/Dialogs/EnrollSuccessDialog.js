@@ -46,7 +46,7 @@ class EnrollSuccessDialog extends React.Component {
                 <DialogTitle id="responsive-dialog-title">Success!</DialogTitle>
 
                 <DialogContent>
-                    <Typography variant="body1">New patient successfully enrolled with the following details:</Typography>
+                <Typography variant="subtitle1">New patient successfully enrolled with the following details:</Typography>
                         <br /><br />
                         <Grid container spacing={24} >
                             <Grid item xs={6}>
@@ -69,7 +69,7 @@ class EnrollSuccessDialog extends React.Component {
                             </Grid>
                         </Grid>
                     <br /><br />
-                    <Typography variant="body1">
+                    <Typography variant="subtitle1">>
                         Click 'done' to return to dashboard, 'create Diary' to create a new diary exercise for this patient or, if any of the details above are incorrect, click 'edit' to make changes.
                     </Typography>
                 </DialogContent>

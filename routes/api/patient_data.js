@@ -16,6 +16,11 @@ router
     .route('/insertRef/:id')
     .put(patient_dataController.insertRef)
 
+// Matches with "/api/patient_info/insertRef/:id" 
+router
+    .route('/insertMsg/:id')
+    .put(patient_dataController.insertMsg)
+
 // Matches with "/api/patient_data/episode/:id" 
 router 
     .route('/episode/:id')

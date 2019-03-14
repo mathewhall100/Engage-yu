@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 
 const styles = (theme) => ({
     btn: { 
+        padding: "4px 5px",
         marginLeft: '15px',
         backgroundColor: "#eeeeee",
         borderColor: theme.palette.primary.main,
@@ -27,7 +28,7 @@ class PatientLinkBtn extends PureComponent {
     render() {
         const {classes, url, text } = this.props
         return (
-            <Button variant="outlined" className={classes.btn} component={Link} to={url}>{text}</Button>
+            <Button variant="outlined" size="small" className={classes.btn} component={Link} to={url}>{text}</Button>
         )
     }
 }

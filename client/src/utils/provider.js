@@ -27,8 +27,12 @@ export default {
     },
     
     update: function(id, info){
-        console.log("Axios call made to '/api/provider' to 'update '" + id);
+        console.log("Axios call made to '/api/provider' to 'update'" + id);
         return axios.put("/api/provider/"+id, info);
     },
+    saveQuestionList: function(id, info){
+        console.log("Axios call made to '/api/provider' to 'save question list' " + id);
+        return axios.put("/api/provider/saveQuestionList/"+id, info);
+    }
     
 }

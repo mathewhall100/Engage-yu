@@ -19,5 +19,10 @@ router
   .put(providerController.update)
   .delete(providerController.remove);
 
+// Matches with "/api/provider/questionlist"
+router
+  .route("/saveQuestionList/:id")
+  .put(providerController.saveQuestionList)
+
 module.exports = router;
 

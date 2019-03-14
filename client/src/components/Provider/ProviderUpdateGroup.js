@@ -8,7 +8,7 @@ import Card from '@material-ui/core/Card';
 import Typography from '@material-ui/core/Typography';
 import { selectConsoleTitle, providerAction } from '../../actions/index'
 import providerAPI from "../../utils/provider.js";
-import Dialog from '../Dialogs/simpleDialog';
+import Dialog from '../Dialogs/SimpleDialog';
 import ProviderDetailsBar from './providerDetailsBar'
 import CareGroupSelect from '../Forms/CareGroupSelect'
 import CallBack from '../Callback'

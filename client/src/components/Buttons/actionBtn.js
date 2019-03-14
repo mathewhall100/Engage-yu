@@ -8,6 +8,7 @@ const styles = (theme) => ({
      btn: {
         padding: "5px",
         color: "#ffffff",
+        borderRadius: "5px",
         backgroundColor: theme.palette.primary.main,
         '&:hover': {
             backgroundColor: theme.palette.primary.dark,
@@ -22,6 +23,7 @@ const styles = (theme) => ({
   cancelBtn: {
         padding: "5px",
         color: "#ffffff",
+        borderRadius: "5px",
         backgroundColor: "#c62828",
         '&:hover': {
             backgroundColor: "#871c1c",
@@ -48,7 +50,7 @@ class ActionBtn extends PureComponent {
                 size="small"
                 type={type} 
                 className={text==="cancel" || text==="clear" ? classes.cancelBtn : classes.btn} 
-                onClick={() => {text==="submit" ? null : this.handleClick(index)} }
+                onClick={() => {type==="submit" ? null : this.handleClick(index)} }
                 disabled={disabled}
             >
                 {text}

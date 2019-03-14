@@ -12,7 +12,7 @@ import ActionBtn from '../Buttons/actionBtn';
 import FormText from '../Forms/FormText'
 import FormTextFocused from '../Forms/FormTextFocused'
 import FormRadio from '../Forms/FormRadio'
-import Dialog from '../Dialogs/simpleDialog'
+import Dialog from '../Dialogs/SimpleDialog'
 import EnrollSuccessDialog from '../Dialogs/EnrollSuccessDialog.js'
 import { selectConsoleTitle } from '../../actions/index';
 import patient_infoAPI from "../../utils/patient_info.js";
@@ -138,7 +138,7 @@ class EnrollPatient extends Component {
 
     // Clear form entries and reset values using Redux Form 'reset'.
     handleClearForm() {
-        this.props.reset('EnrollPatientForm')
+        reset('EnrollPatientForm')
     }
 
 

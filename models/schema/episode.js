@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const recordSchema = require("./record");
 const questionSchema = require("./question");
+const messageSchema = require("./message");
 
 const episodeSchema = new Schema({
 
@@ -27,7 +28,10 @@ const episodeSchema = new Schema({
     ],
 
     expected_num_records: { type: Number, min: 2, required: [true, "No expected number records"] },
-    notes: String,
+    messages: [
+        messageSchema
+    ],
+
     records: [
         recordSchema
     ], 

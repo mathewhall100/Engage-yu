@@ -16,6 +16,11 @@ export default {
         return axios.put("/api/patient_data/insertRef/"+id, info);
     },
 
+    insertMsg: function(id, info) {
+        console.log("Axios call made to '/api/patient_data' to 'insertMsg' ", id);
+        return axios.put("/api/patient_data/insertMsg/"+id, info);
+    },
+
     newEpisode: function(id, episode){
         console.log("Axios call made to '/api/patient_data' to 'newEpisode'");
         return axios.put("/api/patient_data/episode/"+id, episode);

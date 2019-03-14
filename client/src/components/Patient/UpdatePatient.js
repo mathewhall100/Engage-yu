@@ -12,7 +12,7 @@ import patient_infoAPI from "../../utils/patient_info.js";
 import FormTextFocused from '../Forms/FormTextFocused';
 import ProviderSelect from '../Forms/ProviderSelect'
 import FormRadio from '../Forms/FormRadio'
-import Dialog from '../Dialogs/simpleDialog'
+import ActionFailedDialog from '../Dialogs/ActionFailedDialog'
 import PatientDetailsBar from './patientDetailsBar';
 import UpdateFormUnit from '../Forms/UpdateFormUnit'
 import CallBack from '../Callback'
@@ -183,12 +183,7 @@ class UpdatePatient extends Component {
                             />
                         </form>
                         <br /> <br /> 
-                        {failed && 
-                            <Dialog 
-                                title="Whoops, Update Failed!" 
-                                text="Unfortueatley the requested update could not be made. Please check that the new details entered are valid and correct and try again. If the problem persists, conatct the system administrator"
-                            /> 
-                        }
+                        {failed && <ActionFailedDialog text="A problem was encountered and the patient's details were not updated." url="/admin/find"/>}
                     </React.Fragment>
                     :
                     <CallBack />      

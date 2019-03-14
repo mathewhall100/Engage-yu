@@ -38,6 +38,21 @@ export const reminders = [
     {value: "off", label: "off" },
 ]
 
+export const sliderTimesAMPM = ["6am", "7am", "8am", "9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm", "9pm", "10pm", "11pm", "12am", "1am", "2am"]
+export const sliderTimes24HR = ["0600", "0700", "0800", "0900", "1000", "1100", "1200", "1300", "1400", "1500", "1600", "1700", "1800", "1900", "2000", "2100", "2200", "2300", "2400", "0100", "0200"]
+
+
+export const createStartDate = (date1, date2) => {
+    console.log("dates: ", date1, " ", date2)
+    switch (date1) {
+        case "tomorrow":
+            return moment().add(1, 'd')
+        case "date":
+            return moment(date2).set({hour:0,minute:0,second:0,millisecond:0})
+        default: 
+        return moment().set({hour:0,minute:0,second:0,millisecond:0})
+    }       
+}
 
 export const createRecordsArray = (startDate, startTime, duration, frequency, entriesPerDay) => {
 
@@ -82,17 +97,18 @@ export const createRecordsArray = (startDate, startTime, duration, frequency, en
 
 
 export const createSurveyQuestions = (selectedQuestions) => {
+    let tempArray = []
 
-    let allQuestions, filteredQuestions, surveyQuestions = [];
+    // let allQuestions, filteredQuestions, surveyQuestions = [];
 
-    allQuestions = [this.props.defaultQuestion[0], ...this.props.customQuestions]
+    // allQuestions = [this.props.defaultQuestion[0], ...this.props.customQuestions]
 
-    filteredQuestions = allQuestions.filter(question => {
-        return (this.state.selectedQuestions.indexOf(question._id) > -1)
-    })
+    // filteredQuestions = allQuestions.filter(question => {
+    //     return (this.state.selectedQuestions.indexOf(question._id) > -1)
+    // })
 
-    filteredQuestions.map((question, index) => {
-        surveyQuestions.push(
+    selectedQuestions.map((question, index) => {
+        tempArray.push(
             {   question_number: index,
                 question: question.question,
                 answers: question.answers,
@@ -101,6 +117,6 @@ export const createSurveyQuestions = (selectedQuestions) => {
         )
     })
 
-    return surveyQuestions
+    return tempArray
 
 };

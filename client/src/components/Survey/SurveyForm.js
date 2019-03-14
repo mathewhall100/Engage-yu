@@ -1,40 +1,27 @@
 import React, { Component } from 'react';
-import { Link, Route } from 'react-router-dom';
-import { reset, reduxForm, Field } from 'redux-form';
+import { reduxForm} from 'redux-form';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import moment from 'moment';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import Checkbox from '@material-ui/core/Checkbox';
+import ExpandButton from './ExpandButton'
 import SurveySlider from './SurveySlider';
 import SurveyRadio from './SurveyRadio';
 import SurveyDatePicker from './SurveyDatePicker';
 import CheckboxPanel from './SurveyCheckboxPanel';
 import CancelIcon from '@material-ui/icons/Cancel'
 import patient_dataAPI from "../../utils/patient_data.js";
-import { durations, startDates, frequencies, timeMargins, reminders, createRecordsArray, createSurveyQuestions} from './SurveyLogic'
+import { durations, startDates, frequencies, timeMargins, reminders, sliderTimes24HR, createStartDate, createRecordsArray, createSurveyQuestions} from './SurveyLogic'
+import SaveListDialog from "../Dialogs/SurveySaveListDialog"
 import SurveySaveSuccessDialog from '../Dialogs/SurveySaveSuccessDialog.js'
-import SurveySaveFailedDialog from '../Dialogs/SurveySaveFailedDialog.js'
-import Panel from '../Panels/SimplePanel';
-import HrStyled from '../commons/hrStyled'
+import ActionFailedDialog from '../Dialogs/ActionFailedDialog.js'
 import ActionBtn from '../Buttons/actionBtn'
 import ActionLnk from '../Buttons/actionLnk'
 import Collapse from '@material-ui/core/Collapse';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Fade from '@material-ui/core/Fade';
-import Popper from '@material-ui/core/Popper';
-import Paper from '@material-ui/core/Paper';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import CallBack from '../Callback'
+import CustomQuestionTable from './CustomQuestionTable';
 
 
 //Form styles
@@ -102,14 +89,6 @@ const styles = theme => ({
             color: theme.palette.error.dark,
         }
     },
-    expandBtn: {
-        float: "right",
-        backgroundColor: "white",
-        fontSize: "14px", 
-        '&:hover': {
-            backgroundColor: "white",
-        }
-    },
     closeIcon: {
         fontSize: "32px", 
         color: theme.palette.error.main,
@@ -136,67 +115,15 @@ const styles = theme => ({
       },
       customBox: {
         height: "auto",
-        width: "100%"
-      },
-      expandIconStyles: {
-        fontSize: "24px",
-        color: "#333",
-      },
-      collapseIconStyles: {
-        fontSize: "24px",
-        color: "#333",
-        transform: "rotate(180deg)",
-        transition: "transform 0.5s linear", 
-      },
-      // Popper
-      popper: {
-        zIndex: 100,
-        '&[x-placement*="right"] $arrow': {
-            left: 0,
-            marginLeft: '-0.9em',
-            height: '3em',
-            width: '1em',
-            '&::before': {
-                borderWidth: '1em 1em 1em 0',
-                borderColor: `transparent ${theme.palette.common.white} transparent transparent`,
-            },
-          },
-      },
-      arrow: {
-        position: 'absolute',
-        fontSize: 12,
-        width: '3em',
-        height: '3em',
-        '&::before': {
-            content: '""',
-            margin: 'auto',
-            display: 'block',
-            width: 0,
-            height: 0,
-            borderStyle: 'solid',
-        },
+        width: "100%",
       },
 }); 
-
-const CustomTableCell = withStyles(theme => ({
-    body: {
-        padding: "5px",
-        fontSize: 14,
-    },
-  }))(TableCell);
-
-const checkboxTheme = createMuiTheme({
-    palette: {
-        secondary: { main: '#009900' }, // This is just green.A700 as hex.
-      },
-})
 
 
 // --------------- SurveyForm component --------------------------
 class SurveyForm extends Component { 
 
     componentWillReceiveProps(nextProps) {
-        console.log("NP: ", nextProps)
         if (nextProps.defaultQuestion[0] !== this.props.defaultQuestion[0]) {
             const tempArray = []
             tempArray.push(nextProps.defaultQuestion[0])
@@ -212,16 +139,14 @@ class SurveyForm extends Component {
         slider1Value: 0,
         slider2Value: 20,
         selectedQuestions: [],
+        selectedList: {},
         settings: false,
         customize: false,
         toggleCollapse: [true,false,false],
-        anchorEl: null,
-        popperOpen: false,
-        arrowRef: null,
-        page: 0,
-        rowsPerPage: 5,
+        saveList: false,
         success: false,
-        failed: false,
+        failed: false, 
+        episodeStart: "",
     }
 
     // Set initial states of form elements
@@ -238,26 +163,28 @@ class SurveyForm extends Component {
 
     submit(values) {
         console.log("values: ", values)
+        console.log("sliders: ", this.state.slider1Value, " ", this.state.slider2Value)
+        console.log("questions: ", this.state.selectedQuestions)
 
-        const { sliderValue1, sliderValue2, sliderTimes24HR } = this.state
-        const { patientInfo } = this.props
+        const { slider1Value, slider2Value, selectedQuestions } = this.state
+        const { patientData } = this.props
 
-        const startDate = values.startDate === "date" ? moment(values.datePick).hour(0).minute(0).second(0) : moment();
-        const endDate = moment(startDate).add(values.duration, 'd')
-        const startTime = sliderTimes24HR[sliderValue1];
-        const endTime = sliderTimes24HR[sliderValue2];
+        const startDate = createStartDate(values.startdate, values.datepick)
+        const endDate = moment(startDate).add(values.duration-1, 'd')
+        const startTime = sliderTimes24HR[slider1Value];
+        const endTime = sliderTimes24HR[slider2Value];
         const hoursPerDay = parseInt(endTime) > parseInt(startTime) ? (parseInt(endTime, 10)-parseInt(startTime, 10))/100 + 1 : ((parseInt(endTime, 10)+2400)-parseInt(startTime, 10))/100 + 1; 
         const entriesPerDay = parseInt(hoursPerDay, 10)/(parseInt(values.frequency, 10)/60);
         const remindStatus = values.reminder === "off" ? "off" : "on";
         const remindMinsBefore = values.reminder !== "off" ? values.reminder : "";
 
         const surveyObj = {
-            episode_number: this.props.patientData.episodes.length,
-            date_requested: new Date(),
+            episode_number: patientData.episodes.length,
+            date_requested: moment(),
             requesting_provider_ref: localStorage.getItem("provider_id"),
             requesting_provider_id: localStorage.getItem("provider_id"),
-            requesting_provider_firstname: localStorage.getItem("provider_firstname"),
-            requesting_provider_lastname: localStorage.getItem("provider_lastname"),
+            requesting_provider_firstname: localStorage.getItem("provider_first_name"),
+            requesting_provider_lastname: localStorage.getItem("provider_last_name"),
             start_date: startDate,
             end_date: endDate,
             num_days: parseInt(values.duration),
@@ -267,17 +194,20 @@ class SurveyForm extends Component {
             margin_mins: parseInt(values.timeMargin),
             remind_status: remindStatus,
             remind_mins_before: remindMinsBefore,
-            questions: createSurveyQuestions(this.state.selectedQuestions),
+            questions: createSurveyQuestions(selectedQuestions),
             notes: "",
             records: createRecordsArray(startDate, startTime, values.duration, values.frequency, entriesPerDay),
             status: "pending",
             report_to: localStorage.getItem("provider_id") // Need to complete
         };
-        //console.log("obj ", surveyObj)
-        patient_dataAPI.newEpisode(patientInfo._id, surveyObj)
+        console.log("obj ", surveyObj)
+        patient_dataAPI.newEpisode(patientData._id, surveyObj)
         .then(res => {
             // console.log("res.data: ", res.data))
-            this.setState ({success: true})   // save success dialog
+            this.setState ({
+                success: true, // save success dialog
+                episodeStart: startDate
+            })  
         })
         .catch(err => {
             console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
@@ -296,13 +226,6 @@ class SurveyForm extends Component {
         })
     }
 
-    getCustomMsg = (customize) => {
-        let msg = ""
-        if (customize) msg="Clear to default"
-            else msg="Customise questions"
-        return msg
-    }
-
     //event Handlers
     toggleCollapse = (box) => {
         let tempArray = [false, false, false]
@@ -312,40 +235,34 @@ class SurveyForm extends Component {
 
     toggleCustom = () => {
         if (this.state.customize === true) {
-            this.setState({selectedQuestions: [this.props.defaultQuestion[0]]})
+            this.setState({
+                selectedQuestions: [this.props.defaultQuestion[0]],
+                selectedList: ""
+            })
         }
         this.setState({customize: !this.state.customize})
     }
 
-    handleRowHover = (event, answers) => {
-        const { currentTarget } = event;
-        this.setState(state => ({
-          anchorEl: currentTarget,
-          popperContent: answers,
-          popperOpen: "true",
-        }));
-      };
-
-    handleRowLeave = event =>  {
-        this.setState(state => ({
-            popperOpen: !state.popperOpen
-        }))
-    }
-
-    handleCheckBoxClick = (event, question) => {
+    handleListCheckBoxClick = (event, list) => {
         event.stopPropagation()
         event.nativeEvent.stopImmediatePropagation()
-        const { selectedQuestions } = this.state
+        this.setState({
+            selectedQuestions: list.list_questions,
+            selectedList: list
+        })
+    }
+
+    handleQuestionCheckBoxClick = (event, question) => {
+        event.stopPropagation()
+        event.nativeEvent.stopImmediatePropagation()
+        const { selectedQuestions, selectedList } = this.state
         const selectedIndex = selectedQuestions.indexOf(question)
-        console.log("selIndexOut: ", selectedIndex, " : ", selectedQuestions.length)
         let newSelected = [];
         switch (selectedIndex) {
             case -1:
                 newSelected = newSelected.concat(selectedQuestions, question); break
             case 0:
-                console.log("selIndexIn: ", selectedIndex, " : ", selectedQuestions.length)
                 if (selectedQuestions.length > 1) {
-                    console.log("selIndexIn2: ", selectedIndex, " : ", selectedQuestions.length)
                     newSelected = newSelected.concat(selectedQuestions.slice(1))
                  } else newSelected = selectedQuestions; break
             case selectedQuestions.length - 1:
@@ -353,30 +270,25 @@ class SurveyForm extends Component {
             default: 
                 newSelected = newSelected.concat(selectedQuestions.slice(0, selectedIndex),selectedQuestions.slice(selectedIndex + 1))
         }
+        if (selectedIndex > 0 && selectedList && selectedList.list_name) {
+            if (selectedList.list_questions.includes(question)) {
+                this.setState({selectedList: {} })
+            }
+        }
         this.setState({ selectedQuestions: newSelected });
     };
 
-    handleChangePage = (event, page) => {
-        this.setState({ page });
-    };
+    saveList = () => {
+        console.log("saveList")
+        this.setState({saveList: true})
+    }
 
-    handleChangeRowsPerPage = event => {
-        this.setState({ rowsPerPage: event.target.value });
-    };
 
-    // Popper arrow 
-    handleArrowRef = node => {
-        this.setState({
-          arrowRef: node,
-        });
-      };
-
- 
     // Render component
     render () {
         
-        const { handleSubmit, classes, submitting, surveyForm, customQuestions } = this.props;
-        const { rowsPerPage, page, selectedQuestions, slider1Value, slider2Value, settings, customize, toggleCollapse, popperOpen, anchorEl, popperContent, arrowRef, success, failed } = this.state;
+        const { patientInfo, patientData, handleSubmit, classes, submitting, surveyForm, customQuestions, provider } = this.props;
+        const { selectedQuestions, selectedList, slider1Value, slider2Value, settings, customize, toggleCollapse, saveList, success, failed, episodeStart } = this.state;
 
         // SurveyForm component return
         return (
@@ -391,7 +303,7 @@ class SurveyForm extends Component {
                                 items={startDates}
                             /> 
                             <SurveyDatePicker
-                                name="datePick"
+                                name="datepick"
                                 disabled={surveyForm && surveyForm.values.startdate !== "date"}
                             />
                         </div>
@@ -421,7 +333,7 @@ class SurveyForm extends Component {
                                                     key={question._id}  
                                                     question = {question}
                                                     checked={true}
-                                                    handleCheckBoxClick={this.handleCheckBoxClick}
+                                                    handleCheckBoxClick={this.handleQuestionCheckBoxClick}
                                                 />
                                             </div> 
                                         )}
@@ -430,9 +342,23 @@ class SurveyForm extends Component {
                                     CallBack
                                 }
                             </span>
-                            <Typography variant="button" inline className={classes.underlineBtn} onClick={() => this.toggleCustom()}>
-                                {this.getCustomMsg(customize)} 
-                            </Typography> 
+
+                            <span>
+                                <Typography variant="button" className={classes.underlineBtn} onClick={() => this.toggleCustom()}>
+                                    {customize ? "restore default" : "customize questions"}
+                                </Typography> 
+
+                                <br /><br />
+
+
+                                {selectedQuestions.length > 1 ?
+                                    <Typography variant="button" className={classes.underlineBtn} onClick={() => this.saveList()}>
+                                        save selection
+                                    </Typography> 
+                                    :
+                                    null
+                                }
+                            </span>
                         </div>
 
                         <Collapse in={customize} timeout={1000} ease>
@@ -446,150 +372,73 @@ class SurveyForm extends Component {
                                 </div>
                           
                                 <div className={classes.customContent}>
-                                    <Collapse in={toggleCollapse[0]} collapsedHeight="45px" timeout={1000}>
+
+                                    <Collapse in={toggleCollapse[0]} collapsedHeight="38px" timeout={1000}>
                                         <div className={classes.customBox} >
                                             <Typography variant="subtitle1" inline>My question lists</Typography>
-                                            <Button className={classes.expandBtn} onClick={() => this.toggleCollapse(0)}>
-                                                <ExpandMoreIcon className={toggleCollapse[0] ? classes.collapseIconStyles : classes.expandIconStyles}/>
-                                            </Button>
+                                            <ExpandButton 
+                                                toggle={toggleCollapse[0]}
+                                                i={0}
+                                                toggleCollapse={this.toggleCollapse}
+                                            />
                                             <hr className={classes.hrStyled}/>
 
-                                            {customQuestions && customQuestions[0] ?
-                                                <React.Fragment>
-                                            
-                                                    <Table>
-                                                        <TableBody >
-                                                            {customQuestions
-                                                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                                                .map((question, index) => {
-                                                                    return (
-                                                                        <TableRow key={index} hover onMouseOver={(event) => this.handleRowHover(event, question)} onMouseLeave={(event) => this.handleRowLeave(event, question)}>
-                                                                            <CustomTableCell>
-                                                                                <MuiThemeProvider theme={checkboxTheme}>
-                                                                                    <Checkbox  checked={selectedQuestions.filter(q => q._id === question._id).length > 0 } onClick={(event) => this.handleCheckBoxClick(event, question)} />  
-                                                                                </MuiThemeProvider>
-                                                                                <span style={{marginLeft: "15px"}}>{question.question}</span>
-                                                                            </CustomTableCell>
-                                                                        </TableRow>
-                                                                    ); 
-                                                                })
-                                                            } 
-                                                        </TableBody>
-                                                    </Table> 
-
-                                                    <TablePagination
-                                                        component="div"
-                                                        count={this.props.customQuestions.length + 1}
-                                                        rowsPerPage={rowsPerPage}
-                                                        page={page}
-                                                        backIconButtonProps={{'aria-label': 'Previous Page'}}
-                                                        nextIconButtonProps={{'aria-label': 'Next Page'}}
-                                                        onChangePage={this.handleChangePage}
-                                                        onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                                                    />
-
-                                                </React.Fragment>
+                                            {provider && provider.custom_question_lists ?
+                                                <CustomQuestionTable 
+                                                    type="list"
+                                                    customQuestions={provider.custom_question_lists}
+                                                    selected={selectedList}
+                                                    checkboxClick={this.handleListCheckBoxClick}
+                                                />
                                                 :
-                                            CallBack }
-
+                                                CallBack 
+                                            }
                                         </div>
                                     </Collapse>
 
-                                    <Collapse in={toggleCollapse[1]} collapsedHeight="45px" timeout={1000}>
+                                    <Collapse in={toggleCollapse[1]} collapsedHeight="38px" timeout={1000}>
                                         <div className={classes.customBox} >
-                                            <Typography variant="subtitle1" inline>My questions</Typography>
-                                            <Button className={classes.expandBtn} onClick={() => this.toggleCollapse(1)}>
-                                                <ExpandMoreIcon className={toggleCollapse[1] ? classes.collapseIconStyles : classes.expandIconStyles}/>
-                                            </Button>
+                                            <Typography variant="subtitle1" inline >My questions</Typography>
+                                            <ExpandButton 
+                                                toggle={toggleCollapse[1]}
+                                                i={1}
+                                                toggleCollapse={this.toggleCollapse}
+                                            />
                                             <hr className={classes.hrStyled}/>
 
                                             {customQuestions && customQuestions[0] ?
-                                                <React.Fragment>
-                                            
-                                                    <Table>
-                                                        <TableBody >
-                                                            {customQuestions
-                                                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                                                .map((question, index) => {
-                                                                    return (
-                                                                        <TableRow key={index} hover onMouseOver={(event) => this.handleRowHover(event, question)} onMouseLeave={(event) => this.handleRowLeave(event, question)}>
-                                                                            <CustomTableCell>
-                                                                                <MuiThemeProvider theme={checkboxTheme}>
-                                                                                    <Checkbox  checked={selectedQuestions.filter(q => q._id === question._id).length > 0 } onClick={(event) => this.handleCheckBoxClick(event, question)} />  
-                                                                                </MuiThemeProvider>
-                                                                                <span style={{marginLeft: "15px"}}>{question.question}</span>
-                                                                            </CustomTableCell>
-                                                                        </TableRow>
-                                                                    ); 
-                                                                })
-                                                            } 
-                                                        </TableBody>
-                                                    </Table> 
-
-                                                    <TablePagination
-                                                        component="div"
-                                                        count={this.props.customQuestions.length + 1}
-                                                        rowsPerPage={rowsPerPage}
-                                                        page={page}
-                                                        backIconButtonProps={{'aria-label': 'Previous Page'}}
-                                                        nextIconButtonProps={{'aria-label': 'Next Page'}}
-                                                        onChangePage={this.handleChangePage}
-                                                        onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                                                    />
-
-                                                </React.Fragment>
+                                                <CustomQuestionTable 
+                                                    type="question"
+                                                    customQuestions={customQuestions.filter(q => q.added_by_id === localStorage.getItem("provider_id"))}
+                                                    selected={selectedQuestions}
+                                                    checkboxClick={this.handleQuestionCheckBoxClick}
+                                                />
                                                 :
-                                            CallBack }
-
+                                                CallBack 
+                                            }
                                         </div>
                                     </Collapse>
 
-                                    <Collapse in={toggleCollapse[2]} collapsedHeight="45px" timeout={1000}>
+                                    <Collapse in={toggleCollapse[2]} collapsedHeight="38px" timeout={1000}>
                                         <div className={classes.customBox}>
                                             <Typography variant="subtitle1" inline>All questions</Typography>
-                                            <Button className={classes.expandBtn} onClick={() => this.toggleCollapse(2)}>
-                                                <ExpandMoreIcon className={toggleCollapse[2] ? classes.collapseIconStyles : classes.expandIconStyles}/>
-                                            </Button>
+                                            <ExpandButton 
+                                                toggle={toggleCollapse[2]}
+                                                i={2}
+                                                toggleCollapse={this.toggleCollapse}
+                                            />
                                             <hr className={classes.hrStyled}/>
 
                                             {customQuestions && customQuestions[0] ?
-                                                <React.Fragment>
-
-                                                    <Table>
-                                                        <TableBody >
-                                                            {customQuestions
-                                                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                                                .map((question, index) => {
-                                                                    return (
-                                                                        <TableRow key={index} hover onMouseOver={(event) => this.handleRowHover(event, question)} onMouseLeave={(event) => this.handleRowLeave(event, question)}>
-                                                                            <CustomTableCell>
-                                                                                <MuiThemeProvider theme={checkboxTheme}>
-                                                                                    <Checkbox  checked={selectedQuestions.filter(q => q._id === question._id).length > 0 } onClick={(event) => this.handleCheckBoxClick(event, question)} />  
-                                                                                </MuiThemeProvider>
-                                                                                <span style={{marginLeft: "15px"}}>{question.question}</span>
-                                                                            </CustomTableCell>
-                                                                        </TableRow>
-                                                                    ); 
-                                                                })
-                                                            } 
-                                                        </TableBody>
-                                                    </Table> 
-
-                                                    <TablePagination
-                                                        component="div"
-                                                        count={this.props.customQuestions.length + 1}
-                                                        rowsPerPage={rowsPerPage}
-                                                        page={page}
-                                                        backIconButtonProps={{'aria-label': 'Previous Page'}}
-                                                        nextIconButtonProps={{'aria-label': 'Next Page'}}
-                                                        onChangePage={this.handleChangePage}
-                                                        onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                                                    />
-
-                                                </React.Fragment>
+                                                <CustomQuestionTable 
+                                                        type="question"
+                                                        customQuestions={customQuestions}
+                                                        selected={selectedQuestions}
+                                                        checkboxClick={this.handleQuestionCheckBoxClick}
+                                                />  
                                                 :
-                                                CallBack }          
-
+                                                CallBack
+                                            }          
                                         </div>
                                     </Collapse>
 
@@ -651,43 +500,9 @@ class SurveyForm extends Component {
 
                 </form>
 
-                <Popper 
-                    open={popperOpen} 
-                    anchorEl={anchorEl} 
-                    placement={'right'} 
-                    className={classes.popper}
-                    modifiers={{
-                        arrow: {
-                          enabled: true,
-                          element: arrowRef,
-                        },
-                      }}
-                    >
-                        <span className={classes.arrow} ref={this.handleArrowRef} />
-                        <Paper style={{width: "245px"}}>
-                            <Fade in={popperOpen} timeout={600}>
-                                { popperContent && 
-                                    <div style={{padding: "20px 40px"}}> 
-                                        <Typography style={{fontSize: "16px", fontWeight: 500}}>{popperContent.question}</Typography> 
-                                        <br />
-                                        {popperContent.answers.map((answer, index) => {
-                                            return (
-                                                <Typography variant="subtitle2">{index+1}. {answer[0].toUpperCase() + answer.slice(1)}</Typography> 
-                                                )
-                                            }) }
-                                        <br />
-                                        <Typography variant="subtitle2">
-                                            {!popperContent.addedBy ? `Added ` : popperContent.addedBy === `Default question` ? `Default question.` : `Added by ${popperContent.addedBy}.`}
-                                            {popperContent.date_added ? ` on ${moment(popperContent.date_added).format("MMM Do YYYY")}` : null}
-                                        </Typography>
-                                    </div>
-                                }
-                             </Fade>
-                        </Paper>
-                </Popper>
-
-                {success && <SurveySaveSuccessDialog name = {`${this.props.patientInfo.firstname} ${this.props.patientInfo.lastname}`}/>}
-                {failed && <SurveySaveFailedDialog />} 
+                {saveList && <SaveListDialog questions={selectedQuestions} providerId={localStorage.getItem("provider_id")}/>}
+                {success && <SurveySaveSuccessDialog name={`${patientInfo.firstname} ${patientInfo.lastname}`} episodeStart={episodeStart} patientDataId={patientData._id}/>}
+                {failed && <ActionFailedDialog text="A problem was encountered and a new dairy has not been created." url="/admin/find"/> } 
 
             </div>
         );
@@ -699,8 +514,8 @@ function validate(values) {
     console.log("Error values: ", values) // -> { object containing all values of form entries } 
     const errors = {};
     // validate inputs from 'values'
-    if (values.startDate === "date" && !values.datePick) {
-        errors.datePick = "Please enter a valid date";   // message to be displayed if invalid
+    if (values.startdate === "date" && !values.datepick) {
+        errors.datepick = "Please enter a valid date";   // message to be displayed if invalid
     }
     // If errors has any properties, redux form assumes form is invalid
     console.log("Errors: ", errors)
@@ -708,18 +523,15 @@ function validate(values) {
 }
 
 
-// const mapDispatchToProps = (dispatch) => {
-//     return bindActionCreators({ fetchSurveyQuestions, fetchSurveyPatientDetails }, dispatch);
-// }
-
 const mapStateToProps = (state) => {
     console.log("State : ", state);
     return {
         defaultQuestion: state.surveyQuestions.surveyDefaultQuestion,
-        customQuestions: state.surveyQuestions.surveyCustomQuestions,
+        customQuestions: [state.surveyQuestions.surveyDefaultQuestion[0], ...state.surveyQuestions.surveyCustomQuestions],
         patientInfo: state.reportPatientData.reportPatientInfo,
         patientData: state.reportPatientData.reportPatientData,
-        surveyForm: state.form.NewSurveyForm
+        surveyForm: state.form.NewSurveyForm,
+        provider: state.provider
     }
 };
   

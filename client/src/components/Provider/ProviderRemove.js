@@ -7,7 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import ActionBtn from '../Buttons/actionBtn'
 import { selectConsoleTitle, providerAction } from '../../actions/index'
 import providerAPI from "../../utils/provider.js";
-import Dialog from '../Dialogs/simpleDialog';
+import Dialog from '../Dialogs/SimpleDialog';
 import CallBack from '../Callback'
 import HrStyled from '../commons/hrStyled'
 import ProviderDetailsBar from './providerDetailsBar'

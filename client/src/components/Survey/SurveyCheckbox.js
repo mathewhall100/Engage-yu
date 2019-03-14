@@ -1,41 +1,25 @@
-import React, { Component } from 'react';
-import { Field } from 'redux-form';
-
-import FormLabel from '@material-ui/core/FormLabel';
-import { FormControlLabel } from '@material-ui/core';
+import React, { PureComponent } from 'react';
 import Checkbox from '@material-ui/core/Checkbox'
-import DoneIcon from '@material-ui/icons/Done';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
+const checkboxTheme = createMuiTheme({
+    palette: {
+        secondary: { main: '#009900' }, // This is just green.A700 as hex.
+      },
+})
 
-class SurveyCheckbox extends Component {  
-
-    renderSurveyCheckbox(field) {
-        const {input, label} = field
-        console.log(field)
-        return (
-            <div>
-                <br />
-                <FormLabel component="legend" >{input.name}</FormLabel>
-                <Checkbox
-                    {...input}
-                    label={label}
-                     {...input}
-                    onChange={(event, value) => input.onChange(value)}
-                />
-            </div>
-        )
-        
-    };
+class SurveyCheckbox extends PureComponent {  
 
     render () {
 
+        const { checked, item } = this.props
+
         return (
-
-            <Field name={this.props.name} component={this.renderSurveyCheckbox} label={this.props.label}>
-                
-                )}
-            </Field>
-
+            <MuiThemeProvider theme={checkboxTheme}>
+                <Checkbox  
+                    checked={checked} 
+                    onClick={(event) => this.props.checkboxClick(event, item)} /> 
+            </MuiThemeProvider>
         )
     }
 };

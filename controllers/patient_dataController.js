@@ -49,7 +49,7 @@ module.exports = {
         // }
     },
 
-     // INsert data ref during patient enroll
+    // Insert data ref during patient enroll
     // To be sent req.params.id of patient to be updated and req.body with new patient_data ref id
     insertRef: function(req, res) {
         console.log("Patient_data controller called to 'insert Ref': ", req.params.id, " : ", req.body);
@@ -92,21 +92,63 @@ module.exports = {
         // }
     },
 
+    // Insert message into new episode
+    // To be sent req.params.id of patient to be updated and req.body with message string
+    insertMsg: function(req, res) {
+        console.log("Patient_data controller called to 'insert Ref': ", req.params.id, " : ", req.body);
+        //console.log(`Requester:  ${req.user}`);
+        //if(req.user){
+            db.Patient_data
+            .find({
+                _id: req.params.id}, {"episodes": 1}
+            )
+            .then(result => {
+                console.log("result : ", result[0]);
+                let lastEpisode = result[0].episodes[result[0].episodes.length-1]
+                lastEpisode.messages.push(req.body);
+                db.Patient_data
+                    .findOneAndUpdate(
+                        { _id: req.params.id},
+                        { $pop: {"episodes": 1} } 
+                    )
+                    .then(result => {
+                        db.Patient_data
+                        .findOneAndUpdate(
+                            { _id: req.params.id },
+                            { $push: {"episodes": lastEpisode} }
+                        )
+                         .then(result => {
+                            console.log("RESULT:", result);
+                            res.json(result)
+                         })
+                    })
+            })
+            .catch(err => {
+                console.log(`CONTROLLER ERROR: ${err}`);
+                res.status(422).json(err);
+            })
+        // }else{
+        //     res.status(422).json('You do not have proper credential to perform this action.')
+        // }
+    },
+
     
     // Create a new patient_data episode 
     // To be sent req.params.id of patient and req.body of new episode info
     newEpisode: function(req, res) {
         console.log("Patient_data controller called to 'newEpisode" );
-        //console.log(`Requester:  ${req.user}`);
-        // if(req.user){
+        console.log(`Requester:  ${req.user}`);
+        console.log("PatientData_id:", req.params.id)
+        console.log(`data:  ${req.body}`);
+        // if(req.user) {
             db.Patient_data
             .findOneAndUpdate(
                 { _id: req.params.id },
                 { $push: {episodes: req.body} }
             )
             .then(result => {
-                //console.log("RESULT:", result);
-                //res.json(result)
+                console.log("RESULT:", result);
+                res.json(result)
                 db.Patient_data
                      .findById(req.params.id)
                      .then(patient => {
@@ -122,6 +164,7 @@ module.exports = {
         //     res.status(422).json('You do not have proper credential to perform this action.')
         // }
     },
+
     editActiveStatus : function(req, res) {
         console.log("Patient_data controller called to 'editActiveStatus");
         db.Patient_data
@@ -141,7 +184,6 @@ module.exports = {
                 { $pop: { "episodes": 1 } }
                 )
                 .then(result => {
-
                     db.Patient_data
                         .findOneAndUpdate(
                         { _id: req.params.id },
@@ -181,14 +223,12 @@ module.exports = {
                     }
                 }
                 episodeSelected.records = records;
-
                 db.Patient_data
                     .findOneAndUpdate(
                     { _id: req.params.id },
                     { $pop: { "episodes": 1 } }
                     )
                     .then(result => {
-
                         db.Patient_data
                             .findOneAndUpdate(
                             { _id: req.params.id },
@@ -221,10 +261,8 @@ module.exports = {
             .then(result => {
                 console.log("result : ", result[0]);
                 let lastEpisode = result[0].episodes[result[0].episodes.length-1]
-                let records = lastEpisode.records;
-                records.push(req.body);
-
-                 db.Patient_data
+                lastEpisode.records.push(req.body);;
+                db.Patient_data
                     .findOneAndUpdate(
                         { _id: req.params.id},
                         { $pop: {"episodes": 1} } 

@@ -12,7 +12,7 @@ import FormTextFocused from '../Forms/FormTextFocused';
 import StateSelect from '../Forms/StateSelect'
 import providerAPI from "../../utils/provider.js";
 import CallBack from '../Callback'
-import Dialog from '../Dialogs/simpleDialog'
+import ActionFailedDialog from '../Dialogs/ActionFailedDialog'
 import UpdateFormUnit from '../Forms/UpdateFormUnit'
 import ProviderDetailsBar from './providerDetailsBar';
 import { validateName, validateZip, validateState, validateEmail, validatePhone, validatePhoneOther } from '../../logic/formValidations'
@@ -184,12 +184,7 @@ class ProviderUpdate extends Component {
 
                         <br /> <br />
 
-                        {failed && 
-                            <Dialog 
-                                title="Failed!" 
-                                text={`Unfortuneately a problem occurred and this provider could not be updated at this time. Please check the dtails you have entered and try again. If the problem persists, contact the syste administrator`}
-                            />
-                        } 
+                        {failed && <ActionFailedDialog text="A problem was encountered and the provider's details were not updated." url="/admin/find"/>} 
 
                     </React.Fragment>
                     :

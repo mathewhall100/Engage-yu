@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/lab/Slider';
 import { createMuiTheme, MuiThemeProvider} from '@material-ui/core/styles'
+import { sliderTimesAMPM, sliderTimes24HR } from './SurveyLogic'
 
 const styles = {
 	// AM/PM vs 24HR toggle styles
@@ -90,8 +91,6 @@ const sliderTheme = createMuiTheme({
     }
 })
 
-const sliderTimesAMPM = ["6am", "7am", "8am", "9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm", "9pm", "10pm", "11pm", "12am", "1am", "2am"]
-const sliderTimes24HR = ["0600", "0700", "0800", "0900", "1000", "1100", "1200", "1300", "1400", "1500", "1600", "1700", "1800", "1900", "2000", "2100", "2200", "2300", "2400", "0100", "0200"]
 
 class SurveySlider extends React.Component {
 

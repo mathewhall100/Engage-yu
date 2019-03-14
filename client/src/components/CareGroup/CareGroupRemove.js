@@ -6,7 +6,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import ActionBtn from '../Buttons/actionBtn'
-import Dialog from '../Dialogs/simpleDialog'
+import Dialog from '../Dialogs/SimpleDialog'
 import CareGroupDetailsBar from './CareGroupDetailsBar'
 import HrStyled from '../commons/hrStyled'
 import CallBack from '../Callback'
