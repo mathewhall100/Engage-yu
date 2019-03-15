@@ -3,7 +3,6 @@ const moment = require('moment');
 
 module.exports = {
 
- 
     // Fetch single patient's data (for doctor use)
     // To be sent req.params.id with _id of patient to be fetched
     // Returns json of patient episodes
@@ -27,6 +26,84 @@ module.exports = {
         // }
     },
 
+    // Get all those data records by provider Id (either requeter or primary provider) and with episode status of pending/active or awaiting review
+    // Then get their matching patient_info records
+    // To be sent req.parans.id of provider
+    // Returns json object of list of patient_data documents
+    fetchActive: function(req, res) {
+        console.log("patient_data controller called to 'active' ", req.params.id)
+        id = req.params.id
+        //console.log(`Requester:  ${req.user}`);
+        //if(req.user){
+        db.Patient_data
+            .find({ 
+                // $or: [
+                //     { "episodes.requesting_provider_id" : id },
+                //     { "episodes.primary_provider_id" : id } 
+                // ]
+                $and : [
+                    { $or: [
+                        { "episodes.requesting_provider_id" : id },
+                        { "episodes.primary_provider_id" : id } 
+                    ]},
+                    { $or: [
+                        { "episodes.status" : "pending" },
+                        { "episodes.status" : "active" },
+                        { "episodes.status" : "awaiting review" }
+                    ]}
+                ]
+            })
+            .populate("patient_info_ref") 
+            .then(result => {
+                console.log("==========================================")
+                console.log("result: ", result);
+                console.log("==========================================")
+                let resultObj = []
+                if (result) {
+                    result.map((patient, index) => {
+                        let pt = patient.patient_info_ref
+                        let ptObj = {
+                            id: index, 
+                            patientInfoId: pt._id,
+                            name: `${pt.firstname} ${pt.lastname}`, 
+                            number: pt.hospital_id, 
+                            primary: pt.primary_provider_name,
+                            primaryId: pt.primary_provider_id,
+                        }
+                        patient.episodes
+                        .filter(ep => ep.status === "active" || ep.status === "pending" || ep.status === "awaiting review")
+                        .map(ep => {
+                            epObj = {
+                                episodeId: ep._id,
+                                requester: `${ep.requesting_provider_firstname} ${ep.requesting_provider_lastname}`,
+                                requesterId: ep.requesting_provider_id,
+                                status: ep.status,
+                                start: ep.start_date, 
+                                end: ep.end_date,
+                                numDays: ep.num_days,
+                                startTime: ep.start_time,
+                                endTime: ep.end_time,
+                                interval: ep.interval_mins,
+                                entriesPerDay: ((parseInt(ep.end_time)-parseInt(ep.start_time))/(ep.interval_mins === 60 ? 100 : 50))+1,
+                                timeframe: `${ep.start_time.slice(0,2)}:${ep.start_time.slice(-2)} - ${ep.end_time.slice(0,2)}:${ep.end_time.slice(-2)}`, 
+                                records: ep.records
+                            }
+                            resultObj.push({...ptObj, ...epObj})
+                        })
+                        
+                    })
+                }
+                res.json(resultObj)
+            })
+            .catch(err => {
+                console.log(`CONTROLLER ERROR: ${err}`);
+                res.status(422).json(err);
+        })
+        // }else{
+        //     res.status(422).json('You do not have proper credential to perform this action.')
+        // }
+    },
+
     // Add new patient_data document
     // To be sent req.body with new patient object {see model & validations}
     // Returns json object of new doctor
@@ -36,7 +113,7 @@ module.exports = {
         //if(req.user){
             let patient = new db.Patient_data(req.body)
             patient.save()
-            .then(result=> {
+            .then(result => {
                 console.log("RESULT:", result);
                 res.json(result)
             })
@@ -57,9 +134,7 @@ module.exports = {
         //if(req.user){
 
             db.Patient_data
-            .findById({
-                _id: req.params.id}, {"episodes": 1}
-            )
+            .find({_id: req.params.id}, {"episodes": 1})
             .then(result => {
                 let lastEpisode = result.episodes[result.episodes.length-1]
                 lastEpisode.active_record_ref = req.body.active_record_ref
@@ -99,7 +174,7 @@ module.exports = {
         //console.log(`Requester:  ${req.user}`);
         //if(req.user){
             db.Patient_data
-            .find({
+            .findById({
                 _id: req.params.id}, {"episodes": 1}
             )
             .then(result => {
@@ -203,16 +278,13 @@ module.exports = {
     editRecord : function(req, res) {
         console.log("Patient_data controller called to 'editRecord'", req.body);
         console.log("id is  : ", req.params.id);
-        console.log("record id is : ", req.params.record_id);
-        console.log("episode is : ", req.params.episode);
-        console.log("status is : ", req.params.new_status);
+        console.log("record id is : ", req.body.record_id);
+        console.log("episode is : ", req.body.episode);
+        console.log("status is : ", req.body.new_status);
         //console.log(`Requester:  ${req.user}`);
         // if(req.user){
         db.Patient_data
-            .find({
-                _id: req.params.id
-            }, { "episodes": 1 }
-            )
+            .find({_id: req.params.id}, { "episodes": 1 })
             .then(result => {
                 let episodeSelected = result[0].episodes[parseInt(req.params.episode)]
                 let records = episodeSelected.records;

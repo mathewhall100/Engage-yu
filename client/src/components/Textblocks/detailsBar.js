@@ -36,7 +36,7 @@ class PatientDetailsBar extends Component {
                     <div style={{display: 'flex', flexDirection: 'row', justifyContent: "space-between"}}>
                         { items.map((i, idx) => {
                             return (
-                                <React.Fragment index={idx}>
+                                <React.Fragment key={idx}>
                                     {i.caption !== "btn" ?
                                         <div>
                                             <Typography variant="caption">{i.caption}</Typography>

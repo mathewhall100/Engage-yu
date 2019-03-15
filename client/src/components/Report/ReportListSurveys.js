@@ -15,6 +15,8 @@ const panelProps = [
     {status: "active", slice: -3, actions: ["view", "cancel"]},
     {status: "awaiting review", slice: -3, actions: ["view"]},
     {status: "actioned", slice: -2, actions: ["view", "archive"]},
+    {status: "archived", slice: -2, actions: ["view"]},
+    {status: "cancelled", slice: -2, actions: ["view"]},
 ]
 
 class ReportListSurveys extends Component { 
@@ -100,6 +102,7 @@ class ReportListSurveys extends Component {
 
                 { panelStatus.map((panel, idx) => {
                     return (
+                        
                         panel > 0 ?
                             <ReportPanel key={idx}
                                 summary = { `${startCase(panelProps[idx].status)} (${panel})` }

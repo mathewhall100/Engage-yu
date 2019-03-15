@@ -22,6 +22,7 @@ import ActionLnk from '../Buttons/actionLnk'
 import Collapse from '@material-ui/core/Collapse';
 import CallBack from '../Callback'
 import CustomQuestionTable from './CustomQuestionTable';
+import { PATIENT_PROVIDER_INFO } from '../../actions/types';
 
 
 //Form styles
@@ -167,7 +168,7 @@ class SurveyForm extends Component {
         console.log("questions: ", this.state.selectedQuestions)
 
         const { slider1Value, slider2Value, selectedQuestions } = this.state
-        const { patientData } = this.props
+        const { patientData, patientInfo } = this.props
 
         const startDate = createStartDate(values.startdate, values.datepick)
         const endDate = moment(startDate).add(values.duration-1, 'd')
@@ -185,6 +186,10 @@ class SurveyForm extends Component {
             requesting_provider_id: localStorage.getItem("provider_id"),
             requesting_provider_firstname: localStorage.getItem("provider_first_name"),
             requesting_provider_lastname: localStorage.getItem("provider_last_name"),
+            primary_provider_ref: patientInfo.primary_provider_id,
+            primary_provider_id: patientInfo.primary_provider_id,
+            primary_provider_firstname: patientInfo.primary_provider_firstname,
+            primary_provider_lastname: patientInfo.primary_provider_lastname,
             start_date: startDate,
             end_date: endDate,
             num_days: parseInt(values.duration),

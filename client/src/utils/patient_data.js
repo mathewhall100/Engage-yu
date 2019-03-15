@@ -1,12 +1,17 @@
 import axios from "axios";
 export default {
 
-    findById :function(id){
-        console.log("Axios call made to '/api/patient_data' to 'findById'");
+    findById :function(id) {
+        console.log("Axios call made to '/api/patient_data' to 'findById' ", id);
         return axios.get("/api/patient_data/"+id);
     },
 
-    createNewPatient: function(info){
+    fetchActive: function(id) {
+        console.log("Axios call made to '/api/patient_data to 'gfetchActive' ", id)
+        return axios.get("/api/patient_data/active/"+id);
+    },
+
+    createNewPatient: function(info) {
         console.log("Axios call made to '/api/patient_data' to 'createNewPatient'");
         return axios.post("/api/patient_data/new", info);
     },

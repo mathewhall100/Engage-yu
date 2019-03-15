@@ -77,7 +77,8 @@ class EnrollPatient extends Component {
             console.log("res_info.data: ", res_info.data)
             // Then using new patientInfo_id create a new patient_data collection for the patient
             patient_dataAPI.createNewPatient({
-                patient_info_id: res_info.data._id
+                patient_info_id: res_info.data._id,
+                patient_info_ref: res_info.data._id
             })
             .then(res_data => {
                 console.log("res_data.data: ", res_data.data)

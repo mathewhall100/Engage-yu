@@ -65,7 +65,8 @@ const styles = theme => ({
 class ReportSummary extends Component {
 
     componentDidMount() {
-        if (this.props.patientData && this.props.patientData.episodes) {
+        console.log("report summary: episodeId: ", this.props.episodeId)
+        if (this.props.patientData && this.props.patientData.episodes && this.props.episodeId) {
             this.setState({episodes: this.props.patientData.episodes}, 
                 () => this.loadDataForDisplay(this.getEpisode(this.state.episodes, this.props.episodeId)) )
         } 
@@ -104,7 +105,7 @@ class ReportSummary extends Component {
     };
 
     loadDataForDisplay = (episode) => {
-        // console.log("ReportSummary: loadDataForDisplay: ", episode)
+        console.log("ReportSummary: loadDataForDisplay: ", episode)
         if (episode) {
             this.setState({
                 episode,             
@@ -112,8 +113,8 @@ class ReportSummary extends Component {
                 episodeDataForDisplay: displayDataCalc(
                     episode.records, 
                     episode.num_days, 
-                    episode.expected_num_records/episode.num_days, 
-                    episode.num_questions, 
+                    episode.records.length/episode.num_days, 
+                    episode.questions.length, 
                     episode.status
                 )
             }) 

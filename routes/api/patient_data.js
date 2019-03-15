@@ -6,6 +6,11 @@ router
     .route("/:id")
     .get(patient_dataController.findById)
 
+    // Matches with "/api/active/"id"
+router
+    .route("/active/:id")
+    .get(patient_dataController.fetchActive)
+
 // Matches with "/api/patient_data"
 router
   .route("/new")

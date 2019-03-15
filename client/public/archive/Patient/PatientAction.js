@@ -1,9 +1,9 @@
 import axios from 'axios';
 import moment from 'moment';
 import _ from 'lodash';
-import history from '../history' 
+import history from '../../../src/history' 
 import { QUESTIONS, PATIENT_DETAILS, PATIENT_DATA, PATIENT_DATA_FAIL, PATIENT_PROVIDER_INFO, SUBMIT_QUESTIONNAIRES, ERROR_SUBMIT_QUESTIONNAIRES,
-    SUCCESS_EDIT_ACTIVE_STATUS, ERROR_EDIT_ACTIVE_STATUS, ACTIVE_USER } from './types';
+    SUCCESS_EDIT_ACTIVE_STATUS, ERROR_EDIT_ACTIVE_STATUS, ACTIVE_USER } from '../../../src/actions/types';
 
 export const fetchPatientData = () => {
     const user = localStorage.getItem('patient_data_id') ? localStorage.getItem('patient_data_id') : '';

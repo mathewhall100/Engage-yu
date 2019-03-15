@@ -3,80 +3,62 @@
 import moment from 'moment';
 
 
-// **** Create data object ****
-export const createData = (data) =>  {
-    let counter = 0;
-    let newData = [];
-
-    data.map(d => {
-        counter += 1;
-        let newDataObj = { 
-            id: counter, 
-            _id: d._id,
-            patientInfoId: d.patient_info_id,
-            episodeId: d.episode_id,
-            name: `${d.firstname} ${d.lastname}`, 
-            number: d.hospital_id, 
-            start: d.start_date, 
-            end: d.end_date, 
-            timeframe: `${d.start_time.slice(0,2)}:${d.start_time.slice(-2)} - ${d.end_time.slice(0,2)}:${d.end_time.slice(-2)}`, 
-            status: createStatus(d.status, d.num_records, d.num_entries, d.start_date, d.end_date, d.entries_per_day),
-            requester: d.requesting_provider_name, 
-            requesterId: d.requesting_provider_id,
-            primary: d.primary_provider_name,
-            primaryId: d.primary_provider_id,
-        };
-        newData.push(newDataObj)
-    })
-    return newData;
-};
-
-
 // **** Get status of each survey entry in data object ****
-// If active but passed the survey end date, then set as awaiting review. 
-export const createStatus = (status, records, entries, startDate, endDate, entriesPerDay) => {
-
+export const createStatus = (ep) => {
+    console.log("ep: ", ep)
+    const { start, end, numDays, startTime, endTime, entriesPerDay, records} = ep
+    let adjustedStatus = ""
     let diffDays = 0;
-    let progress = 0;
-    let compliance = 0;
+    let diffHours = 0;
+    let expectedEntries = 0;
+    let actualEntries = 0;
+    let progress = 0
+    let compliance = 0
 
-    if (status === "active") {
-        diffDays = moment(moment(), "DD.MM.YYYY").diff(moment(moment(startDate), "DD.MM.YYYY"), 'days') 
+    // If active but passed the survey end date, then set as awaiting review. 
+    if (ep.status === "active" && (moment().isAfter(moment(end)))) {
+        adjustedStatus = "awaiting review"
+        
+        // api call here to change status in database
+    } else {adjustedStatus = ep.status}
+    
+         
+    // calculate expected number of days of data entry
+    if (adjustedStatus === "active") {
+        diffDays = moment(moment(), "DD.MM.YYYY").diff(moment(moment(start), "DD.MM.YYYY"), 'days') 
+        const currentHour = parseInt(moment().format("HH") + moment().format("mm"))
+        console.log("currentHour: ", currentHour, " ", parseInt(startTime), " ", parseInt(endTime))
+        if (currentHour < parseInt(startTime)) {diffHours = 0}
+            else if (currentHour >= parseInt(endTime)) {diffHours = entriesPerDay}
+            else {diffHours = Math.floor((currentHour/100)+1 - parseInt(startTime/100))}
     } else {
-        diffDays = moment(moment(endDate), "DD.MM.YYYY").diff(moment(moment(startDate), "DD.MM.YYYY"), 'days') 
+        diffDays = numDays; diffHours = 0
     }
-    progress = Math.round(((diffDays*entriesPerDay)/records)*100)
-    compliance = entries ? Math.round((entries/(diffDays*entriesPerDay))*100) : 0
-    compliance = compliance > 100 ? 100 : compliance
+    // console.log("diffdays: ", diffDays, " --- diffHours: ", diffHours)
 
-    if (status === "active" && (moment().isAfter(moment(endDate)))) {
-        // note we need to also change the entry in the databases colections for this as well
-        return {
-            status: "awaiting review",
-            compliance: compliance,
-            progress: 100,
-        }
-    } 
-    else if (status === 'active') {
-        return {
-            status: "active",
-            compliance: compliance,
-            progress: progress
-        }
+    expectedEntries = diffDays*entriesPerDay+diffHours
+    actualEntries = records.filter(rec => rec.valid).length
+    if (actualEntries > expectedEntries) {actualEntries = expectedEntries}
+    // console.log("expected entries: ", expectedEntries, " --- actual entries: ", actualEntries)
+
+    if (adjustedStatus === "active") {progress = (actualEntries/(numDays*entriesPerDay)).toFixed(2)} 
+        else {progress = 1.0}
+
+    compliance = (actualEntries/expectedEntries).toFixed(2)
+    // console.log("progress: ", progress, " --- compliance: ", compliance)
+        
+    return {
+        adjustedStatus: adjustedStatus,
+        progress,
+        compliance,
     }
-    else if (status === "awaiting review") { 
-        return {
-            status: "awaiting review",
-            compliance: compliance,
-            progress: 100,
-        }
-    } else return { status: status }
 }
-  
-  
+
+
 // **** Filter data ****
 // Filter by requester/provider
 export const filterByPerson = (data, id, filter, ) => {
+    console.log("filterByPerson data IN", data, " ",  id, " ", filter)
     switch (filter) {
     case "provider":
         return data.filter(d => d.primaryId === id)
@@ -85,22 +67,24 @@ export const filterByPerson = (data, id, filter, ) => {
         return data.filter(d => d.requesterId === id || d.primaryId === id);
         break;
     default:
-        return data.filter(d => d.requesterId === id);
+        return data
     };
 };
 
 // Filter by status
 export const filterByStatus = (data, filter) => {
+    console.log("filterStatus data IN", data, " ", filter)
     let filteredData = [];
-    filter.map(f => {
-        filteredData = filteredData.concat(data.filter(d => d.status.status === f))
-    })
+    filteredData = data.filter(f => filter.includes(f.adjustedStatus))
+    console.log("filteredStatus data OUT", filteredData)
     return filteredData;
 };
 
 // Filter by checked
 export const filterByChecked = (data, filter) => {
-    if (filter.length > 0) { return data.filter(d => filter.indexOf(d._id) > -1) } 
+    console.log("filterByChecked data IN", data, " ", filter)
+    if (filter.length > 0) { return data.filter(d => filter.indexOf(d.episodeId) > -1) } 
+    console.log("filterByChecked data OUT", data)
     return data 
 };
 

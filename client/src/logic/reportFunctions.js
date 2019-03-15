@@ -5,8 +5,8 @@ import { times } from 'lodash';
 
 export const complianceCalc = (data) => {
     let validCount = [];
-    validCount = data.records.filter(record => record.valid === true)
-    return Math.round(validCount.length/data.expected_num_records*100)
+    validCount = data.records.filter(record => record.valid).length
+    return Math.round(validCount/data.records.length*100)
 };
 
 
@@ -21,7 +21,6 @@ export const displayDataCalc = (records, numDays, numTimes, numQuestions, status
     
     times(numTimes, (i) => {
         timesArrayIn = records.filter(rec => rec.time === records[i].time)
-        //console.log("timesArrayin: ", timesArrayIn)
 
         times(numQuestions, (j) => {
             questionDataSum = [0, 0, 0, 0, 0];

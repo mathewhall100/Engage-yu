@@ -12,21 +12,24 @@ const styles = () => ({
 
 class ProgressBar extends PureComponent {
     
-    createProgressBar = (progress, compliance) => {
+    createProgressBar = (progress) => {
         let str = ""
-        if (progress < 1) {return null}
-        if (progress > 100) {progress = 100}
-        times(Math.round(progress/4), (index) => {
+        if (progress === 0) {return null}
+        if (progress > 1) {progress = 1}
+        times(Math.round(progress*26), (index) => {
             str += "|"
         })
+        console.log("status marker: ", str)
         return str
     }
+
     render() {
+        console.log("render progress bar: ", this.props.progress, " ", this.props.compliance)
         const { progress, compliance, classes } = this.props
 
         const getProgressBarStyles = (compliance) => {
-            if (compliance >= 90) {return {color: "green"}}
-               else if (compliance >= 70) {return {color: "#ffc200"}}
+            if (compliance >= 0.9) {return {color: "green"}}
+               else if (compliance >= 0.7) {return {color: "#ffc200"}}
                else return {color: "red"};
         }
 

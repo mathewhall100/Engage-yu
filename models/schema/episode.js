@@ -3,16 +3,22 @@ const Schema = mongoose.Schema;
 const recordSchema = require("./record");
 const questionSchema = require("./question");
 const messageSchema = require("./message");
+const report_toSchema = require("./report_to.js");
 
 const episodeSchema = new Schema({
 
     episode_number: { type: Number, min: 1, max: 1000, required: [true, "No episode number"] },
 
+    date_requested: { type: Date, default: new Date()},
     requesting_provider_ref: { type: Schema.Types.ObjectId, ref: "Provider", required: [true, "No requesting provider Id supplied"] },
     requesting_provider_id: {type: String, required: [true, "No requesting provider id supplied"]},
     requesting_provider_firstname: { type: String, required: [true, "No requesting provider firstname supplied"] },
     requesting_provider_lastname: { type: String, required: [true, "No requesting provider lastname supplied"] },
-    date_requested: { type: Date, default: new Date()},
+    
+    primary_provider_ref: { type: Schema.Types.ObjectId, ref: "Provider", required: [true, "No primary provider Id supplied"] },
+    primary_provider_id: {type: String, required: [true, "No primary provider id supplied"]},
+    primary_provider_firstname: { type: String, required: [true, "No primary provider firstname supplied"] },
+    primary_provider_lastname: { type: String, required: [true, "No primary provider lastname supplied"] },
 
     start_date: { type: Date, required: [true, "No episode start date"] },
     end_date: { type: Date, required: [true, "No episode end date"] }, 
@@ -48,7 +54,7 @@ const episodeSchema = new Schema({
     cancelled_by: String,
 
     report_to: [
-        { type: Schema.Types.ObjectId, ref: "Provider" }
+         report_toSchema 
     ], 
 
 });

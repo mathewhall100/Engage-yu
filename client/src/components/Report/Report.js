@@ -15,15 +15,16 @@ class Report extends Component {
         this.props.selectConsoleTitle({title: "Summary Report"});
         
         let patientInfo, patientData
+        //console.log("patient id: ", localStorage.getItem("patient_id"))
         const url = `/api/patient_info/find/${localStorage.getItem("patient_id")}`
         axios.get(url)
-        .then( res => {
+        .then(res => {
             patientInfo = res.data
             axios.get(`/api/patient_data/${patientInfo.patient_data_id}`)
-            .then( res => {
+            .then(res => {
                 patientData = res.data
-                console.log("axios patientInfo: ", patientInfo)
-                console.log("axios patientData: ", patientData)
+                //console.log("axios patientInfo: ", patientInfo)
+                //console.log("axios patientData: ", patientData)
                 this.props.fetchReportPatientData(patientInfo, patientData)
             })
             .catch(err => {
@@ -31,7 +32,7 @@ class Report extends Component {
                 console.log(err);
             })
         })  
-        console.log("Report: episode_id ", this.props.location.state.episodeId)
+        //console.log("Report: episode_id ", this.props.location.state.episodeId)
         this.setState({episodeId: this.props.location.state.episodeId}) 
     };
 
@@ -97,6 +98,7 @@ const mapStateToProps = (state) => {
     console.log("State : ", state);
     return {
         patientInfo: state.reportPatientData.reportPatientInfo,
+        patientData: state.reportPatientData.reportPatientData,
     }
 };
 
