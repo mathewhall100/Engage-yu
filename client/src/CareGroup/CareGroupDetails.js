@@ -75,7 +75,10 @@ class CareGroupDetails extends Component {
 
     // Event handlers
     handleAction = (btn) => {
-        switch(btn.btn) {
+        switch(btn) {
+            case "close":
+                this.props.handleClose()
+                break;
             case "remove care group":
                 this.props.history.push({
                     pathname: '/admin/caregroup/remove',
@@ -118,9 +121,18 @@ class CareGroupDetails extends Component {
                 {careGroup ? 
                     <React.Fragment>
                         <Grid container spacing={24}>
-                            <Grid item xs={12}>
+                            <Grid item xs={6}>
                                 <Typography variant="caption">Care group</Typography>
                                 <Typography variant="h6" >{startCase(careGroup.group_name)}</Typography>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Typography align="right" style={{marginTop: "16px"}}>
+                                    <HandleBtns 
+                                        btns={[{btn: "close"}]} 
+                                        _id={""}
+                                        handleActionBtns={this.handleAction}
+                                    />
+                                </Typography>
                             </Grid>
                         </Grid>
                         <br />

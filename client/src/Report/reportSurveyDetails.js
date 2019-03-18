@@ -51,7 +51,7 @@ class ReportSurveyDetails extends PureComponent {
                         <Typography variant="body2">Requested by:</Typography>
                     </Grid>
                     <Grid item xs={8}>
-                        <Typography variant="body2">{`${ moment(episode.start_date).format("MMM Do YYYY")} - ${moment(episode.end_date).format("MMM Do YYYY") }`}</Typography> 
+                        <Typography variant="body2">{`${ moment(episode.start_date).format("MMM Do YYYY")} - ${moment(episode.end_date).format("MMM Do YYYY") }  (${episode.num_days} days)`}</Typography> 
                         <Typography variant="body2">{`${episode.start_time.slice(0,2)}:${episode.start_time.slice(-2)} - ${episode.end_time.slice(0,2)}:${episode.end_time.slice(-2)}`}</Typography>
 
                         { episode.status === "active" && 

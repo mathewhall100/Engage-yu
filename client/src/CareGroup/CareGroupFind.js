@@ -27,6 +27,12 @@ class CareGroup extends Component {
         displayDetails: false,
     }
 
+    closeCareGroupDetails = () => {
+        console.log("close careGroup details")
+        this.setState({displayDetails: false})
+        this.props.reset("CareGroupSelectForm")
+    }
+
     submit(values) {
         console.log("Submitted values: ", values);
             if (values.caregroup && values.caregroup[0]) {
@@ -53,7 +59,7 @@ class CareGroup extends Component {
                         pristine={pristine}
                     /> 
                 </form>
-                { displayDetails && <CareGroupDetails  careGroupId={careGroupId}/> }
+                { displayDetails && <CareGroupDetails  careGroupId={careGroupId} handleClose={this.closeCareGroupDetails}/> }
             </Card>
         )
     }

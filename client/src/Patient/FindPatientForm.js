@@ -7,7 +7,7 @@ import SelectWithChip from '../components/Forms/SelectWithChip';
 
 const styles = () => ({
     textPosn: {
-        margin: '20px 40px 0 20px'
+        margin: '20px 40px 0 40px'
     },
 });
 

@@ -16,14 +16,18 @@ import Button from '@material-ui/core/Button';
 
 const styles = theme =>({
     root: {
+        marginRight: "22px",
         flexGrow: 1,
         backgroundColor: "#2d404b",
+        [theme.breakpoints.down('md')]: {
+            marginLeft: "22px"
+        }
     }, 
     toolbar: {
         width: "100%",
     },
     logoText: {
-        margin: "4px 0 0 12px"
+        marginTop: "4px"
     },
     text: {
         marginTop: "12px",

@@ -108,43 +108,50 @@ class CustomQuestionTable extends Component {
         // GenericTable component return
         return (
             <React.Fragment>
-                <Table>
-                    <TableBody >
-                        {customQuestions
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((item, index) => {
-                                return (
-                                    <TableRow 
-                                        key={index} 
-                                        hover 
-                                        onMouseOver={(event) => this.handleRowHover(event, type, item)} 
-                                        onMouseLeave={(event) => this.handleRowLeave(event, item)}
-                                        >
-                                            <CustomTableCell>
-                                                <SurveyCheckbox 
-                                                    item={item}
-                                                    checked={type === "list" ? selected.list_name === item.list_name : selected.filter(q => q._id === item._id).length > 0 }
-                                                    checkboxClick={this.props.checkboxClick}
-                                                />
-                                                <span style={{marginLeft: "15px"}}>{type === "list" ? item.list_name[0].toUpperCase() + item.list_name.slice(1) : item.question}</span>
-                                            </CustomTableCell>
-                                    </TableRow>
-                                ); 
-                            })
-                        } 
-                    </TableBody>
-                </Table> 
+                {customQuestions.length > 0 ? 
+                    <Table>
+                        <TableBody >
+                            {customQuestions
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((item, index) => {
+                                    return (
+                                        <TableRow 
+                                            key={index} 
+                                            hover 
+                                            onMouseOver={(event) => this.handleRowHover(event, type, item)} 
+                                            onMouseLeave={(event) => this.handleRowLeave(event, item)}
+                                            >
+                                                <CustomTableCell>
+                                                    <SurveyCheckbox 
+                                                        item={item}
+                                                        checked={type === "list" ? selected.list_name === item.list_name : selected.filter(q => q._id === item._id).length > 0 }
+                                                        checkboxClick={this.props.checkboxClick}
+                                                    />
+                                                    <Typography variant="body2" inline style={{marginLeft: "15px"}}>{type === "list" ? item.list_name[0].toUpperCase() + item.list_name.slice(1) : item.question}</Typography>
+                                                </CustomTableCell>
+                                        </TableRow>
+                                    ); 
+                                })
+                            } 
+                        </TableBody>
+                    </Table> 
+                    :
+                    <Typography variant="body1" style={{margin: "15px"}}>No questions to display</Typography>
+                }
 
-                <TablePagination
-                    component="div"
-                    count={customQuestions.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    backIconButtonProps={{'aria-label': 'Previous Page'}}
-                    nextIconButtonProps={{'aria-label': 'Next Page'}}
-                    onChangePage={this.handleChangePage}
-                    onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                />
+                {customQuestions.length > 4 && 
+                    <TablePagination
+                        component="div"
+                        count={customQuestions.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        backIconButtonProps={{'aria-label': 'Previous Page'}}
+                        nextIconButtonProps={{'aria-label': 'Next Page'}}
+                        onChangePage={this.handleChangePage}
+                        onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                    />
+                }
+
 
                 <Popper 
                     open={popperOpen} 

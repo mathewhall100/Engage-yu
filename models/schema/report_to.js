@@ -7,7 +7,6 @@ const report_toSchema = new Schema({
     provider_id: {type: String, required: [true, "No primary provider id supplied"]},
     provider_firstname: { type: String, required: [true, "No primary provider firstname supplied"] },
     provider_lastname: { type: String, required: [true, "No primary provider lastname supplied"] },
-    
 });
 
 module.exports = report_toSchema; 

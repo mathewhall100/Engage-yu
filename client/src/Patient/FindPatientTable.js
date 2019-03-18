@@ -12,7 +12,7 @@ import GenericTable from '../components/Tables/GenericTable';
 
 const styles = () => ({
     root: {
-        padding: "20px 40px"
+        padding: "20px 60px"
     },
 })
 

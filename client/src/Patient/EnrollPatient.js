@@ -68,7 +68,8 @@ class EnrollPatient extends Component {
             phone: values.phone,
             primary_provider_ref: values.provider[0],
             primary_provider_id: values.provider[0],
-            primary_provider_name: `${startCase(values.provider[1])} ${startCase(values.provider[2])}`,
+            primary_provider_firstname: `${startCase(values.provider[1])}`,
+            primary_provider_lastname: `${startCase(values.provider[2])}`,
             provider_group_ref: values.provider[3],
             provider_group_id: values.provider[4],
             provider_group_name: values.provider[5]

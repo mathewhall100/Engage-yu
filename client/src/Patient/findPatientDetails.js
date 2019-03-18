@@ -14,7 +14,7 @@ import HandleBtns from '../components/Buttons/handleBtns'
 
 const styles = () => ({
     root: {
-        padding: "20px 20px 20px 24px"
+        padding: "20px 40px"
     },
     fwMedium: {
         fontWeight: 500,
@@ -52,7 +52,7 @@ class FindPatientDetails extends PureComponent {
         ];
         const infoV = [
              ["Email", "Contact phone", "Primary provider", "Care group"],
-             [patientInfo.email, patientInfo.phone, startCase(`Dr. ${patientInfo.primary_provider_name}`), startCase(`${patientInfo.provider_group_name}`)],
+             [patientInfo.email, patientInfo.phone, startCase(`Dr. ${patientInfo.primary_provider_firstname} ${patientInfo.primary_provider_lastname}`), startCase(`${patientInfo.provider_group_name}`)],
              ["Active diary cards", "Pending diary cards", "Awaiting review", "Actioned"],
              [this.findNumSurveys("active"), this.findNumSurveys("pending"),this.findNumSurveys("awaiting review"), this.findNumSurveys("actioned")]
         ];

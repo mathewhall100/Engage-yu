@@ -16,7 +16,7 @@ import providerAPI from "../utils/provider.js";
 
 const styles = theme => ({
     root: {
-        padding: "20px 20px 20px 40px",
+        padding: "20px 40px",
         marginBottom: "10px"
     },
     fwMedium: {
@@ -40,7 +40,11 @@ class ProviderDetails extends Component {
 
     // Event handlers
     handleAction = (btn) => {
-        switch(btn.btn) {
+        console.log("handleAction: ", btn)
+        switch(btn) {
+            case "close":
+                this.props.handleClose()
+                break;
             case "remove provider":
                 this.props.history.push({
                     pathname: '/admin/provider/remove',
@@ -84,9 +88,18 @@ class ProviderDetails extends Component {
                 {provider ?
                     <React.Fragment>
                         <Grid container spacing={24}>
-                            <Grid item xs={12}>
+                            <Grid item xs={6}>
                                 <Typography variant="caption">Provider name</Typography>
                                 <Typography variant="h6">Dr. {startCase(provider.firstname)} {startCase(provider.lastname)}</Typography>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Typography align="right" style={{marginTop: "16px"}}>
+                                    <HandleBtns 
+                                        btns={[{btn: "close", icon: ""}]} 
+                                        _id={""}
+                                        handleActionBtns={this.handleAction}
+                                    />
+                                </Typography>
                             </Grid>
                         </Grid>
                         <br />

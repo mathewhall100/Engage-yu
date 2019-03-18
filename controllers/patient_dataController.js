@@ -37,10 +37,6 @@ module.exports = {
         //if(req.user){
         db.Patient_data
             .find({ 
-                // $or: [
-                //     { "episodes.requesting_provider_id" : id },
-                //     { "episodes.primary_provider_id" : id } 
-                // ]
                 $and : [
                     { $or: [
                         { "episodes.requesting_provider_id" : id },
@@ -178,8 +174,8 @@ module.exports = {
                 _id: req.params.id}, {"episodes": 1}
             )
             .then(result => {
-                console.log("result : ", result[0]);
-                let lastEpisode = result[0].episodes[result[0].episodes.length-1]
+                console.log("result : ", result);
+                let lastEpisode = result.episodes[result.episodes.length-1]
                 lastEpisode.messages.push(req.body);
                 db.Patient_data
                     .findOneAndUpdate(

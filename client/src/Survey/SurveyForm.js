@@ -202,7 +202,13 @@ class SurveyForm extends Component {
             notes: "",
             records: createRecordsArray(startDate, startTime, values.duration, values.frequency, entriesPerDay),
             status: "pending",
-            report_to: localStorage.getItem("provider_id") // Need to complete
+            report_to: [
+                {   provider_ref: patientInfo.primary_provider_id,
+                    provider_id: patientInfo.primary_provider_id,
+                    provider_firstname: patientInfo.primary_provider_firstname,
+                    provider_lastname: patientInfo.primary_provider_lastname
+                }
+            ]
         };
         console.log("obj ", surveyObj)
         patient_dataAPI.newEpisode(patientData._id, surveyObj)
@@ -506,7 +512,7 @@ class SurveyForm extends Component {
 
                 {saveList && <SaveListDialog questions={selectedQuestions} providerId={localStorage.getItem("provider_id")}/>}
                 {success && <SurveySaveSuccessDialog name={`${patientInfo.firstname} ${patientInfo.lastname}`} episodeStart={episodeStart} patientDataId={patientData._id}/>}
-                {failed && <ActionFailedDialog text="A problem was encountered and a new dairy has not been created." url="/admin/find"/> } 
+                {failed && <ActionFailedDialog text="A problem was encountered and a new dairy has not been created." cancelUrl="/admin/find"/> } 
 
             </div>
         );

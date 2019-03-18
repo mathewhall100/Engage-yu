@@ -84,7 +84,8 @@ const patient_infoSchema = new Schema({
 
     primary_provider_ref: { type: Schema.Types.ObjectId, ref: 'Provider', required: [true, 'No primary physician'] },
     primary_provider_id: {type: String, required: [true, 'No primary physician']},
-    primary_provider_name:  {type: String, required: [true, 'No primary physician']},
+    primary_provider_firstname:  {type: String, required: [true, 'No primary physician']},
+    primary_provider_lastname:  {type: String, required: [true, 'No primary physician']},
 
     provider_group_ref: { type: Schema.Types.ObjectId, ref: 'Provider_group', required: [true, 'No provider group ref supplied'] },
     provider_group_id:  {type: String, required: [true, 'No provider group id supplied']},

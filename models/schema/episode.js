@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const recordSchema = require("./record");
 const questionSchema = require("./question");
 const messageSchema = require("./message");
-const report_toSchema = require("./report_to.js");
+const report_toSchema = require("./report_to");
 
 const episodeSchema = new Schema({
 
@@ -54,7 +54,7 @@ const episodeSchema = new Schema({
     cancelled_by: String,
 
     report_to: [
-         report_toSchema 
+        report_toSchema
     ], 
 
 });

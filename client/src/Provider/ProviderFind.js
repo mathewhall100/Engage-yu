@@ -28,12 +28,18 @@ class ProviderFind extends Component {
         displayDetails: false,
     }
 
+    closeProviderDetails = () => {
+        console.log("close provider details")
+        this.setState({displayDetails: false})
+        this.props.reset("ProviderSelectForm")
+    }
+
     submit(values) {
         console.log("Submitted values: ", values);
         if (values.provider && values.provider[0] ) {
             this.setState({
-            providerId: values.provider[0],
-            displayDetails: !this.state.displayDetails
+                providerId: values.provider[0],
+                displayDetails: !this.state.displayDetails
             })
         }
     };
@@ -54,7 +60,7 @@ class ProviderFind extends Component {
                         submitting={submitting}
                     />
                 </form>
-                { displayDetails && <ProviderDetails  providerId={providerId}/> }
+                { displayDetails && <ProviderDetails  providerId={providerId} handleClose={this.closeProviderDetails}/> }
             </Card>
         )
     }

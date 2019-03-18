@@ -330,7 +330,8 @@ module.exports = {
                 { $set: {
                     "primary_provider_ref": req.body.primary_provider_ref,
                     "primary_provider_id": req.body.primary_provider_id,
-                    "primary_provider_name": req.body.primary_provider_name
+                    "primary_provider_firstname": req.body.primary_provider_firstname,
+                    "primary_provider_lastname": req.body.primary_provider_lastname
                      } 
                 }, opts
             )

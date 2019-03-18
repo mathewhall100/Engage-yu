@@ -11,24 +11,27 @@ import DoneIcon from '@material-ui/icons/Done';
 
 const styles = theme => ({
     iconStyles: {
-        fontSize: "32px"
+        margin: 0, 
+        padding: 0,
+        fontSize: "32px",
+        lineHeight: "16px"
     }
 })
 
 const CustomTableCell = withStyles(theme => ({
     head: {
-      padding: "5px",
-      fontSize: "14px",
+      padding: "0 5px",
+      fontSize: "16px",
       color: theme.palette.primary.main,
       borderBottom: "2px solid",
       borderColor: theme.palette.primary.main,
     },
     body: {
-        padding: '5px',
+        color: theme.palette.primary.main,
+        padding: '0 5px',
         border: "none",
-        fontSize: "16px",
-        height: "auto",
-      },
+        fontSize: "15px"
+    },
   }))(TableCell);
 
 class ReportEntriesTable extends Component {
@@ -44,9 +47,11 @@ class ReportEntriesTable extends Component {
     };
 
     render () {
-        const { classes, records, numDays, index, question } = this.props
+        const { classes, records, startTime, index, question} = this.props
+
         return (
             <Table> 
+
                 <TableHead >
                     <TableRow>
                         <CustomTableCell style={{width: "24%"}}>Time</CustomTableCell>
@@ -58,43 +63,41 @@ class ReportEntriesTable extends Component {
                             )
                         })}
                     </TableRow>
-                </TableHead>  
+                </TableHead> 
 
-                {times(numDays, (day) => {
-                    return ( 
-                    <TableBody  key={day}>
+                 <TableBody>
+                    <TableRow style={{height: "10px"}}></TableRow> 
+                    {records.map((rec, idx) => {
+                        return (
+                            <React.Fragment key={idx}>
+                               
+                                {rec.time === startTime && 
+                                    <TableRow>  
+                                        <CustomTableCell colSpan={3} >
+                                            Day: {rec.day}: {moment(rec.scheduled_datetime).format("MMM Do YYYY")} 
+                                            <hr style={{opacity: 0.5}}/>
+                                        </CustomTableCell>
+                                    </TableRow>
+                                }
 
-                        <TableRow style={{height: "10px"}}></TableRow> 
-
-                        <TableRow> 
-                            <CustomTableCell colSpan={3} >
-                                Day: {day}: {moment(records[(day)*records.length/numDays].scheduled_datetime).format("MMM Do YYYY")} 
-                                <hr style={{opacity: 0.5}}/>
-                            </CustomTableCell>
-                        </TableRow> 
-
-                        {times((records.length/numDays), (time) => {
-                            return (
-                                <TableRow key={time}>
-
+                                <TableRow>
                                     <CustomTableCell>
-                                        {`${records[((day)*records.length/numDays)+time].time.slice(0, 2)}:${records[((day)*records.length/numDays)+time].time.slice(-2)}`}
+                                        {`${rec.time.slice(0, 2)}:${rec.time.slice(-2)}` }
                                     </CustomTableCell>
 
-                                    {records[((day)*records.length/numDays)+time].data[index].question_answers.map((answer, index)=> {
+                                    {rec.valid && rec.data[index].question_answers.map((ans, idx)=> {
                                         return (
-                                            <CustomTableCell align="center" key={index}>
-                                                {answer === true ? <DoneIcon className={classes.iconStyles} style={{color: this.getIconColor(index) }} /> : null}
+                                            <CustomTableCell key={idx} align="center">
+                                                {ans === true ? <DoneIcon className={classes.iconStyles} style={{color: this.getIconColor(idx) }} /> : null}
                                             </CustomTableCell>
                                         ) 
                                     })} 
-
                                 </TableRow>
-                            )
-                        })}
+                            </React.Fragment>
+                        )
+                    }) }
+                </TableBody>
 
-                    </TableBody>)
-                })}
             </Table> 
         )
     }

@@ -64,7 +64,7 @@ class UpdatePatient extends Component {
 
         if (values.firstname) {
             patient_infoAPI.updateName(patientInfo._id, {
-                firstname: values.firstnam,
+                firstname: values.firstname,
                 lastname: patientInfo.lastname
             })
             .then(res => {this.updateSuccess(res.data, 0) })
@@ -89,10 +89,12 @@ class UpdatePatient extends Component {
             .then(res => {this.updateSuccess(res.data, 3) })
             .catch(err => {this.updateFailed(err) })
         } else if (values.provider) {
-            patient_infoAPI.updateProvider(patientInfo._id, {
+            console.log("valuesprovider: ", values.provider)
+                patient_infoAPI.updateProvider(patientInfo._id, {
                 primary_provider_ref: values.provider[0],
                 primary_provider_id: values.provider[0],
-                primary_provider_name: `${values.provider[1]} ${values.provider[2]}`,
+                primary_provider_firstname: `${values.provider[1]}`,
+                primary_provider_lastname: `${values.provider[2]}`,
             })
             .then(res => {this.updateSuccess(res.data, 4) })
             .catch(err => {this.updateFailed(err) })
@@ -151,7 +153,7 @@ class UpdatePatient extends Component {
                 formElement: <FormTextFocused name="phone" label="New phone number" width={215}/>
             },{
                 rowLabel: "Primary Provider", 
-                fieldContent: `Dr. ${startCase(patientInfo.primary_provider_name)}`, 
+                fieldContent: `Dr. ${startCase(patientInfo.primary_provider_firstname)} ${startCase(patientInfo.primary_provider_lastname)}`, 
                 formElement: <ProviderSelect />
             },{
                 rowLabel: "Patient Status",
@@ -183,7 +185,7 @@ class UpdatePatient extends Component {
                             />
                         </form>
                         <br /> <br /> 
-                        {failed && <ActionFailedDialog text="A problem was encountered and the patient's details were not updated." url="/admin/find"/>}
+                        {failed && <ActionFailedDialog text="A problem was encountered and the patient's details were not updated." cancelUrl="/admin/find"/>}
                     </React.Fragment>
                     :
                     <CallBack />      

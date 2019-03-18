@@ -22,8 +22,7 @@ import { selectConsoleTitle } from '../actions/index';
 
 const styles = theme => ({
     root: {
-      width: "1160px",
-      marginTop: theme.spacing.unit*2,
+    //   width: "1160px",
       marginBottom: "20px",
       padding: "20px 20px 20px 40px"
     },    
@@ -64,9 +63,9 @@ class ReportFull extends Component {
         let episode = this.props.episode
         this.setState({ 
             episode,
+            records: episode.records,
             questions: episode.questions,
-            episodeDataForReport: displayDataCalc(episode.records, episode.num_days, episode.expected_num_records/episode.num_days, episode.num_questions),
-            records: episode.records
+            episodeDataForReport: displayDataCalc(episode.records, episode.num_days, episode.records.length/episode.num_days, episode.questions.length),
         })
     } 
 
@@ -174,7 +173,7 @@ class ReportFull extends Component {
                                                     displayData={episodeDataForReport}
                                                     displayQuestion={index}
                                                     question={question}
-                                                    numDays={this.state.episode.num_days}
+                                                    numDays={episode.num_days}
                                                 />
                                             </div>
 
@@ -186,7 +185,7 @@ class ReportFull extends Component {
                                                 <RenderSubtitle text="Patient Entries (raw data)" />
                                                 <ReportEntriesTable 
                                                     records={records} 
-                                                    numDays={episode.num_days}
+                                                    startTime={episode.start_time}
                                                     index={index}
                                                     question={question}
                                                 />
