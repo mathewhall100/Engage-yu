@@ -24,6 +24,7 @@ mongoose.connect(
   process.env.MONGODB_URI || "mongodb://localhost:27017/medmonccfdb", { useNewUrlParser: true })
   .then((res) => {
      console.log("Connected to Database 'medmonccfdb' Successfully.")
+     console.log("=================================================")
     })
   .catch(() => {
     console.log("Connection to database failed.");

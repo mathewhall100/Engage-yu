@@ -10,7 +10,7 @@ const styles = () => ({
         fontWeight: 500,
       },
     backBtn: {
-        margin: "6px 20px 0 0"
+        margin: "8px 0 0 0"
     }
   });
 
@@ -20,7 +20,7 @@ class PatientDetailsBar extends Component {
     getSpacing = (grid) => { 
         let itemsConcat = ""
         let gridL = 0
-        this.props.items.map((i) => {itemsConcat += i.text})
+        this.props.items.map((i) => { return itemsConcat += i.text})
         if (itemsConcat.length > 70) {gridL = 10}
             else if (itemsConcat.length > 45) {gridL = 8}
             else {gridL = 6}
@@ -29,7 +29,7 @@ class PatientDetailsBar extends Component {
     }
 
     render () {
-        const { classes, items, url } = this.props;
+        const { classes, items } = this.props;
         return (
             <Grid container spacing={24}>
                 <Grid item xs={this.getSpacing("large")}>
@@ -52,7 +52,7 @@ class PatientDetailsBar extends Component {
                 <Grid item xs={this.getSpacing("small")}>  
                     { items.map((i, idx) => {
                         return (
-                            <React.Fragment>      
+                            <React.Fragment key={idx}>      
                                 {i.text === "close" ?
                                     <Typography align="right" className={classes.backBtn} >
                                         <LinkBtn url={i.url} text="close"/>

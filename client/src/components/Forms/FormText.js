@@ -9,7 +9,7 @@ export default class FormText extends Component {
     renderTextField(field) {
         console.log("Field: ", field)
 
-        const {width, label, type, focus, meta: {dirty, touched, error}} = field;
+        const {width, label, type, meta: {dirty, touched, error}} = field;
 
             return (
                 <React.Fragment>
@@ -17,7 +17,7 @@ export default class FormText extends Component {
                     <TextField
                         label={label}
                         {...field.input}   
-                        onBlur={false} 
+                        onBlur={() => {return false}}
                         margin="normal"
                         multiline={field.mutliline === true ? true : false}
                         style={{width: `${width}px`}}

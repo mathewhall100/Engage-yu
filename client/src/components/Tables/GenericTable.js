@@ -14,7 +14,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import ActionBtnGroup from '../Buttons/actionBtnGroup'
 import ActionIconGroup from '../Buttons/actionIconGroup'
 
-import { desc, stableSort, getSorting } from '../../logic/sortFunctions'
+import { stableSort, getSorting } from '../../logic/sortFunctions'
 
 const styles = () =>  ({
     root: {
@@ -74,17 +74,15 @@ class GenericTable extends Component {
             switch (lastCellData[0]) {
                 case "report actions":
                     return <ActionBtnGroup actions={lastCellData[1]} row={row} handleActionBtn={this.handleActionBtn} /> 
-                    break;
                 case "find actions":
                     return <ActionIconGroup _id={row._id} handleActionBtn={this.handleActionBtn} /> 
-                    break;
-                default: return <Typography>{lastCellData[0]}</Typography>;
-            };
+                default: return <Typography>{lastCellData[0]}</Typography>
+            }
         };
 
         const getTableCell = (row, idx) => {
             for (var key in row) {
-                if (key == tableHeadings[idx]) 
+                if (key === tableHeadings[idx]) 
                 return  <CustomTableCell>
                             <Typography>{row[key]}</Typography>
                         </CustomTableCell>
@@ -114,7 +112,7 @@ class GenericTable extends Component {
                                 );
                             }, this)}
                             { lastCellRightAlign && 
-                                <CustomTableCell align="right">
+                                <CustomTableCell align="right" style={{paddingRight: 0}}>
                                     <Typography variant="subtitle2">{lastCellHeading}</Typography>
                                 </CustomTableCell>
                             }
@@ -136,7 +134,7 @@ class GenericTable extends Component {
                                         } )}
 
                                         { lastCellRightAlign && 
-                                            <CustomTableCell align="right">
+                                            <CustomTableCell align="right" style={{paddingRight: 0}}>
                                                 {getLastCell(row)}
                                             </CustomTableCell>
                                         } 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { times, startCase } from 'lodash';
+import { times } from 'lodash';
 import moment from 'moment';
 import { withStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -35,10 +35,10 @@ class ReportEntriesTable extends Component {
 
     getIconColor = (index) => {
         switch (index) {
-            case 0: return "green"; break;
-            case 1: return "#ffc200"; break;
-            case 2: return "orange"; break; 
-            case 3: return "red"; break;
+            case 0: return "green"; 
+            case 1: return "#ffc200"; 
+            case 2: return "orange";  
+            case 3: return "red"; 
             default: return "grey";
         }
     };

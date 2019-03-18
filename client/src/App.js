@@ -14,9 +14,9 @@ import theme from './theme'
 class App extends Component {
 
   componentDidMount() {
-    console.log("fetching user details..." , this.props);
-    const {sub} = this.props.auth.profile
-    {sub ? this.props.fetchUserDetails(sub) : null}
+    //console.log("fetching user details..." , this.props);
+    const {sub} = this.props.auth.profile;
+    if (sub) {this.props.fetchUserDetails(sub)} 
   }
 
   componentWillMount() {
@@ -32,7 +32,7 @@ class App extends Component {
         AuthService.setToken(authResult.idToken); // static method
         AuthService.setProfile(profile); // static method
         loginSuccess(profile);
-        profile.sub ? this.props.fetchUserDetails(profile.sub) : null
+        if (profile.sub) {this.props.fetchUserDetails(profile.sub)}
         
         setTimeout(() => {
         if (this.props.user.role ==='patient') {history.push({ pathname: '/patient' }) }

@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
-import Dashboard from '../components/Dashboard';
-import FindPatient from '../components/Patient/FindPatient';
-import UpdatePatient from '../components/Patient/UpdatePatient';
-import EnrollPatient from '../components/Patient/EnrollPatient';
-import SurveyCreate from '../components/Survey/Survey';
-import Report from '../components/Report/Report';
-import Provider from '../components/Provider/Provider';
-import CareGroup from '../components/CareGroup/CareGroup';
-import NotFound from '../pages/NotFound';
+import Dashboard from '../Dashboard/Dashboard';
+import FindPatient from '../Patient/FindPatient';
+import UpdatePatient from '../Patient/UpdatePatient';
+import EnrollPatient from '../Patient/EnrollPatient';
+import SurveyCreate from '../Survey/Survey';
+import Report from '../Report/Report';
+import Provider from '../Provider/Provider';
+import CareGroup from '../CareGroup/CareGroup';
+import NotFound from '../Pages/NotFound';
 
 export default class AdminRoutes extends Component { 
 

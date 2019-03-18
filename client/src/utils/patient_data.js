@@ -7,7 +7,7 @@ export default {
     },
 
     fetchActive: function(id) {
-        console.log("Axios call made to '/api/patient_data to 'gfetchActive' ", id)
+        console.log("Axios call made to '/api/patient_data to 'fetchActive' ", id)
         return axios.get("/api/patient_data/active/"+id);
     },
 

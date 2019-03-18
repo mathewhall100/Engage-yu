@@ -55,9 +55,9 @@ module.exports = {
             })
             .populate("patient_info_ref") 
             .then(result => {
-                console.log("==========================================")
-                console.log("result: ", result);
-                console.log("==========================================")
+                console.log("Patient_data controller (active) returned ", result.length, "records:")
+                result.map(res => {console.log(">> ", res.patient_info_ref.firstname, res.patient_info_ref.lastname, " + ", res.episodes.length, "episodes")} )
+                //console.log("result: ", result);
                 let resultObj = []
                 if (result) {
                     result.map((patient, index) => {

@@ -50,7 +50,7 @@ const toolbarStyles = theme => ({
 });
 
 
-class EnhancedTableToolbar extends React.Component {  
+class EnhancedTableToolbar extends Component {  
 
     componentDidMount() {
         this.setState({navLinksSwitch: this.props.navLinksSwitch})

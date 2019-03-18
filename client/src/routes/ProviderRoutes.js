@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
-import ProviderAdd from '../components/Provider/ProviderAdd';
-import ProviderFind from '../components/Provider/ProviderFind';
-import ProviderRemove from '../components/Provider/ProviderRemove';
-import ProviderUpdate from '../components/Provider/ProviderUpdate';
-import ProviderUpdateGroup from '../components/Provider/ProviderUpdateGroup';
-import NotFound from '../pages/NotFound';
+import ProviderAdd from '../Provider/ProviderAdd';
+import ProviderFind from '../Provider/ProviderFind';
+import ProviderRemove from '../Provider/ProviderRemove';
+import ProviderUpdate from '../Provider/ProviderUpdate';
+import ProviderUpdateGroup from '../Provider/ProviderUpdateGroup';
+import NotFound from '../Pages/NotFound';
 
 export default class ProviderRoutes extends Component { 
 

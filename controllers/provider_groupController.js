@@ -11,7 +11,9 @@ module.exports = {
             .find({})
             .sort( {"name" : 1} )
             .then(provider_groupList =>  {
-                console.log(provider_groupList)
+                console.log("provider_group controller returned", provider_groupList.length, " provider groups:")
+                console.log(provider_groupList.map(group => {console.log(">> ", group.group_name) }) )
+                //console.log(provider_groupList)
                 res.json(provider_groupList)
             })
             .catch(err => {

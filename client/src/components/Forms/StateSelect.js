@@ -11,11 +11,9 @@ export default class StateSelect extends PureComponent {
         ]
 
         const getStatesList = (states) => {
-            let obj = {}
             let statesList=[]
-            states.map((state, index) => {
-                obj = {id: index, value: state, text: state}
-                statesList.push(obj)
+            statesList = states.map((state, index) => {
+                return {id: index, value: state, text: state}
             })
             return statesList
         }

@@ -11,7 +11,7 @@ import createAppStore from './store'
 import { PersistGate } from 'redux-persist/es/integration/react'
 import App from "./App";
 
-const { persistor, store } = createAppStore()
+const { persistor } = createAppStore()
 const createStoreWithMiddleware = applyMiddleware(ReduxThunk)(createStore);
 
 ReactDOM.render(

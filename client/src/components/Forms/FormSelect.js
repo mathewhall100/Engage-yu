@@ -10,13 +10,13 @@ import DoneIcon from '@material-ui/icons/Done';
 export default class FormSelect extends Component {  
 
     renderSelect(field) {
-        console.log(field)
+        console.log("field: ", field)
 
         const {input, label, width, meta: { error, dirty, touched }, children, ...custom} = field
 
         return (
                 <FormControl style={{width: `${width}px`}}>
-
+                
                     <InputLabel>{label}</InputLabel> 
                     <Select
                         {...input}

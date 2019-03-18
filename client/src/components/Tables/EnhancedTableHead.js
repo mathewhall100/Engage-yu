@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-
 import { withStyles } from '@material-ui/core/styles';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
@@ -26,7 +25,7 @@ class EnhancedTableHead extends PureComponent {
 	
 		render() {
 
-			const { onDeSelectAllClick, order, orderBy, numSelected, displayCheckbox, rows, rowCount } = this.props;
+			const { onDeSelectAllClick, order, orderBy, numSelected, displayCheckbox, rows } = this.props;
 	
 			return (
 				<TableHead>

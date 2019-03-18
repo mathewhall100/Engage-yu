@@ -15,7 +15,7 @@ export default class ProviderSelect extends Component {
         providerAPI.findAllByGroup(localStorage.getItem("provider_group_id"))
         .then(res => {
             console.log("res.data: ", res.data);       
-            res.data.providerList.map((provider, idx) => {
+            providers = res.data.providerList.map(provider => {
                 let val = [
                     provider._id, 
                     provider.firstname,
@@ -24,10 +24,10 @@ export default class ProviderSelect extends Component {
                     provider.provider_group_id,
                     provider.provider_group_name,
                 ]
-                providers.push({
+                return {
                     value: val,
                     text: `Dr ${startCase(provider.firstname)} ${startCase(provider.lastname)}`,
-                })
+                }
             })
             if (providers && providers.length > 0) this.setState({providers: providers})
                 else this.setState({providers: this.defaultProviderList()}) 

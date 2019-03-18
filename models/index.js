@@ -5,6 +5,5 @@ module.exports = {
     Patient_info: require("./patient_info"),
     Provider: require("./provider"),
     Provider_group: require("./provider_group"),
-    Active: require("./active"),
     User: require("./user")
   };

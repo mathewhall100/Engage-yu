@@ -19,12 +19,12 @@ class ProgressBar extends PureComponent {
         times(Math.round(progress*26), (index) => {
             str += "|"
         })
-        console.log("status marker: ", str)
+        //console.log("Status marker: ", str)
         return str
     }
 
     render() {
-        console.log("render progress bar: ", this.props.progress, " ", this.props.compliance)
+        // console.log("Render progress bar: ", this.props.progress, " ", this.props.compliance)
         const { progress, compliance, classes } = this.props
 
         const getProgressBarStyles = (compliance) => {

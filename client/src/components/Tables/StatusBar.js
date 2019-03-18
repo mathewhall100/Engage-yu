@@ -19,7 +19,7 @@ class StatusBar extends PureComponent {
 
     render() {
         
-        console.log("render status bar: ", this.props.adjustedStatus)
+        //console.log("Render status bar: ", this.props.adjustedStatus)
 
         const { adjustedStatus, classes } = this.props
 

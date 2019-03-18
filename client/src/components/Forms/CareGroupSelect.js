@@ -15,14 +15,11 @@ export default class CareGroupSelect extends Component {
         .then(res => {
             console.log("res.data: ", res.data);
             let careGroups = [];
-            res.data.map(group => {
-                careGroups.push({
-                    value: [
-                        group._id,
-                        group.group_name
-                    ],
+            careGroups = res.data.map(group => {
+                return {
+                    value: [group._id, group.group_name],
                     text: `${startCase(group.group_name)}`,
-                })
+                }
             })
             console.log("CG: ", careGroups)
             this.setState({careGroups})

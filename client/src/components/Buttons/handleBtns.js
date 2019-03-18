@@ -3,17 +3,20 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
-const styles = (theme) => ({
+
+const styles = theme => ({
     btn: {
+        height: "32px",
+        marginLeft: "15px",
+        padding: "0 5px",
+        float: "right",color: "#555",
         backgroundColor: "#eeeeee",
         textDecoration: "none",
-        borderRadius: "5px",
         borderColor: theme.palette.primary.main,
-        padding: "5px 8px",
-        marginLeft: "15px",
-        float: "right",
+        borderRadius: "5px",  
         '&:hover': {
             backgroundColor: "#dddddd",
+            color: theme.palette.primary.dark
         },
         '&:disabled': {
             color: 'grey'
@@ -21,22 +24,23 @@ const styles = (theme) => ({
         hover: {},
         disabled: {},
     },
+    btnIcon: {
+        margin: "0 4px 0 0px",
+        position: "relative", top: "4px"
+    }
 
   });
 
 class HandleBtns extends PureComponent {
 
-    handleBtnClick = (btn, _id) => {
-        this.props.handleActionBtns(btn, _id)
-    }
-
     render() {
-        const {classes, btns, _id } = this.props
+        const {classes, btns,  _id } = this.props
         return (
-            btns.map(btn => {
+            btns.map((btn, idx) => {
                 return (
-                    <Button key={btn} size="small" variant="outlined" className={classes.btn} onClick={() => this.handleBtnClick(btn, _id)}>
-                        {btn}
+                    <Button key={idx} size="small" variant="outlined" className={classes.btn} onClick={() => this.props.handleActionBtns(btn.btn, _id)}>
+                        {btn.icon && <span className={classes.btnIcon}>{btn.icon}</span>} 
+                        <span className={classes.btnText}>{btn.btn}</span>
                     </Button>
                 )
             })

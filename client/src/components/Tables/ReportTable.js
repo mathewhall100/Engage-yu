@@ -31,7 +31,7 @@ const CustomTableCell = withStyles(theme => ({
   }))(TableCell);
 
 
-class ReportTable extends React.Component {
+class ReportTable extends Component {
 
     tableCellOpacity = (answer) => {
         if (answer === 0) {return 0;}
@@ -41,10 +41,10 @@ class ReportTable extends React.Component {
 
     tableCellColor = (index) => {
         switch (index) {
-            case 0: return "green"; break;
-            case 1: return "#ffc200"; break;
-            case 2: return "orange"; break; 
-            case 3: return "red"; break;
+            case 0: return "green";
+            case 1: return "#ffc200";
+            case 2: return "orange"; 
+            case 3: return "red";
             default: return "grey";
         }
     };

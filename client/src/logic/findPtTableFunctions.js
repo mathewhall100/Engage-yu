@@ -2,13 +2,9 @@
 
 // **** Create data object ****
 export const createData = (data) => {
-    let counter = 0;
-    let newData = [];
-
-    data.map(d => {
-        counter += 1;
-        let newDataObj = { 
-          id: counter, 
+    return data.map((d, index) => {
+        return {
+          id: index, 
           _id: d._id,
           firstname: d.firstname,
           lastname: d.lastname,
@@ -16,9 +12,7 @@ export const createData = (data) => {
           dob: d.dob, 
           enrolled: d.date_enrolled, 
         };
-        newData.push(newDataObj)
-      })
-    return newData;
+    })
 };
 
 

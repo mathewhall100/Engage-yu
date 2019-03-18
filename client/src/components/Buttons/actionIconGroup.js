@@ -9,11 +9,12 @@ import ContactIcon from '@material-ui/icons/ContactMail';
 
 const styles = (theme) => ({
     actionIcon: {
-        color: "#888888",
+        color: theme.palette.primary.main,
         fontSize: "24px",
         margin: "6px 0 0 20px",
         '&:hover': {
-            color: theme.palette.primary.dark
+            color: theme.palette.primary.dark,
+            cursor: "pointer"
         },
     },
     customWidth: {
@@ -34,13 +35,13 @@ class ActionIconGroup extends PureComponent {
         return (
             <React.Fragment>
                 <Tooltip title="New diary card" classes={{tooltip: classes.customWidth}} >
-                    <DiaryIcon className={classes.actionIcon} onClick={(event) => this.handleBtnClick(event, "new survey", _id)} />
+                    <DiaryIcon className={classes.actionIcon} onClick={(event) => this.handleBtnClick(event, "new diary card", _id)} />
                 </Tooltip>
                 <Tooltip title="View reports" classes={{tooltip: classes.customWidth}} >
-                    <ReportIcon className={classes.actionIcon} onClick={(event) => this.handleBtnClick(event, "view reports", _id)} />
+                    <ReportIcon className={classes.actionIcon} onClick={(event) => this.handleBtnClick(event, "reports", _id)} />
                 </Tooltip>
                 <Tooltip title="Edit patient details" classes={{tooltip: classes.customWidth}} >
-                    <EditIcon className={classes.actionIcon} onClick={(event) => this.handleBtnClick(event, "edit details", _id)} />
+                    <EditIcon className={classes.actionIcon} onClick={(event) => this.handleBtnClick(event, "edit", _id)} />
                 </Tooltip>
                 <Tooltip title="Contact patient" classes={{tooltip: classes.customWidth}} >
                     <ContactIcon className={classes.actionIcon}  onClick={(event) => this.handleBtnClick(event, "contact", _id)} />  

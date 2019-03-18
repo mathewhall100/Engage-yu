@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography'
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import { withStyles, 
+				Typography,
+				ExpansionPanel,
+				ExpansionPanelSummary,
+				ExpansionPanelDetails } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import GenericTable from '../Tables/GenericTable'
 
@@ -21,7 +21,9 @@ class ReportPanel extends Component {
     }
 
 	render() {
-		const { summary, classes } = this.props
+
+		const { summary, tableData, classes } = this.props
+
 		return (
 			<ExpansionPanel className={classes.root}>
 
@@ -30,7 +32,11 @@ class ReportPanel extends Component {
 				</ExpansionPanelSummary>
 			
 				<ExpansionPanelDetails >
-					<GenericTable {...this.props} handleActionBtn={this.handleActionBtn}/>
+					{tableData && tableData.length > 0 ?
+						<GenericTable {...this.props} handleActionBtn={this.handleActionBtn}/>
+						: 
+						<Typography variant="body2" gutterBottom>No diary cards to display</Typography>
+					}
 				</ExpansionPanelDetails>
 
 			</ExpansionPanel>

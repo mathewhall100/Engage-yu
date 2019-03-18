@@ -16,7 +16,7 @@ export const fetchUserDetails = (sub) => {
         
         userRole = userInfo.role ? userInfo.role : localStorage.getItem('role');
         userID = userInfo.id ?  userInfo.id : localStorage.getItem('userID');
-/*         console.log("User id  : " , userID); */
+        //console.log("User id  : " , userID); 
     }, (error) => console.log(error)).then( () => {
         //console.log("user data : ", userID)
         const url = userRole === 'patient' ? `/api/patient_info/find/${userID}` : `/api/provider/${userID}`

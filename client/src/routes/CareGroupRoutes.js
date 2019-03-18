@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
-import CareGroupAdd from '../components/CareGroup/CareGroupAdd';
-import CareGroupFind from '../components/CareGroup/CareGroupFind';
-import CareGroupRemove from '../components/CareGroup/CareGroupRemove';
-import CareGroupUpdate from '../components/CareGroup/CareGroupUpdate';
-import NotFound from '../pages/NotFound';
+import CareGroupAdd from '../CareGroup/CareGroupAdd';
+import CareGroupFind from '../CareGroup/CareGroupFind';
+import CareGroupRemove from '../CareGroup/CareGroupRemove';
+import CareGroupUpdate from '../CareGroup/CareGroupUpdate';
+import NotFound from '../Pages/NotFound';
 
 export default class CareGroupRoutes extends Component { 
 

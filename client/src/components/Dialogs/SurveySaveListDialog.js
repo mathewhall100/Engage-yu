@@ -34,7 +34,7 @@ class SurveySaveSuccessDialog extends React.Component {
 		const { questions } = this.props
 		const listObj = {
 			list_name: values.name,
-			date_created: new Date,
+			date_created: new Date(),
 			list_questions: [...questions]
 		}
 		console.log("listObj: ", listObj)

@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { authActions } from '../reducers/modules/auth';
-import * as AuthService from '../services/AuthService';
-
+//import { authActions } from '../reducers/modules/auth';
+//import * as AuthService from '../services/AuthService';
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
-
-import Console from '../containers/Console';
-import Appbar from '../containers/AppBar';
-
+import Console from '../Console/Console';
+import Appbar from '../AppBar';
 
 const styles = theme => ({
     root: { 
@@ -30,7 +27,7 @@ class Admin extends Component {
     }
 
     // Check if logged in & redirect to error page if not
-    checkLoggedIn = () => {  !this.props.auth.isAuthenticated ? this.setState({redirect : true}) : null }
+    checkLoggedIn = () => {  this.setState({redirect : !this.props.auth.isAuthenticated ? true : this.state.redirect}) }
 
     render () {
 

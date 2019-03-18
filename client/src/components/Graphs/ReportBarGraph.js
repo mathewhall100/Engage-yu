@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {BarChart, Bar, XAxis, YAxis, Legend, ResponsiveContainer} from 'recharts';
 
 
-class ReportBarGraph extends React.Component {
+class ReportBarGraph extends Component {
 
     displayGraphCalc = (data, question) => {
         console.log("graphdataIn: ", data)

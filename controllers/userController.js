@@ -5,13 +5,14 @@ module.exports = {
 
     // fetch user id from 'sub'
     userLookup: function(req, res) { 
-        console.log("user controller called to 'userLookup' ", req.params.id);
+        console.log("User controller called to 'userLookup' ", req.params.id);
         let userID = req.params.id.replace("%7C", "|")
         // if(req.user) {
             db.User
             .find( {sub: userID} )
             .then(user => {
-                console.log(user);
+                console.log("User controller (userlookup) returned user: ")
+                console.log(">> ", user);
                 res.send(user)
             })
             .catch(err => {

@@ -50,16 +50,15 @@ export const displayGraphCalc = (data, question) => {
     //console.log("graphdataIn: ", data)
 
     let array = [];
-    data.map((d, index) => {
-
-        array.push({
+    array = data.map(d => {
+        return {
             time: `${d.time.slice(0, 2)}:${d.time.slice(-2)}`,
             ans1: d.questions[question].answers[0],
             ans2: d.questions[question].answers[1],
             ans3: d.questions[question].answers[2],
             ans4: d.questions[question].answers[3],
             ans5: d.questions[question].answers[4],
-        })
+        }
     })
     //console.log("graphdataout: ", array)
     return array;
