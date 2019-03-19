@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 
-import Homepage from '../Pages/Home';
-import Admin from '../Pages/Admin';
-import NotFound from '../Pages/NotFound';
-import NotAuthenticated from '../Pages/NotAuthenticated';
+import Homepage from '../views/Home';
+import Admin from '../views/Admin';
+import NotFound from '../views/NotFound';
+import NotAuthenticated from '../views/NotAuthenticated';
 
 class Routes extends Component { 
     render(){

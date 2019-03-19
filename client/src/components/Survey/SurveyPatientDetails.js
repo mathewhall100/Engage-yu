@@ -1,0 +1,43 @@
+import React, { PureComponent } from 'react'
+import { connect } from 'react-redux';
+import { startCase } from 'lodash';
+import PropTypes from 'prop-types';
+import Card from '@material-ui/core/Card'
+import DetailsBar from '../UI/detailsBar'
+
+
+class SurveyPatientDetails extends PureComponent {
+
+    render () {
+
+        const patientDetails = [
+            {caption: "For patient", text: `${startCase(this.props.patientInfo.firstname)} ${startCase(this.props.patientInfo.lastname)}`},
+            {caption: "Hospital number", text: this.props.patientInfo.hospital_id},
+            {caption: "DOB", text: this.props.patientInfo.dob},
+            {caption: "btn", text: "close", url: "find"}
+        ];
+
+        return(
+            <Card style={{padding: "0 20px 0 40px"}}>
+                <br />
+                <DetailsBar items={patientDetails} />
+                <br />
+            </Card>
+        )
+    }
+
+}
+
+SurveyPatientDetails.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => {
+    //console.log("State : ", state);
+    return {
+        patientInfo: state.reportPatientData.reportPatientInfo,
+    }
+};
+
+SurveyPatientDetails = connect(mapStateToProps)(SurveyPatientDetails)
+export default SurveyPatientDetails

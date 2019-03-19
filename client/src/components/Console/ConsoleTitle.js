@@ -1,0 +1,39 @@
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withStyles, Typography } from '@material-ui/core'
+
+const styles = (theme) => ({
+    consoleTitle: {
+		fontWeight: 500,
+		paddingLeft: "8px",
+		[theme.breakpoints.up('lg')]: {
+			paddingTop: "10px",
+		}, 
+	},
+})
+
+class ConsoleTitle extends Component {
+
+    render () {
+
+        const { classes } = this.props
+
+        if (!this.props.consoleTitle) {
+            return <div> &nbsp;Dashboard</div>;
+        }
+
+        return (
+            <Typography variant="h5" className={classes.consoleTitle}>
+                {this.props.consoleTitle.title}
+            </Typography>
+        );
+    }
+}
+
+function mapStateToProps(state) {
+    return {
+        consoleTitle: state.consoleTitle,
+    };
+}   
+
+export default connect(mapStateToProps)(withStyles(styles) (ConsoleTitle));
