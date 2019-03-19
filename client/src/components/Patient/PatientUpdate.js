@@ -9,7 +9,7 @@ import FormTextFocused from '../UI/Forms/formTextFocused';
 import ProviderSelect from '../UI/Forms/FormProviderSelect'
 import FormRadio from '../UI/Forms/formRadio'
 import DialogActionFailed from '../UI/Dialogs/dialogActionFailed'
-import DetailsBar from '../UI/detailsBar';
+import PatientDetailsBar from './PatientDetailsBar';
 import FormUpdateUnit from '../UI/Forms/formUpdateUnit'
 import CallBack from '../UI/callback'
 import patient_infoAPI from "../../utils/patient_info.js";
@@ -172,8 +172,8 @@ class PatientUpdate extends Component {
 
                 {patientInfo && patientInfo._id ? 
                     <React.Fragment>
-                        <DetailsBar patient={patientInfo} />
-                        <Typography variant="title" gutterBottom>Click 'update' next to the information you want to edit.</Typography>
+                        <PatientDetailsBar patient={patientInfo} />
+                        <Typography variant="subtitle1" gutterBottom>Click 'update' next to the information you want to edit.</Typography>
                         <br /> <br />
                         <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
                             <FormUpdateUnit 

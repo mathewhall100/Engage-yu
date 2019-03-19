@@ -1,7 +1,6 @@
-import React, { PureComponent }  from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles, Button} from '@material-ui/core';
-
 
 const styles = theme => ({
     root: { 
@@ -21,36 +20,35 @@ const styles = theme => ({
         hover: {},
         disabled: {},
     },
-})
+});
 
-class BtnSmall extends PureComponent {
 
-    handleBtnClick = (index) => {
-        //console.log("handleBtnClick: ", text)
-        this.props.handleBtn(index)
-    }
+const BtnSmall = (props) =>  {
 
-    render() {
-        const { classes, type, text, disabled, index } = this.props
-        return (
-            <Button 
-                type={type} 
-                variant="outlined"
-                size="small" 
-                className={classes.root} 
-                disabled={disabled} 
-                onClick={() => type === "submit" ? null : this.handleBtnClick(index)}
-            >
-                {text}
-            </Button>
-        )
-    }
-}
+    const handleBtnClick = (index) => {props.handleBtn(index)};
+    const { classes, index, text, type="button", disabled=false } = props;
 
+    return (
+        <Button 
+            type={type} 
+            variant="outlined"
+            size="small" 
+            className={classes.root} 
+            disabled={disabled} 
+            onClick={() => type === "submit" ? null : handleBtnClick(index)}
+        >
+            {text}
+        </Button>
+    );
+};
 
 BtnSmall.propTypes = {
     classes: PropTypes.object.isRequired,
-  
+    type: PropTypes.string,
+    text: PropTypes.string.isRequired,
+    index: PropTypes.number.isRequired,
+    handleBtnClick: PropTypes.func,
+    disabled: PropTypes.bool,
 };
   
 export default withStyles(styles)(BtnSmall);

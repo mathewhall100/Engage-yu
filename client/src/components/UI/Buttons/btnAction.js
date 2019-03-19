@@ -1,7 +1,6 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles, Button} from '@material-ui/core';
-
 
 const styles = (theme) => ({
      btn: {
@@ -33,34 +32,33 @@ const styles = (theme) => ({
         hover: {},
         disabled: {}
     }
-})
+});
 
 
-class BtnAction extends PureComponent {
+const BtnAction = (props) => {
 
-    handleClick = (index) => {
-        this.props.handleAction(index)
-    }
+    const handleClick = (index) => {props.handleAction(index)};
+    const { classes, text, type="button", disabled=false, index=null } = props;
 
-    render() {
-        const { classes, type, disabled, index, text } = this.props
-        return (
-            <Button 
-                size="small"
-                type={type} 
-                className={text==="cancel" || text==="clear" ? classes.cancelBtn : classes.btn} 
-                onClick={() => type==="submit" ? null : this.handleClick(index) }
-                disabled={disabled}
-            >
-                {text}
-            </Button>
-        )
-    }
-}
+    return  (
+        <Button 
+            size="small"
+            type={type} 
+            className={text==="cancel" || text==="clear" ? classes.cancelBtn : classes.btn} 
+            onClick={() => type==="submit" ? null : handleClick(index) }
+            disabled={disabled}
+        >
+            {text}
+        </Button>
+    );
+};
 
 BtnAction.propTypes = {
-    classes: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired, 
+    text: PropTypes.string.isRequired,
+    type: PropTypes.string,
+    disabled: PropTypes.bool,
+    handleAction: PropTypes.func,
+};
   
-  };
-  
-  export default  withStyles(styles)(BtnAction);
+export default  withStyles(styles)(BtnAction);

@@ -1,7 +1,6 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles, Button } from '@material-ui/core';
-
 
 const styles = () => ({
     cancelBtn: {
@@ -34,41 +33,41 @@ const styles = () => ({
         hover: {},
         disabled: {}
     },
+});
 
-  });
 
-class BtnActionGroup extends PureComponent {
+const BtnActionGroup = (props) => {
 
-    handleActionBtn = (btn, row) => {
-        this.props.handleActionBtn(btn, row)
-    }
+    const handleActionBtn = (btn, row) => {props.handleActionBtn(btn, row)};
 
-    render() {
-        const { row, actions, classes, disabled } = this.props
-        const btns = ["cancel", "archive", "view"]
-        return (
-            <span>
-                {btns.map(btn => {
-                    return (
-                        actions.includes(btn) && 
-                            <Button key={btn}
-                                size="small" 
-                                className={btn==="cancel" ? classes.cancelBtn : classes.otherBtn} 
-                                onClick={() => this.handleActionBtn(btn, row)}
-                                disabled={disabled}
-                            >
-                                {btn}
-                            </Button>
-                    )
-                }) }
-            </span>
-        )
-    }
-}
+    const { classes, row, actions, disabled=false } = props;
+    const btns = ["cancel", "archive", "view"];
+
+    return (
+        <span>
+            {btns.map(btn => {
+                return (actions.includes(btn) && 
+                    <Button key={btn}
+                        type="button"
+                        size="small" 
+                        className={btn==="cancel" ? classes.cancelBtn : classes.otherBtn} 
+                        onClick={() => handleActionBtn(btn, row)}
+                        disabled={disabled}
+                    >
+                        {btn}
+                    </Button>
+                )      
+            }) }
+        </span>
+    );
+};
 
 BtnActionGroup.propTypes = {
-    classes: PropTypes.object.isRequired,
+    classes: PropTypes.object.isRequired, 
+    row: PropTypes.object.isRequired,
+    actions: PropTypes.array.isRequired,
+    disabled: PropTypes.bool,
+    handleActionBtn: PropTypes.func.isRequired,
+};
   
-  };
-  
-  export default  withStyles(styles)(BtnActionGroup);
+export default  withStyles(styles)(BtnActionGroup);

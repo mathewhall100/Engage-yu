@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles, Button, Tooltip} from '@material-ui/core';
 
@@ -20,41 +20,37 @@ const styles = (theme) => ({
         hover: {},
         disabled: {},
     },
+});
 
-  });
 
-class BtnTooltip extends PureComponent {
+const BtnTooltip = (props) => {
 
-    handleBtnClick = (btn) => {
-        //console.log("handleBtnClick: ", btn)
-        this.props.handleActionBtns(btn)
-    }
+    const handleBtnClick = (btn) => {this.props.handleActionBtns(btn)};
+    const { classes, btns } = props;
 
-    render() {
-        const {classes, btns } = this.props
-        return (
-            btns.map((btn, idx) => {
-                return (
-                    <Tooltip key={idx} title={btn.tooltip} enterDelay={300}>
-                        <Button 
-                            key={idx} 
-                            size="small" 
-                            variant="outlined" 
-                            className={classes.btn} 
-                            onClick={() => this.handleBtnClick(btn.text)}
-                            >
-                                {btn.text}
-                        </Button>
-                    </Tooltip>
-                )
-            })
-        )
-    }
-}
+    return (
+        btns.map((btn, idx) => {
+            return (
+                <Tooltip key={idx} title={btn.tooltip} enterDelay={300}>
+                    <Button 
+                        key={idx} 
+                        size="small" 
+                        variant="outlined" 
+                        className={classes.btn} 
+                        onClick={() => handleBtnClick(btn.text)}
+                        >
+                            {btn.text}
+                    </Button>
+                </Tooltip>
+            );
+        })
+    )
+};
 
 BtnTooltip.propTypes = {
     classes: PropTypes.object.isRequired,
+    btns: PropTypes.array.isRequired,
   
-  };
+};
   
-  export default  withStyles(styles)(BtnTooltip);
+export default  withStyles(styles)(BtnTooltip);

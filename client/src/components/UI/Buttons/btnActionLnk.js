@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { withStyles, Button } from '@material-ui/core';
@@ -31,35 +31,32 @@ const styles = (theme) => ({
         hover: {},
         disabled: {}
     }
-})
+});
 
 
-class BtnActionLink extends PureComponent {
+const BtnActionLink = (props) => {
 
-    handleActionBtn = (index) => {
-        this.props.handleActionBtn(index)
-    }
+    const { classes, disabled=false, url, text } = props;
 
-    render() {
-        const { classes, disabled, url, text } = this.props
-        return (
-            <Button 
-                size="small"
-                type="button"
-                className={text==="cancel" ? classes.cancelBtn : classes.btn} 
-                component={Link}
-                to={url}
-                disabled={disabled}
-            >
-                {text}
-            </Button>
-        )
-    }
-}
+    return (
+        <Button 
+            size="small"
+            type="button"
+            className={text==="cancel" ? classes.cancelBtn : classes.btn} 
+            component={Link}
+            to={url}
+            disabled={disabled}
+        >
+            {text}
+        </Button>
+    );
+};
 
 BtnActionLink.propTypes = {
     classes: PropTypes.object.isRequired,
+    disabled: PropTypes.bool,
+    url: PropTypes.string.isRequired,
+    text: PropTypes.string.isRequired
+};
   
-  };
-  
-  export default  withStyles(styles)(BtnActionLink);
+export default  withStyles(styles)(BtnActionLink);

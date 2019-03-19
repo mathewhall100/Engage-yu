@@ -12,7 +12,7 @@ import patient_dataAPI from "../../utils/patient_data.js";
 import { durations, startDates, frequencies, timeMargins, reminders, sliderTimes24HR, createStartDate, createRecordsArray, createSurveyQuestions} from './surveyLogic'
 import SurveyCustomQuestionTable from './SurveyCustomQuestionTable';
 import SurveyPanelExpandButton from './SurveyPanelExpandButton'
-import SurveyQuestionPanel from './SurveyCustomQuestionPanel';
+import SurveyQuestionPanel from './SurveyQuestionPanel';
 import SurveyFormSlider from './SurveyFormSlider';
 import SurveyFormRadio from './SurveyFormRadio';
 import SurveyDatePicker from './SurveyFormDatePicker';
@@ -335,10 +335,9 @@ class SurveyForm extends Component {
                             <span style={{width: "500px"}}>
                                 {selectedQuestions ? 
                                     <React.Fragment>
-                                        {selectedQuestions.map(question =>
-                                            <div style={{marginTop: "8px"}}>
+                                        {selectedQuestions.map((question, idx) =>
+                                            <div key={idx}style={{marginTop: "8px"}}>
                                                 <SurveyQuestionPanel
-                                                    key={question._id}  
                                                     question = {question}
                                                     checked={true}
                                                     handleCheckBoxClick={this.handleQuestionCheckBoxClick}

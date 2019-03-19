@@ -14,7 +14,6 @@ const styles = () => ({
 
 class DetailsBar extends Component {
 
-
     getSpacing = (grid) => { 
         let itemsConcat = ""
         let gridL = 0
@@ -70,6 +69,7 @@ class DetailsBar extends Component {
 
 DetailsBar.propTypes = {
     classes: PropTypes.object.isRequired,
+    items: PropTypes.array.isRequired,
   };
   
   DetailsBar = withStyles(styles)(DetailsBar)

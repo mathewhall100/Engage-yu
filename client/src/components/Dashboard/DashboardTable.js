@@ -235,8 +235,14 @@ class DashboardTable extends Component {
                                 }
                             </TableBody>
                             : 
-                            <Typography variant="subtitle1" style={{margin: "40px 0"}}>No active surveys to display at this time.</Typography>
-                        }
+                            <TableBody>
+                                <TableRow>   
+                                    <CustomTableCell>
+                                        <Typography variant="subtitle1" style={{margin: "40px 0"}}>No active surveys to display at this time.</Typography>
+                                    </CustomTableCell>
+                                </TableRow>
+                            </TableBody>
+                        }   
                     </Table>
                 </div>
 

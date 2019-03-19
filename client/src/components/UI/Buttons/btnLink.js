@@ -1,8 +1,7 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { withStyles, Button} from '@material-ui/core';
-
 
 const styles = (theme) => ({
     btn: { 
@@ -21,21 +20,22 @@ const styles = (theme) => ({
         hover: {},
         disabled: {},
     },
-  });
+});
 
-class BtnLink extends PureComponent {
 
-    render() {
-        const {classes, url, text } = this.props
-        return (
-            <Button variant="outlined" size="small" className={classes.btn} component={Link} to={url}>{text}</Button>
-        )
-    }
-}
+const BtnLink = (props) => {
+
+    const {classes, url, text } = props;
+
+    return (
+        <Button variant="outlined" size="small" className={classes.btn} component={Link} to={url}>{text}</Button>
+    );
+};
 
 BtnLink.propTypes = {
     classes: PropTypes.object.isRequired,
+    url: PropTypes.string.isRequired,
+    text: PropTypes.string.isRequired,
+};
   
-  };
-  
-  export default  withStyles(styles)(BtnLink);
+export default  withStyles(styles)(BtnLink);
