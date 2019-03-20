@@ -26,12 +26,10 @@ const styles = theme => ({
         margin: "0 4px 0 0px",
         position: "relative", top: "4px"
     }
-
 });
 
 
 const BtnHandleGroup = (props) => {
-
     const {classes, btns,  _id } = props;
 
     return (

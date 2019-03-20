@@ -22,9 +22,10 @@ const styles = (theme) => ({
         hover: {},
         disabled: {},
     },
-})
+});
 
 class DialogGeneric extends Component {
+
 	state = {
 		open: true
 	};
@@ -33,7 +34,6 @@ class DialogGeneric extends Component {
 		const { classes, title, text} = this.props;
 
 		return (
-			
 			<Dialog
 				open={this.state.open}
 				disableBackdropClick 
@@ -43,22 +43,21 @@ class DialogGeneric extends Component {
 					<div className={classes.root}>
 						<DialogTitle id="dialog-title">{title}</DialogTitle>
 							<DialogContent>
-								<Typography variant="subtitle1">
-									{text}
-								</Typography>
+								<Typography variant="subtitle1">{text}</Typography>
 							</DialogContent>
 						<DialogActions>
 							<Button color="primary" className={classes.btn}onClick={() => this.setState({ open: false }) }>close</Button> 
 						</DialogActions>	
 					</div>
 			</Dialog>
-		
 		);
-	}
-}
+	};
+};
 
 DialogGeneric.propTypes = {
 	fullScreen: PropTypes.bool.isRequired,
+	title: PropTypes.string,
+	text: PropTypes.string,
 };
 
 export default withStyles(styles)(DialogGeneric);

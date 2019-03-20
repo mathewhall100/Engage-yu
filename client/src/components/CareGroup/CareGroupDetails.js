@@ -5,10 +5,10 @@ import { bindActionCreators } from 'redux';
 import { startCase } from 'lodash';
 import moment from 'moment';
 import { withStyles, Typography, Card, Grid } from '@material-ui/core';
-import TableGeneric from '../UI/Tables/tableGeneric'
-import BtnSmall from '../UI/Buttons/btnSmall'
-import BtnHandleGroup from '../UI/Buttons/btnHandleGroup'
-import HrStyled from '../UI/hrStyled'
+import TableGeneric from '../UI/Tables/tableGeneric';
+import BtnSmall from '../UI/Buttons/btnSmall';
+import BtnHandleGroup from '../UI/Buttons/btnHandleGroup';
+import HrStyled from '../UI/hrStyled';
 import Callback from '../UI/callback';
 import providerAPI from "../../utils/provider.js";
 import provider_groupAPI from "../../utils/provider_group.js";
@@ -33,18 +33,17 @@ class CareGroupDetails extends Component {
         .then(res => {
             console.log("res.data: ", res.data);
             this.props.careGroupAction(res.data);
-            this.fetchProvidersByGroup(this.props.careGroupId)
+            this.fetchProvidersByGroup(this.props.careGroupId);
         })
         .catch(err => {
             console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
             console.log(err);
         })
-    };
-
+    }
 
     state = {
         providerList: [],
-    }
+    };
 
     fetchProvidersByGroup(careGroupId) {
         let providerList = [];
@@ -66,41 +65,40 @@ class CareGroupDetails extends Component {
                 console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
                 console.log(err);
         })
-    };
-
+    }
 
     // Event handlers
     handleAction = (btn) => {
         switch(btn) {
             case "close":
-                this.props.handleClose()
+                this.props.handleClose();
                 break;
             case "remove care group":
                 this.props.history.push({
                     pathname: '/admin/caregroup/remove',
                     state: {careGroupId: this.props.careGroup._id}
-                })
+                });
                 break;
             case "edit care group":
                 this.props.history.push({
                     pathname: '/admin/caregroup/update',
                     state: {careGroupId: this.props.careGroup._id}
-                })
+                });
                 break;
             default: return null
-        }
+        };
     }
 
     handleShowProviders = () => {
         /// console.log("handleShowProviders")
-        this.setState({showProviders: this.state.showProviders ? false : true})
-    };
+        this.setState({showProviders: this.state.showProviders ? false : true});
+    }
 
 
     render () {
+        const { classes, careGroup} = this.props;
+        const { showProviders, providerList} = this.state;
 
-        const { showProviders, providerList} = this.state
-        const { classes, careGroup} = this.props
         const infoH = (careGroup) => [
             {grid: 3, caption: "Added by", info: `Dr. ${startCase(careGroup.added_by_name)}`},
             {grid: 2, caption: "Date added", info: moment(careGroup.date_added).format("MMM Do YYYY")},
@@ -116,6 +114,7 @@ class CareGroupDetails extends Component {
 
                 {careGroup ? 
                     <React.Fragment>
+
                         <Grid container spacing={24}>
                             <Grid item xs={6}>
                                 <Typography variant="caption">Care group</Typography>
@@ -172,10 +171,8 @@ class CareGroupDetails extends Component {
                             null
                         }
 
-                        <br />        
-                        <HrStyled />
-                        <br />
-
+                        <br /> <HrStyled /> <br />    
+                       
                         <BtnHandleGroup 
                             btns={btns} 
                             _id={careGroup._id}
@@ -183,8 +180,8 @@ class CareGroupDetails extends Component {
                         />   
 
                     </React.Fragment>
-
-                    : <Callback /> 
+                    : 
+                    <Callback /> 
                 }
 
             </Card>  
@@ -194,16 +191,17 @@ class CareGroupDetails extends Component {
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({ careGroupAction }, dispatch);
-}
+};
+
 const mapStateToProps = (state) => {
     //console.log("State : ", state);
     return {
         careGroup: state.careGroup,
         user: state.user
     }
-};
+}
 
-CareGroupDetails = withRouter(CareGroupDetails)
-CareGroupDetails = withStyles(styles)(CareGroupDetails)
-CareGroupDetails = connect(mapStateToProps, mapDispatchToProps)(CareGroupDetails)
-export default connect(null, mapDispatchToProps) (CareGroupDetails)
+CareGroupDetails = withRouter(CareGroupDetails);
+CareGroupDetails = withStyles(styles)(CareGroupDetails);
+CareGroupDetails = connect(mapStateToProps, mapDispatchToProps)(CareGroupDetails);
+export default connect(null, mapDispatchToProps) (CareGroupDetails);

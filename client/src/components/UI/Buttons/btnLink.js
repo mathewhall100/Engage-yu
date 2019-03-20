@@ -24,7 +24,6 @@ const styles = (theme) => ({
 
 
 const BtnLink = (props) => {
-
     const {classes, url, text } = props;
 
     return (

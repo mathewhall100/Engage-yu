@@ -17,7 +17,6 @@ class TableEnhancedTableHead extends PureComponent {
 	};
 	
 		render() {
-
 			const { onDeSelectAllClick, order, orderBy, numSelected, displayCheckbox, rows } = this.props;
 	
 			return (
@@ -67,9 +66,11 @@ class TableEnhancedTableHead extends PureComponent {
 	TableEnhancedTableHead.propTypes = {
 		numSelected: PropTypes.number.isRequired,
 		onRequestSort: PropTypes.func.isRequired,
+		onDeSelectAllClick: PropTypes.func.isRequired,
 		order: PropTypes.string.isRequired,
 		orderBy: PropTypes.string.isRequired,
-		rowCount: PropTypes.number.isRequired,
+		rows: PropTypes.array.isRequired,
+		displayCheckbox: PropTypes.bool.isRequired,
 	};
 
 	export default TableEnhancedTableHead;

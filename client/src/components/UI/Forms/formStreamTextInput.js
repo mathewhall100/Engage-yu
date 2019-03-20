@@ -1,14 +1,15 @@
 import React, { PureComponent } from 'react';
 import { Field } from 'redux-form';
-import TextField from '@material-ui/core/TextField'
+import PropTypes from 'prop-types';
+import TextField from '@material-ui/core/TextField';
 
 
 export default class FormStreamTextInput extends PureComponent {  
 
-     onChange = (value) => {
-         console.log("onchange: ", value)
-         this.props.handleChange(value)
-     }
+    onChange = (value) => {
+         //console.log("onchange: ", value);
+         this.props.handleChange(value);
+    };
 
     renderTextField(field) {
         const {name, label, width, input, custom} = field;
@@ -20,19 +21,26 @@ export default class FormStreamTextInput extends PureComponent {
                 {...custom}
                 style={{width: `${width}px`}}
             />
-        )
-    };
+        );
+    }
 
     render () {
+        const { name, label, width="250" } = this.props;
         return (
             <Field 
-                name={this.props.name}
-                label={this.props.label}
-                width={this.props.width ? this.props.width : "250"}
+                name={name}
+                label={label}
+                width={width}
                 component={this.renderTextField}
                 onChange={(event, value) => this.onChange(value)}
                 autoComplete="off"
             />
-        )
+        );
     }
 }
+
+FormStreamTextInput.PropTypes = {
+    name: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    width: PropTypes.string.isRequired,
+};

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Field } from 'redux-form';
+import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField'
 
 
@@ -28,18 +29,25 @@ export default class FormBox extends Component {
                     </div>
 
                 </React.Fragment>
-            )
-        };
+            );
+        }
 
     render () {
+        const { name, label, rows } = this.props
         return (
             <Field 
-                name={this.props.name}
-                label={this.props.label}
-                rows={this.props.rows}
+                name={name}
+                label={label}
+                rows={rows}
                 component={this.renderTextField}
                 autoComplete="off"
             />
-        )
+        );
     }
+}
+
+FormBox.PropTypes = {
+    name: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    rows: PropTypes.string.isRequired,
 }

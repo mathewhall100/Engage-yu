@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import { reduxForm } from 'redux-form';
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 import { withStyles, Grid, Typography} from '@material-ui/core';
 import SmallBtn from '../Buttons/btnSmall';
 
@@ -19,7 +19,7 @@ const styles = (theme) => ({
     failedText: {
         position: "relative", top: "6px"
     },
-})
+});
 
 
 class FormUpdateUnit extends Component {
@@ -34,7 +34,7 @@ class FormUpdateUnit extends Component {
         showEditField: [],
         updFailed: false,
         updSuccess: false
-    }
+    };
 
     updateSuccess = () => {
         this.setState({
@@ -43,7 +43,7 @@ class FormUpdateUnit extends Component {
             updSuccess: true
         })
         this.props.reset('updateForm');  // reset the form fields to empty (requires form name)
-    }
+    };
 
     updateFailed = () => {
         this.setState({
@@ -52,7 +52,7 @@ class FormUpdateUnit extends Component {
             updSuccess: false
         })
         this.props.reset('updateForm');  // reset the form fields to empty (requires form name)
-    }
+    };
 
     // Event handlers
     handleUpdate = (index) => {
@@ -65,7 +65,7 @@ class FormUpdateUnit extends Component {
             showEditField: tempArray,
             editFieldActive: true,
         }, () => {this.props.outcomeReset()} )
-    } 
+    }; 
     
     handleCancel = () => {
         this.setState({
@@ -75,22 +75,22 @@ class FormUpdateUnit extends Component {
             updSuccess: false
         })
         this.props.reset('updateForm');  // reset the form fields to empty (requires form name)
-    }
+    };
 
     handleTryAgain = () => {
         this.setState({updFailed: false})
-    }
+    };
 
     render() {
-    const { classes, submitting, pristine, formFields } = this.props
-    const { showEditField, editFieldActive, updFailed, updSuccess } = this.state
+        const { classes, submitting, pristine, formFields } = this.props;
+        const { showEditField, editFieldActive, updFailed, updSuccess } = this.state;
 
-    const getPositioning = (element) => {
-        console.log(element)
-        if (element.includes("Select")) {return {top: "-12px"}}
-        else if (element.includes("Radio")) {return {top: "-2px"}}
-        else return {top: "-28px"}
-    }
+        const getPositioning = (element) => {
+            console.log(element)
+            if (element.includes("Select")) {return {top: "-12px"}}
+            else if (element.includes("Radio")) {return {top: "-2px"}}
+            else return {top: "-28px"}
+        };
 
 
         return (
@@ -148,14 +148,21 @@ class FormUpdateUnit extends Component {
                 }) }
 
             </React.Fragment>
-        )
+        );
     }
 }
 
+FormUpdateUnit.propTypes = {
+    classes: PropTypes.object.isRequired,
+    submitting: PropTypes.bool, 
+    pristine: PropTypes.bool,
+    formFields: PropTypes.array.isRequired
+};
+
 const formData = {
     form: 'updateForm', //unique identifier for this form      
-}
+};
 
-FormUpdateUnit = reduxForm(formData)(FormUpdateUnit)
-FormUpdateUnit = withStyles(styles)(FormUpdateUnit)
-export default FormUpdateUnit
+FormUpdateUnit = reduxForm(formData)(FormUpdateUnit);
+FormUpdateUnit = withStyles(styles)(FormUpdateUnit);
+export default FormUpdateUnit;

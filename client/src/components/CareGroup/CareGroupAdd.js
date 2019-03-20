@@ -5,13 +5,13 @@ import { reduxForm } from 'redux-form';
 import moment from 'moment';
 import { startCase } from 'lodash';
 import { withStyles, Card, Grid, Typography } from '@material-ui/core';
-import BtnActionLnk from '../UI/Buttons/btnActionLnk'
-import BtnActionBtn from '../UI/Buttons/btnAction'
-import FormTextFocused from '../UI/Forms/formTextFocused'
-import DialogGeneric from '../UI/Dialogs/dialogGeneric'
-import { selectConsoleTitle } from '../../actions/index'
+import BtnActionLnk from '../UI/Buttons/btnActionLnk';
+import BtnActionBtn from '../UI/Buttons/btnAction';
+import FormTextFocused from '../UI/Forms/formTextFocused';
+import DialogGeneric from '../UI/Dialogs/dialogGeneric';
+import { selectConsoleTitle } from '../../actions/index';
 import provider_groupAPI from "../../utils/provider_group.js";
-import { validateName } from '../../logic/formValidations'
+import { validateName } from '../../logic/formValidations';
 
 const styles = () => ({
     root: {
@@ -24,7 +24,7 @@ class CareGroupAdd extends Component {
 
     componentDidMount() {
         this.props.selectConsoleTitle({title: "Add New Care Group"})
-    };
+    }
     
     state = {
         addFailed: false,
@@ -43,11 +43,11 @@ class CareGroupAdd extends Component {
             group_name: values.caregroup
         })
         .then(res => {
-            console.log("res.data: ", res.data)
+            console.log("res.data: ", res.data);
             this.setState({
                 newCareGroup: values.caregroup,
                 addSuccess: true
-            })
+            });
         })
         .catch(err => {
             console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
@@ -57,41 +57,29 @@ class CareGroupAdd extends Component {
                 addFailed: true
             }); 
         })
-    };
+    }
 
  
     render() {
-
         const { handleSubmit, classes, pristine, submitting } = this.props;
         const { newCareGroup, addSuccess, addFailed } = this.state;
 
         return (
             <Card className={classes.root}>
                 <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
-                        <Grid container spacing={24}>
 
+                    <Grid container spacing={24}>
                         <Grid item xs={5}>
-                            <FormTextFocused
-                                name="caregroup"
-                                label="New Care Group"
-                                width="350"
-                            />
+                            <FormTextFocused name="caregroup" label="New Care Group" width="350" />
                         </Grid>
-
                         <Grid item xs={3} style={{paddingTop: "40px"}}>
                             <Typography variant="caption" >Added by:</Typography>
-                            <Typography variant="subtitle1">
-                                {localStorage.getItem("provider_first_name")} {localStorage.getItem("provider_last_name")}
-                            </Typography >
+                            <Typography variant="subtitle1">{localStorage.getItem("provider_first_name")} {localStorage.getItem("provider_last_name")}</Typography >
                         </Grid>
-                        
                         <Grid item xs={4} style={{paddingTop: "40px"}}>
                             <Typography variant="caption">Date added:</Typography>
-                            <Typography variant="subtitle1">
-                                {moment().format("MMM Do YYYY")}
-                            </Typography>
+                            <Typography variant="subtitle1">{moment().format("MMM Do YYYY")}   </Typography>
                         </Grid>
-
                     </Grid>
 
                     <br /> <br />
@@ -119,18 +107,17 @@ class CareGroupAdd extends Component {
 
             </Card>
         );
-    };
+    }
 
-};
+}
 
 function validate(values) {
-    console.log("Error values: ", values) 
+    console.log("Error values: ", values);
     const errors = {};
     // validate inputs from 'values'
-    errors.name = validateName(values.name, true)
-    console.log("Errors: ", errors)
+    errors.name = validateName(values.name, true);
+    console.log("Errors: ", errors);
     return errors;
-
 }
 
 function mapDispatchToProps(dispatch) {
@@ -140,9 +127,9 @@ function mapDispatchToProps(dispatch) {
 const formData = {
         form: 'CareGroupAddForm', //unique identifier for this form 
         validate,      
-}
+};
 
-CareGroupAdd = reduxForm(formData)(CareGroupAdd)
-CareGroupAdd = withStyles(styles)(CareGroupAdd)
-CareGroupAdd = connect(null, mapDispatchToProps)(CareGroupAdd)
-export default CareGroupAdd
+CareGroupAdd = reduxForm(formData)(CareGroupAdd);
+CareGroupAdd = withStyles(styles)(CareGroupAdd);
+CareGroupAdd = connect(null, mapDispatchToProps)(CareGroupAdd);
+export default CareGroupAdd;

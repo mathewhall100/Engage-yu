@@ -1,13 +1,13 @@
-import React, {Component}from 'react'
+import React, {Component}from 'react';
 import providerAPI from "../../../utils/provider.js";
-import FormSelect from './formSelect'
-import { startCase } from 'lodash'
+import FormSelect from './formSelect';
+import { startCase } from 'lodash';
 
 export default class FormProviderSelect extends Component {
 
     state = {
         providers: []
-    }
+    };
     
     componentDidMount() {
         // fetch all providers in provider group 
@@ -23,11 +23,11 @@ export default class FormProviderSelect extends Component {
                     provider.provider_group_ref,
                     provider.provider_group_id,
                     provider.provider_group_name,
-                ]
+                ];
                 return {
                     value: val,
                     text: `Dr ${startCase(provider.firstname)} ${startCase(provider.lastname)}`,
-                }
+                };
             })
             if (providers && providers.length > 0) this.setState({providers: providers})
                 else this.setState({providers: this.defaultProviderList()}) 
@@ -61,7 +61,7 @@ export default class FormProviderSelect extends Component {
                 ""
             ],
             text: "Other"
-        }]
+        }];
         return defaultArray;
     };
 
@@ -69,6 +69,6 @@ export default class FormProviderSelect extends Component {
         const { providers } = this.state
         return (
                 <FormSelect name="provider" label="Primary Provider" width="200" items={providers}/>
-        )
+        );
     }
 }

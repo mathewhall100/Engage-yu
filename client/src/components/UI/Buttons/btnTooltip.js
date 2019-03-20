@@ -24,10 +24,10 @@ const styles = (theme) => ({
 
 
 const BtnTooltip = (props) => {
-
-    const handleBtnClick = (btn) => {this.props.handleActionBtns(btn)};
     const { classes, btns } = props;
 
+    const handleBtnClick = (btn) => {props.handleActionBtns(btn)};
+    
     return (
         btns.map((btn, idx) => {
             return (
@@ -44,7 +44,7 @@ const BtnTooltip = (props) => {
                 </Tooltip>
             );
         })
-    )
+    );
 };
 
 BtnTooltip.propTypes = {

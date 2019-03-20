@@ -1,4 +1,5 @@
-import React , { PureComponent } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -9,21 +10,23 @@ const styles = theme => ({
     progress: {
 
     }
-})
+});
 
-class Callback extends PureComponent {
+const Callback = (props) =>  {
+    const { classes } = props 
 
-    render () {
-        const { classes } = this.props        
-        return(
-            <div className={classes.root}>
-                Loading...
-                <br />
-                <br />
-                <CircularProgress className={classes.progress} color="primary" />
-            </div>
-        )
-    }
-}
+    return(
+        <div className={classes.root}>
+            Loading...
+            <br />
+            <br />
+            <CircularProgress className={classes.progress} color="primary" />
+        </div>
+    );
+};
+
+Callback.propTypes = {
+    classes: PropTypes.object.isRequired,
+};
 
 export default withStyles(styles)(Callback);

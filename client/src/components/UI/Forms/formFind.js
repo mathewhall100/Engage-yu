@@ -1,7 +1,8 @@
-import React, { PureComponent } from 'react'
-import { withStyles, Typography } from "@material-ui/core"
-import BtnActionLink from '../Buttons/btnActionLnk'
-import BtnAction from '../Buttons/btnAction'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles, Typography } from "@material-ui/core";
+import BtnActionLink from '../Buttons/btnActionLnk';
+import BtnAction from '../Buttons/btnAction';
 
 const styles = theme => ({
     root: {
@@ -21,26 +22,35 @@ const styles = theme => ({
     }
 });  
 
-class FormFind extends PureComponent {
+const FormFind = (props) =>  {
+    const { classes, title, select, url, btn, submitting, pristine } = props;
 
-    render () {
-        const { classes, title, select, url, btn, submitting, pristine } = this.props
-        return (
-            <div className={classes.root}>   
-                <Typography variant="h6" className={classes.textPosn}>{title}</Typography>
-                <span className={classes.selectPosn}>
-                    {select} 
-                </span>
-                <span className={classes.btn} >
-                    <BtnAction type="submit" disabled={submitting || pristine} text="submit" />
-                </span>
-                <Typography variant="h6" className={classes.textPosn}>or</Typography>
-                <span className={classes.btn} >
-                    <BtnActionLink url={url} disabled={false} text={btn} />
-                </span>
-            </div>
-        )
-    }
-}
+    return (
+        <div className={classes.root}>   
+            <Typography variant="h6" className={classes.textPosn}>{title}</Typography>
+            <span className={classes.selectPosn}>
+                {select} 
+            </span>
+            <span className={classes.btn} >
+                <BtnAction type="submit" disabled={submitting || pristine} text="submit" />
+            </span>
+            <Typography variant="h6" className={classes.textPosn}>or</Typography>
+            <span className={classes.btn} >
+                <BtnActionLink url={url} disabled={false} text={btn} />
+            </span>
+        </div>
+    );
+};
 
-export default withStyles(styles)(FormFind)
+FormFind.propTypes = {
+	classes: PropTypes.object.isRequired,
+    title: PropTypes.string.isRequired,
+    select: PropTypes.func.isRequired,
+    url: PropTypes.string.isRequired,
+    btn: PropTypes.string.isRequired,
+    submitting: PropTypes.bool.isRequired,
+    pristine: PropTypes.bool.isRequired,
+};
+
+
+export default withStyles(styles)(FormFind);

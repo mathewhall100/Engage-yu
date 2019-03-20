@@ -71,7 +71,6 @@ class App extends Component {
     getUserID : PropTypes.func.isRequired, 
     getUserRole : PropTypes.func.isRequired, 
   };
-
 }
 
 const mapDispatchToProps = dispatch => ({
@@ -86,4 +85,5 @@ const mapStateToProps =state =>{
   //console.log("state in app.js : ", state);
   return state;
 }
+
 export default withRouter(connect( mapStateToProps, mapDispatchToProps) (App));

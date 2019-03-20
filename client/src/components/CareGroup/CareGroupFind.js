@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { reduxForm } from 'redux-form';
 import { withStyles, Card } from '@material-ui/core';
-import FormFind from '../UI/Forms/formFind'
-import CareGroupSelect from './CareGroupSelect'
+import FormFind from '../UI/Forms/formFind';
+import CareGroupSelect from './CareGroupSelect';
 import CareGroupDetails from './CareGroupDetails';
 import { selectConsoleTitle } from '../../actions/index';
 
@@ -29,9 +29,9 @@ class CareGroupFind extends Component {
     }
 
     closeCareGroupDetails = () => {
-        console.log("close careGroup details")
-        this.setState({displayDetails: false})
-        this.props.reset("CareGroupSelectForm")
+        console.log("close careGroup details");
+        this.setState({displayDetails: false});
+        this.props.reset("CareGroupSelectForm");
     }
 
     submit(values) {
@@ -40,13 +40,13 @@ class CareGroupFind extends Component {
             this.setState({
                 careGroupId: values.caregroup[0],
                 displayDetails: !this.state.displayDetails
-            })
+            });
         }
-    };
+    }
 
     render () {
-        const { displayDetails, careGroupId } = this.state
-        const { handleSubmit, submitting, pristine, classes } = this.props
+        const { displayDetails, careGroupId } = this.state;
+        const { handleSubmit, submitting, pristine, classes } = this.props;
 
         return (
             <Card className={classes.root}>
@@ -62,7 +62,7 @@ class CareGroupFind extends Component {
                 </form>
                 { displayDetails && <CareGroupDetails  careGroupId={careGroupId} handleClose={this.closeCareGroupDetails}/> }
             </Card>
-        )
+        );
     }
 }
 
@@ -74,7 +74,7 @@ const formData = {
     form: 'CareGroupSelectForm' //unique identifier for this form 
 }
 
-CareGroupFind = reduxForm(formData)(CareGroupFind)
-CareGroupFind = withStyles(styles)(CareGroupFind)
-CareGroupFind = connect(null, mapDispatchToProps)(CareGroupFind)
-export default CareGroupFind
+CareGroupFind = reduxForm(formData)(CareGroupFind);
+CareGroupFind = withStyles(styles)(CareGroupFind);
+CareGroupFind = connect(null, mapDispatchToProps)(CareGroupFind);
+export default CareGroupFind;

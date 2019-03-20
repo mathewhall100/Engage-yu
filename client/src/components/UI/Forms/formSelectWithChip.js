@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles, Input, InputLabel, MenuItem, FormControl, Select, Chip} from '@material-ui/core';
 
-
 const styles = theme => ({
 	root: {
 		display: 'flex',
@@ -26,6 +25,7 @@ const MenuProps = {
 	},
 };
 
+
 class FormSelectWithChip extends Component {
 	
 	state = {
@@ -39,14 +39,14 @@ class FormSelectWithChip extends Component {
 
 	render() {
 		const { classes, menuItems, label, theme } = this.props;
-		const { selected } = this.state
+		const { selected } = this.state;
 
 		const getStyles = (item, selected) => {
 			return {
                 fontSize: "12px",
 				fontWeight: selected  === item ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium
 			}
-		 };
+		};
 		 
 
 		// FormSelectWithChip Select return
@@ -76,6 +76,8 @@ class FormSelectWithChip extends Component {
 FormSelectWithChip.propTypes = {
 	classes: PropTypes.object.isRequired,
 	theme: PropTypes.object.isRequired,
+	menuItems: PropTypes.array.isRequired,
+	label: PropTypes.string.isRequired
 };
 
 export default withStyles(styles, { withTheme: true })(FormSelectWithChip);

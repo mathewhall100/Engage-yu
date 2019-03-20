@@ -23,14 +23,14 @@ const styles = (theme) => ({
 
 
 const BtnActionIcons = (props) => {
+    const { _id, classes } = props;
 
     const handleBtnClick = (event, btn, _id) => {
         event.stopPropagation();
         event.nativeEvent.stopImmediatePropagation();
         props.handleActionBtn(btn, _id)
     };
-    const { _id, classes } = props;
-
+    
     return (
         <React.Fragment>
             <Tooltip title="New diary card" classes={{tooltip: classes.customWidth}} >

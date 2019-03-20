@@ -24,9 +24,9 @@ const styles = theme => ({
 
 
 const BtnSmall = (props) =>  {
-
-    const handleBtnClick = (index) => {props.handleBtn(index)};
     const { classes, index, text, type="button", disabled=false } = props;
+    
+    const handleBtnClick = (index) => {props.handleBtn(index)};
 
     return (
         <Button 

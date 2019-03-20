@@ -37,10 +37,9 @@ const styles = () => ({
 
 
 const BtnActionGroup = (props) => {
-
-    const handleActionBtn = (btn, row) => {props.handleActionBtn(btn, row)};
-
     const { classes, row, actions, disabled=false } = props;
+    
+    const handleActionBtn = (btn, row) => {props.handleActionBtn(btn, row)};
     const btns = ["cancel", "archive", "view"];
 
     return (

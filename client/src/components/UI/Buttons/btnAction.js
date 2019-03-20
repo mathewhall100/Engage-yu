@@ -17,7 +17,6 @@ const styles = (theme) => ({
         hover: {},
         disabled: {}
     },
-
   cancelBtn: {
         padding: "5px",
         color: "#ffffff",
@@ -36,10 +35,10 @@ const styles = (theme) => ({
 
 
 const BtnAction = (props) => {
-
-    const handleClick = (index) => {props.handleAction(index)};
     const { classes, text, type="button", disabled=false, index=null } = props;
 
+    const handleClick = (index) => {props.handleAction(index)};
+    
     return  (
         <Button 
             size="small"

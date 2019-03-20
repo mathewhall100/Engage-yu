@@ -18,7 +18,7 @@ const styles = {
     },
 };
 
-function ImageAvatars(props) {
+const ImageAvatars = (props) => {
     const { classes } = props;
     return (
         <span className={classes.row}>
@@ -29,7 +29,7 @@ function ImageAvatars(props) {
             }
         </span>
     );
-}
+};
 
 ImageAvatars.propTypes = {
     classes: PropTypes.object.isRequired,

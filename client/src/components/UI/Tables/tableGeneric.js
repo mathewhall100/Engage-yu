@@ -2,15 +2,15 @@ import React, {Component}  from 'react';
 import PropTypes from 'prop-types';
 import { startCase } from 'lodash';
 import { withStyles, Typography, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel, TablePagination} from '@material-ui/core';
-import BtnActionGroup from '../Buttons/btnActionGroup'
-import BtnActionIcons from '../Buttons/btnActionIcons'
-import { stableSort, getSorting } from '../../../logic/tableSortFunctions'
+import BtnActionGroup from '../Buttons/btnActionGroup';
+import BtnActionIcons from '../Buttons/btnActionIcons';
+import { stableSort, getSorting } from '../../../logic/tableSortFunctions';
 
 const styles = () =>  ({
     root: {
         width: "100%"
     }
-})
+});
 
 const CustomTableCell = withStyles(theme => ({
     head: {
@@ -20,7 +20,7 @@ const CustomTableCell = withStyles(theme => ({
         padding: "5px",
         fontSize: 14,
     },
-  }))(TableCell);
+}))(TableCell);
 
 
 class GenericTable extends Component {
@@ -30,7 +30,7 @@ class GenericTable extends Component {
         orderBy: 'start',
         page: 0,
         rowsPerPage: 5,
-    }
+    };
 
     createSortHandler = col => event => {
         const orderBy = col;
@@ -42,11 +42,11 @@ class GenericTable extends Component {
     handleRowClick = (row) => {
         console.log("row clicked: ", row)
         if (this.props.hover) {this.props.handleRowClick(row)}
-    }
+    };
 
     handleActionBtn = (btn, _id) => {
         this.props.handleActionBtn(btn, _id)
-    }
+    };
 
     handleChangePage = (event, page) => { this.setState({ page }) };
 
@@ -56,8 +56,7 @@ class GenericTable extends Component {
 
 
     render () {
-
-        const { tableHeadings, lastCellRightAlign, lastCellHeading, tableData, lastCellData, hover, classes } = this.props;
+        const { classes, tableHeadings, tableData, lastCellRightAlign=false, lastCellHeading, lastCellData, hover=false  } = this.props;
         const { order, orderBy, rowsPerPage, page } = this.state;
 
         const getLastCell = (row) => {
@@ -77,7 +76,7 @@ class GenericTable extends Component {
                             <Typography>{row[key]}</Typography>
                         </CustomTableCell>
             } 
-        }
+        };
 
         // GenericTable component return
         return (
@@ -155,8 +154,13 @@ class GenericTable extends Component {
 }
 
 GenericTable.propTypes = {
-  classes: PropTypes.object.isRequired,
-
+    classes: PropTypes.object.isRequired,
+    tableHeadings: PropTypes.array,
+    tableData: PropTypes.array.isRequired,
+    lastCellRightAlign: PropTypes.bool,
+    lastCellHeading: PropTypes.string,
+    lastCellData: PropTypes.anyType,
+    hover: PropTypes.bool
 };
 
 export default  withStyles(styles, { withTheme: true })(GenericTable);

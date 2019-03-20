@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Field } from 'redux-form';
+import PropTypes from 'prop-types';
 import { FormControlLabel, Radio, RadioGroup} from '@material-ui/core';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 // import FormLabel from '@material-ui/core/FormLabel';
@@ -17,15 +18,14 @@ const radioTheme = createMuiTheme({
             }
         }
     }
-})
+});
 
 
 export default class FormRadio extends Component {  
 
     RenderRadioGroup(field) {
-        console.log("field: ", field)
-
-        const {input, children} = field
+        //console.log("field: ", field);
+        const {input, children} = field;
         // const {meta: { pristine } } = field
         
         return (
@@ -55,23 +55,29 @@ export default class FormRadio extends Component {
                 </span> */}
 
             </React.Fragment>
-        )
-        
+        );
     };
 
     render () {
+        const { name, items } = this.props
         return (
             <Field 
-                name={this.props.name} 
-                formLabel={this.props.formLabel}
+                name={name} 
+                //formLabel={formLabel}
                 component={this.RenderRadioGroup}
                 >
-                    {this.props.items.map(item =>  
+                    {items.map(item =>  
                         <Radio key={item.value} value={item.value} label={item.label} />
                     )}
             </Field>
-        )
+        );
     }
+}
+
+FormRadio.PropTypes = {
+    name: PropTypes.string.isRequired,
+    items: PropTypes.array.isRequired,
 };
+
 
 
