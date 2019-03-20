@@ -9,7 +9,8 @@ import BtnAction from '../UI/Buttons/btnAction'
 import BtnActionLink from '../UI/Buttons/btnActionLnk'
 import CallBack from '../UI/callback'
 import patient_dataAPI from "../../utils/patient_data.js";
-import { durations, startDates, frequencies, timeMargins, reminders, sliderTimes24HR, createStartDate, createRecordsArray, createSurveyQuestions} from './surveyLogic'
+import { durations, startDates, frequencies, timeMargins, reminders, sliderTimes24HR } from './surveyConstants'
+import { createStartDate, createRecordsArray, createSurveyQuestions} from './surveyLogic'
 import SurveyCustomQuestionTable from './SurveyCustomQuestionTable';
 import SurveyPanelExpandButton from './SurveyPanelExpandButton'
 import SurveyQuestionPanel from './SurveyQuestionPanel';

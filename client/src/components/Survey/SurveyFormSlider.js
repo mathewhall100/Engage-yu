@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles, Typography } from '@material-ui/core';
 import Slider from '@material-ui/lab/Slider';
 import { createMuiTheme, MuiThemeProvider} from '@material-ui/core/styles'
-import { sliderTimesAMPM, sliderTimes24HR } from './surveyLogic'
+import { sliderTimesAMPM, sliderTimes24HR } from './surveyConstants'
 
 const styles = {
 	// AM/PM vs 24HR toggle styles
