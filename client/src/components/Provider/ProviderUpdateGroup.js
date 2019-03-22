@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
 import { startCase } from 'lodash';
@@ -8,13 +7,13 @@ import CallBack from '../UI/callback'
 import FormUpdateUnit from '../UI/Forms/formUpdateUnit'
 import DialogActionFailed from '../UI/Dialogs/dialogActionFailed'
 import { validateIsRequired } from '../../logic/formValidations'
-import { selectConsoleTitle, providerAction } from '../../actions/index'
+import { selectConsoleTitle, loadProvider } from '../../actions'
 import providerAPI from "../../utils/provider.js";
 import ProviderDetailsBar from './ProviderDetailsBar'
 import CareGroupSelect from '../CareGroup/CareGroupSelect'
 
 
-const styles = theme => ({
+const styles = () => ({
     root: {
         padding: "40px"
     },
@@ -23,27 +22,13 @@ const styles = theme => ({
 class ProviderUpdateGroup extends Component {  
 
     componentDidMount() {
-        this.props.selectConsoleTitle({title: "Reassign Provider Caregroup"});
-        this.fetchProviderDetailsToUpdate(this.props.location.state.providerId)
+        this.props.dispatch(selectConsoleTitle({title: "Reassign Provider Caregroup"}));
     }
         
     state = {
         updateSuccess: false,
         updateFailed: false,
     }
-
-    // Fetch provider info using provider_id and ensure loaded into store
-    fetchProviderDetailsToUpdate = (id) => {
-        providerAPI.findById(id)
-        .then(res => {
-            console.log("res.data: ", res.data);
-            this.props.providerAction(res.data);
-        })
-        .catch(err => {
-            console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-            console.log(err);
-        })
-    }; 
 
     // handle form submission
     submit(values) {
@@ -55,11 +40,11 @@ class ProviderUpdateGroup extends Component {
         })
         .then(res => {
             console.log("res.data: ", res.data)
-            this.fetchProviderDetailsToUpdate(this.props.provider._id)
+            this.props.dispatch(loadProvider(this.props.provider._id))
             this.setState({
                 editFieldActive: false,
                 updateSuccess: true,
-                })
+            })
         })
         .catch(err => {
             console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
@@ -77,8 +62,7 @@ class ProviderUpdateGroup extends Component {
     }
 
     render () {
-        
-        const { provider, handleSubmit, classes } = this.props
+        const { provider, error, loading, handleSubmit, classes } = this.props
         const { updateFailed, updateSuccess } = this.state
 
         const getFormFields = (provider) => {
@@ -89,38 +73,39 @@ class ProviderUpdateGroup extends Component {
             }]
         }
 
+        if (error) {
+            return <div>Error! {error.message}</div>
+        }
+
+        if (loading || !provider._id) {
+            return <CallBack />
+        }
+
         return (
             <Card className={classes.root}>
 
-                {provider && provider._id ? 
-                    <React.Fragment>
+                <ProviderDetailsBar provider={provider} />
 
-                        <ProviderDetailsBar provider={provider} />
+                <Typography variant="subtitle1" gutterBottom>Click 'update' to reassign this provider to another care group.</Typography>
 
-                        <Typography variant="subtitle1" gutterBottom>Click 'update' to reassign this provider to another care group.</Typography>
+                <br /> <br />
 
-                        <br /> <br />
+                <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
+                    <FormUpdateUnit 
+                        formFields={getFormFields(provider)}
+                        outcomeReset={this.outcomeReset}
+                        updateSuccess={updateSuccess} 
+                        updateFailed={updateFailed}
+                    />
+                </form>
 
-                        <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
-                            <FormUpdateUnit 
-                                formFields={getFormFields(provider)}
-                                outcomeReset={this.outcomeReset}
-                                updateSuccess={updateSuccess} 
-                                updateFailed={updateFailed}
-                            />
-                        </form>
+                <br /> <br />
 
-                        <br /> <br />
-
-                        {updateFailed && 
-                            <DialogActionFailed 
-                                title="Failed!" 
-                                text={`Unfortuneately a problem occurred and this provider could not be updated at this time. Please check the dtails you have entered and try again. If the problem persists, contact the system administrator`}
-                            />
-                        }
-                    </React.Fragment>
-                    :
-                    <CallBack />
+                {updateFailed && 
+                    <DialogActionFailed 
+                        title="Failed!" 
+                        text={`Unfortuneately a problem occurred and this provider could not be updated at this time. Please check the dtails you have entered and try again. If the problem persists,contact the system administrator`}
+                    />
                 }
 
             </Card>
@@ -138,14 +123,12 @@ const validate = (values) => {
     return errors;
 }
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle, providerAction }, dispatch);
-}
-
 const mapStateToProps = (state) => {
-    console.log("State : ", state);
+    //console.log("State : ", state);
     return {
-        provider: state.provider,
+        provider: state.provider.provider,
+        error: state.provider.error,
+        loading: state.provider.loading
     }
 };
 
@@ -154,7 +137,7 @@ const formData = {
     validate,      
 }
 
-ProviderUpdateGroup = connect(mapStateToProps, mapDispatchToProps)(ProviderUpdateGroup)
+ProviderUpdateGroup = connect(mapStateToProps)(ProviderUpdateGroup)
 ProviderUpdateGroup = reduxForm(formData)(ProviderUpdateGroup)
 ProviderUpdateGroup = withStyles(styles)(ProviderUpdateGroup)
 export default ProviderUpdateGroup;

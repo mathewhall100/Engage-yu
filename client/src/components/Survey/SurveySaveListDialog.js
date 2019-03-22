@@ -1,15 +1,14 @@
 import React from 'react';
 import { reduxForm } from 'redux-form';
 import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import { withStyles, Dialog, DialogContent, DialogTitle, withMobileDialog, Typography} from '@material-ui/core';
 import BtnAction from '../UI/Buttons/btnAction'
 import FormBox from '../UI/Forms/formBox'
 import { validateIsRequired } from '../../logic/formValidations';
 import providerAPI from "../../utils/provider.js";
-import { providerAction } from '../../actions'
+import { loadProvider } from '../../actions'
+// import { providerAction } from '../../actions'
 
 const styles = theme => ({
 	textField: {
@@ -37,11 +36,7 @@ class SurveySaveQuestionListDialog extends React.Component {
 		providerAPI.saveQuestionList(this.props.providerId, listObj)
 			.then(res => {
 				console.log("res.data: ", res.data)
-				providerAPI.findById(this.props.providerId)
-					.then(res => {
-						console.log("res: ", res.data);
-						this.props.providerAction(res.data);
-					})
+				this.props.dispatch(loadProvider(this.props.providerId));
 				this.handleClose()
 			})
 			.catch(err => {
@@ -146,11 +141,11 @@ const formData = {
 	validate,    
 }
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({providerAction}, dispatch);
-}
+// function mapDispatchToProps(dispatch) {
+//     return bindActionCreators({providerAction}, dispatch);
+// }
 
-SurveySaveQuestionListDialog = connect(null, mapDispatchToProps)(SurveySaveQuestionListDialog)
+// SurveySaveQuestionListDialog = connect(null, mapDispatchToProps)(SurveySaveQuestionListDialog)
 SurveySaveQuestionListDialog = withRouter(SurveySaveQuestionListDialog)
 SurveySaveQuestionListDialog = reduxForm(formData)(SurveySaveQuestionListDialog)
 SurveySaveQuestionListDialog = withStyles(styles, { withTheme: true })(SurveySaveQuestionListDialog)

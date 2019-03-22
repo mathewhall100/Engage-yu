@@ -19,7 +19,7 @@ class ReportPatientDetails extends Component {
 
     render () {
 
-        const { classes, patientInfo} = this.props;
+        const { classes, patientInfo } = this.props;
         const patientDetails = [
             {caption: "Patient name", text: `${startCase(patientInfo.firstname)} ${startCase(patientInfo.lastname)}`},
             {caption: "Hospital number", text: patientInfo.hospital_id},
@@ -41,9 +41,11 @@ ReportPatientDetails.propTypes = {
   };
   
   const mapStateToProps = (state) => {
-    //console.log("State : ", state);
+    console.log("State : ", state);
     return {
-        patientInfo: state.reportPatientData.reportPatientInfo,
+        patientInfo: state.patient.patient.patientInfo,
+        error: state.patient.error,
+        loading: state.patient.loading
     }
   };
 

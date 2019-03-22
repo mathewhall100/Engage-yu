@@ -6,7 +6,7 @@ export default {
         return axios.get("/api/patient_data/"+id);
     },
 
-    fetchActive: function(id) {
+    fetchActiveSurveys: function(id) {
         console.log("Axios call made to '/api/patient_data to 'fetchActive' ", id)
         return axios.get("/api/patient_data/active/"+id);
     },

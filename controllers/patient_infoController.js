@@ -40,14 +40,12 @@ module.exports = {
             db.Patient_info
             .find( {primary_provider_id: req.params.id}, {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1} )
             .sort( {"patient_details.lastname": 1} )
-            .then(patientList => {
-                console.log("RESULT:", patientList)
-                res.json({
-                    patientList: patientList,
-                });
+            .then(patients=> {
+                console.log("RESULT:", patients)
+                res.json(patients);
             })
             .catch(err => {
-                console.log(`CONTROLLER ERROR: ${err}`);
+                console.log(`CONTROLLER ERROR: ${err}`)
                 res.status(422).json(err);
             })
         // }else{
@@ -66,11 +64,9 @@ module.exports = {
             db.Patient_info
             .find( {provider_group_id: req.params.id}, {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1} )
             .sort( {"patient_details.lastname": 1} )
-            .then(patientList => {
-                console.log("RESULT:", patientList)
-                res.json({
-                    patientList: patientList,
-                });
+            .then(patients=> {
+                console.log("RESULT:", patients)
+                res.json(patients);
             })
             .catch(err => {
                 console.log(`CONTROLLER ERROR: ${err}`);
@@ -107,7 +103,7 @@ module.exports = {
         // }
     },
 
-    // Fetch FULL patienrt record (info+ data) by patient  id 
+    // Fetch FULL patienrt record (info + data) by patient  id 
     // To be sent req.params.id with _id of patient to be fetched
     // Returns json of patient info + patient data
     findFullById: function(req, res) {
@@ -119,7 +115,7 @@ module.exports = {
             .populate("patient_data_ref")
             .then(patient => {
                 console.log("RESULT:", patient);
-                res.json(patient)
+                res.json({patient})
             })
             .catch(err => {
                 console.log(`CONTROLLER ERROR: ${err}`);

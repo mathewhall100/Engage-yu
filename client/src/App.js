@@ -54,9 +54,9 @@ class App extends Component {
   render() {
     return (
       <MuiThemeProvider theme={theme} >
-          <div>
+          {/* <div> */}
             <Routes {...this.props} />
-          </div>
+          {/* </div> */}
         </MuiThemeProvider>
     );
   }

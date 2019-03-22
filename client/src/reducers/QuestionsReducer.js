@@ -1,41 +1,41 @@
 import {
-    CAREGROUP_BEGIN,
-    CAREGROUP_SUCCESS,
-    CAREGROUP_FAILURE
+    QUESTIONS_BEGIN,
+    QUESTIONS_SUCCESS,
+    QUESTIONS_FAILURE
 } from '../actions/types';
 
 const initialState = {
-    careGroup: {},
+    questions: {},
     loading: false,
     error: null
 };
 
-export default function careGroupReducer( 
+export default function questionsReducer( 
     
     state = initialState,
     action
 ) {
     switch(action.type) {
-        case CAREGROUP_BEGIN:
+        case QUESTIONS_BEGIN:
             return {
                 ...state,
                 loading: true,
                 error: null
             };
 
-        case CAREGROUP_SUCCESS:
+        case QUESTIONS_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                careGroup: action.payload.careGroup
+                questions: action.payload.questions
             };
 
-        case CAREGROUP_FAILURE:
+        case QUESTIONS_FAILURE:
             return {
                 ...state,
                 loading: false,
                 error: action.payload.error,
-                careGroup: []
+                questions: []
             };
 
         default: return state;

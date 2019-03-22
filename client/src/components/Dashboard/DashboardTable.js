@@ -1,22 +1,20 @@
 import React, { Component } from 'react';
-import { Redirect, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import moment from 'moment';
 import { startCase } from 'lodash';
 import PropTypes from 'prop-types';
 import { withStyles, Table, TableBody, TableCell, TablePagination, TableRow, Paper, Checkbox, Typography} from '@material-ui/core';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import TableEnhancedTableHead from '../UI/Tables/tableEnhancedTableHead';
-import DashboardTableToolbar from './DashboardTableToolbar'
-import DashboardTableStatusBar from './DashboardTableStatusBar'
-import { fetchActiveSurveys } from '../../actions/index';
-import { createStatus, filterByPerson, filterByStatus, filterByChecked } from './dashboardLogic';
-import { stableSort, getSorting } from '../../logic/tableSortFunctions'
-import patient_dataAPI from '../../utils/patient_data'
+import Callback from '../UI/callback'
+import DashboardTableToolbar from './DashboardTableToolbar';
+import DashboardTableStatusBar from './DashboardTableStatusBar';
+import { loadActiveSurveys, loadPatient } from '../../actions';
+import { filterByPerson, filterByStatus, filterByChecked } from './dashboardLogic';
+import { stableSort, getSorting } from '../../logic/tableSortFunctions';
 
-
-const styles = theme => ({
+const styles = () => ({
     root: {
         padding: "10px 20px",
     },
@@ -41,38 +39,23 @@ const CustomTableCell = withStyles(theme => ({
 }))(TableCell);
 
 
-// Table component
 class DashboardTable extends Component {
 
     componentDidMount() {
-        // Fetch list of active surveys and save to redux store
-        patient_dataAPI.fetchActive(localStorage.getItem("provider_id"))
-        .then(res => {
-            //console.log("result: ", res.data)
-            let surveys = []; 
-            if (res.data.length < 1) {console.log("No active surveys retrieved")}
-                else {
-                    surveys = res.data.map(ep => {return {...ep, ...createStatus(ep)} })
-                    console.log("Active surveys for dashboard: ", surveys)
-                    this.props.fetchActiveSurveys(surveys);
-                }
-            })
-            .catch(err => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log(err);
-                console.log("No active surveys retrieved")
-                // inform user
-        })
+        // Load list of active surveys and save to redux store
+        this.props.dispatch(loadActiveSurveys(localStorage.getItem("provider_id")));
     }
 
     componentWillReceiveProps(nextProps) {
-        // Load list of activeSurveys from store and create data object
-        // Then filter data object by survey status (default: active), scope (deafult: requester only) and checkbox selection (default: none)
-        if (nextProps.activeSurveys !== this.props.activeSurveys) {
+        // Load list of activeSurveys from store
+        // Then filter by survey status (default: active), scope (deafult: requester only) and checkbox selection (default: none)
+        // Gives this.state.tableDataFiltered array.
+        if (nextProps.activeSurveys ) {
             this.setState({ tableData: nextProps.activeSurveys},
-            () => this.setState({ 
-                tableDataFiltered: this.filterData(this.state.tableData, this.state.personFilter, this.state.statusFilter, this.state.checked) 
-            }) )
+                () => this.setState({ 
+                    tableDataFiltered: this.filterData(this.state.tableData, this.state.personFilter, this.state.statusFilter, this.state.checked) 
+                }) 
+            );
         }
     }
 
@@ -94,30 +77,29 @@ class DashboardTable extends Component {
 
     // Filter table constents functions by provider and status (provider_id in local storage from login)
     filterData = (data, personFilter, statusFilter, checked) => {
-        //console.log("providerId ", localStorage.getItem("provider_id"))
-        return filterByChecked( (filterByStatus((filterByPerson(data, localStorage.getItem("provider_id"), personFilter)), statusFilter)), checked)
+        return filterByChecked( (filterByStatus((filterByPerson(data, localStorage.getItem("provider_id"), personFilter)), statusFilter)), checked);
     };
 
     // Refilter in response to user selecting a navLink
     navLinksFilter = (filter) => {
         this.setState({tableDataFiltered: this.filterData(this.state.tableData, filter, this.state.statusFilter, this.state.selected) },
             () => this.setState({personFilter: filter})
-        )
+        );
     };
 
     // Refilter in response to user selecting different status 
     statusFilter = (filter) => {
         this.setState({tableDataFiltered: this.filterData(this.state.tableData, this.state.personFilter, filter, this.state.selected) }, 
             () => this.setState({statusFilter: filter})
-        )
+        );
     };
 
     // Refilter in response to user selecting specific surveys using checkboxes
     checkedFilter = () => {
-        this.setState({tableDataFiltered: this.filterData(this.state.tableData, this.state.personFilter, this.state.statusFilter, this.state.selected) }, )
+        this.setState({tableDataFiltered: this.filterData(this.state.tableData, this.state.personFilter, this.state.statusFilter, this.state.selected) } );
     };
 
-    // event handlers
+    // Event handlers
     handleRequestSort = (event, property) => {
         const orderBy = property;
         let order = 'desc';
@@ -125,17 +107,12 @@ class DashboardTable extends Component {
         this.setState({ order, orderBy });
     };
 
-    handleDeSelectAllClick = event => { 
-        this.setState({ selected: [] }, () => this.checkedFilter())
-    };
+    handleDeSelectAllClick = () => { this.setState({ selected: [] }, () => this.checkedFilter());};
 
     handleRowClick = (patientId, episodeId) => {
-        //console.log("rowClick: ", patientId)
-        localStorage.setItem("patient_id", patientId)
-        this.setState({redirect: episodeId})
-        // const url=`/admin/report/${episodeId}`
-        // this.props.history.push(url)
-    }
+        this.props.dispatch(loadPatient(patientId))
+        this.props.history.push({pathname: '/admin/report', state: {episodeId: episodeId} })
+    };
 
     handleCheckBoxClick = (event, id) => {
         event.stopPropagation();
@@ -145,13 +122,13 @@ class DashboardTable extends Component {
         let newSelected = [];
         switch (selectedIndex) {
             case -1:
-                newSelected = newSelected.concat(selected, id); break
+                newSelected = newSelected.concat(selected, id); break;
             case 0:
-                newSelected = newSelected.concat(selected.slice(1)); break
+                newSelected = newSelected.concat(selected.slice(1)); break;
             case selected.length - 1:
-                newSelected = newSelected.concat(selected.slice(0, -1)); break
+                newSelected = newSelected.concat(selected.slice(0, -1)); break;
             default: 
-                newSelected = newSelected.concat(selected.slice(0, selectedIndex),selected.slice(selectedIndex + 1))
+                newSelected = newSelected.concat(selected.slice(0, selectedIndex),selected.slice(selectedIndex + 1));
         }
         this.setState({ selected: newSelected });
     };
@@ -162,7 +139,7 @@ class DashboardTable extends Component {
 
     render() {
 
-        const { classes } = this.props;
+        const { classes, error, loading, activeSurveys } = this.props;
         const { order, orderBy, tableDataFiltered, selected, rowsPerPage, page } = this.state;
         
         const rows = [
@@ -175,16 +152,16 @@ class DashboardTable extends Component {
             { id: 'requester', numeric: false, disablePadding: false, label: 'Requester' }
         ];
 
-        // DashboardTable return
+        if (error) {
+            return <div>Error! {error.message}</div>
+        }
+
+        if (loading || !activeSurveys) {
+            return <Callback />
+        }
+
         return (
             <Paper className={classes.root}>
-
-                {this.state.redirect && 
-                    <Redirect to={{
-                        pathname: "/admin/report",
-                        state: { episodeId: this.state.redirect }
-                    }} />
-                }
 
                 <DashboardTableToolbar 
                     numSelected={selected.length}
@@ -208,8 +185,9 @@ class DashboardTable extends Component {
                             rows={rows}
                             />
 
-                        {tableDataFiltered && tableDataFiltered.length ? 
+                        {tableDataFiltered.length ? 
                             <TableBody>
+                                {console.log("tableDataFiltered: ", tableDataFiltered)}
                                 { stableSort(tableDataFiltered, getSorting(order, orderBy))
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((d, index)=> {
@@ -237,7 +215,7 @@ class DashboardTable extends Component {
                             : 
                             <TableBody>
                                 <TableRow>   
-                                    <CustomTableCell>
+                                    <CustomTableCell style={{border: "none"}}>
                                         <Typography variant="subtitle1" style={{margin: "40px 0"}}>No active surveys to display at this time.</Typography>
                                     </CustomTableCell>
                                 </TableRow>
@@ -246,7 +224,7 @@ class DashboardTable extends Component {
                     </Table>
                 </div>
 
-                {tableDataFiltered && tableDataFiltered.length > 4 && 
+                {tableDataFiltered.length > 4 && 
                     <TablePagination
                         component="div"
                         rowsPerPageOptions={[5, 10, 25]}
@@ -259,6 +237,7 @@ class DashboardTable extends Component {
                         onChangeRowsPerPage={this.handleChangeRowsPerPage}
                     />
                 }
+
             </Paper>
         );
     }
@@ -268,19 +247,17 @@ DashboardTable.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ fetchActiveSurveys }, dispatch);
-}
-
 const mapStateToProps = (state) => {
-    //console.log("State : ", state);
+    //console.log("State @dashboard: ", state);
     return {
-        activeSurveys: state.activeSurveys.activeSurveys,
+        activeSurveys: state.activeSurveys.surveys,
+        loading: state.activeSurveys.loading,
+        error: state.activeSurveys.error,
         user: state.user
-    }
+    };
 };
 
-DashboardTable = withRouter(DashboardTable)
-DashboardTable = connect(mapStateToProps, mapDispatchToProps)(DashboardTable)
-DashboardTable = withStyles(styles, { withTheme: true })(DashboardTable)
-export default DashboardTable
+DashboardTable = withRouter(DashboardTable);
+DashboardTable = connect(mapStateToProps)(DashboardTable);
+DashboardTable = withStyles(styles, { withTheme: true })(DashboardTable);
+export default DashboardTable;

@@ -21,7 +21,6 @@ export default class CareGroupSelect extends Component {
                     text: `${startCase(group.group_name)}`,
                 }
             })
-            console.log("CG: ", careGroups)
             this.setState({careGroups})
             if (careGroups && careGroups.length > 0) this.setState({careGroups})
                 else this.setState({careGroups: this.default()}) 

@@ -2,8 +2,8 @@
 
 // Sort in descending order
 export const desc = (a, b, orderBy) => {
-    if (b[orderBy] < a[orderBy]) {return -1; }
-    if (b[orderBy] > a[orderBy]) {return 1; }
+    if (b[orderBy] < a[orderBy]) {return -1}
+    if (b[orderBy] > a[orderBy]) {return 1}
     return 0;
 };
 

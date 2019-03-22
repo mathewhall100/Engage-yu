@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { withRouter } from 'react-router-dom';
 import { startCase } from 'lodash';
 import moment from 'moment';
 import { withStyles, Paper } from '@material-ui/core';
 import TableGeneric from '../UI/Tables/tableGeneric';
+import CallBack from '../UI/callback'
+import { loadPatient } from '../../actions'
 import { createData, filterByName, filterByNumber } from './patientLogic'
-import { fetchReportPatientData } from '../../actions/index';
 
 
 const styles = () => ({
@@ -19,16 +19,19 @@ const styles = () => ({
 class PatientFindTable extends Component {
 
    componentWillReceiveProps(nextProps) {
-        //console.log("nextProps: ", nextProps)
-        if (nextProps.listPatientsByCareGroup !== this.props.listPatientsByCareGroup) {
-            this.setState({tableData: createData(nextProps.listPatientsByCareGroup) },
+
+        if (nextProps.patientsByCareGroup !== this.props.patientsByCareGroup) {
+            this.setState({tableData: createData(nextProps.patientsByCareGroup) },
                 () => this.setState({tableDataFiltered: this.filterData(this.state.tableData, nextProps.filterName, nextProps.filterNumber) }) )
-        } else if (nextProps.listPatientsByProvider !== this.props.listPatientsByProvider) { 
-            this.setState({tableData: createData(nextProps.listPatientsByProvider) },
+        } 
+        else if (nextProps.patientsByProvider !== this.props.patientsByProvider) { 
+            this.setState({tableData: createData(nextProps.patientsByProvider) },
                 () => this.setState({tableDataFiltered: this.filterData(this.state.tableData, nextProps.filterName, nextProps.filterNumber) }) )
-        } else if (nextProps.filterName !== this.props.filterName || nextProps.filterNumber !== this.props.filterNumber) {
+        } 
+        else if (nextProps.filterName !== this.props.filterName || nextProps.filterNumber !== this.props.filterNumber) {
             this.setState({tableDataFiltered: this.filterData(this.state.tableData, nextProps.filterName, nextProps.filterNumber) })
-        } else return null   
+        } 
+        else return null   
     };
 
     state = {
@@ -37,105 +40,88 @@ class PatientFindTable extends Component {
     };
 
     createTableData = (data) => {
-        let counter = 0;
         return data.map(d => {
-            return { "id": counter++, 
-                    "_id": d._id,
-                    "firstname": startCase(d.firstname),
-                    "lastname": startCase(d.lastname),
-                    "dob": d.dob,
-                    "hospital number": d.number,
-                    "date enrolled": moment(d.enrolled).format("MMM Do YYYY"),
-                    "most recent survey": "TBA"
+            return { 
+                "_id": d._id,
+                "firstname": startCase(d.firstname),
+                "lastname": startCase(d.lastname),
+                "dob": d.dob,
+                "hospital number": d.number,
+                "date enrolled": moment(d.enrolled).format("MMM Do YYYY"),
+                "most recent survey": "TBA"
             }
         })
     };
 
-    fetchSelectedPatientInfo = (_id) => {
-        let patientInfo, patientData;
-        const url = `/api/patient_info/find/${_id}`
-        axios.get(url)
-        .then( res => {
-            patientInfo = res.data
-            axios.get(`/api/patient_data/${patientInfo.patient_data_id}`)
-            .then( res => {
-                patientData = res.data
-                console.log("axios patientInfo: ", patientInfo)
-                console.log("axios patientData: ", patientData)
-                this.props.fetchReportPatientData(patientInfo, patientData)
-            })
-            .catch(err => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log(err);
-            }) 
-        })
-        localStorage.setItem("patient_id", _id) 
-    }
-
     // Filters   
     filterData = (data, filterName, filterNumber ) => {
-        if (localStorage.getItem("patient_id")) { 
-            return data.filter(pt => pt._id === localStorage.getItem("patient_id")) 
-        } else {
-            const filteredData = filterByNumber(filterByName(data, filterName), filterNumber)
-            if (filteredData.length === 1) { 
-                this.fetchSelectedPatientInfo(filteredData[0]._id)
-            } else { 
-                localStorage.setItem("patient_id", "")
-                this.props.fetchReportPatientData([],[])
-            }
-            return filteredData
+        const filteredData = filterByNumber(filterByName(data, filterName), filterNumber)
+        if ( 
+            !(filteredData.length === 1 && this.state.tableDataFiltered.length === 1 && this.state.tableDataFiltered[0]._id === filteredData[0]._id) 
+            || (filterName === "" && filterNumber === "") 
+        ) {
+            this.props.dispatch(loadPatient("clear"))
+            this.props.handleInfoPanel("close")
         }
-    }
+        return filteredData;
+    };
 
     // Event handlers
     handleRowClick = (row) => {
-        this.fetchSelectedPatientInfo(row._id)
+        this.props.dispatch(loadPatient(row._id))
+        this.props.handleInfoPanel("open")
     }
 
-    handleActionBtn = (btn, _id) => {
-        console.log("handleBtn: ", btn, " ", _id)
+    handleActionClick = (btn, _id) => {
         this.props.handleActionBtn(btn, _id)
     }
 
-
     render () {
+        const { classes, loadingCareGroupPatients, errorCareGroupPatients, loadingProviderPatients, errorProviderPatients } = this.props;
+        const { tableDataFiltered } = this.state;
 
-        const { classes } = this.props;
-        const { tableData, tableDataFiltered } = this.state;
-        const tableHeadings = ["firstname", "lastname", "dob", "hospital number", "date enrolled", "most recent survey"]
+        if (errorCareGroupPatients || errorProviderPatients) {
+            return <div>Error! {errorCareGroupPatients ? errorCareGroupPatients.message : errorProviderPatients.message}</div>
+        }
 
-        return (
-            <React.Fragment>
-                { tableData && <Paper className={classes.root}>
-                    <TableGeneric 
-                        tableHeadings={tableHeadings}
-                        tableData={this.createTableData(tableDataFiltered)}
-                        lastCellRightAlign={true}
-                        lastCellHeading={"Actions"}
-                        lastCellData={["find actions"]}
-                        handleActionBtn = {this.handleActionBtn}
-                        handleRowClick = {this.handleRowClick}
-                        hover={true}
-                    />
-                </Paper> }
-            </React.Fragment>
-        );
+        if (loadingCareGroupPatients || loadingProviderPatients ) {
+            return <CallBack />
+        }
+
+        if (tableDataFiltered.length > 0) {
+            return <Paper className={classes.root}>
+                <TableGeneric 
+                    tableHeadings={["firstname", "lastname", "dob", "hospital number", "date enrolled", "most recent survey"]}
+                    tableData={this.createTableData(tableDataFiltered)}
+                    lastCellRightAlign={true}
+                    lastCellHeading={"Actions"}
+                    lastCellData={["find actions"]}
+                    handleActionBtn = {this.handleActionClick}
+                    handleRowClick = {this.handleRowClick}
+                    hover={true}
+                />
+            </Paper> 
+        }
+
+        return <div />
+
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ fetchReportPatientData }, dispatch);
-}
 
 const mapStateToProps = (state) => {
-    //console.log("State : ", state);
+    console.log("State : ", state);
     return {
-        listPatientsByProvider: state.listPatientsByProvider.listPatientsByProvider.patientList,
-        listPatientsByCareGroup: state.listPatientsByCareGroup.listPatientsByCareGroup.patientList,
+        patientsByProvider: state.patientsByProvider.listPatients,
+        loadingProviderPatients: state.patientsByProvider.loading,
+        errorProviderPatients: state.patientsByProvider.error,
+
+        patientsByCareGroup: state.patientsByCareGroup.listPatients,
+        loadingCareGroupPatients: state.patientsByCareGroup.loading,
+        errorCareGroupPatients: state.patientsByCareGroup.error,
     }
 };
-
-PatientFindTable = connect(mapStateToProps, mapDispatchToProps)(PatientFindTable)
+PatientFindTable = withRouter(PatientFindTable)
+PatientFindTable = connect(mapStateToProps)(PatientFindTable)
 PatientFindTable = withStyles(styles)(PatientFindTable)
 export default PatientFindTable;

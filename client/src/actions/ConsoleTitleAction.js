@@ -1,10 +1,9 @@
 
-export const CONSOLE_TITLE = 'CONSOLE_TITLE';
+import { CONSOLE_TITLE } from './types';
 
 export const selectConsoleTitle = (consoleTitle) => {
 
-    return (dispatch) => dispatch(
-        { 
+    return (dispatch) => dispatch ({ 
         type: CONSOLE_TITLE, 
         payload: consoleTitle
     }); 

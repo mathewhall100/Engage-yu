@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { withStyles, Button, Grid, Paper, Typography} from '@material-ui/core';
-import Callback from '../UI/callback';
+import CallBack from '../UI/callback';
 import ReportTable from './ReportTable';
 import ReportBarGraph from './ReportBarGraph';
 import { displayDataCalc } from './reportLogic';
@@ -60,7 +60,7 @@ const styles = theme => ({
 class ReportSummary extends Component {
 
     componentDidMount() {
-        console.log("report summary: episodeId: ", this.props.episodeId)
+        console.log("report summary: episodeId: ", this.props.episodeId);
         if (this.props.patientData && this.props.patientData.episodes && this.props.episodeId) {
             this.setState({episodes: this.props.patientData.episodes}, 
                 () => this.loadDataForDisplay(this.getEpisode(this.state.episodes, this.props.episodeId)) )
@@ -90,9 +90,9 @@ class ReportSummary extends Component {
         if (episodeId !== "0") {return episodes.filter(e => e._id === episodeId)[0]
         } else {
             let ep = [];
-            let status = ["awaiting review", "active", "actioned", "pending"]
+            let status = ["awaiting review", "active", "actioned", "pending"];
             for (let i=0; i<status.length; i++) {
-                ep = episodes.filter(e => e.status === status[i])
+                ep = episodes.filter(e => e.status === status[i]);
                 if (ep.length > 0) {return ep[0]}
             }
         }
@@ -100,7 +100,7 @@ class ReportSummary extends Component {
     };
 
     loadDataForDisplay = (episode) => {
-        console.log("ReportSummary: loadDataForDisplay: ", episode)
+        console.log("ReportSummary: loadDataForDisplay: ", episode);
         if (episode) {
             this.setState({
                 episode,             
@@ -112,33 +112,27 @@ class ReportSummary extends Component {
                     episode.questions.length, 
                     episode.status
                 )
-            }) 
+            });
         } else { this.setState({noEpisodes: true}) }
     };
 
     // Event handlers
     handleFilterQuestions = (question) => {
-        console.log("question: ", question)
         this.setState({displayQuestion: question})
     };
 
     handleFullReportClick = () => {
-        console.log("episode: ", this.state.episode)
         this.props.handleFullReport(this.state.episode, this.state.questions, this.state.episodeDataForDisplay)
     };
 
-
     render () {
-        const { classes } = this.props;
+        const { classes, patientInfo, patientData, error, loading } = this.props;
         const { episode, questions, episodeDataForDisplay, displayQuestion } = this.state;
 
         const RenderQuestionBar = () => {
             return (
-                
-                questions &&
-                    <Typography variant="subtitle2" style={{fontSize: "16px"}}  inline={true}>
-                        Question {displayQuestion+1}: {questions[displayQuestion].question}
-                    
+                <Typography variant="subtitle2" style={{fontSize: "16px"}}  inline={true}>
+                    Question {displayQuestion+1}: {questions[displayQuestion].question}
                     <span className={classes.questionBtnBox}>
                         {questions.map((q, index) => {
                             return (
@@ -164,88 +158,91 @@ class ReportSummary extends Component {
 
         const RenderPendingMsg = () => 
             <div className={classes.graphContainer}>
-                This Diary card has not yet been started by the patient.
+                This diary card has not yet been started by the patient.
             </div> 
+
+        if (error) {
+            return <div>Error! {error.message}</div>
+        }
+
+        if (loading || !patientInfo || !patientData || !questions) {
+            return <CallBack />
+        }
 
         return (  
             <Paper className={classes.root}>
-                {episodeDataForDisplay && questions && episode ? 
 
-                    <React.Fragment>
+                <Grid container spacing={24}>
+                    <Grid item xs={6}>
+
                         <Grid container spacing={24}>
-                            <Grid item xs={6}>
-
-                                <Grid container spacing={24}>
-                                    <Grid item xs={9}>
-                                        <ReportSurveyDetails episode={episode} />
-                                    </Grid>
-                                    <Grid item xs={3}>
-                                        {episode.status === "pending" || episode.status === "active" ? null : <RenderBtn /> }
-                                    </Grid>
-                                </Grid>
-
-
-                                {episode.status === "pending" ? 
-                                    <RenderPendingMsg />
-                                    : <div className={classes.graphContainer}>
-                                        <RenderQuestionBar />
-                                        <br /><br />
-                                        <ReportBarGraph 
-                                            displayData={episodeDataForDisplay}
-                                            displayQuestion={displayQuestion}
-                                            question={questions[displayQuestion]}
-                                            height={230}
-                                            responsive="true"
-                                        />
-                                    </div> 
-                                }
-
+                            <Grid item xs={9}>
+                                <ReportSurveyDetails episode={episode} />
                             </Grid>
-                            <Grid item xs={6}>
-
-                                <div className={classes.tableContainer}>
-                                    {episode.status !== "pending" ?
-                                        <React.Fragment> 
-                                            <RenderQuestionBar />
-                                            <br /><br />
-                                            <ReportTable 
-                                                displayData={episodeDataForDisplay}
-                                                displayQuestion={displayQuestion}
-                                                question={questions[displayQuestion]}
-                                                numDays={this.state.episode.num_days}
-                                            />
-                                        </React.Fragment>
-                                        : null
-                                    }
-                                </div>
-
+                            <Grid item xs={3}>
+                                {episode.status === "pending" || episode.status === "active" ? null : <RenderBtn /> }
                             </Grid>
                         </Grid>
-                    </React.Fragment>
-                    : 
-                    <Callback />
-                }
+
+
+                        {episode.status === "pending" ? 
+                            <RenderPendingMsg />
+                            : <div className={classes.graphContainer}>
+                                <RenderQuestionBar />
+                                <br /><br />
+                                <ReportBarGraph 
+                                    displayData={episodeDataForDisplay}
+                                    displayQuestion={displayQuestion}
+                                    question={questions[displayQuestion]}
+                                    height={230}
+                                    responsive="true"
+                                />
+                            </div> 
+                        }
+
+                    </Grid>
+                    <Grid item xs={6}>
+
+                        <div className={classes.tableContainer}>
+                            {episode.status !== "pending" ?
+                                <React.Fragment> 
+                                    <RenderQuestionBar />
+                                    <br /><br />
+                                    <ReportTable 
+                                        displayData={episodeDataForDisplay}
+                                        displayQuestion={displayQuestion}
+                                        question={questions[displayQuestion]}
+                                        numDays={this.state.episode.num_days}
+                                    />
+                                </React.Fragment>
+                                : null
+                            }
+                        </div>
+
+                    </Grid>
+
+                </Grid>
              </Paper> 
         );
-    };
-};
+    }
+}
 
 
 ReportSummary.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-
 const mapStateToProps = (state) => {
     // console.log("State : ", state);
     return {
-        patientInfo: state.reportPatientData.reportPatientInfo,
-        patientData: state.reportPatientData.reportPatientData,
-        user: state.user
+        patientInfo: state.patient.patient.patientInfo,
+        patientData: state.patient.patient.patientData,
+        error: state.patient.error,
+        loading: state.patient.loading
     };
 };
 
-ReportSummary = withRouter(ReportSummary)
-ReportSummary = connect(mapStateToProps)(ReportSummary)
-ReportSummary = withStyles(styles, { withTheme: true })(ReportSummary)
-export default ReportSummary
+ReportSummary = withRouter(ReportSummary);
+ReportSummary = connect(mapStateToProps)(ReportSummary);
+ReportSummary = withStyles(styles, { withTheme: true })(ReportSummary);
+export default ReportSummary;

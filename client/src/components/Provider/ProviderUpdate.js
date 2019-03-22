@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
 import { startCase } from 'lodash';
 import { withStyles, Card, Typography } from '@material-ui/core';
 import FormTextFocused from '../UI/Forms/formTextFocused';
-import FormStateSelect from '../UI/Forms/formStateSelect'
-import CallBack from '../UI/callback'
-import DialogActionFailed from '../UI/Dialogs/dialogActionFailed'
-import FormUpdateUnit from '../UI/Forms/formUpdateUnit'
-import { validateName, validateZip, validateState, validateEmail, validatePhone, validatePhoneOther } from '../../logic/formValidations'
-import { selectConsoleTitle, providerAction } from '../../actions/index'
-import providerAPI from "../../utils/provider.js";
+import FormStateSelect from '../UI/Forms/formStateSelect';
+import CallBack from '../UI/callback';
+import DialogActionFailed from '../UI/Dialogs/dialogActionFailed';
+import FormUpdateUnit from '../UI/Forms/formUpdateUnit';
+import { validateName, validateZip, validateState, validateEmail, validatePhone, validatePhoneOther } from '../../logic/formValidations';
+import { selectConsoleTitle, loadProvider } from '../../actions';
 import ProviderDetailsBar from './ProviderDetailsBar';
+import providerAPI from '../../utils/provider';
 
-const styles = theme => ({
+const styles = () => ({
     root: {
         padding: "40px"
     },
@@ -24,26 +23,13 @@ const styles = theme => ({
 class ProviderUpdate extends Component {  
 
     componentDidMount() {
-        this.props.selectConsoleTitle({title: "Update provider details"});
+        this.props.dispatch(selectConsoleTitle({title: "Update Provider Details"}));
     };
     
     state = {
         success: false,
         failed: false,
     }
-
-    // Fetch provider info using provider_id and ensure loaded into store
-    fetchProviderDetailsToUpdate = (id) => {
-        providerAPI.findById(id)
-        .then(res => {
-            console.log("res.data: ", res.data);
-            this.props.providerAction(res.data);
-        })
-        .catch(err => {
-            console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-            console.log(err);
-        })
-    };
 
     submit(values) {
         console.log("Submit: ", values)
@@ -91,9 +77,9 @@ class ProviderUpdate extends Component {
     };
 
     updateSuccess = (data) => {
-        console.log("res.data: ", data)
-        this.fetchProviderDetailsToUpdate(this.props.provider._id)
+        console.log("res.data: ", data) 
         this.setState({success: true})
+        this.props.dispatch(loadProvider(this.props.provider._id))
     }
 
     updateFailed = (err) => {
@@ -113,8 +99,16 @@ class ProviderUpdate extends Component {
 
     render () {
         
-        const { provider, handleSubmit, classes } = this.props
+        const { provider, error, loading, handleSubmit, classes } = this.props
         const { failed, success } = this.state
+
+        if (error) {
+            return <div>Error! {error.message}</div>
+            }
+    
+        if (loading || !provider._id) {
+            return <CallBack />
+        }
 
         const getFormFields = (provider) => {
             return [{
@@ -211,14 +205,12 @@ const validate = (values) => {
     return errors;
 }
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle, providerAction }, dispatch);
-}
-
 const mapStateToProps = (state) => {
-    console.log("State : ", state);
+    //console.log("State : ", state);
     return {
-        provider: state.provider,
+        provider: state.provider.provider,
+        loading: state.provider.loading,
+        error: state.provider.error,
     }
 };
 
@@ -227,7 +219,7 @@ const formData = {
     validate     
 }
 
-ProviderUpdate = connect(mapStateToProps, mapDispatchToProps)(ProviderUpdate)
+ProviderUpdate = connect(mapStateToProps)(ProviderUpdate)
 ProviderUpdate = reduxForm(formData)(ProviderUpdate)
 ProviderUpdate = withStyles(styles)(ProviderUpdate)
 export default ProviderUpdate;

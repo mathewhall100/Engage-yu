@@ -159,7 +159,7 @@ GenericTable.propTypes = {
     tableData: PropTypes.array.isRequired,
     lastCellRightAlign: PropTypes.bool,
     lastCellHeading: PropTypes.string,
-    lastCellData: PropTypes.anyType,
+    lastCellData: PropTypes.node,
     hover: PropTypes.bool
 };
 

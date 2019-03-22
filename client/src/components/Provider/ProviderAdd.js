@@ -13,7 +13,7 @@ import BtnAction from '../UI/Buttons/btnAction'
 import BtnActionLink from '../UI/Buttons/btnActionLnk'
 import { selectConsoleTitle } from '../../actions/index'
 import providerAPI from "../../utils/provider.js";
-import { validateIsRequired, validateName, validateZip, validateState, validateEmail, validatePhone, validatePhoneOther, validatePassword, validatePasswords } from '../../logic/formValidations'
+import * as val from '../../logic/formValidations'
 import ProviderAddSuccessDialog from './ProviderAddSuccessDialog'
 import CareGroupSelect from '../CareGroup/CareGroupSelect'
 
@@ -174,21 +174,21 @@ function validate(values) {
     console.log("Error values: ", values) // -> { object containing all values of form entries } 
     const errors = {}; // error accumulator
     // validate inputs from 'values'; true=required
-    errors.firstname = validateName(values.firstname, true)
-    errors.lastname = validateName(values.lastname, true)
-    errors.officename = validateName(values.officename, true)
-    errors.officestreet = validateName(values.officestreet, true)
-    errors.officecity = validateName(values.officecity, true)
-    errors.officestate = validateState(values.officestate, true)
-    errors.officezip = validateZip(values.officezip, true)
-    errors.email = validateEmail(values.email, true)
-    errors.phone1 = validatePhone(values.phone1, true)
-    errors.phone2 = validatePhone(values.phone2, false)
-    errors.phone3 = validatePhoneOther(values.phone3, false)
-    errors.caregroup = validateIsRequired(values.caregroup)
-    errors.role = validateIsRequired(values.role)
-    errors.password1 = validatePassword(values.password1, true)
-    errors.password2 = validatePasswords(values.password1, values.password2)
+    errors.firstname = val.validateName(values.firstname, true)
+    errors.lastname = val.validateName(values.lastname, true)
+    errors.officename = val.validateName(values.officename, true)
+    errors.officestreet = val.validateName(values.officestreet, true)
+    errors.officecity = val.validateName(values.officecity, true)
+    errors.officestate = val.validateState(values.officestate, true)
+    errors.officezip = val.validateZip(values.officezip, true)
+    errors.email = val.validateEmail(values.email, true)
+    errors.phone1 = val.validatePhone(values.phone1, true)
+    errors.phone2 = val.validatePhone(values.phone2, false)
+    errors.phone3 = val.validatePhoneOther(values.phone3, false)
+    errors.caregroup = val.validateIsRequired(values.caregroup)
+    errors.role = val.validateIsRequired(values.role)
+    errors.password1 = val.validatePassword(values.password1, true)
+    errors.password2 = val.validatePasswords(values.password1, values.password2)
     // If errors is empty, then form good to submit
     console.log("Errors: ", errors)
     return errors;

@@ -1,16 +1,15 @@
 import { combineReducers } from 'redux';
-import {  routerReducer } from "react-router-redux";
+import { routerReducer } from "react-router-redux";
 import { reducer as formReducer } from 'redux-form';
 
 import AuthReducer from './modules/auth';
 import UserReducer from './UserReducer';
-import DashboardReducer from './DashboardReducer';
 import ConsoleTitleReducer from './ConsoleTitleReducer';
-import SurveyQuestionsReducer from './SurveyQuestionsReducer';
+import QuestionsReducer from './QuestionsReducer';
 import ActiveSurveysReducer from './ActiveSurveysReducer';
-import ReportReducer from './ReportReducer';
-import ListPatientsByProvider from './PatientListReducer';
-import ListPatientsByCareGroup from './PatientListGroupReducer';
+import PatientReducer from './PatientReducer';
+import PatientsByProviderReducer from './PatientsByProviderReducer';
+import PatientsByCareGroupReducer from './PatientsByCareGroupReducer';
 import ProviderReducer from './ProviderReducer';
 import CareGroupReducer from './CareGroupReducer';
 
@@ -19,13 +18,12 @@ export default combineReducers({
     auth : AuthReducer,
     router : routerReducer,
     user: UserReducer,
-    patients: DashboardReducer,
     consoleTitle: ConsoleTitleReducer,
-    surveyQuestions: SurveyQuestionsReducer,
+    questions: QuestionsReducer,
     activeSurveys: ActiveSurveysReducer,
-    reportPatientData: ReportReducer,
-    listPatientsByProvider: ListPatientsByProvider,
-    listPatientsByCareGroup: ListPatientsByCareGroup,
+    patient: PatientReducer,
+    patientsByProvider: PatientsByProviderReducer,
+    patientsByCareGroup: PatientsByCareGroupReducer,
     provider: ProviderReducer,
     careGroup: CareGroupReducer
 });

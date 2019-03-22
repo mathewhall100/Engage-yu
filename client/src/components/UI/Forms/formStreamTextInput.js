@@ -3,7 +3,6 @@ import { Field } from 'redux-form';
 import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 
-
 export default class FormStreamTextInput extends PureComponent {  
 
     onChange = (value) => {

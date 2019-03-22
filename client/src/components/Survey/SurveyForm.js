@@ -22,8 +22,6 @@ import SurveySaveSuccessDialog from './SurveySaveSuccessDialog'
 import DialogActionFailed from '../UI/Dialogs/dialogActionFailed'
 
 
-
-//Form styles
 const styles = theme => ({
     root: {
         width: "720px",
@@ -123,9 +121,9 @@ const styles = theme => ({
 class SurveyForm extends Component { 
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.defaultQuestion[0] !== this.props.defaultQuestion[0]) {
+        if (nextProps.defaultQuestion !== this.props.defaultQuestion) {
             const tempArray = []
-            tempArray.push(nextProps.defaultQuestion[0])
+            tempArray.push(nextProps.defaultQuestion)
             this.setState({selectedQuestions: tempArray})
         }
     }
@@ -245,7 +243,7 @@ class SurveyForm extends Component {
     toggleCustom = () => {
         if (this.state.customize === true) {
             this.setState({
-                selectedQuestions: [this.props.defaultQuestion[0]],
+                selectedQuestions: [this.props.defaultQuestion],
                 selectedList: ""
             })
         }
@@ -296,8 +294,16 @@ class SurveyForm extends Component {
     // Render component
     render () {
         
-        const { patientInfo, patientData, handleSubmit, classes, submitting, surveyForm, customQuestions, provider } = this.props;
+        const { patientInfo, patientData, defaultQuestion, customQuestions, provider, errorPatient, errorProvider, errorQuestions, loadingPatient, loadingProvider, loadingQuestions, handleSubmit, classes, submitting, surveyForm } = this.props;
         const { selectedQuestions, selectedList, slider1Value, slider2Value, settings, customize, toggleCollapse, saveList, success, failed, episodeStart } = this.state;
+
+        if (errorPatient || errorProvider || errorQuestions) {
+            return <div>Error! {errorPatient.message} {errorProvider.message} {errorQuestions.message}</div>
+        }
+
+        if (loadingPatient || loadingProvider || loadingQuestions || !patientInfo || !provider || !defaultQuestion) {
+            return <CallBack />
+        }
 
         // SurveyForm component return
         return (
@@ -437,10 +443,10 @@ class SurveyForm extends Component {
                                             />
                                             <hr className={classes.hrStyled}/>
 
-                                            {customQuestions && customQuestions[0] ?
+                                            {customQuestions && customQuestions.questionList ?
                                                 <SurveyCustomQuestionTable 
                                                         type="question"
-                                                        customQuestions={customQuestions}
+                                                        customQuestions={customQuestions.questionList}
                                                         selected={selectedQuestions}
                                                         checkboxClick={this.handleQuestionCheckBoxClick}
                                                 />  
@@ -534,12 +540,21 @@ function validate(values) {
 const mapStateToProps = (state) => {
     console.log("State : ", state);
     return {
-        defaultQuestion: state.surveyQuestions.surveyDefaultQuestion,
-        customQuestions: [state.surveyQuestions.surveyDefaultQuestion[0], ...state.surveyQuestions.surveyCustomQuestions],
-        patientInfo: state.reportPatientData.reportPatientInfo,
-        patientData: state.reportPatientData.reportPatientData,
-        surveyForm: state.form.NewSurveyForm,
-        provider: state.provider
+        defaultQuestion: state.questions.questions.defaultQuestion,
+        customQuestions: state.questions.questions.customQuestions,
+        errorQuestions: state.questions.error,
+        loadingQuestions: state.questions.loading,
+
+        patientInfo: state.patient.patient.patientInfo,
+        patientData: state.patient.patient.patientData,
+        errorPatient: state.patient.error,
+        loadingPatient: state.patient.loading,
+
+        provider: state.provider.provider,
+        errorProvider: state.provider.error,
+        laodingprovider: state.provider.loading,
+        
+        surveyForm: state.form.NewSurveyForm //Make form state available in component
     }
 };
   

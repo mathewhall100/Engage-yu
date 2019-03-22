@@ -77,7 +77,7 @@ FormSelectWithChip.propTypes = {
 	classes: PropTypes.object.isRequired,
 	theme: PropTypes.object.isRequired,
 	menuItems: PropTypes.array.isRequired,
-	label: PropTypes.string.isRequired
+	label: PropTypes.string
 };
 
 export default withStyles(styles, { withTheme: true })(FormSelectWithChip);

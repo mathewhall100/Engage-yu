@@ -1,4 +1,4 @@
-import { CONSOLE_TITLE } from '../actions/index'
+import { CONSOLE_TITLE } from '../actions/types'
 
 const INITIAL_STATE = null;
 

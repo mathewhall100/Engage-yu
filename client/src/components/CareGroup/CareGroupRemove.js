@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { startCase } from 'lodash';
 import { withStyles, Typography, Card } from '@material-ui/core'
 import BtnAction from '../UI/Buttons/btnAction'
@@ -13,7 +12,7 @@ import { selectConsoleTitle } from '../../actions/index'
 import CareGroupDetailsBar from './CareGroupDetailsBar'
 
 
-const styles = theme => ({
+const styles = () => ({
     root: {
         padding: "40px 40px"
     }
@@ -23,16 +22,8 @@ const styles = theme => ({
 class CareGroupRemove extends Component {  
     
     componentDidMount() {
-        this.props.selectConsoleTitle({title: "Delete Care Group"});
-        if (this.props.careGroup && this.props.careGroup._id ) {
-            this.fetchProvidersByGroup(this.props.careGroup._id)
-        }
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.careGroup !== this.props.careGroup ){
-            this.fetchProvidersByGroup(this.props.careGroup._id)
-        }
+        this.props.dispatch(selectConsoleTitle({title: "Delete Care Group"}));
+        this.loadProvidersByGroup(this.props.careGroup._id)
     }
 
     state = {
@@ -41,7 +32,7 @@ class CareGroupRemove extends Component {
        providerList: []
     }
 
-    fetchProvidersByGroup(id) {
+    loadProvidersByGroup(id) {
         let providerList = [];
         providerAPI.findAllByGroup(id)
             .then(res => {
@@ -81,49 +72,51 @@ class CareGroupRemove extends Component {
     }
 
     render () {
-
+        const { classes, careGroup, error, loading } = this.props
         const { success, failed, providerList } = this.state
-        const { classes, careGroup } = this.props
+    
+        if (error) {
+            return <div>Error! {error.message}</div>
+        }
+
+        if (loading || !careGroup._id ) {
+            return <CallBack />
+        }
 
         return (
             <Card className={classes.root}> 
 
-                {careGroup && careGroup._id ? 
+                <CareGroupDetailsBar careGroup={careGroup} />
+
+                { providerList.length ?
                     <React.Fragment>
-
-                        <CareGroupDetailsBar careGroup={careGroup} />
-
-                        { providerList.length ?
-                            <React.Fragment>
-                                <Typography variant="subtitle1" gutterBottom>
-                                    There are still {providerList.length} providers in this care group.
-                                </Typography>
-                                <Typography variant="subtitle1" gutterBottom color='error'>
-                                    You cannot delete a care group with active providers. Please use the manage provider menu  to transfer all remaining providers to other care groups and then you can delete this care group from the application.
-                                </Typography>
-                            </React.Fragment>
-                            :
-                            <React.Fragment>
-                                <Typography variant="subtitle1" gutterBottom>
-                                    Select 'delete' to delete this caregroup from the list of caregroups held in the application.
-                                </Typography>
-                                <Typography variant="subtitle1" gutterBottom color='error'>
-                                    Note, this action cannot be undone. deleted care groups can be re-added to the application by re-entering their details via the add care group page but all individual providers will need re-allocating to the newly added care group.
-                                </Typography>
-                            
-                                <br /> <HrStyled /> <br />
-                            
-                                <span style={{marginRight: "15px"}}>
-                                    <BtnAction type ="button" disabled={false} text="cancel" handleAction={this.handleCancel} />
-                                </span>
-                                <BtnAction type="button" disabled={false} text="delete" handleAction={this.handledelete} />
-                            </React.Fragment> 
-                        }
-
+                        <Typography variant="subtitle1" gutterBottom>
+                            There are still {providerList.length} providers in this care group.
+                        </Typography>
+                        <Typography variant="subtitle1" gutterBottom color='error'>
+                            You cannot delete a care group with active providers. Please use the manage provider menu  to transfer all remaining providers to other care groups and then you can delete this care group from the application.
+                        </Typography>
                     </React.Fragment>
+
                     :
-                    <CallBack /> 
+
+                    <React.Fragment>
+                        <Typography variant="subtitle1" gutterBottom>
+                            Select 'delete' to delete this caregroup from the list of caregroups held in the application.
+                        </Typography>
+                        <Typography variant="subtitle1" gutterBottom color='error'>
+                            Note, this action cannot be undone. deleted care groups can be re-added to the application by re-entering their details via the add care group page but all individual providers will need re-allocating to the newly added care group.
+                        </Typography>
+                    
+                        <br /> <HrStyled /> <br />
+                    
+                        <span style={{marginRight: "15px"}}>
+                            <BtnAction type ="button" disabled={false} text="cancel" handleAction={this.handleCancel} />
+                        </span>
+                        <BtnAction type="button" disabled={false} text="delete" handleAction={this.handledelete} />
+                    </React.Fragment> 
                 }
+
 
                 {success && 
                     <DialogGeneric 
@@ -143,18 +136,15 @@ class CareGroupRemove extends Component {
     }
 }
 
-
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle }, dispatch);
-}
-
 const mapStateToProps = (state) => {
     // console.log("State : ", state);
     return {
-        careGroup: state.careGroup,
+        careGroup: state.careGroup.careGroup,
+        loading: state.careGroup.loading,
+        error: state.careGroup.error,
     }
 };
 
 CareGroupRemove = withStyles(styles)(CareGroupRemove)
-CareGroupRemove = connect(mapStateToProps, mapDispatchToProps)(CareGroupRemove)
+CareGroupRemove = connect(mapStateToProps)(CareGroupRemove)
 export default CareGroupRemove

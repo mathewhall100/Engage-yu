@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { startCase } from 'lodash';
 import moment from 'moment';
 import { withStyles, Typography, Card, Grid } from '@material-ui/core';
@@ -9,10 +8,10 @@ import TableGeneric from '../UI/Tables/tableGeneric';
 import BtnSmall from '../UI/Buttons/btnSmall';
 import BtnHandleGroup from '../UI/Buttons/btnHandleGroup';
 import HrStyled from '../UI/hrStyled';
-import Callback from '../UI/callback';
+import BtnCloseIcon from '../UI/Buttons/btnCloseIcon';
+import CallBack from '../UI/callback';
 import providerAPI from "../../utils/provider.js";
-import provider_groupAPI from "../../utils/provider_group.js";
-import  { careGroupAction } from '../../actions/index';
+import  { loadCareGroup } from '../../actions';
 
 const styles = () => ({
     root: {
@@ -28,24 +27,15 @@ const styles = () => ({
 class CareGroupDetails extends Component {  
     
     componentDidMount() {
-        //console.log("CDM, CareGroupId: ", this.props.careGroupId)
-        provider_groupAPI.findById(this.props.careGroupId)
-        .then(res => {
-            console.log("res.data: ", res.data);
-            this.props.careGroupAction(res.data);
-            this.fetchProvidersByGroup(this.props.careGroupId);
-        })
-        .catch(err => {
-            console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-            console.log(err);
-        })
+        this.props.dispatch(loadCareGroup(this.props.careGroupId))
+        this.loadProvidersByGroup(this.props.careGroupId)
     }
 
     state = {
         providerList: [],
     };
 
-    fetchProvidersByGroup(careGroupId) {
+    loadProvidersByGroup(careGroupId) {
         let providerList = [];
         providerAPI.findAllByGroup(careGroupId)
             .then(res => {
@@ -59,7 +49,7 @@ class CareGroupDetails extends Component {
                         })
                     )
                 })
-                this.setState({providerList: providerList})
+                return this.setState({providerList: providerList})
             })
             .catch(err => {
                 console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
@@ -70,9 +60,6 @@ class CareGroupDetails extends Component {
     // Event handlers
     handleAction = (btn) => {
         switch(btn) {
-            case "close":
-                this.props.handleClose();
-                break;
             case "remove care group":
                 this.props.history.push({
                     pathname: '/admin/caregroup/remove',
@@ -94,9 +81,13 @@ class CareGroupDetails extends Component {
         this.setState({showProviders: this.state.showProviders ? false : true});
     }
 
+    handleClose = () => {
+        this.props.handleClose();
+    }
+
 
     render () {
-        const { classes, careGroup} = this.props;
+        const { classes, careGroup, error, loading} = this.props;
         const { showProviders, providerList} = this.state;
 
         const infoH = (careGroup) => [
@@ -109,99 +100,87 @@ class CareGroupDetails extends Component {
             {btn: "edit care group", icon: "" },
         ];
 
+        if (error) {
+            return <div>Error! {error.message}</div>
+        }
+
+        if (loading || !careGroup._id ) {
+            return <CallBack />
+        }
+
         return (
             <Card className={classes.root}> 
+            
+                <Typography variant="caption" inline>Care group</Typography>
+                <BtnCloseIcon handleBtnClick={this.handleClose} />
+                <Typography variant="h6" >{startCase(careGroup.group_name)}</Typography>
+   
+                <br />
 
-                {careGroup ? 
-                    <React.Fragment>
+                <Grid container spacing={24}>
+                    {infoH(careGroup).map((info, idx) => {
+                        return (
+                            <Grid item xs={info.grid} key={idx}>
+                                <Typography variant="caption">{info.caption}</Typography>
+                                <Typography variant="subtitle1" className={classes.fwMedium}>{info.info}</Typography> 
+                            </Grid>
+                        )
+                    }) }
+                </Grid>
 
-                        <Grid container spacing={24}>
-                            <Grid item xs={6}>
-                                <Typography variant="caption">Care group</Typography>
-                                <Typography variant="h6" >{startCase(careGroup.group_name)}</Typography>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Typography align="right" style={{marginTop: "16px"}}>
-                                    <BtnHandleGroup 
-                                        btns={[{btn: "close"}]} 
-                                        _id={""}
-                                        handleActionBtns={this.handleAction}
-                                    />
-                                </Typography>
-                            </Grid>
+                <br />
+
+                {providerList.length ?
+                    <Grid container spacing={24}>
+                        <Grid item xs={5}>
+                            <br />
+                            <Typography inline>Show list of providers in this care group? </Typography>
+                            <BtnSmall 
+                                type="button" 
+                                disabled={false} 
+                                index={0} 
+                                text={showProviders ? "Hide" : "Show"}
+                                handleBtn={this.handleShowProviders}
+                            /> 
                         </Grid>
-                        <br />
-                        <Grid container spacing={24}>
-                            {infoH(careGroup).map((info, idx) => {
-                                return (
-                                    <Grid item xs={info.grid} key={idx}>
-                                        <Typography variant="caption">{info.caption}</Typography>
-                                        <Typography variant="subtitle1" className={classes.fwMedium}>{info.info}</Typography> 
-                                    </Grid>
-                                )
-                            }) }
+                        <Grid item xs={7} style={{paddingTop: "20px"}}>
+                            { showProviders && 
+                                <TableGeneric 
+                                    tableHeadings={["name", "role", "office"]}
+                                    tableData={providerList}
+                                /> 
+                            }
+                            <br />
                         </Grid>
-
-                        <br />
-
-                        {providerList.length ?
-                            <Grid container spacing={24}>
-                                <Grid item xs={5}>
-                                    <br />
-                                    <Typography inline>Show list of providers in this care group? </Typography>
-                                    <BtnSmall 
-                                        type="button" 
-                                        disabled={false} 
-                                        index={0} 
-                                        text={showProviders ? "Hide" : "Show"}
-                                        handleBtn={this.handleShowProviders}
-                                    /> 
-                                </Grid>
-                                <Grid item xs={7} style={{paddingTop: "20px"}}>
-                                    { showProviders && 
-                                        <TableGeneric 
-                                            tableHeadings={["name", "role", "office"]}
-                                            tableData={providerList}
-                                        /> 
-                                    }
-                                    <br />
-                                </Grid>
-                            </Grid>
-                            : 
-                            null
-                        }
-
-                        <br /> <HrStyled /> <br />    
-                       
-                        <BtnHandleGroup 
-                            btns={btns} 
-                            _id={careGroup._id}
-                            handleActionBtns={this.handleAction}
-                        />   
-
-                    </React.Fragment>
+                    </Grid>
                     : 
-                    <Callback /> 
+                    null
                 }
+
+                <br /> <HrStyled /> <br />    
+                
+                <BtnHandleGroup 
+                    btns={btns} 
+                    _id={careGroup._id}
+                    handleActionBtns={this.handleAction}
+                />   
 
             </Card>  
         );
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ careGroupAction }, dispatch);
-};
-
 const mapStateToProps = (state) => {
     //console.log("State : ", state);
     return {
-        careGroup: state.careGroup,
+        careGroup: state.careGroup.careGroup,
+        loading: state.careGroup.loading,
+        error: state.careGroup.error,
         user: state.user
     }
 }
 
 CareGroupDetails = withRouter(CareGroupDetails);
 CareGroupDetails = withStyles(styles)(CareGroupDetails);
-CareGroupDetails = connect(mapStateToProps, mapDispatchToProps)(CareGroupDetails);
-export default connect(null, mapDispatchToProps) (CareGroupDetails);
+CareGroupDetails = connect(mapStateToProps)(CareGroupDetails);
+export default CareGroupDetails;

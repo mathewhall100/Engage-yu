@@ -62,7 +62,7 @@ class SurveyFormStartDateRadios extends Component {
                 <Radio value="date" label="Specific date" />
             </Field>
 
-        )
+        );
     }
 };
 

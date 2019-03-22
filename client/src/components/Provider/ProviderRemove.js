@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withStyles, Card, Typography } from '@material-ui/core';
 import BtnAction from '../UI/Buttons/btnAction'
 import DialogGeneric from '../UI/Dialogs/dialogGeneric';
 import CallBack from '../UI/callback'
 import HrStyled from '../UI/hrStyled'
-import { selectConsoleTitle, providerAction } from '../../actions/index'
+import { selectConsoleTitle } from '../../actions'
 import providerAPI from "../../utils/provider.js";
 import ProviderDetailsBar from './ProviderDetailsBar'
 
 
-const styles = theme => ({
+const styles = () => ({
     root: {
         padding: "40px"
     },
@@ -20,7 +19,7 @@ const styles = theme => ({
 class ProviderRemove extends Component {  
 
     componentDidMount() {
-        this.props.selectConsoleTitle({title: "Remove provider"});
+        this.props.dispatch(selectConsoleTitle({title: "Remove Provider"}));
     }
 
     state = {
@@ -48,38 +47,37 @@ class ProviderRemove extends Component {
         })
     }
 
-
+  
     render () {
+        const { provider, error, loading, classes } = this.props
+        const { failed, success} = this.state  
+
+        const texts=["Select 'Remove' to remove this provider from the list of providers held in the application. 'Cancel' to cancel.",
+                     "Note, this action cannot be undone. Removed providers can be added back by re-entering all their details via the 'new provider' page."]
         
-        const { provider, classes } = this.props
-        const { failed, success} = this.state
+        if (error) {
+            return <div>Error! {error.message}</div>
+        }
+
+        if (loading || !provider._id) {
+            return <CallBack />
+        }
+
 
         return (
             <Card className={classes.root}>
 
-                {provider && provider._id ? 
-                    <React.Fragment>
+                <ProviderDetailsBar provider={provider} />
 
-                        <ProviderDetailsBar provider={provider} />
+                <Typography variant="subtitle1" gutterBottom>{texts[0]}</Typography>
+                <Typography variant="subtitle1" gutterBottom color="error">{texts[1]}</Typography>
 
-                        <Typography variant="subtitle1" gutterBottom>
-                            Select 'Remove' to remove this provider from the list of providers held in the application. 'Cancel' to cancel.
-                        </Typography>
-                        <Typography variant="subtitle1" gutterBottom color="error">
-                            Note, this action cannot be undone. Removed providers can be added back by re-entering all their details via the 'new provider' page.
-                        </Typography>
-
-                        <br /> <HrStyled /> <br />
-                                    
-                        <span style={{marginRight: "15px"}}>
-                            <BtnAction type ="button" disabled={false} text="cancel" handleAction={this.handleCancel} />
-                        </span>
-                        <BtnAction type="button" disabled={false} text="delete" handleAction={this.handledelete} />
-
-                    </React.Fragment>
-                    :
-                    <CallBack />
-                }
+                <br /> <HrStyled /> <br />
+                            
+                <span style={{marginRight: "15px"}}>
+                    <BtnAction type ="button" disabled={false} text="cancel" handleAction={this.handleCancel} />
+                </span>
+                <BtnAction type="button" disabled={false} text="delete" handleAction={this.handledelete} />
 
                 {success && 
                     <DialogGeneric 
@@ -87,30 +85,29 @@ class ProviderRemove extends Component {
                         text={`provider ${provider.firstname} ${provider.lastname} has been successfully deleted`}
                     />
                 }
+
                 {failed && 
                     <DialogGeneric
                         title="Failed!" 
                         text={`A problem occurred and provider ${provider.firstname} ${provider.lastname}  could not be deleted at this time. Please check that this is an appropriate action and try again if required. If the problem persists, contact the system administrator.`} 
                     />
                 }
-
+            
             </Card>
         );
     }
 }
 
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle, providerAction }, dispatch);
-}
-
 const mapStateToProps = (state) => {
     console.log("State : ", state);
     return {
-        provider: state.provider,
+        provider: state.provider.provider,
+        loading: state.provider.loading,
+        error: state.provider.error,
     }
 };
 
 ProviderRemove = withStyles(styles)(ProviderRemove)
-ProviderRemove = connect(mapStateToProps, mapDispatchToProps)(ProviderRemove)
+ProviderRemove = connect(mapStateToProps)(ProviderRemove)
 export default ProviderRemove;

@@ -45,7 +45,7 @@ const FormFind = (props) =>  {
 FormFind.propTypes = {
 	classes: PropTypes.object.isRequired,
     title: PropTypes.string.isRequired,
-    select: PropTypes.func.isRequired,
+    select: PropTypes.object.isRequired,
     url: PropTypes.string.isRequired,
     btn: PropTypes.string.isRequired,
     submitting: PropTypes.bool.isRequired,

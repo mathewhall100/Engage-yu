@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { reduxForm } from 'redux-form';
 import { startCase } from 'lodash';
 import { withStyles, Typography, Card } from '@material-ui/core';
@@ -9,12 +8,12 @@ import FormUpdateUnit from '../UI/Forms/formUpdateUnit'
 import DialogGeneric from '../UI/Dialogs/dialogGeneric';
 import CallBack from '../UI/callback';
 import provider_groupAPI from "../../utils/provider_group.js";
-import { selectConsoleTitle, careGroupAction } from '../../actions/index'
+import { selectConsoleTitle, loadCareGroup } from '../../actions'
 import { validateName } from '../../logic/formValidations'
 import CareGroupDetailsBar from './CareGroupDetailsBar'
 
 
-const styles = theme => ({
+const styles = () => ({
     root: {
         padding: "40px"
     },
@@ -24,25 +23,13 @@ const styles = theme => ({
 class CareGroupUpdate extends Component {  
 
     componentDidMount() {
-        this.props.selectConsoleTitle({title: "Update care group"});
+        this.props.dispatch(selectConsoleTitle({title: "Update Care Group"}));
     };
 
     state = {
         updateSuccess: false,
         updateFailed: false,
     }
-
-    fetchCareGroup = (careGroupId) => {
-        provider_groupAPI.findById(careGroupId)
-            .then(res => {
-                console.log("res.data: ", res.data);
-                this.props.careGroupAction(res.data);
-            })
-            .catch(err => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log(err);
-        })
-    };
 
     // Form handler
     submit(values) {
@@ -52,7 +39,7 @@ class CareGroupUpdate extends Component {
         })
         .then(res => {
             console.log("res.data: ", res.data)
-            this.fetchCareGroup(res.data._id)
+            this.props.dispatch(loadCareGroup(res.data._id));
             this.setState ({updateSuccess: true})
         })
         .catch(err => {
@@ -72,10 +59,9 @@ class CareGroupUpdate extends Component {
 
 
     render () {
-
+        const { careGroup, error, loading, handleSubmit, classes } = this.props
         const { updateSuccess, updateFailed } = this.state
-        const { careGroup, handleSubmit, classes } = this.props
-
+       
         const getFormFields = (careGroup) => {
             console.log("careGroup: ", careGroup)
             return [{
@@ -85,40 +71,40 @@ class CareGroupUpdate extends Component {
             }]
         }
 
+        if (error) {
+            return <div>Error! {error.message}</div>
+        }
+
+        if (loading || !careGroup._id ) {
+            return <CallBack />
+        }
+
         return (
             <Card className={classes.root}>
 
-                {careGroup && careGroup._id ? 
-                     <React.Fragment>
+                <CareGroupDetailsBar careGroup={careGroup} />
 
-                        <CareGroupDetailsBar careGroup={careGroup} />
+                <Typography variant="subtitle1" gutterBottom>
+                    Click 'update' to update care group.
+                </Typography>
+            
+                <br /> <br />
 
-                        <Typography variant="subtitle1" gutterBottom>
-                            Click 'update' to update care group.
-                        </Typography>
-                    
-                        <br /> <br />
-
-                        <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
-                            <FormUpdateUnit 
-                                formFields={getFormFields(careGroup)}
-                                outcomeReset={this.outcomeReset}
-                                updateSuccess={updateSuccess} 
-                                updateFailed={updateFailed}
-                            />
-                        </form> 
-                        
-                        {updateFailed && 
-                            <DialogGeneric 
-                                title="Failed!" 
-                                text={`Unfortuneately a problem occurred and this care group could not be updated at this time. Please check the dtails you have entered and try again. If the problem persists, contact the syste administrator`}
-                            />
-                         } 
-
-                    </React.Fragment>
-                    : 
-                    <CallBack />
-                }
+                <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
+                    <FormUpdateUnit 
+                        formFields={getFormFields(careGroup)}
+                        outcomeReset={this.outcomeReset}
+                        updateSuccess={updateSuccess} 
+                        updateFailed={updateFailed}
+                    />
+                </form> 
+                
+                {updateFailed && 
+                    <DialogGeneric 
+                        title="Failed!" 
+                        text={`Unfortuneately a problem occurred and this care group could not be updated at this time. Please check the dtails you have entered and try again. If the problem persists, contact the syste administrator`}
+                    />
+                } 
 
             </Card> 
         );
@@ -134,15 +120,12 @@ const validate = (values) => {
     return errors;
 }
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle, careGroupAction }, dispatch);
-}
-
 const mapStateToProps = (state) => {
     console.log("State : ", state);
     return {
-        careGroup: state.careGroup,
-        user: state.user
+        careGroup: state.careGroup.careGroup,
+        loading: state.careGroup.loading,
+        error: state.careGroup.error,
     }
 };
 
@@ -153,5 +136,5 @@ const formData = {
 
 CareGroupUpdate = reduxForm(formData)(CareGroupUpdate)
 CareGroupUpdate = withStyles(styles)(CareGroupUpdate)
-CareGroupUpdate = connect(mapStateToProps, mapDispatchToProps)(CareGroupUpdate)
+CareGroupUpdate = connect(mapStateToProps)(CareGroupUpdate)
 export default CareGroupUpdate;

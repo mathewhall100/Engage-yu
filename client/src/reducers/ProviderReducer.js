@@ -1,14 +1,43 @@
-import { PROVIDER_DETAILS } from '../actions/types'
+import {
+    PROVIDER_BEGIN,
+    PROVIDER_SUCCESS,
+    PROVIDER_FAILURE
+} from '../actions/types';
 
-const INITIAL_STATE = null;
-
-export default (state = INITIAL_STATE, action) => {
-    //console.log("Action TYPE:", action.type, ": ", action.payload)
-    switch (action.type) {
-        case PROVIDER_DETAILS:
-            //console.log("provider_reducer: ", action.payload)
-            return action.payload;
-        default:
-            return state;
-    }
+const initialState = {
+    provider: {},
+    loading: false,
+    error: null
 };
+
+export default function providerReducer( 
+    
+    state = initialState,
+    action
+) {
+    switch(action.type) {
+        case PROVIDER_BEGIN:
+            return {
+                ...state,
+                loading: true,
+                error: null
+            };
+
+        case PROVIDER_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                provider: action.payload.provider
+            };
+
+        case PROVIDER_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload.error,
+                provider: []
+            };
+
+        default: return state;
+    }
+}

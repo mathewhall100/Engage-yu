@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { startCase } from 'lodash'
 import moment from 'moment';
 import PropTypes from 'prop-types';
@@ -13,7 +12,6 @@ import ReportEntriesTable from './ReportEntriesTable'
 import ReportBarGraph from './ReportBarGraph';
 import DetailsBar from '../UI/detailsBar';
 import { displayDataCalc } from './reportLogic';
-import { selectConsoleTitle } from '../../actions/index';
 import ReportRequestDetails from './ReportRequestDetails'
 import ReportSurveyDetails from './ReportSurveyDetails'
 
@@ -113,22 +111,23 @@ class ReportFull extends Component {
                 { episode._id && records && questions ? 
                     <Paper className={classes.root}>
 
-                        <Grid container spacing={24}>
-                            <Grid item xs={12} >
+                        <Grid container spacing={24}> 
+                            <Grid item xs={7}>
+                                <Typography variant="h5" align="center" style={{position: "relative", top: "4px", left: "120px", fontWeight: 500}} >
+                                    Diary Card Report
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={5} style={{position: "relative", top: "4px"}}>
                                 <BtnTooltip btns={btns} handleActionBtns={this.handleActions}/>
                             </Grid>
+                           
                         </Grid>
 
                         <br /><hr /><br />
                     
                         <Grid container spacing={24}>
                             <Grid item xs={12}>
-                                <Typography variant="h4" align="center" gutterBottom>
-                                    Diary Card Report
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={12}>
-                                 <DetailsBar items={patientDetails}/> 
+                                <DetailsBar items={patientDetails}/> 
                             </Grid>
                             <Grid item xs={6}>
                                 {episode && <ReportSurveyDetails episode={episode}/> }
@@ -217,18 +216,18 @@ ReportFull.propTypes = {
     classes: PropTypes.object.isRequired,
   };
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle }, dispatch);
-}
 
 const mapStateToProps = (state) => {
     //console.log("State : ", state);
     return {
-        patientInfo: state.reportPatientData.reportPatientInfo,
+        patientInfo: state.patient.patient.patientInfo,
+        patientData: state.patient.patient.patientData,
+        error: state.patient.error,
+        loading: state.patient.loading
     }
   };
 
-ReportFull = connect(mapStateToProps, mapDispatchToProps)(ReportFull)
+ReportFull = connect(mapStateToProps)(ReportFull)
 ReportFull = withRouter(ReportFull)
 ReportFull = withStyles(styles, { withTheme: true })(ReportFull)
 export default ReportFull

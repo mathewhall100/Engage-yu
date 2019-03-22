@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { reduxForm } from 'redux-form';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import axios from 'axios';
 import { startCase } from 'lodash';
 import { withStyles, Card, Typography } from '@material-ui/core';
 import FormTextFocused from '../UI/Forms/formTextFocused';
@@ -13,7 +11,7 @@ import PatientDetailsBar from './PatientDetailsBar';
 import FormUpdateUnit from '../UI/Forms/formUpdateUnit'
 import CallBack from '../UI/callback'
 import patient_infoAPI from "../../utils/patient_info.js";
-import { selectConsoleTitle, fetchReportPatientData } from '../../actions/index';
+import { selectConsoleTitle, loadPatient } from '../../actions';
 import { validateName, validateEmail, validatePhone, validateStatus, validateIsRequired } from '../../logic/formValidations'
 
 
@@ -27,8 +25,7 @@ const styles = theme => ({
 class PatientUpdate extends Component {  
 
     componentDidMount() {
-        this.props.selectConsoleTitle({title: "Update Patient Details"});
-        this.fetchPatientDetailsToUpdate()
+        this.props.dispatch(selectConsoleTitle({title: "Update Patient Details"}));
     }    
     
     state = {
@@ -36,29 +33,8 @@ class PatientUpdate extends Component {
         failed: false
     }
 
-    // Fetch patient info using patient_id in local storage and ensure loaded into store
-    fetchPatientDetailsToUpdate = () => {
-        let patientInfo, patientData
-        const url = `/api/patient_info/find/${localStorage.getItem("patient_id")}`
-        axios.get(url)
-        .then( res => {
-            patientInfo = res.data
-            axios.get(`/api/patient_data/${patientInfo.patient_data_id}`)
-            .then( res => {
-                patientData = res.data
-                console.log("axios patientInfo: ", patientInfo)
-                console.log("axios patientData: ", patientData)
-                this.props.fetchReportPatientData(patientInfo, patientData)
-            })
-            .catch(err => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log(err);
-            })
-        })
-    };
-
     submit(values) {
-        console.log("Submit: ", values)
+        //console.log("Submit: ", values)
         const { patientInfo } = this.props
 
         if (values.firstname) {
@@ -108,7 +84,7 @@ class PatientUpdate extends Component {
 
     updateSuccess = (data) => {
         console.log("res.data: ", data)
-        this.fetchPatientDetailsToUpdate()
+        this.props.dispatch(loadPatient(this.props.patientInfo._id))
         this.setState({success: true})
         this.props.reset('updateForm');  // reset the form fields to empty (requires form name)
     }
@@ -129,8 +105,7 @@ class PatientUpdate extends Component {
 
 
     render () {
-        
-        const { patientInfo, handleSubmit, classes } = this.props
+        const { patientInfo, error, loading, handleSubmit, classes } = this.props
         const { failed, success } = this.state
 
         const getFormFields = (patientInfo) => [
@@ -166,30 +141,36 @@ class PatientUpdate extends Component {
             }
         ];
 
-       // PatientUpdate return
+        if (error) {
+            return <div>Error! {error}</div>
+        }
+
+        if (loading || !patientInfo) {
+            return <CallBack />
+        }
+
         return (
             <Card className={classes.root}>
 
-                {patientInfo && patientInfo._id ? 
-                    <React.Fragment>
-                        <PatientDetailsBar patient={patientInfo} />
-                        <Typography variant="subtitle1" gutterBottom>Click 'update' next to the information you want to edit.</Typography>
-                        <br /> <br />
-                        <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
-                            <FormUpdateUnit 
-                                formFields={getFormFields(patientInfo)}
-                                outcomeReset={this.outcomeReset}
-                                updateSuccess={success} 
-                                updateFailed={failed}
-                            />
-                        </form>
-                        <br /> <br /> 
-                        {failed && <DialogActionFailed text="A problem was encountered and the patient's details were not updated." cancelUrl="/admin/find"/>}
-                    </React.Fragment>
-                    :
-                    <CallBack />      
-                }                           
-                
+                <PatientDetailsBar patient={patientInfo} />
+
+                <Typography variant="subtitle1" gutterBottom>Click 'update' next to the information you want to edit.</Typography>
+
+                <br /> <br />
+
+                <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
+                    <FormUpdateUnit 
+                        formFields={getFormFields(patientInfo)}
+                        outcomeReset={this.outcomeReset}
+                        updateSuccess={success} 
+                        updateFailed={failed}
+                    />
+                </form>
+
+                <br /> <br />
+
+                {failed && <DialogActionFailed text="A problem was encountered and the patient's details were not updated." cancelUrl="/admin/find"/>}
+   
             </Card>
         );
     }
@@ -210,15 +191,12 @@ const validate = (values) => {
     return errors;
 }
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle, fetchReportPatientData }, dispatch);
-}
-
 const mapStateToProps = (state) => {
-    // console.log("State : ", state);
+    console.log("State : ", state);
     return {
-        patientInfo: state.reportPatientData.reportPatientInfo,
-        patientData: state.reportPatientData.reportPatientData,
+        patientInfo: state.patient.patient.patientInfo,
+        error: state.patient.error,
+        loading: state.patient.loading,
     }
 };
 
@@ -227,7 +205,7 @@ const formData = {
     validate,      
 }
 
-PatientUpdate = connect(mapStateToProps, mapDispatchToProps)(PatientUpdate)
+PatientUpdate = connect(mapStateToProps)(PatientUpdate)
 PatientUpdate = reduxForm(formData)(PatientUpdate)
 PatientUpdate = withStyles(styles)(PatientUpdate)
 export default PatientUpdate;

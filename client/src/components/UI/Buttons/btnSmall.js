@@ -46,7 +46,10 @@ BtnSmall.propTypes = {
     classes: PropTypes.object.isRequired,
     type: PropTypes.string,
     text: PropTypes.string.isRequired,
-    index: PropTypes.number.isRequired,
+    index: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ]).isRequired,
     handleBtnClick: PropTypes.func,
     disabled: PropTypes.bool,
 };

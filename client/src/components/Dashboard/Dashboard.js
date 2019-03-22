@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { selectConsoleTitle, fetchReportPatientData } from '../../actions/index'
+import { selectConsoleTitle, loadPatient } from '../../actions'
 import DashboardBanner from './DashboardBanner';
 import DashboardTable from './DashboardTable';
 
@@ -10,8 +9,9 @@ class Dashboard extends Component {
     
     componentDidMount() {
         // Save page title to store (picked up and displayed by console component)
-        this.props.selectConsoleTitle({title: "Dashboard"});
-        this.props.fetchReportPatientData([],[])
+        // Then clear the store and local storage of any patient data ready for new patient selection
+        this.props.dispatch(selectConsoleTitle({title: "Dashboard"}));
+        this.props.dispatch(loadPatient([],[]))
         this.setState({displayPatientId: "" });
         localStorage.setItem("patient_id", "")
     }
@@ -40,13 +40,9 @@ class Dashboard extends Component {
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle, fetchReportPatientData }, dispatch);
-}
-
 function mapStateToProps({auth}){
     console.log(auth);
     return (auth);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)
+export default connect(mapStateToProps)(Dashboard)

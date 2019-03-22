@@ -7,7 +7,10 @@ import DiaryIcon from '@material-ui/icons/ListAlt';
 import ReportIcon from '@material-ui/icons/BarChart';
 import EditIcon from '@material-ui/icons/Edit';
 import ContactIcon from '@material-ui/icons/ContactMail';
-import BtnHandleGroup from '../UI/Buttons/btnHandleGroup'
+import BtnCloseIcon from '../UI/Buttons/btnCloseIcon';
+import BtnHandleGroup from '../UI/Buttons/btnHandleGroup';
+
+import CallBack from '../UI/callback'
 
 const styles = () => ({
     root: {
@@ -21,38 +24,38 @@ const styles = () => ({
     },
     handleBtnIcon: {
         fontSize: "20px", 
-    }
+    },
 })
 
 class PatientFindDetails extends PureComponent {  
 
     findNumSurveys = (filter) => {
-        if (this.props.patientData.length !== 0) {
+        if (this.props.patientData && this.props.patientData.episodes) {
             return this.props.patientData.episodes.filter(episode => episode.status === filter).length
         } else return null
     }
 
-    handleActionBtns = (btn, _id) => {
-        this.props.handleActionBtns(btn, _id)
+    handleInfoPanel = () => {
+        this.props.handleInfoPanel("close")
     }
 
     render () {
-        
-        const { patientInfo, classes } = this.props
-        const infoH = [
+        const { patientInfo, error, loading, classes } = this.props
+
+        const getInfoH = (patientInfo) => { return [
             {caption: "Hospital number", info: patientInfo.hospital_id},
             {caption: "DOB", info: patientInfo.dob},
             {caption: "Enrolled", info: moment(patientInfo.date_enrolled).format("MMM Do YYYY")},
             {caption: "Status", info: patientInfo.status},
             {caption: "", info: ""},
             {caption: "", info: ""}
-        ];
-        const infoV = [
+        ]};
+        const getInfoV = (patientInfo) => {return [
              ["Email", "Contact phone", "Primary provider", "Care group"],
              [patientInfo.email, patientInfo.phone, startCase(`Dr. ${patientInfo.primary_provider_firstname} ${patientInfo.primary_provider_lastname}`), startCase(`${patientInfo.provider_group_name}`)],
              ["Active diary cards", "Pending diary cards", "Awaiting review", "Actioned"],
              [this.findNumSurveys("active"), this.findNumSurveys("pending"),this.findNumSurveys("awaiting review"), this.findNumSurveys("actioned")]
-        ];
+        ]};
         const btns = [
             {btn: "contact", icon: <ContactIcon className={classes.handleBtnIcon} />},
             {btn: "edit", icon: <EditIcon className={classes.handleBtnIcon} />},
@@ -60,58 +63,49 @@ class PatientFindDetails extends PureComponent {
             {btn: "new diary card", icon: <DiaryIcon className={classes.handleBtnIcon} />}
         ];
 
+        if (error) {
+            return <div>Error! {error}</div>
+        }
+
+        if (loading || !patientInfo._id) {
+            return <CallBack />
+        }
+
         return (
         
             <Card className={classes.root}>
 
-                <Grid container spacing={24}>
-                    <Grid item xs={12}>
-                        <Typography variant="h6" inline>{startCase(patientInfo.firstname)} {startCase(patientInfo.lastname)}</Typography>
-                        <Typography align="right" inline>
-                            <BtnHandleGroup
-                                btns={[{btn: "close"}]} 
-                                _id={patientInfo._id}
-                                handleActionBtns={this.handleActionBtns}
-                                />
-                        </Typography>
-                    </Grid>
-                </Grid>
+                <Typography variant="h6" inline>{startCase(patientInfo.firstname)} {startCase(patientInfo.lastname)}</Typography>
+                <BtnCloseIcon handleBtnClick={this.handleInfoPanel} />
 
                 <br />
                 
                 <Grid container spacing={24}>
-                    {infoH.map((info, idx) => {
-                        return (
-                            <Grid item xs={2} key={idx}>
-                                <Typography variant="caption">{info.caption}</Typography>
-                                <Typography variant="subtitle1" className={classes.fwMedium}>{info.info}</Typography>
-                            </Grid>
-                        )
+                    {getInfoH(patientInfo).map((info, idx) => {
+                        return <Grid item xs={2} key={idx}>
+                            <Typography variant="caption">{info.caption}</Typography>
+                            <Typography variant="subtitle1" className={classes.fwMedium}>{info.info}</Typography>
+                        </Grid>
                     }) }
                 </Grid>
 
                 <br />
 
                 <Grid container spacing={24}>
-                    {infoV.map((iArray, index) => {
-                        return (
-                            <Grid item xs={index%2 ? 4 : 2} key={index}>
-                                {iArray.map((i, idx) => {
-                                    return (
-                                        <Typography variant="subtitle1" key={idx} className={index%2 ? classes.fwMedium : null}>{i}</Typography>
-                                    )
-                                } )}
-                            </Grid>
-                        ) 
+                    {getInfoV(patientInfo).map((iArray, index) => {
+                        return  <Grid item xs={index%2 ? 4 : 2} key={index}>
+                            {iArray.map((i, idx) => {
+                                return (
+                                    <Typography variant="subtitle1" key={idx} className={index%2 ? classes.fwMedium : null}>{i}</Typography>
+                                )
+                            } )}
+                        </Grid> 
+                           
                     }) }    
                 </Grid>
 
                 <br /> <hr className={classes.hrStyled}/> <br />   
-                <BtnHandleGroup 
-                    btns={btns} 
-                    _id={patientInfo._id} 
-                    handleActionBtns={this.handleActionBtns} 
-                />
+                <BtnHandleGroup btns={btns} _id={patientInfo._id} handleActionBtns={this.props.handleActionBtn} />
                 <br />
 
             </Card>
@@ -123,8 +117,10 @@ class PatientFindDetails extends PureComponent {
 const mapStateToProps = (state) => {
     //console.log("State : ", state);
     return {
-        patientInfo: state.reportPatientData.reportPatientInfo,
-        patientData: state.reportPatientData.reportPatientData,
+        patientInfo: state.patient.patient.patientInfo,
+        patientData: state.patient.patient.patientData,
+        error: state.patient.error,
+        loading: state.patient.loading,
         user: state.user
     }
 };

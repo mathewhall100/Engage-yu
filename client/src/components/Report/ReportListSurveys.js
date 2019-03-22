@@ -1,21 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { startCase } from 'lodash'
 import moment from 'moment';
 import Button from '@material-ui/core/Button'
 import ReportPanel from './ReportPanel';
-import { fetchReportPatientData } from '../../actions/index';
 
-
-const panelProps = [
+const panels = [
     {status: "pending", actions: ["view", "cancel"]},
     {status: "active", actions: ["view", "cancel"]},
     {status: "awaiting review", actions: ["view"]},
     {status: "actioned", actions: ["view", "archive"]},
     {status: "archived", actions: ["view"]},
     {status: "cancelled", actions: ["view"]},
-]
+];
+
 
 class ReportListSurveys extends Component { 
     
@@ -38,7 +36,7 @@ class ReportListSurveys extends Component {
     };
 
     displayPanels = (episodes) => {
-        this.setState({panelStatus : panelProps.map(p => episodes.filter(episode => episode.status === p.status).length)}, () => console.log(this.state.panelStatus))
+        this.setState({panelStatus : panels.map(p => episodes.filter(episode => episode.status === p.status).length)}, () => console.log(this.state.panelStatus))
     }
 
     createTableData = (data) => {
@@ -82,12 +80,12 @@ class ReportListSurveys extends Component {
                 {panelStatus.slice(0,4).map((panel, idx) => {
                     return (
                         <ReportPanel key={idx}
-                            summary = { `${startCase(panelProps[idx].status)} (${panel})` }
+                            summary = { `${startCase(panels[idx].status)} (${panel})` }
                             tableHeadings = {["start", "end", "timeframe", "interval", "questions", "requested by"].concat(idx===3 ? ["archived by"] : [])}
-                            tableData = {this.createTableData(episodes.filter(episode => episode.status === panelProps[idx].status )) }
+                            tableData = {this.createTableData(episodes.filter(episode => episode.status === panels[idx].status )) }
                             lastCellRightAlign={true}
                             lastCellHeading={"Actions"}
-                            lastCellData = {["report actions", panelProps[idx].actions]}
+                            lastCellData = {["report actions", panels[idx].actions]}
                             handleActionBtn = {this.handleAction}
                         />
                     )
@@ -97,7 +95,7 @@ class ReportListSurveys extends Component {
 
                 {(panelStatus[4] || panelStatus[5])  && 
                     <Button onClick={() => this.setState({morePanels: !this.state.morePanels}) }>
-                        {morePanels ? "Hide..." : "Show more" }
+                        {morePanels ? "Hide..." : "Show more..." }
                     </Button>} 
 
                 <br /><br />
@@ -111,7 +109,7 @@ class ReportListSurveys extends Component {
                             tableData = {this.createTableData(episodes.filter(episode => episode.status === "archived"))}
                             lastCellRightAlign={true}
                             lastCellHeading="Actions"
-                            lastCellData = {["report actions", panelProps[4].actions]}
+                            lastCellData = {["report actions", panels[4].actions]}
                             handleActionBtn = {this.handleAction}
                         /> 
                     
@@ -121,7 +119,7 @@ class ReportListSurveys extends Component {
                             tableData = {this.createTableData(episodes.filter(episode => episode.status === "cancelled"))}
                             lastCellRightAlign={true}
                             lastCellHeading="Actions"
-                            lastCellData = {["report actions", panelProps[5].actions]}
+                            lastCellData = {["report actions", panels[5].actions]}
                             handleActionBtn = {this.handleAction}
                         />
 
@@ -133,16 +131,16 @@ class ReportListSurveys extends Component {
     }
 };
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ fetchReportPatientData }, dispatch);
-};
 
 const mapStateToProps = (state) => {
     // console.log("State : ", state);
     return {
-        patientData: state.reportPatientData.reportPatientData,
+        patientInfo: state.patient.patient.patientInfo,
+        patientData: state.patient.patient.patientData,
+        error: state.patient.error,
+        loading: state.patient.loading
     }
 };
 
-ReportListSurveys = connect(mapStateToProps, mapDispatchToProps)(ReportListSurveys)
+ReportListSurveys = connect(mapStateToProps)(ReportListSurveys)
 export default ReportListSurveys;

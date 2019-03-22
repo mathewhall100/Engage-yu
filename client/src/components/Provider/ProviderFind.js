@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { reduxForm } from 'redux-form';
 import { withStyles, Card } from '@material-ui/core';
 import ProviderSelect from '../UI/Forms/FormProviderSelect'
 import FormFind from "../UI/Forms/formFind"
-import { selectConsoleTitle } from '../../actions/index'
+import { selectConsoleTitle } from '../../actions'
 import ProviderDetails from './ProviderDetails'
 
 
@@ -20,7 +18,7 @@ const styles = () => ({
 class ProviderFind extends Component {  
     
     componentDidMount() {
-        this.props.selectConsoleTitle({title: "Manage Provider"});
+        this.props.dispatch(selectConsoleTitle({title: "Find Provider"}));
     };
     
     state = {
@@ -30,7 +28,6 @@ class ProviderFind extends Component {
     }
 
     closeProviderDetails = () => {
-        console.log("close provider details")
         this.setState({displayDetails: false})
         this.props.reset("ProviderSelectForm")
     }
@@ -67,9 +64,6 @@ class ProviderFind extends Component {
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle }, dispatch);
-}
 
 const formData = {
     form: 'ProviderSelectForm' //unique identifier for this form 
@@ -77,5 +71,4 @@ const formData = {
 
 ProviderFind = reduxForm(formData)(ProviderFind)
 ProviderFind = withStyles(styles)(ProviderFind)
-ProviderFind = connect(null, mapDispatchToProps) (ProviderFind)
 export default ProviderFind

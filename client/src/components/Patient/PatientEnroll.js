@@ -15,7 +15,7 @@ import PatientEnrollSuccessDialog from './PatientEnrollSuccessDialog'
 import { selectConsoleTitle } from '../../actions/index';
 import patient_infoAPI from "../../utils/patient_info";
 import patient_dataAPI from "../../utils/patient_data";
-import { validateIsRequired, validateName, validateDOB, validateGender, validateHospId, validateEmail, validatePhone, validateStatus, validatePassword, validatePasswords } from '../../logic/formValidations';
+import * as val from '../../logic/formValidations';
 
 
 const styles = () => ({
@@ -200,17 +200,17 @@ function validate(values) {
     console.log("Error values: ", values) // -> { object containing all values of form entries } 
     const errors = {}; // error accumulator
     // validate inputs from 'values'
-    errors.firstname = validateName(values.firstname, true)
-    errors.lastname = validateName(values.lastname, true)
-    errors.dob = validateDOB(values.dob, true)
-    errors.hospId = validateHospId(values.hospId, true)
-    errors.gender = validateGender(values.gender, true)
-    errors.email = validateEmail(values.email, true)
-    errors.phone = validatePhone(values.phone, true)
-    errors.provider = validateIsRequired(values.provider)
-    errors.status = validateStatus(values.status, true)
-    errors.password1 = validatePassword(values.password1, true)
-    errors.password2 = validatePasswords(values.password1, values.password2)
+    errors.firstname = val.validateName(values.firstname, true)
+    errors.lastname = val.validateName(values.lastname, true)
+    errors.dob = val.validateDOB(values.dob, true)
+    errors.hospId = val.validateHospId(values.hospId, true)
+    errors.gender = val.validateGender(values.gender, true)
+    errors.email = val.validateEmail(values.email, true)
+    errors.phone = val.validatePhone(values.phone, true)
+    errors.provider = val.validateIsRequired(values.provider)
+    errors.status = val.validateStatus(values.status, true)
+    errors.password1 = val.validatePassword(values.password1, true)
+    errors.password2 = val.validatePasswords(values.password1, values.password2)
     // If errors is empty, then form good to submit
     console.log("Errors: ", errors)
     return errors;

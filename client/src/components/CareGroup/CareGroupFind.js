@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { reduxForm } from 'redux-form';
 import { withStyles, Card } from '@material-ui/core';
 import FormFind from '../UI/Forms/formFind';
 import CareGroupSelect from './CareGroupSelect';
 import CareGroupDetails from './CareGroupDetails';
-import { selectConsoleTitle } from '../../actions/index';
+import { selectConsoleTitle } from '../../actions';
 
 
 const styles = () => ({
@@ -20,7 +18,7 @@ const styles = () => ({
 class CareGroupFind extends Component {  
     
     componentDidMount() {
-        this.props.selectConsoleTitle({title: "Manage Care Group"});
+        this.props.dispatch(selectConsoleTitle({title: "Manage Care Group"}));
     }
 
     state = {
@@ -29,14 +27,13 @@ class CareGroupFind extends Component {
     }
 
     closeCareGroupDetails = () => {
-        console.log("close careGroup details");
         this.setState({displayDetails: false});
         this.props.reset("CareGroupSelectForm");
     }
 
     submit(values) {
         console.log("Submitted values: ", values);
-            if (values.caregroup && values.caregroup[0]) {
+        if (values.caregroup && values.caregroup[0]) {
             this.setState({
                 careGroupId: values.caregroup[0],
                 displayDetails: !this.state.displayDetails
@@ -45,9 +42,9 @@ class CareGroupFind extends Component {
     }
 
     render () {
-        const { displayDetails, careGroupId } = this.state;
-        const { handleSubmit, submitting, pristine, classes } = this.props;
-
+         const { handleSubmit, submitting, pristine, classes } = this.props;
+         const { displayDetails, careGroupId } = this.state;
+       
         return (
             <Card className={classes.root}>
                 <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
@@ -66,15 +63,10 @@ class CareGroupFind extends Component {
     }
 }
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle }, dispatch);
-}
-
 const formData = {
     form: 'CareGroupSelectForm' //unique identifier for this form 
 }
 
 CareGroupFind = reduxForm(formData)(CareGroupFind);
 CareGroupFind = withStyles(styles)(CareGroupFind);
-CareGroupFind = connect(null, mapDispatchToProps)(CareGroupFind);
 export default CareGroupFind;
