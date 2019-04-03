@@ -8,7 +8,7 @@ import ReportIcon from '@material-ui/icons/BarChart';
 import EditIcon from '@material-ui/icons/Edit';
 import ContactIcon from '@material-ui/icons/ContactMail';
 import BtnCloseIcon from '../UI/Buttons/btnCloseIcon';
-import BtnHandleGroup from '../UI/Buttons/btnHandleGroup';
+import BtnGroup from '../UI/Buttons/btnGroup';
 
 import CallBack from '../UI/callback'
 
@@ -35,8 +35,8 @@ class PatientFindDetails extends PureComponent {
         } else return null
     }
 
-    handleInfoPanel = () => {
-        this.props.handleInfoPanel("close")
+    handleClose = () => {
+        this.props.infoPanel("close")
     }
 
     render () {
@@ -76,7 +76,7 @@ class PatientFindDetails extends PureComponent {
             <Card className={classes.root}>
 
                 <Typography variant="h6" inline>{startCase(patientInfo.firstname)} {startCase(patientInfo.lastname)}</Typography>
-                <BtnCloseIcon handleBtnClick={this.handleInfoPanel} />
+                <BtnCloseIcon handleBtnClick={this.handleClose} />
 
                 <br />
                 
@@ -105,7 +105,7 @@ class PatientFindDetails extends PureComponent {
                 </Grid>
 
                 <br /> <hr className={classes.hrStyled}/> <br />   
-                <BtnHandleGroup btns={btns} _id={patientInfo._id} handleActionBtns={this.props.handleActionBtn} />
+                <BtnGroup btns={btns} _id={patientInfo._id} handleActionBtns={this.props.handleActionBtn} />
                 <br />
 
             </Card>

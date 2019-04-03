@@ -18,7 +18,7 @@ const styles = (theme) => ({
         disabled: {}
     },
 
-  cancelBtn: {
+    warningBtn: {
         padding: "5px",
         color: "#ffffff",
         backgroundColor: "#c62828",
@@ -35,13 +35,14 @@ const styles = (theme) => ({
 
 
 const BtnActionLink = (props) => {
-    const { classes, disabled=false, url, text } = props;
+    const { classes, url, text, marginRight=false, warning=false, disabled=false, } = props;
 
     return (
         <Button 
             size="small"
             type="button"
-            className={text==="cancel" ? classes.cancelBtn : classes.btn} 
+            className={warning ? classes.warningBtn : classes.btn}
+            style={{marginRight: marginRight ? "15px" : 0}} 
             component={Link}
             to={url}
             disabled={disabled}
@@ -54,6 +55,8 @@ const BtnActionLink = (props) => {
 BtnActionLink.propTypes = {
     classes: PropTypes.object.isRequired,
     disabled: PropTypes.bool,
+    marginRight: PropTypes.bool,
+    warning: PropTypes.bool,
     url: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired
 };

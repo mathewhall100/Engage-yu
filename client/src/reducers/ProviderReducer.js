@@ -1,7 +1,7 @@
 import {
     PROVIDER_BEGIN,
     PROVIDER_SUCCESS,
-    PROVIDER_FAILURE
+    PROVIDER_FAILURE,
 } from '../actions/types';
 
 const initialState = {
@@ -35,7 +35,7 @@ export default function providerReducer(
                 ...state,
                 loading: false,
                 error: action.payload.error,
-                provider: []
+                provider: {}
             };
 
         default: return state;

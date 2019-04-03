@@ -3,7 +3,7 @@ import { reduxForm } from 'redux-form';
 import { withStyles, Card } from '@material-ui/core';
 import FormFind from '../UI/Forms/formFind';
 import CareGroupSelect from './CareGroupSelect';
-import CareGroupDetails from './CareGroupDetails';
+import CareGroupDisplay from './CareGroupDisplay';
 import { selectConsoleTitle } from '../../actions';
 
 
@@ -23,11 +23,11 @@ class CareGroupFind extends Component {
 
     state = {
         caregroupId: "",
-        displayDetails: false,
+        display: false,
     }
 
-    closeCareGroupDetails = () => {
-        this.setState({displayDetails: false});
+    closeCareGroupDisplay = () => {
+        this.setState({display: false});
         this.props.reset("CareGroupSelectForm");
     }
 
@@ -36,14 +36,14 @@ class CareGroupFind extends Component {
         if (values.caregroup && values.caregroup[0]) {
             this.setState({
                 careGroupId: values.caregroup[0],
-                displayDetails: !this.state.displayDetails
+                display: !this.state.display
             });
         }
     }
 
     render () {
          const { handleSubmit, submitting, pristine, classes } = this.props;
-         const { displayDetails, careGroupId } = this.state;
+         const { display, careGroupId } = this.state;
        
         return (
             <Card className={classes.root}>
@@ -57,7 +57,7 @@ class CareGroupFind extends Component {
                         pristine={pristine}
                     /> 
                 </form>
-                { displayDetails && <CareGroupDetails  careGroupId={careGroupId} handleClose={this.closeCareGroupDetails}/> }
+                { display && <CareGroupDisplay  careGroupId={careGroupId} handleClose={this.closeCareGroupDisplay}/> }
             </Card>
         );
     }

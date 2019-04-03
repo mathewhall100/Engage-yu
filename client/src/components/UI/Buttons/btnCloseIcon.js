@@ -8,14 +8,16 @@ const styles = (theme) => ({
         float: "right",
         '&:hover': {
             backgroundColor: "#FFF",
+            cursor: "pointer"
         },
     },
     cancelIconStyles: {
         position: 'relative', left: "20px",
-        color: "#666",
+        color: theme.palette.primary.main,
         fontSize: '32px',
         '&:hover': {
-            color: theme.palette.primary.main,
+            color: theme.palette.error.dark,
+            cursor: "pointer"
         },
     }
 });

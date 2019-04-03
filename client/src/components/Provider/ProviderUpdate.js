@@ -1,17 +1,16 @@
-import React, { Component } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
-import { startCase } from 'lodash';
+import { startCase, isEmpty } from 'lodash';
 import { withStyles, Card, Typography } from '@material-ui/core';
 import FormTextFocused from '../UI/Forms/formTextFocused';
 import FormStateSelect from '../UI/Forms/formStateSelect';
-import CallBack from '../UI/callback';
-import DialogActionFailed from '../UI/Dialogs/dialogActionFailed';
+import DialogSaveFailure from '../UI/Dialogs/dialogSaveFailure';
 import FormUpdateUnit from '../UI/Forms/formUpdateUnit';
 import { validateName, validateZip, validateState, validateEmail, validatePhone, validatePhoneOther } from '../../logic/formValidations';
-import { selectConsoleTitle, loadProvider } from '../../actions';
+import { selectConsoleTitle, loadProvider, providerUpdateSave } from '../../actions';
+import CareGroupSelect from '../CareGroup/CareGroupSelect'
 import ProviderDetailsBar from './ProviderDetailsBar';
-import providerAPI from '../../utils/provider';
 
 const styles = () => ({
     root: {
@@ -20,97 +19,67 @@ const styles = () => ({
 })
 
 
-class ProviderUpdate extends Component {  
+class ProviderUpdate extends PureComponent {  
 
     componentDidMount() {
-        this.props.dispatch(selectConsoleTitle({title: "Update Provider Details"}));
+        let title = "Update Provider Details";
+        if (this.props.location.state.update === "reassign caregroup") {title = "Reassign Provider To Another Care Group"} 
+        this.props.dispatch(selectConsoleTitle({title}))
     };
+
+    componentWillReceiveProps(nextProps) {
+        if (!isEmpty(nextProps.providerUpdate) && nextProps.providerUpdate !== this.props.providerUpdate) {this.updateSuccess()}
+        if (nextProps.errorProviderUpdate) {this.updateFailed()}
+        if (nextProps.loadingProviderUpdate) {this.updateInProgress()}
+    } 
+
+    componentWillUnmount() {
+        this.props.dispatch(providerUpdateSave("reset"))
+    }
     
     state = {
         success: false,
         failed: false,
+        inProgress: false
     }
 
     submit(values) {
         console.log("Submit: ", values)
-        const { provider } = this.props
-
-        if (values.officename || values.officestreet || values.officecity || values.officestate || values.officezip) {
-            providerAPI.update(provider._id, {
-                office: {
-                    name: values.officename ? values.officename : provider.office.name,
-                    street: values.officestreet ? values.officestreet : provider.office.street,
-                    city: values.officecity ? values.officecity : provider.office.city,
-                    state: values.officestate ? values.officestate : provider.office.state,
-                    zip: values.officezip ? values.officezip : provider.office.zip
-                }
-            })
-            .then(res => {this.updateSuccess(res.data) })
-            .catch(err => {this.updateFailed(err)})
-
-        } else if (values.email) {
-            providerAPI.update(provider._id, {
-                email: values.email,
-            })
-           .then(res => {this.updateSuccess(res.data, 5) })
-           .catch(err => {this.updateFailed(err)})
-
-        } else if (values.phone2 || values.phone2 || values.phone3) {
-            providerAPI.update(provider._id, {
-                phone: [{
-                    phone: "office", 
-                    number: values.phone1 ? `${values.phone1.slice(0, values.phone1.indexOf("ext")).trim()}` : provider.phone[0].number, 
-                    ext:  values.phone1 ? `${values.phone1.slice((values.phone1.indexOf("ext")+3)).trim()}` : provider.phone[0].ext
-                    }, {
-                    phone: "cell", 
-                    number: values.phone2 ? values.phone2 : provider.phone[1].number,
-                    ext: "" 
-                    }, {
-                    phone: "other", 
-                    number: values.phone3 ? `${values.phone3.slice(0, values.phone3.indexOf("ext")).trim()}` : provider.phone[2].number,
-                    ext:  values.phone3 ? `${values.phone3.slice((values.phone3.indexOf("ext")+3)).trim()}` : provider.phone[2].ext
-                }]
-            })
-            .then(res => {this.updateSuccess(res.data, 2) })
-            .catch(err => {this.updateFailed(err)})
-        } 
+        this.props.dispatch(providerUpdateSave(values, this.props.provider))
     };
 
     updateSuccess = (data) => {
-        console.log("res.data: ", data) 
-        this.setState({success: true})
         this.props.dispatch(loadProvider(this.props.provider._id))
+        this.props.reset('updateForm');  // reset the form fields to empty (requires form name)
+        this.setState({success: true})
     }
 
     updateFailed = (err) => {
-        console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-        console.log(err);
-        this.setState({failed: true}); // update failed dialog
+        this.setState({failed: true}); 
+        this.props.dispatch(providerUpdateSave("reset"))
+    }
+
+    updateInProgress = (err) => {
+        this.setState({inProgress: true}); 
     }
 
     // reset the success/failed flag
     outcomeReset = () => {
         this.setState({
             success: false,
-            failed: false
+            failed: false,
+            inProgress: false
         })
     }
 
 
     render () {
         
-        const { provider, error, loading, handleSubmit, classes } = this.props
-        const { failed, success } = this.state
+        const { provider, error, location, handleSubmit, classes } = this.props
+        const { failed, success, inProgress } = this.state
+        const { update } = location.state
 
-        if (error) {
-            return <div>Error! {error.message}</div>
-            }
-    
-        if (loading || !provider._id) {
-            return <CallBack />
-        }
-
-        const getFormFields = (provider) => {
+        const personalDetailsFormFields = (provider) => {
             return [{
                 rowLabel: "Office", 
                 fieldContent: startCase(provider.office.name), 
@@ -148,47 +117,67 @@ class ProviderUpdate extends Component {
                 fieldContent: `${provider.phone[2].number} ${provider.phone[2].ext ? `ext: ${provider.phone[2].ext}` : ""}`,
                 formElement:  <FormTextFocused name="phone3" label="Other phone/pager" width={215} />
             }];
+        };
+
+        const reassignCareGroupFormField = (provider) => {
+            return [{
+                rowLabel: "Care group",
+                fieldContent: startCase(provider.provider_group_name),
+                formElement:  <CareGroupSelect />
+            }]
+        }
+
+        if (error) {
+            return <div>Error! {error.message}</div>
+        }
+    
+        if (isEmpty(provider)) {
+            return null
         }
       
-        // ProviderUpdate return
-        return (
-            <Card className={classes.root}>
+        return ( 
+            <Fragment>
+                <Card className={classes.root}>
+                    <ProviderDetailsBar provider={provider} />
 
-                {provider && provider._id ? 
-                    <React.Fragment>
- 
-                        <ProviderDetailsBar provider={provider} />
+                    <Typography variant="subtitle1" gutterBottom>
+                        {update === "provider details" ? 
+                            "Click 'update' next to the information you want to edit."
+                            :
+                            "Click 'update' to reassign this provider to another care group."
+                        }           
+                    </Typography>
 
-                        <Typography variant="subtitle1" gutterBottom>Click 'update' next to the information you want to edit.</Typography>
+                    <br /> <br />
 
-                        <br /> <br />
+                    <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
+                        <FormUpdateUnit 
+                            formFields={update === "provider details" ?
+                                personalDetailsFormFields(provider) 
+                                : 
+                                reassignCareGroupFormField(provider)
+                            }
+                            outcomeReset={this.outcomeReset}
+                            updateSuccess={success} 
+                            updateInProgress={inProgress}
+                            updateFailed={failed}
+                        />
+                    </form>
 
-                        <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
-                            <FormUpdateUnit 
-                                formFields={getFormFields(provider)}
-                                outcomeReset={this.outcomeReset}
-                                updateSuccess={success} 
-                                updateFailed={failed}
-                            />
-                        </form>
+                    <br /> <br />
 
-                        <br /> <br />
+                </Card>
 
-                        {failed && <DialogActionFailed text="A problem was encountered and the provider's details were not updated." url="/admin/find"/>} 
+                {failed && <DialogSaveFailure text="A problem was encountered and the provider's details were not updated." cancelUrl="/admin/provider"/>} 
 
-                    </React.Fragment>
-                    :
-                    <CallBack />
-                }
-
-            </Card>
+            </Fragment>   
         );
     }
 }
 
 
 const validate = (values) => {
-    console.log("Error values: ", values) 
+    //console.log("Error values: ", values) 
     const errors = {};  // error accumulator
     // validate inputs from 'values'
     errors.officename = validateName(values.officename)
@@ -200,17 +189,21 @@ const validate = (values) => {
     errors.phone1 = validatePhone(values.phone1)
     errors.phone2 = validatePhone(values.phone2)
     errors.phone3 = validatePhoneOther(values.phone3)
+    errors.caregroup = validateName(values.careGroup)
     // If errors is empty, then form good to submit
-    console.log("Errors: ", errors)
+    //console.log("Errors: ", errors)
     return errors;
 }
 
 const mapStateToProps = (state) => {
-    //console.log("State : ", state);
+    console.log("State : ", state);
     return {
         provider: state.provider.provider,
         loading: state.provider.loading,
         error: state.provider.error,
+        providerUpdate: state.providerUpdate.update,
+        errorProviderUpdate: state.providerUpdate.error,
+        loadingProviderUpdate: state.providerUpdate.loading
     }
 };
 

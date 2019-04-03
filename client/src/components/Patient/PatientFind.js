@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { isEmpty } from 'lodash';
 import { withStyles, Card } from '@material-ui/core';
 import { selectConsoleTitle, loadPatientsByProvider, loadPatientsByCareGroup, loadPatient } from '../../actions';
 import PatientFindForm from './PatientFindForm';
 import PatientFindTable from './PatientFindTable';
-import PatientFindDetails from './PatientFindDetails';
+import PatientFindDisplay from './PatientFindDisplay';
 
 const styles = () => ({
     root: {
@@ -23,7 +24,7 @@ class PatientFind extends Component {
     };
 
     componentWillReceiveProps(nextProps) {
-        if (nextProps.patientInfo !== this.props.patientInfo) {
+        if (!isEmpty(nextProps.PatientInfo) && nextProps.patientInfo !== this.props.patientInfo) {
             this.setState({displayPatientInfo: nextProps.patientInfo._id})
         } 
     };
@@ -88,10 +89,10 @@ class PatientFind extends Component {
                     />
                     <br />
 
-                    { infoPanel && 
-                        <PatientFindDetails 
+                    {infoPanel && 
+                        <PatientFindDisplay
                             handleActionBtn={this.actions} 
-                            handleInfoPanel={this.infoPanel}
+                            infoPanel={this.infoPanel}
                         /> 
                     }
 
@@ -104,7 +105,7 @@ class PatientFind extends Component {
                     filterNumber={this.state.filterNumber} 
                     displayPatientDetails={this.displayPatientDetails}
                     handleActionBtn={this.actions}
-                    handleInfoPanel={this.infoPanel}
+                    infoPanel={this.infoPanel}
                 />
                 <br />
 

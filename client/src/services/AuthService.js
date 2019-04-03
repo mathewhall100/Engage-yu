@@ -4,29 +4,30 @@ import jwtDecode from 'jwt-decode';
 let redirectURI = `http://${window.location.hostname}${window.location.hostname.includes('localhost') ? ":3000" : null}/callback`
 
 // Configure Auth0 lock
-export const lock = new Auth0Lock('uQdJPDVXxxYgPqJiUoRVnAYFKZudGoHh', 'shikwan.auth0.com', {
+export const lock = new Auth0Lock('mrtJ796iMGWdpVzIH78fzVSwbGCj0tse', 'engageyu-dev.auth0.com', {
     auth: {
         redirectUrl: redirectURI,
         responseType: 'token id_token'
     },
     theme: {
-        primaryColor: '#b81b1c'
+        primaryColor: '#2d404b'
     },
     languageDictionary: {
         title: 'Engage-Yu'
     },
-    additionalSignUpFields: [{
-        name: "address",
-        placeholder: "enter your address",
-        // The following properties are optional\
-        prefill: "100 Imagine Lane",
-        validator: function (address) {
-            return {
-                valid: address.length >= 10,
-                hint: "Must have 10 or more chars" // optional
-            };
-        }
-    },
+    additionalSignUpFields: [
+    //     {
+    //     name: "address",
+    //     placeholder: "enter your address",
+    //     // The following properties are optional\
+    //     prefill: "100 Imagine Lane",
+    //     validator: function (address) {
+    //         return {
+    //             valid: address.length >= 10,
+    //             hint: "Must have 10 or more chars" // optional
+    //         };
+    //     }
+    // },
     {
         name: "full_name",
         placeholder: "Enter your full name"

@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { selectConsoleTitle } from '../../actions/index';
 import CallBack from '../UI/callback'
 import ReportFull from './ReportFull';
-import ReportPatientDetails from './ReportPatientDetails';
 import ReportSummary from './ReportSummary';
 import ReportListSurveys from './ReportListSurveys';
 
@@ -68,7 +67,6 @@ class Report extends Component {
 
         return (
             <React.Fragment>
-                <ReportPatientDetails />
                 <ReportSummary  episodeId={episodeId} handleFullReport={this.handleOpenFull} /> <br /> 
                 <ReportListSurveys changeEpisode={this.handleChangeEpisode} /> 
             </React.Fragment> 

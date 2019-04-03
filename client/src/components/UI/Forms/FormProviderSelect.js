@@ -68,7 +68,7 @@ export default class FormProviderSelect extends Component {
     render() {
         const { providers } = this.state
         return (
-                <FormSelect name="provider" label="Primary Provider" width="200" items={providers}/>
+                <FormSelect name="provider" label="Provider" width="200" items={providers}/>
         );
     }
 }

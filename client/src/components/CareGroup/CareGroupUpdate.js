@@ -1,14 +1,12 @@
-import React, { Component } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
-import { startCase } from 'lodash';
+import { startCase, isEmpty } from 'lodash';
 import { withStyles, Typography, Card } from '@material-ui/core';
 import FormTextFocused from '../UI/Forms/formTextFocused';
 import FormUpdateUnit from '../UI/Forms/formUpdateUnit'
-import DialogGeneric from '../UI/Dialogs/dialogGeneric';
-import CallBack from '../UI/callback';
-import provider_groupAPI from "../../utils/provider_group.js";
-import { selectConsoleTitle, loadCareGroup } from '../../actions'
+import DialogSaveFailure from '../UI/Dialogs/dialogSaveFailure';
+import { selectConsoleTitle, loadCareGroup, careGroupUpdateSave } from '../../actions'
 import { validateName } from '../../logic/formValidations'
 import CareGroupDetailsBar from './CareGroupDetailsBar'
 
@@ -20,47 +18,61 @@ const styles = () => ({
 });
 
 
-class CareGroupUpdate extends Component {  
+class CareGroupUpdate extends PureComponent {  
 
     componentDidMount() {
         this.props.dispatch(selectConsoleTitle({title: "Update Care Group"}));
     };
 
+    componentWillReceiveProps(nextProps) {
+        if (!isEmpty(nextProps.careGroupUpdate) && nextProps.careGroupUpdate !== this.props.careGroupUpdate) {this.updateSuccess()}
+        if (nextProps.errorCareGroupUpdate) {this.updateFailed()}
+        if (nextProps.loadingCareGroupUpdate) {this.updateInProgress()}
+    }
+
+    componentWillUnmount() {
+        this.props.dispatch(careGroupUpdateSave("reset"))
+    }
+
     state = {
-        updateSuccess: false,
-        updateFailed: false,
+        success: false,
+        failed: false,
+        inProgress: false
     }
 
     // Form handler
     submit(values) {
         console.log("Submitted edit name: ", values);
-        provider_groupAPI.update(this.props.careGroup._id, {
-            group_name: values.caregroup
-        })
-        .then(res => {
-            console.log("res.data: ", res.data)
-            this.props.dispatch(loadCareGroup(res.data._id));
-            this.setState ({updateSuccess: true})
-        })
-        .catch(err => {
-            console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-            console.log(err);
-            this.setState({updateFailed: true}); // update failed dialog
-        })
+        this.props.dispatch(careGroupUpdateSave(values, this.props.careGroup._id))
+    }
+
+    updateSuccess = (data) => {
+        this.props.dispatch(loadCareGroup(this.props.careGroup._id))
+        this.setState({success: true})
+    }
+
+    updateFailed = (err) => {
+        this.setState({failed: true}); 
+        this.props.dispatch(careGroupUpdateSave("reset"))
+    }
+
+    updateInProgress = (err) => {
+        this.setState({inProgress: true}); 
     }
 
     // reset the success/failed flag
     outcomeReset = () => {
         this.setState({
-            updateSuccess: false,
-            updateFailed: false
+            success: false,
+            failed: false,
+            inProgress: false
         })
     }
 
 
     render () {
-        const { careGroup, error, loading, handleSubmit, classes } = this.props
-        const { updateSuccess, updateFailed } = this.state
+        const { careGroup, error, handleSubmit, classes } = this.props
+        const { success, failed, inProgress } = this.state
        
         const getFormFields = (careGroup) => {
             console.log("careGroup: ", careGroup)
@@ -71,61 +83,65 @@ class CareGroupUpdate extends Component {
             }]
         }
 
+
         if (error) {
             return <div>Error! {error.message}</div>
         }
-
-        if (loading || !careGroup._id ) {
-            return <CallBack />
+    
+        if (isEmpty(careGroup)) {
+            return null
         }
 
         return (
-            <Card className={classes.root}>
+            <Fragment>
+                <Card className={classes.root}>
+                    <CareGroupDetailsBar careGroup={careGroup} />
 
-                <CareGroupDetailsBar careGroup={careGroup} />
-
-                <Typography variant="subtitle1" gutterBottom>
-                    Click 'update' to update care group.
-                </Typography>
-            
-                <br /> <br />
-
-                <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
-                    <FormUpdateUnit 
-                        formFields={getFormFields(careGroup)}
-                        outcomeReset={this.outcomeReset}
-                        updateSuccess={updateSuccess} 
-                        updateFailed={updateFailed}
-                    />
-                </form> 
+                    <Typography variant="subtitle1" gutterBottom>
+                        Click 'update' to update care group.
+                    </Typography>
                 
-                {updateFailed && 
-                    <DialogGeneric 
-                        title="Failed!" 
-                        text={`Unfortuneately a problem occurred and this care group could not be updated at this time. Please check the dtails you have entered and try again. If the problem persists, contact the syste administrator`}
-                    />
-                } 
+                    <br /> <br />
 
-            </Card> 
+                    <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
+                        <FormUpdateUnit 
+                            formFields={getFormFields(careGroup)}
+                            outcomeReset={this.outcomeReset}
+                            updateSuccess={success} 
+                            updateFailed={failed}
+                            updateInProgress={inProgress}
+                        />
+                    </form> 
+
+                    <br /> <br />
+
+                </Card> 
+
+                {failed && <DialogSaveFailure text="A problem was encountered and the Care Group's details were not updated." cancelUrl="/admin/caregroup"/>}
+
+            </Fragment>
         );
     }
 }
 
 const validate = (values) => {
-    console.log("Error values: ", values) 
+    //console.log("Error values: ", values) 
     const errors = {};
     // validate inputs from 'values'
     errors.caregroup = validateName(values.caregroup) 
-    console.log("Errors: ", errors)
+    //console.log("Errors: ", errors)
     return errors;
 }
 
 const mapStateToProps = (state) => {
-    console.log("State : ", state);
+    //console.log("State : ", state);
     return {
         careGroup: state.careGroup.careGroup,
         loading: state.careGroup.loading,
         error: state.careGroup.error,
+        careGroupUpdate: state.careGroupUpdate.update,
+        errorCareGroupUpdate: state.careGroupUpdate.error,
+        loadingCareGroupUpdate: state.careGroupUpdate.loading
     }
 };
 

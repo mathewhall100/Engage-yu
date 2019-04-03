@@ -62,7 +62,7 @@ class GenericTable extends Component {
         const getLastCell = (row) => {
             switch (lastCellData[0]) {
                 case "report actions":
-                    return <BtnActionGroup actions={lastCellData[1]} row={row} handleActionBtn={this.handleActionBtn} /> 
+                    return <BtnActionGroup actions={lastCellData[1]} row={row} align={"right"} handleActionBtn={this.handleActionBtn} /> 
                 case "find actions":
                     return <BtnActionIcons _id={row._id} handleActionBtn={this.handleActionBtn} /> 
                 default: return <Typography>{lastCellData[0]}</Typography>

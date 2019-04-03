@@ -110,10 +110,9 @@ class CareGroupRemove extends Component {
                     
                         <br /> <HrStyled /> <br />
                     
-                        <span style={{marginRight: "15px"}}>
-                            <BtnAction type ="button" disabled={false} text="cancel" handleAction={this.handleCancel} />
-                        </span>
-                        <BtnAction type="button" disabled={false} text="delete" handleAction={this.handledelete} />
+                        <BtnAction type ="button" disabled={false} text="cancel" marginRight={true} handleAction={this.handleCancel} />
+                        <BtnAction type="button" disabled={false} text="delete" warning={true} handleAction={this.handledelete} />
+
                     </React.Fragment> 
                 }
 

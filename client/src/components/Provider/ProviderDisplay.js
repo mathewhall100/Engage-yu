@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { startCase } from 'lodash';
 import moment from 'moment';
 import { withStyles, Card, Grid, Typography } from '@material-ui/core';
-import BtnHandleGroup from '../UI/Buttons/btnHandleGroup'
+import BtnGroup from '../UI/Buttons/btnGroup'
 import BtnCloseIcon from '../UI/Buttons/btnCloseIcon';
 import HrStyled from '../UI/hrStyled'
 import CallBack from '../UI/callback'
@@ -21,7 +21,7 @@ const styles = () => ({
       },
 })
 
-class ProviderDetails extends Component {  
+class ProviderDisplay extends Component {  
    
     componentDidMount() {
          // Load selected provider and save to redux store
@@ -33,23 +33,19 @@ class ProviderDetails extends Component {
         console.log("handleAction: ", btn)
         switch(btn) {
             case "remove provider":
-                this.props.history.push({
+                return this.props.history.push({
                     pathname: '/admin/provider/remove',
-                    state: {providerId: this.props.provider._id}
                 })
-                break;
             case "edit details":
-                this.props.history.push({
+                return this.props.history.push({
                     pathname: '/admin/provider/update',
-                    state: {providerId: this.props.provider._id}
+                    state: {update: "provider details"}
                 })
-                break;
             case "reassign care group":
-                this.props.history.push({
-                    pathname: '/admin/provider/updategroup',
-                    state: {providerId: this.props.provider._id}
+                return this.props.history.push({
+                    pathname: '/admin/provider/update',
+                    state: {update: "reassign caregroup"}
                 })
-                break;
             default: return null
         }
     }
@@ -158,7 +154,7 @@ class ProviderDetails extends Component {
 
                 <br />  <HrStyled />  <br />     
                
-                <BtnHandleGroup 
+                <BtnGroup
                     btns={btns} 
                     _id={provider._id}
                     handleActionBtns={this.handleAction}
@@ -171,7 +167,7 @@ class ProviderDetails extends Component {
 
 
 const mapStateToProps = (state) => {
-    console.log("State @ProviderDetails: ", state);
+    console.log("State @ProviderDisplay: ", state);
     return {
         provider: state.provider.provider,
         loading: state.provider.loading,
@@ -180,7 +176,7 @@ const mapStateToProps = (state) => {
     }
 };
 
-ProviderDetails = withRouter(ProviderDetails)
-ProviderDetails = connect(mapStateToProps)(ProviderDetails)
-ProviderDetails = withStyles(styles)(ProviderDetails)
-export default ProviderDetails;
+ProviderDisplay = withRouter(ProviderDisplay)
+ProviderDisplay = connect(mapStateToProps)(ProviderDisplay)
+ProviderDisplay = withStyles(styles)(ProviderDisplay)
+export default ProviderDisplay;

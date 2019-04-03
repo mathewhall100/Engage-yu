@@ -2,15 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { startCase } from 'lodash'
 import PropTypes from 'prop-types';
-import { withStyles, Paper } from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
 import DetailsBar from '../UI/detailsBar';
 
 const styles = theme => ({
-    detailsContainer: {
-        width: "100%",
-        marginTop: "4px",
-        padding: "10px 20px",
-        marginBottom: "30px"
+    root: {
+        margin: "16px 20px 20px 0",
     },
 })
 
@@ -28,9 +25,10 @@ class ReportPatientDetails extends Component {
         ];
        
         return (
-            <Paper className={classes.detailsContainer}>    
-                <DetailsBar items={patientDetails} />
-            </Paper>
+            <div className={classes.root}>
+                <br />
+                <DetailsBar items={patientDetails}/> 
+            </div>
         );
     }
 }

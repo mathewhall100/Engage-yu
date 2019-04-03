@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { withRouter} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { withStyles, Button, Grid, Paper, Typography} from '@material-ui/core';
 import CallBack from '../UI/callback';
+import ReportPatientDetails from './ReportPatientDetails';
 import ReportTable from './ReportTable';
 import ReportBarGraph from './ReportBarGraph';
 import { displayDataCalc } from './reportLogic';
@@ -57,23 +58,23 @@ const styles = theme => ({
   });
 
 
-class ReportSummary extends Component {
+class ReportSummary extends PureComponent {
 
     componentDidMount() {
         console.log("report summary: episodeId: ", this.props.episodeId);
         if (this.props.patientData && this.props.patientData.episodes && this.props.episodeId) {
             this.setState({episodes: this.props.patientData.episodes}, 
-                () => this.loadDataForDisplay(this.getEpisode(this.state.episodes, this.props.episodeId)) )
+                () => this.prepareDataForDisplay(this.getEpisode(this.state.episodes, this.props.episodeId)) )
         } 
      };
 
     componentWillReceiveProps(nextProps) {
         if (this.props.patientData !== nextProps.patientData) {
             this.setState({episodes: nextProps.patientData.episodes},
-                () => this.loadDataForDisplay(this.getEpisode(this.state.episodes, nextProps.episodeId)) )
+                () => this.prepareDataForDisplay(this.getEpisode(this.state.episodes, nextProps.episodeId)) )
         }
         if (this.props.episodeId !== nextProps.episodeId) {
-                this.loadDataForDisplay(this.getEpisode(this.state.episodes, nextProps.episodeId)) 
+                this.prepareDataForDisplay(this.getEpisode(this.state.episodes, nextProps.episodeId)) 
         }
     };
 
@@ -99,8 +100,7 @@ class ReportSummary extends Component {
         return null
     };
 
-    loadDataForDisplay = (episode) => {
-        console.log("ReportSummary: loadDataForDisplay: ", episode);
+    prepareDataForDisplay = (episode) => {
         if (episode) {
             this.setState({
                 episode,             
@@ -171,6 +171,8 @@ class ReportSummary extends Component {
 
         return (  
             <Paper className={classes.root}>
+
+                <ReportPatientDetails />
 
                 <Grid container spacing={24}>
                     <Grid item xs={6}>

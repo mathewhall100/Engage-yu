@@ -33,7 +33,7 @@ const MenuProps = {
 class FormMultipleSelectWithChips extends React.Component {
 	
 	state = {
-		selection: [this.props.menuItems[0]],
+		selection: this.props.initialStatus,
 	};
 
 	handleChange = event => {

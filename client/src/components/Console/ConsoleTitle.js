@@ -5,7 +5,7 @@ import { withStyles, Typography } from '@material-ui/core'
 const styles = (theme) => ({
     consoleTitle: {
 		fontWeight: 500,
-		paddingLeft: "8px",
+		paddingLeft: "20px",
 		[theme.breakpoints.up('lg')]: {
 			paddingTop: "10px",
 		}, 

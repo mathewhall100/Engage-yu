@@ -24,6 +24,7 @@ export const loadPatientsByCareGroup = (id) => {
     };
 }
 
+
 export const patientsByCareGroupBegin = () => ({
     type: PATIENTS_BY_CAREGROUP_BEGIN
 });

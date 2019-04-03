@@ -33,13 +33,13 @@ class PatientFindForm extends Component {
 
         return (
             <form autoComplete="off" >
-                 <div style={{ maxWidth: "920px", display: 'flex', flexDirection: 'row'}}>
+                 <div style={{ maxWidth: "920px", display: 'flex', flexDirection: 'row', paddingLeft: "40px" }}>
                     
-                    <Typography variant="h6" className={classes.textPosn}>Search for</Typography>
+                    {/* <Typography variant="h6" className={classes.textPosn}>Search for</Typography> */}
                 
                     <FormStreamTextInput 
                         name="name"
-                        label="Name"
+                        label="Patient name"
                         width={200}
                         handleChange={this.onChangeName}
                     /> 

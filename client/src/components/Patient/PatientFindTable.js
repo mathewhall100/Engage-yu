@@ -60,8 +60,8 @@ class PatientFindTable extends Component {
             !(filteredData.length === 1 && this.state.tableDataFiltered.length === 1 && this.state.tableDataFiltered[0]._id === filteredData[0]._id) 
             || (filterName === "" && filterNumber === "") 
         ) {
-            this.props.dispatch(loadPatient("clear"))
-            this.props.handleInfoPanel("close")
+            this.props.dispatch(loadPatient("reset"))
+            this.props.infoPanel("close")
         }
         return filteredData;
     };
@@ -69,7 +69,7 @@ class PatientFindTable extends Component {
     // Event handlers
     handleRowClick = (row) => {
         this.props.dispatch(loadPatient(row._id))
-        this.props.handleInfoPanel("open")
+        this.props.infoPanel("open")
     }
 
     handleActionClick = (btn, _id) => {

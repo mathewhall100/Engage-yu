@@ -1,24 +1,21 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
 import { reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { withStyles, Card, Typography, Grid} from '@material-ui/core';
 import FormText from '../UI/Forms/formText'
 import FormTextFocused from '../UI/Forms/formTextFocused'
 import FormSelect from '../UI/Forms/formSelect'
 import FormStateSelect from '../UI/Forms/formStateSelect'
-import DialogGeneric from '../UI/Dialogs/dialogGeneric'
 import BtnAction from '../UI/Buttons/btnAction'
 import BtnActionLink from '../UI/Buttons/btnActionLnk'
-import { selectConsoleTitle } from '../../actions/index'
-import providerAPI from "../../utils/provider.js";
+import { selectConsoleTitle, providerSave } from '../../actions'
 import * as val from '../../logic/formValidations'
-import ProviderAddSuccessDialog from './ProviderAddSuccessDialog'
+import ProviderSaveDialog from './ProviderSaveDialog'
 import CareGroupSelect from '../CareGroup/CareGroupSelect'
 
 
-const styles = theme => ({
+const styles = () => ({
     root: {
         padding: "40px 40px 40px 16%",
     }
@@ -28,63 +25,20 @@ const styles = theme => ({
 class ProviderAdd extends Component {
 
     componentDidMount() {
-        this.props.selectConsoleTitle({title: "Add New Provider"});
+        this.props.dispatch(selectConsoleTitle({title: "Add New Provider"}));
     };
+
+
+    componentWillUnmount() {
+        this.props.dispatch(providerSave("reset"))
+    }
     
-    state = {
-        newProviderInfo: "",
-        failed: false,
-        success: false,
-    };
 
     // handle form submission and saving data to database
     submit(values) {
         console.log("Submitted values: ", values);
-        providerAPI.create({
-            date_added: new Date(),
-            firstname: values.firstname,
-            lastname: values.lastname,
-            provider_group_ref: values.caregroup[0],
-            provider_group_id: values.caregroup[0],
-            provider_group_name: values.caregroup[1],
-            role: values.role, 
-            office: {
-                name: values.officename,
-                street: values.officestreet,
-                city:values.officecity, 
-                state: values.officestate, 
-                zip: values.officezip,
-            },
-            email: values.email, 
-            phone: this.preparePhoneNums(values.phone1, values.phone2, values.phone3)
-        })
-        .then(res => {
-            console.log("res.data: ", res.data)
-            this.setState({
-                newProviderInfo: res.data,
-                success: true
-            })
-        })
-        .catch(err => {
-            console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-            console.log(err);
-            this.setState({
-                newProvider: `${values.firstname} ${values.lastname}`,
-                failed: true
-            })
-        })
-    };
-
-    preparePhoneNums = (phone1, phone2, phone3) => {
-        let phoneNos = [{
-            phone: "office", 
-            number: `${phone1.slice(0, phone1.indexOf("ext")).trim()}`, 
-            ext:  `${phone1.slice((phone1.indexOf("ext")+3)).trim()}`
-           }];
-        if (phone2) {phoneNos.push({ phone: "cell", number: `${phone2.trim()}`, ext:  ""})}
-        if (phone3) {phoneNos.push({ phone: "cell", number: `${phone2.trim()}`, ext:  ""})};
-        return phoneNos
-    }
+        this.props.dispatch(providerSave(values))
+     }
 
     // Clear form entries and reset values using Redux Form 'reset'.
     handleClearForm = () => {
@@ -93,9 +47,7 @@ class ProviderAdd extends Component {
 
 
     render() {
-
-        const { handleSubmit, classes, pristine, submitting } = this.props;
-        const { success, failed, newProviderInfo} = this.state;
+        const { handleSubmit, classes, pristine, submitting, newProvider, errorNewProvider, loadingNewProvider  } = this.props;
 
         const roleList =  [
             {id: "1", value: 'Physician (specialist)', text: 'Physician (specialist)' },
@@ -133,37 +85,31 @@ class ProviderAdd extends Component {
         ]
 
         return (
-            <Card className={classes.root}>
+            <Fragment>
+                
+                <Card className={classes.root}>
 
-                <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
-                    <Grid container spacing={24}>
-                        {formComponents.map((component, idx) => {
-                            return(
-                                <Grid item xs={6} key={idx}>
-                                        {component}
-                                </Grid>
-                            )
-                        }) }
-                    </Grid>
-                    <br /> <br />
-                    <span style={{marginRight: "15px"}}>
-                        <BtnAction type="submit" disabled={submitting || pristine} text="submit" />
-                    </span>
-                    <span style={{marginRight: "15px"}}>
-                        <BtnAction type="button" disabled={pristine} url='/admin/provider/find' text="clear" handleAction={this.handleClearForm} />
-                    </span>
-                    <BtnActionLink disabled={false} url='/admin/provider/find' text="cancel" />
-                </form>
+                    <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
+                        <Grid container spacing={24}>
+                            {formComponents.map((component, idx) => {
+                                return(
+                                    <Grid item xs={6} key={idx}>
+                                            {component}
+                                    </Grid>
+                                )
+                            }) }
+                        </Grid>
+                        <br /> <br />
+                        <BtnAction type="submit" disabled={submitting || pristine} text="submit" marginRight={true}/>
+                        <BtnAction type="button" disabled={pristine} url='/admin/provider/find' text="clear" warning={true} marginRight={true} handleAction={this.handleClearForm} />
+                        <BtnActionLink disabled={false} url='/admin/provider/find' text="cancel" warning={true}/>
+                    </form>
 
-                {success && <ProviderAddSuccessDialog  info={newProviderInfo} /> }
-                {failed &&
-                    <DialogGeneric 
-                        title="failed!" 
-                        text="Unfortuneately, a problem was encountered and the provider could not be added at this time. Please go back and check all the details entered are correct and valid and then try again. If the problem persists then contact the system administrator" 
-                    />
-                }
+                </Card>
+                
+                {(loadingNewProvider || errorNewProvider || newProvider._id) && <ProviderSaveDialog /> }
 
-            </Card>
+            </Fragment>
         );
     };
 
@@ -194,17 +140,22 @@ function validate(values) {
     return errors;
 }
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle, }, dispatch);
+const formData = {
+    form: 'EnrollProviderForm', //unique identifier for this form 
+    validate      
 }
 
-const formData = {
-        form: 'EnrollProviderForm', //unique identifier for this form 
-        validate,      
-}
+const mapStateToProps = (state) => {
+    console.log("State : ", state);
+    return {
+        newProvider: state.providerSave.info,
+        loadingNewProvider: state.providerSave.loading,
+        errorNewProvider: state.providerSave.error
+    }
+};
 
 ProviderAdd = reduxForm(formData)(ProviderAdd)
 ProviderAdd = withRouter(ProviderAdd)
 ProviderAdd = withStyles(styles)(ProviderAdd)
-ProviderAdd = connect(null, mapDispatchToProps)(ProviderAdd)
+ProviderAdd = connect(mapStateToProps)(ProviderAdd)
 export default ProviderAdd

@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 // import PropTypes from 'prop-types';
 import { withStyles, Card, CardContent, CardMedia, Typography, Button} from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel'
+import BtnClose from '../UI/Buttons/btnCloseIcon'
+import BtnAction from '../UI/Buttons/btnAction'
 import bannerImg from '../../img/dashboardBannnerImageSmall.PNG';
 
 const styles = (theme) => ({
@@ -25,32 +27,15 @@ const styles = (theme) => ({
     },
     bannerButton: {
         position: "absolute", bottom: 10, right: 10,
-        color: theme.palette.common.white,
-        backgroundColor: theme.palette.primary.main,
-        '&:hover': {
-            backgroundColor: theme.palette.primary.dark,
-        },
-        hover: {},
     },
-    closeButton: {
-        position: "absolute", top: 8, right: -8,
-        cursor: "pointer",
-        '&:hover': {
-            backgroundColor: "#ffffff"
-        }
-    },
-    cancelIconStyles: {
-        color: theme.palette.primary.main,
-        fontSize: "30px",
-        '&:hover': {
-            color: theme.palette.error.dark,
-        }
+    closeBtnPosn: {
+        position: "absolute", top: 2, right: 10,
     }
 });
 
 class DashboardBanner extends Component {  
 
-    handleCloseBanner = () => {
+    closeBanner = () => {
         this.props.toggleBanner()
     }
 
@@ -58,27 +43,29 @@ class DashboardBanner extends Component {
         const { classes } = this.props
 
         return (
-            <React.Fragment>
-                    <Card className={classes.card}>
+            <Fragment>
+                <Card className={classes.card}>
 
-                        <CardMedia className={classes.cover} image={bannerImg} /> 
+                    <CardMedia className={classes.cover} image={bannerImg} /> 
 
-                            <CardContent className={classes.content}>
-                                <Typography variant="h4" noWrap className={classes.bannerText}>
-                                    Patient Engagement Solutions
-                                </Typography>
-                                <Typography variant="h4" noWrap className={classes.bannerText}>
-                                    for Parkinson Disease
-                                </Typography>
-                            </CardContent>
-                        
-                        <Button disableRipple className={classes.closeButton} onClick={() => this.handleCloseBanner()}>
-                            <CancelIcon className={classes.cancelIconStyles}/>
-                        </Button>
-                        <Button className={classes.bannerButton}>Learn More</Button>
+                        <CardContent className={classes.content}>
+                            <Typography variant="h4" noWrap className={classes.bannerText}>
+                                Patient Engagement Solutions
+                            </Typography>
+                            <Typography variant="h4" noWrap className={classes.bannerText}>
+                                for Parkinson Disease
+                            </Typography>
+                        </CardContent>
+                    
+                    <div className={classes.closeBtnPosn}>
+                        <BtnClose handleBtnClick={this.closeBanner}/>
+                    </div>
+                    <div className={classes.bannerButton}> 
+                        <BtnAction text="Learn More" />
+                    </div>
 
-                 </Card> 
-            </React.Fragment >
+                </Card> 
+            </Fragment >
         );
     }
 }

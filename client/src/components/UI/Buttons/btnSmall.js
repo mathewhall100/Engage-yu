@@ -6,6 +6,7 @@ const styles = theme => ({
     root: { 
         margin: "10px 0 0 20px",
         padding: "0 5px",
+        color: "#555",
         backgroundColor: theme.palette.secondary.main,
         borderColor: theme.palette.primary.main,
         borderRadius: "5px",

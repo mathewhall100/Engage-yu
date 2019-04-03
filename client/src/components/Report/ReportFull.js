@@ -6,7 +6,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { withStyles, Paper, Grid, Typography} from '@material-ui/core';
 import Callback from '../UI/callback';
-import BtnTooltip from '../UI/Buttons/btnTooltip'
+import BtnTooltipGroup from '../UI/Buttons/btnTooltipGroup'
 import ReportTable from './ReportTable';
 import ReportEntriesTable from './ReportEntriesTable'
 import ReportBarGraph from './ReportBarGraph';
@@ -72,7 +72,7 @@ class ReportFull extends Component {
     }
 
     // Event handlers
-    handleActions = (btn) => {
+    handleBtns = (btn) => {
         console.log("handleActions: ", btn)
         switch (btn) {
             case "close":
@@ -118,7 +118,7 @@ class ReportFull extends Component {
                                 </Typography>
                             </Grid>
                             <Grid item xs={5} style={{position: "relative", top: "4px"}}>
-                                <BtnTooltip btns={btns} handleActionBtns={this.handleActions}/>
+                                <BtnTooltipGroup btns={btns} handleBtns={this.handleBtns}/>
                             </Grid>
                            
                         </Grid>

@@ -7,10 +7,10 @@ import PropTypes from 'prop-types';
 import { withStyles, Table, TableBody, TableCell, TablePagination, TableRow, Paper, Checkbox, Typography} from '@material-ui/core';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import TableEnhancedTableHead from '../UI/Tables/tableEnhancedTableHead';
-import Callback from '../UI/callback'
+import CallBack from '../UI/callback'
 import DashboardTableToolbar from './DashboardTableToolbar';
 import DashboardTableStatusBar from './DashboardTableStatusBar';
-import { loadActiveSurveys, loadPatient } from '../../actions';
+import { loadActiveSurveys, loadPatient, dashboardData } from '../../actions';
 import { filterByPerson, filterByStatus, filterByChecked } from './dashboardLogic';
 import { stableSort, getSorting } from '../../logic/tableSortFunctions';
 
@@ -34,7 +34,7 @@ const checkboxTheme = createMuiTheme({
 const CustomTableCell = withStyles(theme => ({
   body: {
     padding: '5px',
-    fontSize: 14
+    fontSize: "14px"
   },
 }))(TableCell);
 
@@ -42,7 +42,14 @@ const CustomTableCell = withStyles(theme => ({
 class DashboardTable extends Component {
 
     componentDidMount() {
-        // Load list of active surveys and save to redux store
+        const { dashboardData, dashboardChecked, dashboardStatus } = this.props
+        if (dashboardData && dashboardData.length > 0) {
+            this.setState({
+                tableDataFiltered: dashboardData,
+                selected: dashboardChecked,
+                statusFilter: dashboardStatus
+            })
+        } 
         this.props.dispatch(loadActiveSurveys(localStorage.getItem("provider_id")));
     }
 
@@ -50,13 +57,21 @@ class DashboardTable extends Component {
         // Load list of activeSurveys from store
         // Then filter by survey status (default: active), scope (deafult: requester only) and checkbox selection (default: none)
         // Gives this.state.tableDataFiltered array.
-        if (nextProps.activeSurveys ) {
+        if (nextProps.activeSurveys) {
             this.setState({ tableData: nextProps.activeSurveys},
-                () => this.setState({ 
-                    tableDataFiltered: this.filterData(this.state.tableData, this.state.personFilter, this.state.statusFilter, this.state.checked) 
-                }) 
-            );
+                () => {
+                    if (!this.state.tableDataFiltered.length) {
+                        this.setState({ tableDataFiltered: this.filterData(this.state.tableData, this.state.personFilter, this.state.statusFilter, this.state.checked) })
+                        
+                    }
+                } 
+            )
         }
+    }
+
+
+    componentWillUnmount() {
+        this.props.dispatch(dashboardData(this.state.tableDataFiltered, this.state.selected, this.state.statusFilter));
     }
 
     state = {
@@ -82,21 +97,28 @@ class DashboardTable extends Component {
 
     // Refilter in response to user selecting a navLink
     navLinksFilter = (filter) => {
-        this.setState({tableDataFiltered: this.filterData(this.state.tableData, filter, this.state.statusFilter, this.state.selected) },
-            () => this.setState({personFilter: filter})
-        );
+        this.setState({tableDataFiltered: this.filterData(this.state.tableData, filter, this.state.statusFilter, this.state.selected) });
+        this.setState({personFilter: filter})
     };
 
-    // Refilter in response to user selecting different status 
+    // Refilter in response to user selecting different status, 'active", 'awaiting review' or 'pending'
     statusFilter = (filter) => {
-        this.setState({tableDataFiltered: this.filterData(this.state.tableData, this.state.personFilter, filter, this.state.selected) }, 
-            () => this.setState({statusFilter: filter})
-        );
+        let statusFilter = this.state.statusFilter;
+        let filterAdded = []
+        let tableDataAdd = []
+        if (filter.length < statusFilter.length) {
+            this.setState({tableDataFiltered: this.filterData(this.state.tableData, this.state.personFilter, filter, this.state.selected) })
+        } else {
+            filterAdded = filter.filter(f => !statusFilter.includes(f));
+            tableDataAdd = filterByStatus(filterByPerson(this.state.tableData, localStorage.getItem("provider_id"), this.state.personFilter), filterAdded);
+            this.setState({tableDataFiltered: this.state.tableDataFiltered.concat(tableDataAdd)})
+        }
+        this.setState({statusFilter: filter})
     };
 
     // Refilter in response to user selecting specific surveys using checkboxes
     checkedFilter = () => {
-        this.setState({tableDataFiltered: this.filterData(this.state.tableData, this.state.personFilter, this.state.statusFilter, this.state.selected) } );
+        this.setState({tableDataFiltered: this.filterData(this.state.tableData, this.state.personFilter, this.state.statusFilter, this.state.selected) });
     };
 
     // Event handlers
@@ -140,7 +162,7 @@ class DashboardTable extends Component {
     render() {
 
         const { classes, error, loading, activeSurveys } = this.props;
-        const { order, orderBy, tableDataFiltered, selected, rowsPerPage, page } = this.state;
+        const { order, orderBy, tableDataFiltered, statusFilter, selected, rowsPerPage, page } = this.state;
         
         const rows = [
             { id: 'name', numeric: false, disablePadding: true, label: 'Patient Name' },
@@ -157,7 +179,7 @@ class DashboardTable extends Component {
         }
 
         if (loading || !activeSurveys) {
-            return <Callback />
+            return <CallBack />
         }
 
         return (
@@ -165,6 +187,7 @@ class DashboardTable extends Component {
 
                 <DashboardTableToolbar 
                     numSelected={selected.length}
+                    initialStatus={statusFilter}
                     navLinksSwitch={this.state.personFilter}
                     navLinksFilter={this.navLinksFilter}
                     statusFilter={this.statusFilter}
@@ -248,12 +271,15 @@ DashboardTable.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-    //console.log("State @dashboard: ", state);
+    console.log("State @dashboard: ", state);
     return {
         activeSurveys: state.activeSurveys.surveys,
         loading: state.activeSurveys.loading,
         error: state.activeSurveys.error,
-        user: state.user
+        user: state.user,
+        dashboardData: state.dashboardData.tableData,
+        dashboardChecked: state.dashboardData.checked,
+        dashboardStatus: state.dashboardData.status
     };
 };
 

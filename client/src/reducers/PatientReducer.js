@@ -1,7 +1,8 @@
 import {
     PATIENT_BEGIN,
     PATIENT_SUCCESS,
-    PATIENT_FAILURE
+    PATIENT_FAILURE,
+    PATIENT_RESET
 } from '../actions/types';
 
 const initialState = {
@@ -11,7 +12,6 @@ const initialState = {
 };
 
 export default function patientReducer( 
-    
     state = initialState,
     action
 ) {
@@ -35,8 +35,17 @@ export default function patientReducer(
                 ...state,
                 loading: false,
                 error: action.payload.error,
-                patient: []
+                patient: {}
             };
+
+        case PATIENT_RESET:
+            return {
+                ...state,
+                loading: false,
+                error: null,
+                patient: {}
+            };
+
 
         default: return state;
     }

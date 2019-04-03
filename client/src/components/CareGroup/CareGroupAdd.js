@@ -1,21 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { reduxForm } from 'redux-form';
+import { isEmpty } from 'lodash'
 import moment from 'moment';
-import { startCase } from 'lodash';
 import { withStyles, Card, Grid, Typography } from '@material-ui/core';
 import BtnActionLnk from '../UI/Buttons/btnActionLnk';
 import BtnActionBtn from '../UI/Buttons/btnAction';
 import FormTextFocused from '../UI/Forms/formTextFocused';
-import DialogGeneric from '../UI/Dialogs/dialogGeneric';
-import { selectConsoleTitle } from '../../actions/index';
-import provider_groupAPI from "../../utils/provider_group.js";
+import { selectConsoleTitle, careGroupSave } from '../../actions';
 import { validateName } from '../../logic/formValidations';
+import CareGroupSaveDialog from './CareGroupSaveDialog'
 
 const styles = () => ({
     root: {
-        padding: "40px",
+        padding: "40px 40px 40px 16%",
     }
 });    
 
@@ -23,46 +21,21 @@ const styles = () => ({
 class CareGroupAdd extends Component {
 
     componentDidMount() {
-        this.props.selectConsoleTitle({title: "Add New Care Group"})
+        this.props.dispatch(selectConsoleTitle({title: "Add New Care Group"}))
+    }
+
+    componentWillUnmount() {
+        this.props.dispatch(careGroupSave("reset"))
     }
     
-    state = {
-        addFailed: false,
-        addSuccess: false,
-        newCareGroup: ""
-    };
-
     // handle form submission
     submit(values) {
         console.log("Submitted values: ", values);
-        provider_groupAPI.create({
-            date_added: new Date(),
-            added_by_ref: localStorage.getItem("provider_id"),
-            added_by_id: localStorage.getItem("provider_id"),
-            added_by_name: `${localStorage.getItem("provider_first_name")} ${localStorage.getItem("provider_last_name")}`,
-            group_name: values.caregroup
-        })
-        .then(res => {
-            console.log("res.data: ", res.data);
-            this.setState({
-                newCareGroup: values.caregroup,
-                addSuccess: true
-            });
-        })
-        .catch(err => {
-            console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-            console.log(err);
-            this.setState({
-                newCareGroup: values.caregroup,
-                addFailed: true
-            }); 
-        })
+        this.props.dispatch(careGroupSave(values))
     }
 
- 
     render() {
-        const { handleSubmit, classes, pristine, submitting } = this.props;
-        const { newCareGroup, addSuccess, addFailed } = this.state;
+        const { handleSubmit, classes, pristine, submitting, newCareGroup, errorNewCareGroup, loadingNewCareGroup } = this.props;
 
         return (
             <Card className={classes.root}>
@@ -84,26 +57,12 @@ class CareGroupAdd extends Component {
 
                     <br /> <br />
 
-                    <span style={{marginRight: "15px"}}>
-                        <BtnActionBtn type="submit" disabled={submitting || pristine} text="submit" />
-                    </span>
+                    <BtnActionBtn type="submit" disabled={submitting || pristine} text="submit" marginRight={true}/>
                     <BtnActionLnk disabled={false} url='/admin/caregroup/find' text="cancel" />
 
                 </form> 
                 
-                {addSuccess && 
-                    <DialogGeneric 
-                        title="Success!" 
-                        text={`CareGroup ${startCase(newCareGroup)} successfully added and will now appear as an option whenever care groups are selected`} 
-                    />
-                }
-
-                {addFailed && 
-                    <DialogGeneric
-                        title="Failed!" 
-                        text={`Unfortuneately there was a problem and care group ${startCase(newCareGroup)} could not be added. Click close, check the details you have enbtered and try again. If the problem persists then contact your systme administrator`} 
-                    />
-                }
+                {(loadingNewCareGroup || errorNewCareGroup || !isEmpty(newCareGroup)) && <CareGroupSaveDialog /> }
 
             </Card>
         );
@@ -112,24 +71,29 @@ class CareGroupAdd extends Component {
 }
 
 function validate(values) {
-    console.log("Error values: ", values);
+    //console.log("Error values: ", values);
     const errors = {};
     // validate inputs from 'values'
     errors.name = validateName(values.name, true);
-    console.log("Errors: ", errors);
+    //console.log("Errors: ", errors);
     return errors;
 }
 
-function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ selectConsoleTitle, }, dispatch);
-}
-
 const formData = {
-        form: 'CareGroupAddForm', //unique identifier for this form 
-        validate,      
+    form: 'CareGroupAddForm', //unique identifier for this form 
+    validate      
+};
+
+const mapStateToProps = (state) => {
+    console.log("State : ", state);
+    return {
+        newCareGroup: state.careGroupSave.info,
+        loadingNewCareGroup: state.careGroupSave.loading,
+        errorNewCareGroup: state.careGroupSave.error
+    }
 };
 
 CareGroupAdd = reduxForm(formData)(CareGroupAdd);
 CareGroupAdd = withStyles(styles)(CareGroupAdd);
-CareGroupAdd = connect(null, mapDispatchToProps)(CareGroupAdd);
+CareGroupAdd = connect(mapStateToProps)(CareGroupAdd);
 export default CareGroupAdd;

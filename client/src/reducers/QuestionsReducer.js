@@ -35,7 +35,7 @@ export default function questionsReducer(
                 ...state,
                 loading: false,
                 error: action.payload.error,
-                questions: []
+                questions: {}
             };
 
         default: return state;

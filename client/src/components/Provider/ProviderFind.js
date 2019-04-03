@@ -4,7 +4,7 @@ import { withStyles, Card } from '@material-ui/core';
 import ProviderSelect from '../UI/Forms/FormProviderSelect'
 import FormFind from "../UI/Forms/formFind"
 import { selectConsoleTitle } from '../../actions'
-import ProviderDetails from './ProviderDetails'
+import ProviderDisplay from './ProviderDisplay'
 
 
 const styles = () => ({
@@ -24,11 +24,11 @@ class ProviderFind extends Component {
     state = {
         userGroupId: localStorage.getItem("provider_id"),
         providerList: [],
-        displayDetails: false,
+        display: false,
     }
 
-    closeProviderDetails = () => {
-        this.setState({displayDetails: false})
+    closeProviderDisplay = () => {
+        this.setState({display: false})
         this.props.reset("ProviderSelectForm")
     }
 
@@ -37,20 +37,20 @@ class ProviderFind extends Component {
         if (values.provider && values.provider[0] ) {
             this.setState({
                 providerId: values.provider[0],
-                displayDetails: !this.state.displayDetails
+                display: !this.state.display
             })
         }
     };
 
     render () {
-        const { displayDetails, providerId } = this.state
+        const { display, providerId } = this.state
         const { handleSubmit, submitting, pristine, classes } = this.props
         
         return (
             <Card className={classes.root}>
                 <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
                     <FormFind 
-                        title="Select provider:"
+                        title=""
                         select={<ProviderSelect />}
                         url='/admin/provider/add'
                         btn="add new provider"
@@ -58,7 +58,7 @@ class ProviderFind extends Component {
                         submitting={submitting}
                     />
                 </form>
-                { displayDetails && <ProviderDetails  providerId={providerId} handleClose={this.closeProviderDetails}/> }
+                { display && <ProviderDisplay  providerId={providerId} handleClose={this.closeProviderDisplay}/> }
             </Card>
         )
     }

@@ -4,18 +4,23 @@ import { Link } from 'react-router-dom';
 import { withStyles, Button} from '@material-ui/core';
 
 const styles = (theme) => ({
-    btn: { 
-        padding: "4px 5px",
+    btn: {
+        height: "32px",
+        padding: "0 5px",
         marginLeft: '15px',
+        color: "#555",
         backgroundColor: "#eeeeee",
         borderColor: theme.palette.primary.main,
         borderRadius: "5px",
         textDecoration: "none",
         '&:hover': {
             backgroundColor: "#dddddd",
+            color: theme.palette.primary.dark,
+            cursor: "pointer"
         },
         '&:disabled': {
-            color: 'grey'
+            color: 'grey',
+            cursor: 'disabled'
         },
         hover: {},
         disabled: {},

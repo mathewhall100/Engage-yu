@@ -10,10 +10,10 @@ let redirectURI = `http://${window.location.hostname}${window.location.hostname.
 export default class Auth {
     
     auth0 = new auth0.WebAuth({
-                domain: 'shikwan.auth0.com',
-                clientID: 'uQdJPDVXxxYgPqJiUoRVnAYFKZudGoHh',
+                domain: 'engageyu-dev.auth0.com',
+                clientID: 'mrtJ796iMGWdpVzIH78fzVSwbGCj0tse',
                 redirectUri: redirectURI,
-                audience: 'https://shikwan.auth0.com/api/v2/',
+                audience: 'https://engageyu-dev.auth0.com/api/v2/',
                 responseType : 'token id_token',
                 scope : 'openid profile'
             })

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { ListItem, ListItemIcon, ListItemText, ListSubheader, Typography, Divider} from '@material-ui/core';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import SearchIcon from '@material-ui/icons/Search';
@@ -8,16 +9,17 @@ import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import DeleteIcon from '@material-ui/icons/Delete';
 import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
 import BuildIcon from '@material-ui/icons/Build';
+import { loadPatient } from '../../actions'
 
 
-export default class ConsoleMenuListItems extends Component {
+class ConsoleMenuListItems extends Component {
 
 	state = {
 		selectedIndex: 0,
 	}
 
 	handleListItemClick = (event, index) => {
-		localStorage.setItem("patient_id", "")
+		if (index !== 2) {this.props.dispatch(loadPatient("reset"))}
 		this.setState({ selectedIndex: index });
 	};
 
@@ -74,3 +76,4 @@ export default class ConsoleMenuListItems extends Component {
 	}
 };
 
+export default connect(null)(ConsoleMenuListItems)

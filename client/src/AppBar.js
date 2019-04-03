@@ -18,7 +18,7 @@ const styles = theme =>({
     root: {
         marginRight: "22px",
         flexGrow: 1,
-        backgroundColor: "#2d404b",
+        backgroundColor: theme.palette.primary.main,
         [theme.breakpoints.down('md')]: {
             marginLeft: "22px"
         }

@@ -29,6 +29,7 @@ class TableEnhancedTableHead extends PureComponent {
 									indeterminate={numSelected > 0 } 
 									checked={false} 
 									onChange={onDeSelectAllClick}
+									style={{paddingLeft: 0}} 
 								/>
 							}
 						</CustomTableCell> }

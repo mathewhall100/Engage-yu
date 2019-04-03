@@ -4,18 +4,20 @@ import { withStyles, Button, Tooltip} from '@material-ui/core';
 
 const styles = (theme) => ({
     btn: {
-        backgroundColor: "#eeeeee",
-        textDecoration: "none",
-        borderRadius: "5px",
-        borderColor: theme.palette.primary.main,
+        marginLeft: "15px", 
         padding: "5px 8px",
-        marginLeft: "15px",
+        color: "#555",
+        backgroundColor: theme.palette.secondary.main,
+        borderColor: theme.palette.primary.main,
+        borderRadius: "5px",
         float: "right",
         '&:hover': {
-            backgroundColor: "#dddddd",
+            backgroundColor: theme.palette.secondary.dark,
+            cursor: 'pointer'
         },
         '&:disabled': {
-            color: 'grey'
+            color: 'grey',
+            cursor: 'disabled'
         },
         hover: {},
         disabled: {},
@@ -23,10 +25,10 @@ const styles = (theme) => ({
 });
 
 
-const BtnTooltip = (props) => {
+const BtnTooltipGroup = (props) => {
     const { classes, btns } = props;
 
-    const handleBtnClick = (btn) => {props.handleActionBtns(btn)};
+    const handleBtnClick = (btn) => {props.handleBtns(btn)};
     
     return (
         btns.map((btn, idx) => {
@@ -47,10 +49,10 @@ const BtnTooltip = (props) => {
     );
 };
 
-BtnTooltip.propTypes = {
+BtnTooltipGroup.propTypes = {
     classes: PropTypes.object.isRequired,
     btns: PropTypes.array.isRequired,
   
 };
   
-export default  withStyles(styles)(BtnTooltip);
+export default  withStyles(styles)(BtnTooltipGroup);

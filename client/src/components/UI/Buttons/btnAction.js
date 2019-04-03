@@ -17,7 +17,7 @@ const styles = (theme) => ({
         hover: {},
         disabled: {}
     },
-  cancelBtn: {
+  warningBtn: {
         padding: "5px",
         color: "#ffffff",
         borderRadius: "5px",
@@ -35,7 +35,7 @@ const styles = (theme) => ({
 
 
 const BtnAction = (props) => {
-    const { classes, text, type="button", disabled=false, index=null } = props;
+    const { classes, text, type="button", disabled=false, marginRight=false, warning=false, index=null } = props;
 
     const handleClick = (index) => {props.handleAction(index)};
     
@@ -43,8 +43,9 @@ const BtnAction = (props) => {
         <Button 
             size="small"
             type={type} 
-            className={text==="cancel" || text==="clear" ? classes.cancelBtn : classes.btn} 
+            className={warning ? classes.warningBtn : classes.btn} 
             onClick={() => type==="submit" ? null : handleClick(index) }
+            style={{marginRight: marginRight ? "15px" : 0}}
             disabled={disabled}
         >
             {text}
@@ -57,6 +58,8 @@ BtnAction.propTypes = {
     text: PropTypes.string.isRequired,
     type: PropTypes.string,
     disabled: PropTypes.bool,
+    warning: PropTypes.bool,
+    marginRight: PropTypes.bool,
     handleAction: PropTypes.func,
 };
   

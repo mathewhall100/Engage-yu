@@ -6,7 +6,7 @@ import moment from 'moment';
 import { withStyles, Typography, Card, Grid } from '@material-ui/core';
 import TableGeneric from '../UI/Tables/tableGeneric';
 import BtnSmall from '../UI/Buttons/btnSmall';
-import BtnHandleGroup from '../UI/Buttons/btnHandleGroup';
+import BtnGroup from '../UI/Buttons/btnGroup';
 import HrStyled from '../UI/hrStyled';
 import BtnCloseIcon from '../UI/Buttons/btnCloseIcon';
 import CallBack from '../UI/callback';
@@ -24,7 +24,7 @@ const styles = () => ({
 });
 
 
-class CareGroupDetails extends Component {  
+class CareGroupDisplay extends Component {  
     
     componentDidMount() {
         this.props.dispatch(loadCareGroup(this.props.careGroupId))
@@ -61,19 +61,17 @@ class CareGroupDetails extends Component {
     handleAction = (btn) => {
         switch(btn) {
             case "remove care group":
-                this.props.history.push({
+                return this.props.history.push({
                     pathname: '/admin/caregroup/remove',
                     state: {careGroupId: this.props.careGroup._id}
                 });
-                break;
             case "edit care group":
-                this.props.history.push({
+                return this.props.history.push({
                     pathname: '/admin/caregroup/update',
                     state: {careGroupId: this.props.careGroup._id}
                 });
-                break;
             default: return null
-        };
+        }
     }
 
     handleShowProviders = () => {
@@ -110,7 +108,7 @@ class CareGroupDetails extends Component {
 
         return (
             <Card className={classes.root}> 
-            
+
                 <Typography variant="caption" inline>Care group</Typography>
                 <BtnCloseIcon handleBtnClick={this.handleClose} />
                 <Typography variant="h6" >{startCase(careGroup.group_name)}</Typography>
@@ -159,7 +157,7 @@ class CareGroupDetails extends Component {
 
                 <br /> <HrStyled /> <br />    
                 
-                <BtnHandleGroup 
+                <BtnGroup 
                     btns={btns} 
                     _id={careGroup._id}
                     handleActionBtns={this.handleAction}
@@ -180,7 +178,7 @@ const mapStateToProps = (state) => {
     }
 }
 
-CareGroupDetails = withRouter(CareGroupDetails);
-CareGroupDetails = withStyles(styles)(CareGroupDetails);
-CareGroupDetails = connect(mapStateToProps)(CareGroupDetails);
-export default CareGroupDetails;
+CareGroupDisplay = withRouter(CareGroupDisplay);
+CareGroupDisplay = withStyles(styles)(CareGroupDisplay);
+CareGroupDisplay = connect(mapStateToProps)(CareGroupDisplay);
+export default CareGroupDisplay;

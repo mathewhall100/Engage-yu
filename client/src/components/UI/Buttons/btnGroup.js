@@ -5,19 +5,22 @@ import { withStyles, Button } from '@material-ui/core';
 const styles = theme => ({
     btn: {
         height: "32px",
-        marginLeft: "15px",
         padding: "0 5px",
-        float: "right",color: "#555",
+        marginLeft: "15px",
+        float: "right",
+        color: "#555",
         backgroundColor: "#eeeeee",
-        textDecoration: "none",
         borderColor: theme.palette.primary.main,
         borderRadius: "5px",  
+        textDecoration: "none",
         '&:hover': {
             backgroundColor: "#dddddd",
-            color: theme.palette.primary.dark
+            color: theme.palette.primary.dark,
+            cursor: 'pointer'
         },
         '&:disabled': {
-            color: 'grey'
+            color: 'grey',
+            cursor: 'disabled'
         },
         hover: {},
         disabled: {},
@@ -29,7 +32,7 @@ const styles = theme => ({
 });
 
 
-const BtnHandleGroup = (props) => {
+const BtnGroup = (props) => {
     const {classes, btns,  _id } = props;
 
     return (
@@ -44,11 +47,11 @@ const BtnHandleGroup = (props) => {
     );
 };
 
-BtnHandleGroup.propTypes = {
+BtnGroup.propTypes = {
     classes: PropTypes.object.isRequired,
     btns: PropTypes.array.isRequired,
     _id: PropTypes.string.isRequired,
     handleActionBtns: PropTypes.func.isRequired
 };
   
-export default  withStyles(styles)(BtnHandleGroup);
+export default  withStyles(styles)(BtnGroup);

@@ -1,16 +1,14 @@
 import React, { Component } from 'react';
 import { reduxForm} from 'redux-form';
 import { connect } from 'react-redux';
+import { startCase } from 'lodash';
 //import PropTypes from 'prop-types';
-import moment from 'moment';
 import { withStyles, Button, Typography, Collapse} from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel'
 import BtnAction from '../UI/Buttons/btnAction'
 import BtnActionLink from '../UI/Buttons/btnActionLnk'
 import CallBack from '../UI/callback'
-import patient_dataAPI from "../../utils/patient_data.js";
-import { durations, startDates, frequencies, timeMargins, reminders, sliderTimes24HR } from './surveyConstants'
-import { createStartDate, createRecordsArray, createSurveyQuestions} from './surveyLogic'
+import { durations, startDates, frequencies, timeMargins, reminders } from './surveyConstants'
 import SurveyCustomQuestionTable from './SurveyCustomQuestionTable';
 import SurveyPanelExpandButton from './SurveyPanelExpandButton'
 import SurveyQuestionPanel from './SurveyQuestionPanel';
@@ -18,8 +16,8 @@ import SurveyFormSlider from './SurveyFormSlider';
 import SurveyFormRadio from './SurveyFormRadio';
 import SurveyDatePicker from './SurveyFormDatePicker';
 import SurveySaveListDialog from "./SurveySaveListDialog"
-import SurveySaveSuccessDialog from './SurveySaveSuccessDialog'
-import DialogActionFailed from '../UI/Dialogs/dialogActionFailed'
+import SurveySaveDialog from './SurveySaveDialog'
+import { saveSurvey } from '../../actions'
 
 
 const styles = theme => ({
@@ -117,7 +115,6 @@ const styles = theme => ({
 }); 
 
 
-// --------------- SurveyForm component --------------------------
 class SurveyForm extends Component { 
 
     componentWillReceiveProps(nextProps) {
@@ -143,7 +140,6 @@ class SurveyForm extends Component {
         saveList: false,
         success: false,
         failed: false, 
-        episodeStart: "",
     }
 
     // Set initial states of form elements
@@ -159,69 +155,15 @@ class SurveyForm extends Component {
     }
 
     submit(values) {
-        console.log("values: ", values)
-        console.log("sliders: ", this.state.slider1Value, " ", this.state.slider2Value)
-        console.log("questions: ", this.state.selectedQuestions)
-
-        const { slider1Value, slider2Value, selectedQuestions } = this.state
-        const { patientData, patientInfo } = this.props
-
-        const startDate = createStartDate(values.startdate, values.datepick)
-        const endDate = moment(startDate).add(values.duration-1, 'd')
-        const startTime = sliderTimes24HR[slider1Value];
-        const endTime = sliderTimes24HR[slider2Value];
-        const hoursPerDay = parseInt(endTime, 10) > parseInt(startTime, 10) ? (parseInt(endTime, 10)-parseInt(startTime, 10))/100 + 1 : ((parseInt(endTime, 10)+2400)-parseInt(startTime, 10))/100 + 1; 
-        const entriesPerDay = parseInt(hoursPerDay, 10)/(parseInt(values.frequency, 10)/60);
-        const remindStatus = values.reminder === "off" ? "off" : "on";
-        const remindMinsBefore = values.reminder !== "off" ? values.reminder : "";
-
-        const surveyObj = {
-            episode_number: patientData.episodes.length,
-            date_requested: moment(),
-            requesting_provider_ref: localStorage.getItem("provider_id"),
-            requesting_provider_id: localStorage.getItem("provider_id"),
-            requesting_provider_firstname: localStorage.getItem("provider_first_name"),
-            requesting_provider_lastname: localStorage.getItem("provider_last_name"),
-            primary_provider_ref: patientInfo.primary_provider_id,
-            primary_provider_id: patientInfo.primary_provider_id,
-            primary_provider_firstname: patientInfo.primary_provider_firstname,
-            primary_provider_lastname: patientInfo.primary_provider_lastname,
-            start_date: startDate,
-            end_date: endDate,
-            num_days: parseInt(values.duration, 10),
-            start_time: startTime,
-            end_time: endTime,
-            interval_mins: parseInt(values.frequency, 10),
-            margin_mins: parseInt(values.timeMargin, 10),
-            remind_status: remindStatus,
-            remind_mins_before: remindMinsBefore,
-            questions: createSurveyQuestions(selectedQuestions),
-            notes: "",
-            records: createRecordsArray(startDate, startTime, values.duration, values.frequency, entriesPerDay),
-            status: "pending",
-            report_to: [
-                {   provider_ref: patientInfo.primary_provider_id,
-                    provider_id: patientInfo.primary_provider_id,
-                    provider_firstname: patientInfo.primary_provider_firstname,
-                    provider_lastname: patientInfo.primary_provider_lastname
-                }
-            ]
-        };
-        console.log("obj ", surveyObj)
-        patient_dataAPI.newEpisode(patientData._id, surveyObj)
-        .then(res => {
-            // console.log("res.data: ", res.data))
-            this.setState ({
-                success: true, // save success dialog
-                episodeStart: startDate
-            })  
-        })
-        .catch(err => {
-            console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-            console.log(err);
-            this.setState({failed: true}); // save success dialog
-        })
-
+        console.log("values: ", values);
+        this.props.dispatch(saveSurvey(
+             values, 
+             this.props.patientInfo, 
+             this.props.patientData, 
+             this.state.slider1Value, 
+             this.state.slider2Value, 
+             this.state.selectedQuestions
+         ));
     };
 
     // Slider values
@@ -269,18 +211,16 @@ class SurveyForm extends Component {
             case -1:
                 newSelected = newSelected.concat(selectedQuestions, question); break
             case 0:
-                if (selectedQuestions.length > 1) {
-                    newSelected = newSelected.concat(selectedQuestions.slice(1))
-                 } else newSelected = selectedQuestions; break
+                if (selectedQuestions.length > 1) {newSelected = newSelected.concat(selectedQuestions.slice(1))} 
+                else newSelected = selectedQuestions; 
+                break;
             case selectedQuestions.length - 1:
-                newSelected = newSelected.concat(selectedQuestions.slice(0, -1)); break
-            default: 
-                newSelected = newSelected.concat(selectedQuestions.slice(0, selectedIndex),selectedQuestions.slice(selectedIndex + 1))
+                newSelected = newSelected.concat(selectedQuestions.slice(0, -1));
+                break;
+            default: newSelected = newSelected.concat(selectedQuestions.slice(0, selectedIndex),selectedQuestions.slice(selectedIndex + 1))
         }
         if (selectedIndex > 0 && selectedList && selectedList.list_name) {
-            if (selectedList.list_questions.includes(question)) {
-                this.setState({selectedList: {} })
-            }
+            if (selectedList.list_questions.includes(question)) {this.setState({selectedList: {}}) }
         }
         this.setState({ selectedQuestions: newSelected });
     };
@@ -294,14 +234,14 @@ class SurveyForm extends Component {
     // Render component
     render () {
         
-        const { patientInfo, patientData, defaultQuestion, customQuestions, provider, errorPatient, errorProvider, errorQuestions, loadingPatient, loadingProvider, loadingQuestions, handleSubmit, classes, submitting, surveyForm } = this.props;
-        const { selectedQuestions, selectedList, slider1Value, slider2Value, settings, customize, toggleCollapse, saveList, success, failed, episodeStart } = this.state;
+        const { patientInfo, patientData, defaultQuestion, customQuestions, provider, errorPatient, errorProvider, errorQuestions, loadingPatient, loadingProvider, loadingQuestions, survey, errorSurvey, loadingSurvey, handleSubmit, classes, submitting, surveyForm } = this.props;
+        const { selectedQuestions, selectedList, slider1Value, slider2Value, settings, customize, toggleCollapse, saveList } = this.state;
 
         if (errorPatient || errorProvider || errorQuestions) {
             return <div>Error! {errorPatient.message} {errorProvider.message} {errorQuestions.message}</div>
         }
 
-        if (loadingPatient || loadingProvider || loadingQuestions || !patientInfo || !provider || !defaultQuestion) {
+        if (loadingPatient || loadingProvider || loadingQuestions || !patientInfo || !provider || !defaultQuestion || !customQuestions.questionList ) {
             return <CallBack />
         }
 
@@ -396,17 +336,12 @@ class SurveyForm extends Component {
                                                 toggleCollapse={this.toggleCollapse}
                                             />
                                             <hr className={classes.hrStyled}/>
-
-                                            {provider && provider.custom_question_lists ?
-                                                <SurveyCustomQuestionTable 
-                                                    type="list"
-                                                    customQuestions={provider.custom_question_lists}
-                                                    selected={selectedList}
-                                                    checkboxClick={this.handleListCheckBoxClick}
-                                                />
-                                                :
-                                                CallBack 
-                                            }
+                                            <SurveyCustomQuestionTable 
+                                                type="list"
+                                                customQuestions={provider.custom_question_lists}
+                                                selected={selectedList}
+                                                checkboxClick={this.handleListCheckBoxClick}
+                                            />
                                         </div>
                                     </Collapse>
 
@@ -419,17 +354,12 @@ class SurveyForm extends Component {
                                                 toggleCollapse={this.toggleCollapse}
                                             />
                                             <hr className={classes.hrStyled}/>
-
-                                            {customQuestions && customQuestions[0] ?
-                                                <SurveyCustomQuestionTable 
-                                                    type="question"
-                                                    customQuestions={customQuestions.filter(q => q.added_by_id === localStorage.getItem("provider_id"))}
-                                                    selected={selectedQuestions}
-                                                    checkboxClick={this.handleQuestionCheckBoxClick}
-                                                />
-                                                :
-                                                CallBack 
-                                            }
+                                            <SurveyCustomQuestionTable 
+                                                type="question"
+                                                customQuestions={customQuestions.questionList.filter(q => q.added_by_id === localStorage.getItem("provider_id"))}
+                                                selected={selectedQuestions}
+                                                checkboxClick={this.handleQuestionCheckBoxClick}
+                                            />
                                         </div>
                                     </Collapse>
 
@@ -442,17 +372,12 @@ class SurveyForm extends Component {
                                                 toggleCollapse={this.toggleCollapse}
                                             />
                                             <hr className={classes.hrStyled}/>
-
-                                            {customQuestions && customQuestions.questionList ?
-                                                <SurveyCustomQuestionTable 
-                                                        type="question"
-                                                        customQuestions={customQuestions.questionList}
-                                                        selected={selectedQuestions}
-                                                        checkboxClick={this.handleQuestionCheckBoxClick}
-                                                />  
-                                                :
-                                                CallBack
-                                            }          
+                                            <SurveyCustomQuestionTable 
+                                                type="question"
+                                                customQuestions={customQuestions.questionList}
+                                                selected={selectedQuestions}
+                                                checkboxClick={this.handleQuestionCheckBoxClick}
+                                            />      
                                         </div>
                                     </Collapse>
 
@@ -475,7 +400,6 @@ class SurveyForm extends Component {
                                     <Typography variant="subtitle1" className={classes.questionLabel}>Interval between entries</Typography>
                                     <div style={{marginBottom: "24px"}}>
                                         <SurveyFormRadio
-                                            title="Frequency of diary entries"
                                             name="frequency"
                                             items={frequencies}
                                         /> 
@@ -501,10 +425,8 @@ class SurveyForm extends Component {
                         </Collapse>
 
                         <div className={classes.actionBtnsContainer}>
-                            <BtnAction type="submit" disabled={submitting || (slider1Value === 0 && slider2Value === 20)} text="create diary card" />
-                            <span style={{marginLeft: "16px"}}>
-                                <BtnActionLink url='/admin/find' text="cancel"/>
-                            </span>
+                            <BtnAction type="submit" disabled={submitting || (slider1Value === 0 && slider2Value === 20)} text="create diary card" marginRight={true}/>
+                            <BtnActionLink url='/admin/find' text="cancel" warning={true}/>
                             {!settings &&
                                 <Typography variant="button" inline className={classes.underlineBtn} onClick={() => this.setState({settings: true}) } >
                                     settings
@@ -515,27 +437,28 @@ class SurveyForm extends Component {
                 </form>
 
                 {saveList && <SurveySaveListDialog questions={selectedQuestions} providerId={localStorage.getItem("provider_id")}/>}
-                {success && <SurveySaveSuccessDialog name={`${patientInfo.firstname} ${patientInfo.lastname}`} episodeStart={episodeStart} patientDataId={patientData._id}/>}
-                {failed && <DialogActionFailed text="A problem was encountered and a new dairy has not been created." cancelUrl="/admin/find"/> } 
+                {(loadingSurvey || survey.start || errorSurvey) && 
+                    <SurveySaveDialog 
+                        start={survey.start} 
+                        name={`${startCase(patientInfo.firstname)} ${startCase(patientInfo.lastname)}`} 
+                        patientDataId={patientData._id}
+                     />
+                }
 
             </div>
         );
     }
 };
 
-
 function validate(values) {
-    console.log("Error values: ", values) // -> { object containing all values of form entries } 
+    console.log("Error values: ", values) 
     const errors = {};
-    // validate inputs from 'values'
     if (values.startdate === "date" && !values.datepick) {
-        errors.datepick = "Please enter a valid date";   // message to be displayed if invalid
+        errors.datepick = "Please enter a valid date";   
     }
-    // If errors has any properties, redux form assumes form is invalid
     console.log("Errors: ", errors)
     return errors;
 }
-
 
 const mapStateToProps = (state) => {
     console.log("State : ", state);
@@ -552,7 +475,11 @@ const mapStateToProps = (state) => {
 
         provider: state.provider.provider,
         errorProvider: state.provider.error,
-        laodingprovider: state.provider.loading,
+        loadingProvider: state.provider.loading,
+
+        survey: state.survey.survey,
+        errorSurvey: state.survey.error,
+        loadingSurvey: state.survey.loading,
         
         surveyForm: state.form.NewSurveyForm //Make form state available in component
     }

@@ -108,10 +108,9 @@ class SurveySaveQuestionListDialog extends React.Component {
 
 						<br />
 
-						<BtnAction type="submit" disabled={pristine} text="save" />
-						<span style={{marginLeft: "15px"}}>
-							<BtnAction text="cancel" handleAction={this.handleClose} />
-						</span>
+						<BtnAction type="submit" disabled={pristine} text="save" marginRight={true}/>
+						<BtnAction text="cancel" handleAction={this.handleClose} warning={true}/>
+
 					</form>
 
 				</DialogContent>
