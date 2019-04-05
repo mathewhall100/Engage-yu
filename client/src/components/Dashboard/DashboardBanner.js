@@ -26,10 +26,10 @@ const styles = (theme) => ({
         color: theme.palette.grey[700],
     },
     bannerButton: {
-        position: "absolute", bottom: 10, right: 10,
+        position: "absolute", bottom: 10, right: 12,
     },
     closeBtnPosn: {
-        position: "absolute", top: 2, right: 10,
+        position: "absolute", top: 2, right: 12,
     }
 });
 

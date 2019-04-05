@@ -38,9 +38,16 @@ const BtnGroup = (props) => {
     return (
         btns.map((btn, idx) => {
             return (
-                <Button key={idx} size="small" variant="outlined" className={classes.btn} onClick={() => props.handleActionBtns(btn.btn, _id)}>
-                    {btn.icon && <span className={classes.btnIcon}>{btn.icon}</span>} 
-                    <span className={classes.btnText}>{btn.btn}</span>
+                <Button 
+                    key={idx} 
+                    type={btn.type}
+                    size="small" 
+                    variant="outlined" 
+                    className={classes.btn} 
+                    onClick = {btn.type === "submit" ? null : () => props.handleActionBtns(btn.btn, _id)}
+                    >
+                        {btn.icon && <span className={classes.btnIcon}>{btn.icon}</span>} 
+                        <span className={classes.btnText}>{btn.btn}</span>
                 </Button>
             )
         })

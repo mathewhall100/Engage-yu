@@ -8,7 +8,7 @@ import BtnGroup from '../UI/Buttons/btnGroup'
 import FormCheckbox from '../UI/Forms/formCheckbox'
 import DialogSaveFailure from '../UI/Dialogs/dialogSaveFailure'
 import DialogSaving from '../UI/Dialogs/dialogSaving'
-import { loadProvider, emailNewProvider } from '../../actions'
+import { emailNewProvider } from '../../actions'
 
 
 class ProviderSaveDialog extends React.Component {
@@ -27,7 +27,29 @@ class ProviderSaveDialog extends React.Component {
 
 	submit = (values) => {
 		console.log("Submitted values: ", values)
-		//this.props.dispatch(emailNewProvider(values))
+		const { newProvider } = this.props
+ 		const fullName = `Dr. ${newProvider.firstname} ${newProvider.lastname}`;
+		const msg = {
+			email: newProvider.email,
+			name: "admin @engage-yu",
+			subject: `${fullName}: Welcome to Engage-yu`,
+			text: `
+				${fullName}
+				Welcome to Engage-Yu
+				You have been registered with the Engage-Yu application by your colleague, Dr. ${localStorage.getItem("provider_firstname")} ${localStorage.getItem("provider_lastname")}. 
+				You may now log in and use the application with the following credentials: 
+					email : 	${newProvider.email}
+					password: 	${newProvider.password}
+
+				This passowod is temporary and you will be prompted to cahnge it to a more secure passord of your choice when you first login. 
+				Note that you will also recieve a separate email from our authorization system asking you to confirm your email address. 
+				
+				Regards
+				The Engage-Yu team
+				`
+		}
+		this.props.dispatch(emailNewProvider(msg))
+		this.handleClose()
 	}
 
 	render() {
@@ -49,65 +71,69 @@ class ProviderSaveDialog extends React.Component {
 				PaperProps={{
 					style: {
 					padding: "40px",
-					width: "60%"
+					width: "60%",
 					}
 				}}
 				>
 					<DialogTitle id="responsive-dialog-title">Success!</DialogTitle>
-					<DialogContent>
-						<Typography variant="subtitle1">New provider successfully added with the following details:</Typography>
-						<br /> <br />
-						<Grid container spacing={24} >
-							<Grid item xs={6}>
-								<Typography variant="subtitle2" gutterBottom>Name:</Typography> 
-								<Typography variant="subtitle2" gutterBottom>Role:</Typography> 
-								<Typography variant="subtitle2" gutterBottom>Office:</Typography> 
-								<Typography variant="subtitle2" gutterBottom>Email:</Typography> 
-								<Typography variant="subtitle2" gutterBottom>Office phone:</Typography> 
-								<Typography variant="subtitle2" gutterBottom>Care group:</Typography> 
-							</Grid>
-							<Grid item xs={6}>
-								<Typography variant="subtitle2" gutterBottom>{newProvider.firstname} {newProvider.lastname}</Typography> 
-								<Typography variant="subtitle2" gutterBottom>{newProvider.role}</Typography> 
-								<Typography variant="subtitle2" gutterBottom>{newProvider.office.name}</Typography> 
-								<Typography variant="subtitle2" gutterBottom>{newProvider.email}</Typography> 
-								<Typography variant="subtitle2" gutterBottom>{newProvider.phone[0].number}</Typography> 
-								<Typography variant="subtitle2" gutterBottom>{newProvider.provider_group_name}</Typography> 
-							</Grid>
-						</Grid>
-						<br /> <br />
 
-						{enableLogin && <Fragment>
-							<Typography variant="subtitle1" gutterbottom>
-								 This provider can login for the first time with their registered email address, {newProvider.email}, and temporary password. 
-							</Typography>
-							<form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
-								<FormCheckbox name="includePwd" label="includePwd" value={true}/>
-								<Typography variant="subtitle2" inline gutterBottom> 
-									Email provider with login credentials. 
-							 	</Typography>
-							</form>
+					<form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
+						<DialogContent>
+							<Typography variant="subtitle1">New provider successfully added with the following details:</Typography>
+							<br /> <br />
+							<Grid container spacing={24} >
+								<Grid item xs={6}>
+									<Typography variant="subtitle2" gutterBottom>Name:</Typography> 
+									<Typography variant="subtitle2" gutterBottom>Role:</Typography> 
+									<Typography variant="subtitle2" gutterBottom>Office:</Typography> 
+									<Typography variant="subtitle2" gutterBottom>Email:</Typography> 
+									<Typography variant="subtitle2" gutterBottom>Office phone:</Typography> 
+									<Typography variant="subtitle2" gutterBottom>Care group:</Typography> 
+								</Grid>
+								<Grid item xs={6}>
+									<Typography variant="subtitle2" gutterBottom>{newProvider.firstname} {newProvider.lastname}</Typography> 
+									<Typography variant="subtitle2" gutterBottom>{newProvider.role}</Typography> 
+									<Typography variant="subtitle2" gutterBottom>{newProvider.office.name}</Typography> 
+									<Typography variant="subtitle2" gutterBottom>{newProvider.email}</Typography> 
+									<Typography variant="subtitle2" gutterBottom>{newProvider.phone[0].number}</Typography> 
+									<Typography variant="subtitle2" gutterBottom>{newProvider.provider_group_name}</Typography> 
+								</Grid>
+							</Grid>
+							<br /> <br />
+
+							{enableLogin && <Fragment>
+								<Typography variant="subtitle1" gutterBottom>
+									New provider can login for the first time with their registered email address, {newProvider.email}, and temporary password. 
+								</Typography>
+								
+									<FormCheckbox name="includePwd" label="includePwd" value={true}/>
+									<Typography variant="subtitle2" inline gutterBottom> 
+										Email new provider with login credentials. 
+									</Typography>
 							
-						</Fragment> }
+								
+							</Fragment> }
 
-						{!enableLogin && <Fragment>
-							<Typography variant="subtitle1" gutterBottom>
-							 	This provider will NOT HAVE permissions to login to the application themselves.
-							 </Typography>
-						</Fragment> }
+							{!enableLogin && <Fragment>
+								<Typography variant="subtitle1" gutterBottom>
+									This provider will NOT HAVE permissions to login to the application themselves.
+								</Typography>
+							</Fragment> }
 
-						<Typography  variant="subtitle1" gutterBottom>
-							If any provider details and login permissions can be edited and/or updated by using the manage provider menu. 
-						</Typography>
-						<br />
-					</DialogContent>
+							<Typography  variant="subtitle1" gutterBottom>
+								If any provider details and login permissions can be edited and/or updated by using the manage provider menu. 
+							</Typography>
+							<br />
+						</DialogContent>
 
-					<DialogActions style={{margin: "0 20px 20px 0"}}>
-						<BtnGroup 
-							btns={[{btn: "done", id: "1"}]} 
-							handleActionBtns={this.handleRedirects} 
-							/>
-					</DialogActions>
+						<DialogActions style={{margin: "0 20px 20px 0"}}>
+							<BtnGroup 
+								type="submit"
+								btns={[{btn: "done", type: "submit", id: "1"}]} 
+								handleActionBtns={this.handleRedirects} 
+								/>
+						</DialogActions>	
+					</form>
 				</Dialog>
 		
 	}

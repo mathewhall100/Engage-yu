@@ -99,9 +99,9 @@ class PatientSaveDialog extends React.Component {
 						<DialogActions style={{margin: "0 20px 20px 0"}}>
 							<BtnGroup 
 								btns={[
-									{btn: "create diary card", id: "0"},
-									{btn: "edit", id: "1"},
-									{btn: "done", id: "2"}
+									{btn: "create diary card", type: "button", id: "0"},
+									{btn: "edit", type: "button", id: "1"},
+									{btn: "done", type: "button", id: "2"}
 								]} 
 								handleActionBtns={this.handleRedirects} 
 							/>

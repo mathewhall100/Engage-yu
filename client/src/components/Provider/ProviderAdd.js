@@ -11,7 +11,7 @@ import FormStateSelect from '../UI/Forms/formStateSelect'
 import FormCheckbox from '../UI/Forms/formCheckbox'
 import BtnAction from '../UI/Buttons/btnAction'
 import BtnActionLink from '../UI/Buttons/btnActionLnk'
-import { selectConsoleTitle, providerSave } from '../../actions'
+import { selectConsoleTitle, providerSave, emailNewProvider } from '../../actions'
 import * as val from '../../logic/formValidations'
 import ProviderSaveDialog from './ProviderSaveDialog'
 import CareGroupSelect from '../CareGroup/CareGroupSelect'
@@ -106,7 +106,7 @@ class ProviderAdd extends Component {
                                 </Typography>
                             <Grid container spacing={24}>
                                 <Grid item xs={6}>
-                                    <FormText name="email2" label="Confirm email" width="320" />,
+                                    <FormText name="email2" label="Confirm email" width="320" />
                                 </Grid>
                                 <Grid item xs={6}>
                                     <FormText name="password" label="Temporary password" type="passsword" width="320" />

@@ -12,6 +12,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import BtnAction from "./components/UI/Buttons/btnAction";
 
 
 const styles = theme =>({
@@ -37,16 +38,9 @@ const styles = theme =>({
         borderRadius: "50%",
         margin: "0 20px",
     },
-    menuButton: {
-        margin: "4px 0 0 10px",
-        '&:hover': {
-            backgroundColor: "#28353d",
-        },
-        hover: {},
-    },
     appBarBtns: {
         float: 'right',
-        marginRight: "10px"
+        margin: "8px -8px 0 0"
     }
 });
 
@@ -103,9 +97,9 @@ class TopBar extends Component {
                     </div>
 
                     <div className={classes.appBarBtns}>
-                        <Button color="inherit" className={classes.menuButton}>Help</Button>
-                        <Button color="inherit" className={classes.menuButton}>Settings</Button>
-                        <Button color="inherit" className={classes.menuButton} onClick={this.handleLogout}>Logout</Button> 
+                        <BtnAction type="button" text="Help" marginRight={true}/>
+                        <BtnAction type="button" text="Settings" marginRight={true}/>
+                        <BtnAction type="button" text="Logout" handleClick={this.handleLogout} />
                     </div>
 
                 </div>
@@ -116,26 +110,24 @@ class TopBar extends Component {
         // If not logged in 
         const RenderAppBarGuest = (props) => {
             return (
-                <Grid container spacing={24}>
+                <div style={{width: "100%", display: 'flex', flexDirection: 'row', justifyContent: "space-between"}}>
 
-                    <Grid item xs={10}>
-                        <Typography variant="h5" color="inherit" >Engage-Yu!</Typography>
-                    </Grid>
+                    <Typography variant="h5" color="inherit" >Engage-Yu!</Typography>
                     
-                    <Grid item xs={2}>
-                        <Button color="inherit" className={classes.menuButton}>FAQ</Button>
-                        <Button color="inherit" className={classes.menuButton} onClick={this.handleLogin}>Login</Button> 
-                    </Grid>
+                    <div className={classes.appBarBtns}>
+                        <BtnAction type="button" text="FAQ" marginRight={true}/>
+                        <BtnAction type="button" text="login" color="inherit" handleClick={this.handleLogin}/>
+                    </div>
 
-               </Grid>
+               </div>
             )
         }
 
         // Topbar return (checks authentication status and displays appropriate appbar)
         return (
             <div className={classes.root}>
-                <AppBar position="static" color="primary" >
-                    <Toolbar>
+                <AppBar position="static" color="primary">
+                    <Toolbar >
                         { isAuthenticated ? <RenderAppBarAuthUser /> : <RenderAppBarGuest /> }
                     </Toolbar>
                 </AppBar>

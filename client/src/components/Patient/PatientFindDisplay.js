@@ -57,10 +57,10 @@ class PatientFindDetails extends PureComponent {
              [this.findNumSurveys("active"), this.findNumSurveys("pending"),this.findNumSurveys("awaiting review"), this.findNumSurveys("actioned")]
         ]};
         const btns = [
-            {btn: "contact", icon: <ContactIcon className={classes.handleBtnIcon} />},
-            {btn: "edit", icon: <EditIcon className={classes.handleBtnIcon} />},
-            {btn: "reports", icon: <ReportIcon className={classes.handleBtnIcon} />},
-            {btn: "new diary card", icon: <DiaryIcon className={classes.handleBtnIcon} />}
+            {btn: "contact", type: "button", icon: <ContactIcon className={classes.handleBtnIcon} />},
+            {btn: "edit", type: "button", icon: <EditIcon className={classes.handleBtnIcon} />},
+            {btn: "reports", type: "button", icon: <ReportIcon className={classes.handleBtnIcon} />},
+            {btn: "new diary card", type: "button", icon: <DiaryIcon className={classes.handleBtnIcon} />}
         ];
 
         if (error) {

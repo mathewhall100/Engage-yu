@@ -94,8 +94,8 @@ class CareGroupDisplay extends Component {
             {grid: 7, caption: "Providers", info: `Currently ${this.state.providerList.length} providers in this care group`}
         ];
         const btns = [
-            {btn: "remove care group", icon: "" },
-            {btn: "edit care group", icon: "" },
+            {btn: "remove care group", type: "button", icon: "",  },
+            {btn: "edit care group", type: "button", icon: "" },
         ];
 
         if (error) {

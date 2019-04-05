@@ -16,7 +16,7 @@ const styles = theme => ({
         transform: 'translate(-50%, -50%)'
     },
     progress: {
-        marginLeft: "20px", 
+        marginLeft: "04px", 
     }
 });
 
@@ -44,7 +44,7 @@ class Callback extends Component {
         if (displaySpinner) 
             return <div className={classes.root}>
                 <div className={classes.center}>
-                    <Typography variant="h6">Loading provider profile...</Typography>
+                    <Typography variant="h6">Loading user profile...</Typography>
                     <br />
                     <br />
                     <CircularProgress size={32} className={classes.progress} color="primary" />
