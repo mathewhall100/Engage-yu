@@ -38,7 +38,7 @@ export default class FormStreamTextInput extends PureComponent {
     }
 }
 
-FormStreamTextInput.PropTypes = {
+FormStreamTextInput.propTypes = {
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     width: PropTypes.string.isRequired,

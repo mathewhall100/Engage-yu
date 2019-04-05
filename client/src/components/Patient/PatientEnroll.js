@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
+import { isEmpty } from 'lodash';
 import { withStyles, Card, Grid, Typography} from '@material-ui/core';
 import BtnAction from '../UI/Buttons/btnAction';
 import ProviderSelect from '../UI/Forms/FormProviderSelect'
@@ -9,7 +10,7 @@ import FormTextFocused from '../UI/Forms/formTextFocused'
 import FormRadio from '../UI/Forms/formRadio'
 import PatientSaveDialog from './PatientSaveDialog'
 import { selectConsoleTitle } from '../../actions/index';
-import { patientSave } from "../../actions"
+import { patientSave, patientUserCreate } from "../../actions"
 import * as val from '../../logic/formValidations';
 
 
@@ -84,7 +85,7 @@ class PatientEnroll extends Component {
                     
                 </form>
 
-                { (loadingNewPatient || errorNewPatient || newPatient._id) && <PatientSaveDialog /> }
+                { (loadingNewPatient || errorNewPatient || !isEmpty(newPatient)) && <PatientSaveDialog /> }
 
             </Card>
         );

@@ -34,7 +34,7 @@ export default {
     },  
     
     createNewPatient: function(info) {
-        console.log("Axios call made to '/api/patient_info' to 'createNewPatient'" + JSON.stringify(info, null, 2));
+        console.log("Axios call made to '/api/patient_info' to 'createNewPatient'", info);
         return axios.post("/api/patient_info/new", info);
     },
 

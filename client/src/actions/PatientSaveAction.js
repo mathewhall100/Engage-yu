@@ -4,8 +4,10 @@ import {
     PATIENT_SAVE_FAILURE,
     PATIENT_SAVE_RESET
 } from './types';
+import * as AuthService from '../services/AuthService';
 import patient_infoAPI from '../utils/patient_info';
 import patient_dataAPI from '../utils/patient_data';
+import userAPI from '../utils/user';
 import { startCase } from 'lodash'
 
 export const patientSave= (values) => {
@@ -55,18 +57,48 @@ export const patientSave= (values) => {
                         patient_data_ref: res_data.data._id,
                         patient_data_id: res_data.data._id
                     })
-                    .then(res => {
-                        console.log("res.data: ", res.data)
-                        dispatch(patientSaveSuccess(res.data))
+                    .then(res_ref => {
+                        console.log("res_user: ", res_ref.data)
+                        console.log("values: ", values)
+                        AuthService.webAuth.signup({
+                            connection: "Engage-Yu",
+                            email: values.email,
+                            password: values.password1,
+                            user_metadata: { 
+                                firstname: values.firstname,
+                                lastname: values.lastname,
+                            },
+                            responseType: "token id_token"
+                        }, function (error, res_user) {
+                            if (error) {
+                                dispatch(patientSaveFailure(error))
+                                saveFailedCleanup(res_info.data._id, res_data.data._id, error) // inner
+                            }
+                            console.log("New user Created: ", res_user)
+                            userAPI.userCreate({
+                                sub: `auth0|${res_user.Id}`,
+                                role: "patient",
+                                id: res_info.data._id,
+                                // date_created: new Date()
+                            })
+                            .then(res_newUser => {
+                                console.log("res_newUser: ", res_newUser)
+                                dispatch(patientSaveSuccess(res_info.data))
+                            })
+                            .catch(error => { 
+                                dispatch(patientSaveFailure(error))
+                                saveFailedCleanup(res_info.data._id, res_data.data._id, error) // first middle block
+                            })
+                        })
                     })
                     .catch(error => { 
                         dispatch(patientSaveFailure(error))
-                        this.saveFailedCleanup(res_info.data._id, res_data.data._id, error) // inner block
+                        saveFailedCleanup(res_info.data._id, res_data.data._id, error) // first middle block
                     })
                 })
                 .catch(error => {
                     dispatch(patientSaveFailure(error))
-                    this.enrollSaveCleanup(res_info.data._id, null, error) // middle block
+                    saveFailedCleanup(res_info.data._id, null, error) // second middle block
                 })
             })
             .catch(error => {

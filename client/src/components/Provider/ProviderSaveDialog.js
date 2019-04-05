@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { Fragment } from 'react';
+import { reduxForm } from 'redux-form';
+import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
 import { Dialog, DialogActions, DialogContent, DialogTitle, withMobileDialog, Typography, Grid} from '@material-ui/core'
 import BtnGroup from '../UI/Buttons/btnGroup'
+import FormCheckbox from '../UI/Forms/formCheckbox'
 import DialogSaveFailure from '../UI/Dialogs/dialogSaveFailure'
 import DialogSaving from '../UI/Dialogs/dialogSaving'
-import { loadProvider } from '../../actions'
+import { loadProvider, emailNewProvider } from '../../actions'
 
 
 class ProviderSaveDialog extends React.Component {
@@ -19,18 +22,16 @@ class ProviderSaveDialog extends React.Component {
 	};
 
 	handleRedirects = (btn) => {
-		switch (btn) {
-			case 'edit': 
-				this.props.dispatch(loadProvider(this.props.newProvider._id))
-				this.props.history.push({pathname: '/admin/provider/update'})
-				break;
-			default: 
-				this.props.history.push({pathname: '/admin/dashboard'})
-		}
+		this.props.history.push({pathname: '/admin/dashboard'})
+	}
+
+	submit = (values) => {
+		console.log("Submitted values: ", values)
+		//this.props.dispatch(emailNewProvider(values))
 	}
 
 	render() {
-		const { fullScreen, newProvider, loadingNewProvider, errorNewProvider} = this.props;
+		const { fullScreen, handleSubmit, newProvider, loadingNewProvider, errorNewProvider, enableLogin } = this.props;
 
 		if (errorNewProvider) 
 			return <DialogSaveFailure text="An error ocurred and this provider's details could not be saved at this time." cancelUrl={"/admin/find"} /> 
@@ -75,16 +76,35 @@ class ProviderSaveDialog extends React.Component {
 							</Grid>
 						</Grid>
 						<br /> <br />
-						<Typography variant="subtitle1">>
-							Click 'done' to return to dashboard or, if any of the details above are incorrect, click 'edit' to make changes.
+
+						{enableLogin && <Fragment>
+							<Typography variant="subtitle1" gutterbottom>
+								 This provider can login for the first time with their registered email address, {newProvider.email}, and temporary password. 
+							</Typography>
+							<form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
+								<FormCheckbox name="includePwd" label="includePwd" value={true}/>
+								<Typography variant="subtitle2" inline gutterBottom> 
+									Email provider with login credentials. 
+							 	</Typography>
+							</form>
+							
+						</Fragment> }
+
+						{!enableLogin && <Fragment>
+							<Typography variant="subtitle1" gutterBottom>
+							 	This provider will NOT HAVE permissions to login to the application themselves.
+							 </Typography>
+						</Fragment> }
+
+						<Typography  variant="subtitle1" gutterBottom>
+							If any provider details and login permissions can be edited and/or updated by using the manage provider menu. 
 						</Typography>
+						<br />
 					</DialogContent>
+
 					<DialogActions style={{margin: "0 20px 20px 0"}}>
 						<BtnGroup 
-							btns={[
-								{btn: "edit", id: "0"},
-								{btn: "done", id: "1"}
-							]} 
+							btns={[{btn: "done", id: "1"}]} 
 							handleActionBtns={this.handleRedirects} 
 							/>
 					</DialogActions>
@@ -97,14 +117,20 @@ ProviderSaveDialog.propTypes = {
 	fullScreen: PropTypes.bool.isRequired,
 };
 
+const formData = {
+    form: 'EmailNewProviderForm', //unique identifier for this form   
+}
+
 const mapStateToProps = (state) => {
 	console.log("State : ", state);
 	return {
 		newProvider: state.providerSave.info,
         loadingNewProvider: state.providerSave.loading,
-        errorNewProvider: state.providerSave.error
+		errorNewProvider: state.providerSave.error,
 	}
 };
 
+ProviderSaveDialog = withRouter(ProviderSaveDialog)
+ProviderSaveDialog = reduxForm(formData)(ProviderSaveDialog)
 ProviderSaveDialog = connect(mapStateToProps) (ProviderSaveDialog)
 export default withMobileDialog()(ProviderSaveDialog);

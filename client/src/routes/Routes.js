@@ -3,6 +3,7 @@ import { Route, Switch } from "react-router-dom";
 
 import Homepage from '../views/Home';
 import Admin from '../views/Admin';
+import CallBack from '../CallBack';
 import NotFound from '../views/NotFound';
 import NotAuthenticated from '../views/NotAuthenticated';
 
@@ -12,6 +13,7 @@ class Routes extends Component {
             <Switch>
                 <Route exact path="/" render={props => <Homepage {...this.props}> </Homepage>} />
                 <Route path='/admin' render={props => <Admin {...this.props}></Admin>} />
+                <Route path='/callback' render={props => <CallBack {...this.props}></CallBack>} />
                 <Route path="/notfound" component={NotFound} />  
                 <Route path="/notauthenticated" component={NotAuthenticated} />  
                 <Route component={NotFound} />

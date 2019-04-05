@@ -1,5 +1,6 @@
 import Auth0Lock from 'auth0-lock';
 import jwtDecode from 'jwt-decode';
+import auth0 from 'auth0-js';
 
 let redirectURI = `http://${window.location.hostname}${window.location.hostname.includes('localhost') ? ":3000" : null}/callback`
 
@@ -33,6 +34,14 @@ export const lock = new Auth0Lock('mrtJ796iMGWdpVzIH78fzVSwbGCj0tse', 'engageyu-
         placeholder: "Enter your full name"
     }]
 });
+
+ export const webAuth = new auth0.WebAuth({
+    domain: 'engageyu-dev.auth0.com',
+    clientID: 'mrtJ796iMGWdpVzIH78fzVSwbGCj0tse',
+    redirectUri: redirectURI,
+    responseType: 'token id_token',
+    scope: 'openid profile'
+})
 
 export const login = () => {
     // Call the show method to display the widget.

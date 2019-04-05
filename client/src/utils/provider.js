@@ -17,7 +17,7 @@ export default {
     },
 
     create: function(info){
-        console.log("Axios call made to '/api/provider' to 'create'");
+        console.log("Axios call made to '/api/provider' to 'create'", info);
         return axios.post("/api/provider", info);
     },
 

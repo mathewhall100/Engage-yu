@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from 'react';
+import axios from 'axios';
 import { withRouter } from 'react-router-dom';
 import { reduxForm } from 'redux-form';
+import auth0 from 'auth0-js';
 import { authActions } from '../../reducers/modules/auth';
 import * as AuthService from '../../services/AuthService';
 import { withStyles, Typography }  from '@material-ui/core';
@@ -43,11 +45,56 @@ class HomeContent extends Component {
 
     componentDidMount() {
         // this.props.logoutSuccess();
-        AuthService.logout(); // careful, this is a static method
+        // AuthService.logout(); // careful, this is a static method
     }
+
+    // submit(values) {
+    //     console.log("Submitted values: ", values);
+    //         const url = 'https://engageyu-dev.auth0.com/dbconnections/signup'; 
+    //         const config = {headers: { 'content-type': 'application/json'}};
+    //         const body = {
+    //             client_id: 'mrtJ796iMGWdpVzIH78fzVSwbGCj0tse',
+    //             email: values.email,
+    //             password: values.password,
+    //             connection: "Engage-Yu",
+    //             user_metadata: { name: "Mathew Hall"},
+    //             responseType: "token id_token"
+    //         };
+    //     return axios.post(url, body, config)
+    //     .then(response => {
+    //         alert("response: ", response)
+    //     })
+    //     .catch(error => {
+    //         alert("something went wrong: ", error.message);
+    //     })
+    // }
+
+    // submit(values) {
+    //     console.log("Submitted values: ", values);
+    //     AuthService.webAuth.signup({
+    //         connection: "Engage-Yu",
+    //         email: values.email,
+    //         password: values.password,
+    //         user_metadata: { name: "Mathew Hall"},
+    //         responseType: "token id_token"
+    //     }, function (err, res) {
+    //         if (err) return alert("something went wrong: ");
+    //         console.log("res", res)
+    //         console.log(res.Id)
+    //     });
+    // }
 
     submit(values) {
         console.log("Submitted values: ", values);
+        AuthService.webAuth.login({
+            realm: "Engage-Yu",
+            email: values.email,
+            password: values.password,
+            responseType: "token id_token"
+        }, function (err) {
+            if (err) return alert("something went wrong: ", err.message);
+            return alert("success signup without login")
+        });
     }
 
     render () {

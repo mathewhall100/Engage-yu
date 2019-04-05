@@ -6,4 +6,9 @@ router
   .route("/:id")
   .get(userController.userLookup)
 
+// Matches with "/api/create"
+router
+  .route("/:id")
+  .post(userController.create)
+
 module.exports = router;

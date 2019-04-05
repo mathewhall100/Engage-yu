@@ -50,7 +50,7 @@ const BtnGroup = (props) => {
 BtnGroup.propTypes = {
     classes: PropTypes.object.isRequired,
     btns: PropTypes.array.isRequired,
-    _id: PropTypes.string.isRequired,
+    _id: PropTypes.string,
     handleActionBtns: PropTypes.func.isRequired
 };
   

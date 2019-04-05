@@ -11,6 +11,7 @@ export * from './PatientsByProviderAction';
 export * from './PatientSaveAction';
 export * from './PatientUpdateSaveAction'
 export * from './ProviderAction';
+export * from './ProviderEmailAction';
 export * from './ProviderSaveAction';
 export * from './ProviderUpdateSaveAction';
 export * from './SurveyAction';

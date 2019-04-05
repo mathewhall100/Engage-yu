@@ -18,9 +18,9 @@ const styles = (theme) => ({
 class HomeAppBar extends Component {
 
     handleLogin = () => {
-        AuthService.login();
-        this.props.loginRequest();
-    };
+         AuthService.login();
+         this.props.loginRequest();
+     };
 
     render() {
         const { classes } = this.props
