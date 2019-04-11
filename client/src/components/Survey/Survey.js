@@ -11,7 +11,7 @@ class Survey extends Component {
     componentDidMount() {
         this.props.dispatch(selectConsoleTitle({title: "Create New Diary Card"}));
         this.props.dispatch(loadQuestions());
-        this.props.dispatch(loadProvider(localStorage.getItem("provider_id")));
+        this.props.dispatch(loadProvider(localStorage.getItem("user_provider_id")));
     }
 
     render () {

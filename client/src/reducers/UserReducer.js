@@ -1,17 +1,30 @@
 import {
-    USER_PROFILE
+    USER_PROFILE,
+    USER_FAILURE,
 } from '../actions/types';
 
-const INITIAL_STATE = {
-    role : '',
-    id : '',
-}
-
-export default (state = INITIAL_STATE , action) => {
-    switch(action.type){
+const userReducer = (
+    state = {
+        user: {},
+        error: null
+    }, 
+    action
+) => {
+    switch (action.type) {
         case USER_PROFILE : 
-            return {  role: action.payload.role, id: action.payload.id, details : action.payload.details }
-        default :
-            return state;
+            return {
+                ...state,
+                user: action.payload.user, 
+                error: null
+            }
+        case USER_FAILURE : 
+            return {
+                ...state,
+                error: action.payload.error,
+                user : {}
+            }
+        default: return state;
     }
-}
+};
+
+export default userReducer;

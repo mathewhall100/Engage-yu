@@ -55,7 +55,11 @@ const BtnAction = (props) => {
 
 BtnAction.propTypes = {
     classes: PropTypes.object.isRequired, 
-    text: PropTypes.string.isRequired,
+    text: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.object,
+    ]),
+    index: PropTypes.string,
     type: PropTypes.string,
     disabled: PropTypes.bool,
     warning: PropTypes.bool,

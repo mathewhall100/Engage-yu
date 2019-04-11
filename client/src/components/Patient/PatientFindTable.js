@@ -81,7 +81,9 @@ class PatientFindTable extends Component {
         const { tableDataFiltered } = this.state;
 
         if (errorCareGroupPatients || errorProviderPatients) {
-            return <div>Error! {errorCareGroupPatients ? errorCareGroupPatients.message : errorProviderPatients.message}</div>
+            const error = `${errorCareGroupPatients ? errorCareGroupPatients.message : errorProviderPatients.message}`
+            const errorMsg = error.includes('401') ? <CallBack text="Whoops! Looks like you are not authorized to access this resource" /> : error
+            return <div>Error! {errorMsg}</div>
         }
 
         if (loadingCareGroupPatients || loadingProviderPatients ) {
@@ -110,7 +112,7 @@ class PatientFindTable extends Component {
 
 
 const mapStateToProps = (state) => {
-    console.log("State : ", state);
+    //console.log("State : ", state);
     return {
         patientsByProvider: state.patientsByProvider.listPatients,
         loadingProviderPatients: state.patientsByProvider.loading,

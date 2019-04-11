@@ -12,7 +12,7 @@ export default class FormProviderSelect extends Component {
     componentDidMount() {
         // fetch all providers in provider group 
         let providers = [];
-        providerAPI.findAllByGroup(localStorage.getItem("provider_group_id"))
+        providerAPI.findAllByGroup(localStorage.getItem("user_provider_group_id"))
         .then(res => {
             console.log("res.data: ", res.data);       
             providers = res.data.providerList.map(provider => {
@@ -43,14 +43,14 @@ export default class FormProviderSelect extends Component {
     defaultProviderList = () => {
         const defaultArray = [{
             value: [
-                localStorage.getItem("provider_firstname"),
-                localStorage.getItem("provider_lastname"),
-                localStorage.getItem("provider._id"),
-                localStorage.getItem("provider_group_ref"),
-                localStorage.getItem("provider_group_ref"),
-                localStorage.getItem("provider_group_name") 
+                localStorage.getItem("user_provider_firstname"),
+                localStorage.getItem("user_provider_lastname"),
+                localStorage.getItem("user_provider._id"),
+                localStorage.getItem("user_provider_group_ref"),
+                localStorage.getItem("user_provider_group_ref"),
+                localStorage.getItem("user_provider_group_name") 
             ],
-            text: `Dr ${startCase(localStorage.getItem("provider_first_name"))} ${startCase(localStorage.getItem("provider_last_name"))}`
+            text: `Dr ${startCase(localStorage.getItem("user_provider_firstname"))} ${startCase(localStorage.getItem("user_provider_lastname"))}`
             },{
             value: [
                 "",

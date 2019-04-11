@@ -26,10 +26,10 @@ class SurveySaveDialog extends Component {
 
 		const msgObj = {
 			sender_role: "provider",
-			sender_ref: localStorage.getItem("provider_id"),
-			sender_id:  localStorage.getItem("provider_id"),
-			sender_firstname: localStorage.getItem("provider_first_name"),
-			sender_lastname: localStorage.getItem("provider_last_name"),
+			sender_ref: localStorage.getItem("user_provider_id"),
+			sender_id:  localStorage.getItem("user_provider_id"),
+			sender_firstname: localStorage.getItem("user_provider_firstname"),
+			sender_lastname: localStorage.getItem("user_provider_lastname"),
 			msg_date: new Date(),
 			msg_title: values.title,
 			msg_body: values.msg,
@@ -102,7 +102,7 @@ class SurveySaveDialog extends Component {
 								<FormBox name="msg" label="Enter message" rows="3"/>		
 								<br />
 								<Typography variant="subtitle2" align="right">
-									{`Sender: Dr. ${localStorage.getItem("provider_first_name")} ${localStorage.getItem("provider_last_name")} on ${moment().format('MMMM Do YYYY, h:mm a')}`}
+									{`Sender: Dr. ${localStorage.getItem("user_provider_firstname")} ${localStorage.getItem("user_provider_lastname")} on ${moment().format('MMMM Do YYYY, h:mm a')}`}
 								</Typography>
 								<br />
 								<BtnAction type="submit" disabled={pristine} text="send" />

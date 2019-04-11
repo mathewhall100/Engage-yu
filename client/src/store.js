@@ -1,35 +1,39 @@
-import ReduxThunk from 'redux-thunk'
-import { createStore, applyMiddleware, compose } from 'redux'
+import Thunk from 'redux-thunk'
+import { createStore, applyMiddleware } from 'redux';
+import throttle from 'lodash/throttle'
 import rootReducer from './reducers';
-// import { persistStore, persistReducer } from 'redux-persist'
-// import storage from 'redux-persist/es/storage'import reducer from './reducers/PatientDataReducer'
+import { loadState, saveState } from './localStorage';
+//import { persistStore, persistCombineReducers } from 'redux-persist'
+//import reducer from './reducers/indexPersist';
 
+//import storage from 'redux-persist/lib/storage'
+const persistedState = loadState()
 
-// const middleware = [thunk]
-// const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-
-// const configureStore = composeEnhancers(
-//   applyMiddleware(...middleware),
-// )(createStore)
-
-// const config = {
-//   key: 'root',
-//   storage,
-// }
-
-// const combinedReducer = persistReducer(config, reducer)
-
-// const createAppStore = () => {
-//   let store = configureStore(combinedReducer)
-//   let persistor = persistStore(store)
-//   return { persistor, store }
-// }
-
-// export default createAppStore
-
-const store = createStore(
+ const store = createStore(
   rootReducer,
-  applyMiddleware(ReduxThunk)
-);
+  persistedState,
+  applyMiddleware(Thunk)
+ );
+
+ store.subscribe(throttle(() => {
+     saveState(store.getState())
+}, 1000));
 
 export default store;
+
+// const middleware = applyMiddleware(Thunk)
+
+// const persistConfig = {
+//   key: 'root',
+//   storage,
+//   blacklist: ['auth', 'user', 'form']
+
+// };
+
+// const reducers = persistCombineReducers(persistConfig, reducer);
+
+// export const configureStore = () => {
+//     const store = createStore(reducers, middleware)
+//     const persistor = persistStore(store)
+//     return { persistor, store }
+// }

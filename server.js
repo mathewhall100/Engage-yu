@@ -1,15 +1,21 @@
 const express = require("express");
+const app = express();
 const path = require("path");
 const PORT = process.env.PORT || 3001;
-const app = express();
-const routes = require("./routes");
+const jwt = require("express-jwt");
+const jwtAuthz = require("express-jwt-authZ");
+const jwksRsa = require("jwks-rsa");
 const cors = require("cors")
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const routes = require("./routes");
 
 
 // use cors middleware for cross-origin-requests
-app.use(cors())
+const corsOptions = {
+  origin: 'http://localhost:3000'
+}
+app.use(cors(corsOptions))
 
 // Configure body parser for AJAX requests
 app.use(bodyParser.urlencoded({ extended: true }));

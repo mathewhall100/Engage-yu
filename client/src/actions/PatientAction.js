@@ -53,5 +53,5 @@ export const patientFailure = error => ({
 });
 
 export const patientReset = () => ({
-    type: PATIENT_RESET,
+    type: PATIENT_RESET
 });

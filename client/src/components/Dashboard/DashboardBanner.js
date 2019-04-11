@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react';
 // import PropTypes from 'prop-types';
-import { withStyles, Card, CardContent, CardMedia, Typography, Button} from '@material-ui/core';
-import CancelIcon from '@material-ui/icons/Cancel'
+import { withStyles, Card, CardContent, CardMedia, Typography } from '@material-ui/core';
 import BtnClose from '../UI/Buttons/btnCloseIcon'
 import BtnAction from '../UI/Buttons/btnAction'
 import bannerImg from '../../img/dashboardBannnerImageSmall.PNG';

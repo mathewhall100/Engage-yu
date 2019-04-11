@@ -13,17 +13,14 @@ const styles = () => ({
 class PatientFindForm extends Component {  
   
     onChangeName = (name) => { 
-        localStorage.setItem("patient_id", "")
         this.props.filterByName(name) 
     };
 
     onChangeHospId = (hospId) => { 
-        localStorage.setItem("patient_id", "")
         this.props.filterByNumber(hospId) 
     };
     
     onChangeList = (list) => { 
-        localStorage.setItem("patient_id", "") 
         this.props.filterByList(list)
     };
 

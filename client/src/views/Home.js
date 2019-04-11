@@ -31,7 +31,7 @@ class Homepage extends Component {
         role : '',
     }
     componentDidMount(){
-        console.log("props in homepage : ", this.props);
+        //console.log("props in homepage : ", this.props);
         if(this.props.user.role){
             this.setState({
                 redirect : true,

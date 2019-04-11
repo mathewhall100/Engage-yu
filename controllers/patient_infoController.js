@@ -1,6 +1,5 @@
 const db = require("../models");
 
-
 module.exports = {
 
     // Fetch personal details of all patients in Patient_info collection
@@ -37,6 +36,7 @@ module.exports = {
         console.log("Patient_info controller called to 'find all by provider'" + req.params.id);
         console.log(`Requester:  ${req.user}`);
         //if(req.user){
+            
             db.Patient_info
             .find( {primary_provider_id: req.params.id}, {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1} )
             .sort( {"patient_details.lastname": 1} )

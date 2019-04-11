@@ -1,21 +1,22 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
- import { authActions } from '../../reducers/modules/auth';
+ import { authActions } from '../../actions/auth';
 import * as AuthService from '../../services/AuthService';
-import { withStyles, Grid, Typography, Button } from "@material-ui/core"
+import { withStyles, Grid } from "@material-ui/core"
+import BtnAction from '../UI/Buttons/btnAction'
 
 const styles = (theme) => ({
     root: {
         padding: "20px 40px"
     },
-    appBarBtn: {
+    appBarBtns: {
         marginLeft: "20px",
         float: "right",
-        fontSize: "16px"
     }
 })
 
 class HomeAppBar extends Component {
+    
 
     handleLogin = () => {
          AuthService.login();
@@ -33,10 +34,11 @@ class HomeAppBar extends Component {
                 </Grid>
 
                 <Grid item xs={6}>
-                    <Button color="secondary" className={classes.appBarBtn} onClick={this.handleLogin}>Login</Button> 
-                    <Button color="secondary" className={classes.appBarBtn} onClick={null}>contact us</Button>   
-                    <Button color="secondary" className={classes.appBarBtn} onClick={null}>help</Button>   
-                    {/* <Button color="secondary" className={classes.appBarBtn}>FAQ</Button> */}
+                    <div className={classes.appBarBtns} > 
+        <BtnAction type="button" text={<span style={{fontSize: "15px"}}>help</span>} marginRight={true} />
+                        <BtnAction type="button" text={<span style={{fontSize: "15px"}}>contact us</span>}marginRight={true}/>  
+                        <BtnAction type="button" text={<span style={{fontSize: "15px"}}>login</span>}handleAction={this.handleLogin}/>
+                    </div>
                 </Grid>
 
             </Grid>

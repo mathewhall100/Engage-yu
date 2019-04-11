@@ -18,9 +18,9 @@ export const careGroupSave = (values) => {
             dispatch(careGroupSaveBegin());
             return  provider_groupAPI.create({
                 date_added: new Date(),
-                added_by_ref: localStorage.getItem("provider_id"),
-                added_by_id: localStorage.getItem("provider_id"),
-                added_by_name: `${localStorage.getItem("provider_first_name")} ${localStorage.getItem("provider_last_name")}`,
+                added_by_ref: localStorage.getItem("user_provider_id"),
+                added_by_id: localStorage.getItem("user_provider_id"),
+                added_by_name: `${localStorage.getItem("user_provider_firstname")} ${localStorage.getItem("user_provider_lastname")}`,
                 group_name: values.caregroup
             })
             .then(res => {

@@ -103,7 +103,7 @@ class SurveySaveQuestionListDialog extends React.Component {
 						<br />
 
 						<Typography variant="subtitle2" align="right">
-						{`Saved by: Dr. ${localStorage.getItem("provider_first_name")} ${localStorage.getItem("provider_last_name")}`}
+						{`Saved by: Dr. ${localStorage.getItem("user_provider_firstname")} ${localStorage.getItem("user_provider_lastname")}`}
 						</Typography>
 
 						<br />

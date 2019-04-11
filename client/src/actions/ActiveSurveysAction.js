@@ -11,12 +11,11 @@ export const loadActiveSurveys = (id) => {
         dispatch(activeSurveysBegin());
         return patient_dataAPI.fetchActiveSurveys(id)
             .then(res => {
-                console.log("result: ", res.data)
+                //console.log("result: ", res.data)
                 let surveys = []; 
-                if (res.data.length < 1) {console.log("No active surveys retrieved")}
-                    else {
-                        surveys = res.data.map(ep => {return {...ep, ...createStatus(ep)} });
-                    }
+                if (res.data.length > 0) {
+                    surveys = res.data.map(ep => {return {...ep, ...createStatus(ep)} });
+                }
                 dispatch(activeSurveysSuccess(surveys));
                 return surveys;
             })

@@ -1,5 +1,27 @@
 const router = require("express").Router();
+// const jwt = require("express-jwt");
+// const jwtAuthz = require("express-jwt-authZ");
+// const jwksRsa = require("jwks-rsa");
 const patient_infoController = require("../../controllers/patient_infoController");
+const checkToken = require("../../jwt/jwt");
+const checkJwt = checkToken.getCheckToken()
+
+// Authentication middleware 
+// Access token must exist and be verified against Auth0 JSON Web Key Set
+// const checkJwt = jwt({
+//     // dynamically provide signing key
+//     secret: jwksRsa.expressJwtSecret({
+//       cache: true,
+//       rateLimit: true,
+//       jwksRequestsPerMinute: 5,
+//       jwksUri: `https://engageyu-dev.auth0.com/.well-known/jwks.json`
+//     }),
+//     // validate the audience and the issuer.
+//     audience: 'mrtJ796iMGWdpVzIH78fzVSwbGCj0tse',
+//     // audience: 'https://auth/api',
+//     issuer: `https://engageyu-dev.auth0.com/`,
+//     algorithm: ['RS256']
+//   })
 
 // Matches with "/api/patient_info/all" 
 router
@@ -9,7 +31,7 @@ router
  // Matches with "/api/patient_info/allByProvider" 
 router
     .route("/allByProvider/:id")
-    .get(patient_infoController.findAllByProvider)
+    .get(checkJwt, patient_infoController.findAllByProvider)
 
 // Matches with "/api/patient_info/allByGroup" 
 router

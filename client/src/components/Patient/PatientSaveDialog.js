@@ -117,7 +117,7 @@ PatientSaveDialog.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-	console.log("State : ", state);
+	//console.log("State : ", state);
 	return {
 		newPatient: state.patientSave.info,
 		loadingNewPatient: state.patientSave.loading,

@@ -22,9 +22,9 @@ export const patientSave= (values) => {
             dispatch(patientSaveBegin());
             return  patient_infoAPI.createNewPatient({
                 date_enrolled: new Date(),
-                enrolled_by_ref: localStorage.getItem("provider_id"),
-                enrolled_by_id: localStorage.getItem("provider_id"),
-                enrolled_by_name: `${localStorage.getItem("provider_first_name")} ${localStorage.getItem("provider_last_name")}`,
+                enrolled_by_ref: localStorage.getItem("user_provider_id"),
+                enrolled_by_id: localStorage.getItem("user_provider_id"),
+                enrolled_by_name: `${localStorage.getItem("user_provider_firstname")} ${localStorage.getItem("user_provider_lastname")}`,
                 patient_data_ref: "000000000000000000000000",
                 patient_data_id:  "000000000000000000000000",
                 status: "active",

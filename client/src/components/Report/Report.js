@@ -11,8 +11,10 @@ class Report extends Component {
 
     componentDidMount() {
         this.props.dispatch(selectConsoleTitle({title: "Summary Report"}));
-        console.log("Report: episode_id ", this.props.location.state.episodeId)
-        this.setState({episodeId: this.props.location.state.episodeId}) 
+        // console.log("Report: episode_id ", this.props.location.state.episodeId)
+        // this.setState({episodeId: this.props.location.state.episodeId}) 
+        const { match: { params } } = this.props
+        this.setState({episodeId: params.Id}, () => console.log(this.state.episodeId))
     }
         
     state = {

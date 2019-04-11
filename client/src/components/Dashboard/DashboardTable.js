@@ -50,7 +50,7 @@ class DashboardTable extends Component {
                 statusFilter: dashboardStatus
             })
         } 
-        this.props.dispatch(loadActiveSurveys(localStorage.getItem("provider_id")));
+        this.props.dispatch(loadActiveSurveys(localStorage.getItem("user_provider_id")));
     }
 
     componentWillReceiveProps(nextProps) {
@@ -92,7 +92,7 @@ class DashboardTable extends Component {
 
     // Filter table constents functions by provider and status (provider_id in local storage from login)
     filterData = (data, personFilter, statusFilter, checked) => {
-        return filterByChecked( (filterByStatus((filterByPerson(data, localStorage.getItem("provider_id"), personFilter)), statusFilter)), checked);
+        return filterByChecked( (filterByStatus((filterByPerson(data, localStorage.getItem("user_provider_id"), personFilter)), statusFilter)), checked);
     };
 
     // Refilter in response to user selecting a navLink
@@ -110,7 +110,7 @@ class DashboardTable extends Component {
             this.setState({tableDataFiltered: this.filterData(this.state.tableData, this.state.personFilter, filter, this.state.selected) })
         } else {
             filterAdded = filter.filter(f => !statusFilter.includes(f));
-            tableDataAdd = filterByStatus(filterByPerson(this.state.tableData, localStorage.getItem("provider_id"), this.state.personFilter), filterAdded);
+            tableDataAdd = filterByStatus(filterByPerson(this.state.tableData, localStorage.getItem("user_provider_id"), this.state.personFilter), filterAdded);
             this.setState({tableDataFiltered: this.state.tableDataFiltered.concat(tableDataAdd)})
         }
         this.setState({statusFilter: filter})
@@ -133,7 +133,7 @@ class DashboardTable extends Component {
 
     handleRowClick = (patientId, episodeId) => {
         this.props.dispatch(loadPatient(patientId))
-        this.props.history.push({pathname: '/admin/report', state: {episodeId: episodeId} })
+        this.props.history.push({pathname: '/admin/report/'+episodeId})
     };
 
     handleCheckBoxClick = (event, id) => {
@@ -210,7 +210,7 @@ class DashboardTable extends Component {
 
                         {tableDataFiltered.length ? 
                             <TableBody>
-                                {console.log("tableDataFiltered: ", tableDataFiltered)}
+                                {/* {console.log("tableDataFiltered: ", tableDataFiltered)} */}
                                 { stableSort(tableDataFiltered, getSorting(order, orderBy))
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((d, index)=> {
@@ -271,7 +271,7 @@ DashboardTable.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-    console.log("State @dashboard: ", state);
+    console.log("State @dashboard : ", state);
     return {
         activeSurveys: state.activeSurveys.surveys,
         loading: state.activeSurveys.loading,

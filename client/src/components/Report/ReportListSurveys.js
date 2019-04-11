@@ -36,7 +36,7 @@ class ReportListSurveys extends Component {
     };
 
     displayPanels = (episodes) => {
-        this.setState({panelStatus : panels.map(p => episodes.filter(episode => episode.status === p.status).length)}, () => console.log(this.state.panelStatus))
+        this.setState({panelStatus : panels.map(p => episodes.filter(episode => episode.status === p.status).length)})
     }
 
     createTableData = (data) => {
@@ -58,7 +58,6 @@ class ReportListSurveys extends Component {
     };
 
     handleAction = (btn, row) => {
-        console.log("Action btn clicked: episode id: ", btn, " : ", row)
         switch (btn) {
             case "view":
                 this.props.changeEpisode(row._id)

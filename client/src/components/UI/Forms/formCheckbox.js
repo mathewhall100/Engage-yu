@@ -23,7 +23,7 @@ export default class FormCheckbox extends Component {
 
     renderCheckbox(field) {
         //console.log("field: ", field);
-        const {input, name, label} = field;
+        const {input, label} = field;
         
         return (
             <MuiThemeProvider theme={checkboxTheme}>
@@ -39,10 +39,9 @@ export default class FormCheckbox extends Component {
     };
 
     render () {
-        const { name, label } = this.props
+        const { label } = this.props
         return (
             <Field
-                name={name}
                 component={this.renderCheckbox} 
                 label={label}
             />

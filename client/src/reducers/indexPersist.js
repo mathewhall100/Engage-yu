@@ -1,6 +1,4 @@
-import { LOGOUT_SUCCESS } from '../actions/auth/types'
 
-import { combineReducers } from 'redux';
 import { routerReducer } from "react-router-redux";
 import { reducer as formReducer } from 'redux-form';
 
@@ -23,7 +21,7 @@ import questions from './QuestionsReducer';
 import survey from './SurveyReducer';
 import user from './UserReducer';
 
-const combinedReducer = combineReducers({
+export default ({
     activeSurveys,
     auth,
     careGroup,
@@ -45,16 +43,3 @@ const combinedReducer = combineReducers({
     survey,
     user
 });
-
-// on logout, purge the redux store of all data
-// by passing 'undefined' as state to rootReducer
- const rootReducer = (state, action) => {
-     if (action.type ===  LOGOUT_SUCCESS) {
-        return combinedReducer(undefined, action)
-     }
-     return combinedReducer(state, action)
- }
-
-export default rootReducer
-
-        

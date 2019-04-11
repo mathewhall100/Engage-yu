@@ -17,6 +17,7 @@ export default class FormBox extends Component {
                     <TextField
                         type="text"
                         variant="outlined"
+                        onBlur={() => {return false}}
                         rows={rows}
                         multiline
                         label={label}
@@ -46,7 +47,7 @@ export default class FormBox extends Component {
     }
 }
 
-FormBox.PropTypes = {
+FormBox.propTypes = {
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     rows: PropTypes.string.isRequired,

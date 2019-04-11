@@ -36,7 +36,7 @@ class ProviderSaveDialog extends React.Component {
 			text: `
 				${fullName}
 				Welcome to Engage-Yu
-				You have been registered with the Engage-Yu application by your colleague, Dr. ${localStorage.getItem("provider_firstname")} ${localStorage.getItem("provider_lastname")}. 
+				You have been registered with the Engage-Yu application by your colleague, Dr. ${localStorage.getItem("user_provider_firstname")} ${localStorage.getItem("user_provider_lastname")}. 
 				You may now log in and use the application with the following credentials: 
 					email : 	${newProvider.email}
 					password: 	${newProvider.password}

@@ -47,7 +47,7 @@ class CareGroupAdd extends Component {
                         </Grid>
                         <Grid item xs={3} style={{paddingTop: "40px"}}>
                             <Typography variant="caption" >Added by:</Typography>
-                            <Typography variant="subtitle1">{localStorage.getItem("provider_first_name")} {localStorage.getItem("provider_last_name")}</Typography >
+                            <Typography variant="subtitle1">{localStorage.getItem("user_provider_firstname")} {localStorage.getItem("user_provider_lastname")}</Typography >
                         </Grid>
                         <Grid item xs={4} style={{paddingTop: "40px"}}>
                             <Typography variant="caption">Date added:</Typography>

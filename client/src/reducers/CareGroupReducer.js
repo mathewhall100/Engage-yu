@@ -11,7 +11,6 @@ const initialState = {
 };
 
 export default function careGroupReducer( 
-    
     state = initialState,
     action
 ) {

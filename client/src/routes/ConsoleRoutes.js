@@ -23,7 +23,7 @@ export default class AdminRoutes extends Component {
                 <Route path='/admin/caregroup' component={CareGroup} />
                 <Route exact path='/admin/updatepatient' component={UpdatePatient} />
                 <Route exact path='/admin/survey' component={Survey} />
-                <Route path='/admin/report' component={Report} />
+                <Route path='/admin/report/:Id' component={Report} />
                 <Route path="/notfound" component={NotFound} />
                 <Route component={NotFound} />
             </Switch>

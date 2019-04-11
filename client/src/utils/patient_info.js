@@ -1,5 +1,16 @@
 import axios from "axios";
+//import * as AuthService from '../services/AuthService'
 
+// get authorization header from authService and set as default header to all axios calls.
+//const { headers } = AuthService.getHeader()
+//axios.defaults.headers.common = headers
+
+// axios.defaults.headers.common = {'Authorization': 'Bearer ' + localStorage.getItem('auth_id_token')}
+// let config = { 
+//     headers: {
+//         'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')
+//     }
+// }
 
 export default {
 
@@ -10,7 +21,9 @@ export default {
 
     findAllByProvider: function(id) {
         console.log("Axios call made to '/api/patient_info' to 'findAllByProvider' ", id);
-        return axios.get("/api/patient_info/allByProvider/"+id);
+        return axios.get("/api/patient_info/allByProvider/"+id, {headers: {
+            'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')}
+        });
     },
 
     findAllByGroup: function(id) {

@@ -1,10 +1,10 @@
-import React, { Component, Fragment } from 'react';
-import axios from 'axios';
+import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
-import auth0 from 'auth0-js';
-import { authActions } from '../../reducers/modules/auth';
+import { authActions } from '../../actions/auth';
 import * as AuthService from '../../services/AuthService';
+import * as LocalStorage from '../../localStorage';
 import { withStyles, Typography }  from '@material-ui/core';
 import bannerImg from '../../img/dashboardBannnerImage.PNG';
 import FormBox from '../UI/Forms/formBox'
@@ -30,13 +30,10 @@ const styles = theme => ({
         float: "right",
     },
     bannerTitle: {
+        marginBottom: "70px",
         fontWeight: "bold",
         fontSize: "62px",
         color: theme.palette.primary.main
-    },
-    bannerText: {
-        fontSize: '32px',
-        color: "#28353d"
     },
 });
 
@@ -44,101 +41,99 @@ const styles = theme => ({
 class HomeContent extends Component {
 
     componentDidMount() {
-        // this.props.logoutSuccess();
-        // AuthService.logout(); // careful, this is a static method
+        this.clearStore()
     }
 
-    // submit(values) {
-    //     console.log("Submitted values: ", values);
-    //         const url = 'https://engageyu-dev.auth0.com/dbconnections/signup'; 
-    //         const config = {headers: { 'content-type': 'application/json'}};
-    //         const body = {
-    //             client_id: 'mrtJ796iMGWdpVzIH78fzVSwbGCj0tse',
-    //             email: values.email,
-    //             password: values.password,
-    //             connection: "Engage-Yu",
-    //             user_metadata: { name: "Mathew Hall"},
-    //             responseType: "token id_token"
-    //         };
-    //     return axios.post(url, body, config)
-    //     .then(response => {
-    //         alert("response: ", response)
-    //     })
-    //     .catch(error => {
-    //         alert("something went wrong: ", error.message);
-    //     })
-    // }
-
-    // submit(values) {
-    //     console.log("Submitted values: ", values);
-    //     AuthService.webAuth.signup({
-    //         connection: "Engage-Yu",
-    //         email: values.email,
-    //         password: values.password,
-    //         user_metadata: { name: "Mathew Hall"},
-    //         responseType: "token id_token"
-    //     }, function (err, res) {
-    //         if (err) return alert("something went wrong: ");
-    //         console.log("res", res)
-    //         console.log(res.Id)
-    //     });
-    // }
+    state = {
+        loginFail: false,
+        errorMsg: ""
+    }
 
     submit(values) {
-        console.log("Submitted values: ", values);
+        console.log("Submitted values: ", values)
+        const loginFailed = this.loginFailed
         AuthService.webAuth.login({
             realm: "Engage-Yu",
             email: values.email,
             password: values.password,
             responseType: "token id_token"
         }, function (err) {
-            if (err) return alert("something went wrong: ", err.message);
-            return alert("success signup without login")
+            if (err) {
+                console.log("error!", err)
+                loginFailed(err)
+            }; 
+            return null
         });
     }
 
+    clearStore = async () => {
+        // set is authenticated to false/loggedOut to true then clear local storage of all data (auth, user and persisted state)
+        this.props.logoutSuccess()
+        LocalStorage.clearLocalStorage();
+        LocalStorage.purgeState()
+        console.log("Store and local storage cleared")
+    }
+
+    loginFailed = (error) => {
+        console.log("loginFailed: ", error)
+        let errorMsg = ""
+        if (error.code === "access_denied") {errorMsg = "Incorrect email or password"}
+            else if (error.code === "too_many_attempts") {errorMsg = "Too many failed login attempts. Account blocked"}
+            else errorMsg = "Login Failed"
+        this.setState({errorMsg: errorMsg}, () => this.setState({loginFail: true}) )
+        this.props.reset('LoginForm')
+    };
+
     render () {
-        const { classes, handleSubmit, pristine} = this.props;
+        const { classes, handleSubmit, pristine, loginForm } = this.props;
+        const { loginFail, errorMsg } = this.state;
+
+        const RenderBannerTxt = () => 
+             <Typography noWrap className={classes.bannerTitle}>Engage-Yu!</Typography>
+
+        const RenderErrorMsg = (props) => 
+            <Typography variant="subtitle2" color="error">{props.errorMsg}</Typography>
+
 
         return(
-            <Fragment>
+            <div className={classes.bannerDiv}>
+                <div className={classes.bannerTextBox}>
 
-                <div className={classes.bannerDiv}>
+                    <RenderBannerTxt/>
 
-                        <div className={classes.bannerTextBox}>
+                    {loginFail && !loginForm.values ?  <RenderErrorMsg errorMsg={errorMsg}/> : <br />}
 
-                            <Typography noWrap className={classes.bannerTitle} >
-                                Engage-Yu!
-                            </Typography>
-                            {/* <hr /> */}
-                            {/* <Typography noWrap className={classes.bannerText}>
-                                for Parkinson Disease
-                            </Typography>  */}
-                            {/* <hr /> */}
+                    <form noValidate onSubmit={handleSubmit(this.submit.bind(this))}>
+                        <FormBox name="email" label="Email" rows="1"/>
+                        <FormBox name="password" label="Password" rows="1"/>
+                        <br />
+                        <BtnAction type="submit" disabled={pristine} text="login" />
+                    </form>
 
-                            <form noValidate onSubmit={handleSubmit(this.submit.bind(this))}>
-                                <br /> <br /> <br /> <br />
-                                {/* <Typography variant="h5" gutterBottom>Login</Typography> */}
-                                <FormBox name="email" label="Email" rows="1"/>
-                                <FormBox name="password" label="Password" rows="1"/>
-                                <br />
-                                <BtnAction type="submit" disabled={pristine} text="login" />
-                            </form>
-
-                        </div>
                 </div>
-
-            </Fragment>
+            </div>
         );
     }
 }
 
 const formData = {
-	form: 'loginForm', //unique identifier for this form
+	form: 'LoginForm', //unique identifier for this form
 	// validate    
 }
+
+const mapDispatchToProps = dispatch => ({
+    logoutSuccess: () => dispatch(authActions.logoutSuccess()),
+});
+
+const mapStateToProps = (state) => {
+    console.log("State : ", state);
+    return {
+        loginForm: state.form.LoginForm //Make form state available in component
+    }
+};
 
 HomeContent = reduxForm(formData)(HomeContent)
 HomeContent = withStyles(styles)(HomeContent)
 HomeContent = withRouter(HomeContent);
+HomeContent = connect(mapStateToProps, mapDispatchToProps)(HomeContent);
 export default HomeContent;

@@ -10,7 +10,7 @@ import FormTextFocused from '../UI/Forms/formTextFocused'
 import FormRadio from '../UI/Forms/formRadio'
 import PatientSaveDialog from './PatientSaveDialog'
 import { selectConsoleTitle } from '../../actions/index';
-import { patientSave, patientUserCreate } from "../../actions"
+import { patientSave } from "../../actions"
 import * as val from '../../logic/formValidations';
 
 
@@ -115,7 +115,7 @@ function validate(values) {
 }
 
 const mapStateToProps = (state) => {
-    console.log("State : ", state);
+    //console.log("State : ", state);
     return {
         newPatient: state.patientSave.info,
         loadingNewPatient: state.patientSave.loading,

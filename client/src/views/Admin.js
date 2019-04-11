@@ -2,7 +2,7 @@ import React, { Component, Fragment} from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 //import { authActions } from '../reducers/modules/auth';
-//import * as AuthService from '../services/AuthService';
+import * as AuthService from '../services/AuthService';
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Console from '../components/Console/Console';
@@ -41,7 +41,9 @@ class Admin extends Component {
     }
 
     // Check if logged in & redirect to error page if not
-    checkLoggedIn = () => {  this.setState({redirect : !this.props.auth.isAuthenticated ? true : this.state.redirect}) }
+    checkLoggedIn = () => {  
+        this.setState({redirect : !AuthService.isAuthenticated() ? true : this.state.redirect}) 
+    }
 
     render () {
 

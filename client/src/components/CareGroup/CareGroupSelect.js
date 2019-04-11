@@ -36,10 +36,10 @@ export default class CareGroupSelect extends Component {
     default = () => {
         const defaultArray = [{
             value: [
-                localStorage.getItem("provider_group_ref"),
-                localStorage.getItem("provider_group_name") 
+                localStorage.getItem("user_provider_group_ref"),
+                localStorage.getItem("user_provider_group_name") 
             ],
-            text: `${startCase(localStorage.getItem("provider_group_name"))}`
+            text: `${startCase(localStorage.getItem("user_provider_group_name"))}`
             },{
             value: [
                 "000000000000000000000000",

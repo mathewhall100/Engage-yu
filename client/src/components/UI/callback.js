@@ -63,6 +63,7 @@ class Callback extends Component {
 
 Callback.propTypes = {
     classes: PropTypes.object.isRequired,
+    text: PropTypes.string
 };
 
 export default withStyles(styles)(Callback);

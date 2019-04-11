@@ -221,10 +221,12 @@ class QuestionForm extends Component {
         const { handleSubmit, classes, pristine, submitting } = this.props;
         console.log("props in question form : ", this.props);
         const { redirect } = this.state;
+
         if (redirect) {
             const url = `/patient/complete`;
             return <Redirect to={url} episode={this.state.episode} entry={this.state.entry} />;
         }
+        
         return(
             
             <div>

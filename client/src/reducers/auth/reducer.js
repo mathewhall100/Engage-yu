@@ -1,10 +1,11 @@
-import * as types from './types';
-import * as AuthService from '../../../services/AuthService';
+import * as types from '../../actions/auth/types';
+import * as AuthService from '../../services/AuthService';
 
 const authReducer = (
     state = {
         isAuthenticated: !AuthService.isTokenExpired(),
         isFetching: false,
+        loggedOut: false,
         profile: AuthService.getProfile(),
         error: null
     },
@@ -15,6 +16,7 @@ const authReducer = (
             return {
                 ...state,
                 isFetching: true,
+                loggedOut: false,
                 error: null
             };
         case types.LOGIN_SUCCESS:
@@ -22,6 +24,7 @@ const authReducer = (
                 ...state,
                 isFetching: false,
                 isAuthenticated: true,
+                loggedOut: false,
                 profile: action.payload.profile
             };
         case types.LOGIN_ERROR:
@@ -29,6 +32,7 @@ const authReducer = (
                 ...state,
                 isFetching: false,
                 isAuthenticated: false,
+                loggedOut: false,
                 profile: {},
                 error: action.error
             };
@@ -36,10 +40,10 @@ const authReducer = (
             return {
                 ...state,
                 isAuthenticated: false,
+                loggedOut: true,
                 profile: {}
             };
-        default:
-            return state;
+        default: return state;
     }
 };
 

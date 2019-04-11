@@ -2,16 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { startCase } from 'lodash';
 import { Redirect } from 'react-router-dom';
-import { authActions } from './reducers/modules/auth';
-import * as AuthService from './services/AuthService';
-
+import { authActions } from './actions/auth';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 import BtnAction from "./components/UI/Buttons/btnAction";
 
 
@@ -45,24 +41,27 @@ const styles = theme =>({
 });
 
 class TopBar extends Component {  
+
+    componentDidMount() {
+        // this.checkLoggedIn()
+    }
+
     state = {
         redirect : false,
     }
 
-    handleLogin = () => {
-        AuthService.login();
-        this.props.loginRequest();
-    };
-
-    handleLogout = () => {
-        this.props.logoutSuccess();
-        AuthService.logout(); // careful, this is a static method
-        this.setState({redirect : true});
+    //Check if logged in & redirect to error page if not
+    checkLoggedIn = () => {  this.setState({redirect : !this.props.auth.isAuthenticated ? true : this.state.redirect}) }
+        
+    handleLogout = async () => {
+        // set auth.isAuthenticated to false and auth.loggedOut to true
+        this.props.logoutSuccess()
+        this.setState({redirect: true})
     };
 
     render () {
         
-        const { isAuthenticated, profile } = this.props.auth;
+        const { profile } = this.props.auth;
         const { classes } = this.props;
         const { redirect } = this.state;
 
@@ -81,14 +80,14 @@ class TopBar extends Component {
 
                     <div>
                         <Typography variant="subtitle2"  align="right" color="inherit" inline className={classes.text}>
-                            Care Group: &nbsp;&nbsp;{startCase(localStorage.getItem("provider_group_name"))}
+                            Care Group: &nbsp;&nbsp;{startCase(localStorage.getItem("user_provider_group_name"))}
                         </Typography> 
 
                         <Typography variant="subtitle2" inline color="inherit" >
                             {profile ? 
                                 <span>
                                     <img src={profile.picture} height="45px" alt="profile" className={classes.avatar}/> 
-                                    Welcome, &nbsp;&nbsp;Dr. {startCase(localStorage.getItem("provider_first_name"))} {startCase(localStorage.getItem("provider_last_name"))} 
+                                    Welcome, &nbsp;&nbsp;Dr. {startCase(localStorage.getItem("user_provider_firstname"))} {startCase(localStorage.getItem("user_provider_lastname"))} 
                                 </span>
                                 :
                                 <span>Error: this user has no profile</span>
@@ -99,40 +98,23 @@ class TopBar extends Component {
                     <div className={classes.appBarBtns}>
                         <BtnAction type="button" text="Help" marginRight={true}/>
                         <BtnAction type="button" text="Settings" marginRight={true}/>
-                        <BtnAction type="button" text="Logout" handleClick={this.handleLogout} />
+                        <BtnAction type="button" text="Logout" handleAction={this.handleLogout} />
                     </div>
 
                 </div>
            
             )
         }
-        
-        // If not logged in 
-        const RenderAppBarGuest = (props) => {
-            return (
-                <div style={{width: "100%", display: 'flex', flexDirection: 'row', justifyContent: "space-between"}}>
 
-                    <Typography variant="h5" color="inherit" >Engage-Yu!</Typography>
-                    
-                    <div className={classes.appBarBtns}>
-                        <BtnAction type="button" text="FAQ" marginRight={true}/>
-                        <BtnAction type="button" text="login" color="inherit" handleClick={this.handleLogin}/>
-                    </div>
-
-               </div>
-            )
-        }
-
-        // Topbar return (checks authentication status and displays appropriate appbar)
         return (
             <div className={classes.root}>
                 <AppBar position="static" color="primary">
                     <Toolbar >
-                        { isAuthenticated ? <RenderAppBarAuthUser /> : <RenderAppBarGuest /> }
+                        <RenderAppBarAuthUser />
                     </Toolbar>
                 </AppBar>
             </div>
-        );
+        )
     }
 }
 
@@ -143,15 +125,13 @@ TopBar.propTypes = {
         profile: PropTypes.object,
         error: PropTypes.object
     }).isRequired,
-    loginRequest: PropTypes.func.isRequired,
     logoutSuccess: PropTypes.func.isRequired
 };
 
 const mapStateToProps = ({ auth }) => ({ auth })
 
 const mapDispatchToProps = dispatch => ({
-    loginRequest: () => dispatch(authActions.loginRequest()),
-    logoutSuccess: () => dispatch(authActions.logoutSuccess())
+    logoutSuccess: () => dispatch(authActions.logoutSuccess()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps, null, {pure:false}) (withStyles(styles) (TopBar));

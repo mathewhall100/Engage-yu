@@ -356,7 +356,7 @@ class SurveyForm extends Component {
                                             <hr className={classes.hrStyled}/>
                                             <SurveyCustomQuestionTable 
                                                 type="question"
-                                                customQuestions={customQuestions.questionList.filter(q => q.added_by_id === localStorage.getItem("provider_id"))}
+                                                customQuestions={customQuestions.questionList.filter(q => q.added_by_id === localStorage.getItem("user_provider_id"))}
                                                 selected={selectedQuestions}
                                                 checkboxClick={this.handleQuestionCheckBoxClick}
                                             />
@@ -436,7 +436,7 @@ class SurveyForm extends Component {
 
                 </form>
 
-                {saveList && <SurveySaveListDialog questions={selectedQuestions} providerId={localStorage.getItem("provider_id")}/>}
+                {saveList && <SurveySaveListDialog questions={selectedQuestions} providerId={localStorage.getItem("user_provider_id")}/>}
                 {(loadingSurvey || survey.start || errorSurvey) && 
                     <SurveySaveDialog 
                         start={survey.start} 

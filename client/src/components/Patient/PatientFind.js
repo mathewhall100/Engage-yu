@@ -20,7 +20,7 @@ class PatientFind extends Component {
     
     componentDidMount() {
         this.props.dispatch(selectConsoleTitle({title: "Find Patient"}));
-        this.props.dispatch(loadPatientsByProvider(localStorage.getItem("provider_id")));
+        this.props.dispatch(loadPatientsByProvider(localStorage.getItem("user_provider_id")));
     };
 
     componentWillReceiveProps(nextProps) {
@@ -46,14 +46,13 @@ class PatientFind extends Component {
 
     filterByList = (value) => {
         if (value === "all care group patients") {
-            this.props.dispatch(loadPatientsByCareGroup(localStorage.getItem("provider_group_id")))
+            this.props.dispatch(loadPatientsByCareGroup(localStorage.getItem("user_provider_group_id")))
         } else {
-            this.props.dispatch(loadPatientsByProvider(localStorage.getItem("provider_id")))
+            this.props.dispatch(loadPatientsByProvider(localStorage.getItem("user_provider_id")))
         }
     };
 
     infoPanel = (status) => {
-        console.log("infoPanel: ", status)
         this.setState({infoPanel: status === "open" ? true : false})
     }
 
@@ -66,7 +65,7 @@ class PatientFind extends Component {
             case "edit":
                 return this.props.history.push({pathname: 'updatepatient'})
             case "reports":
-                return this.props.history.push({pathname: 'report', state: {episodeId: '0', patientId: _id} })
+                return this.props.history.push({pathname: 'report/0'})
             case "new diary card":
                 return this.props.history.push({pathname: 'survey', state: {_id} })
             default: return null;
