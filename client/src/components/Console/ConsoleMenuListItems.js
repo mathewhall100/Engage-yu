@@ -9,7 +9,8 @@ import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import DeleteIcon from '@material-ui/icons/Delete';
 import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
 import BuildIcon from '@material-ui/icons/Build';
-import { loadPatient } from '../../actions'
+import SettingsIcon from '@material-ui/icons/Settings';
+import { loadPatient } from '../../actions';
 
 
 class ConsoleMenuListItems extends Component {
@@ -28,13 +29,14 @@ class ConsoleMenuListItems extends Component {
 		const list = [
 			{title: "Dashboard", icon: <DashboardIcon color="primary" />, lnk: "/admin/dashboard"},
 			{title: "divider", text: "My workflow"},
-			{title: "Find patient", icon: <SearchIcon color="primary" />, lnk: "/admin/find"},
-			{title: "Enroll new patient", icon: <PersonAddIcon color="primary" />, lnk: "/admin/enroll"},
+			{title: "Find patient", icon: <SearchIcon color="primary" />, lnk: "/admin/patient/find"},
+			{title: "Enroll new patient", icon: <PersonAddIcon color="primary" />, lnk: "/admin/patient/enroll"},
 			{title: "Custom questions", icon: <BuildIcon color="primary" />, lnk: "/admin/dashboard"},
 			{title: "divider", text: "Admin"},
 			{title: "Manage providers", icon: <SupervisorAccountIcon color="primary" />, lnk: "/admin/provider"},
 			{title: "Manage care groups", icon: <LocalHospitalIcon color="primary" />, lnk: "/admin/caregroup"},
-			{title: "Delete an account", icon: <DeleteIcon color="primary" />, lnk: "/admin/delete"}
+			{title: "Delete an account", icon: <DeleteIcon color="primary" />, lnk: "/admin/delete"},
+			{title: "Settings", icon: <SettingsIcon color="primary" />, lnk: "/admin/dashboard"}
 		]
 
 		// Render individual list item (navigation link in console menu)

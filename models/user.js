@@ -14,7 +14,7 @@ const userSchema = new Schema({
     date_added: { type: Date, default: Date.now },
     role: {type: String, Enum: ['patient', 'provider', 'admin', 'support']},
     id: { type: String, unique: true, required: [true, 'user id required'] },
-
+    password_temporary: {type: Boolean, required: [true, 'password status required!'] },
     },
     
     { timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'} }

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {connect} from 'react-redux';
 import PropTypes from 'prop-types'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { withStyles, Typography } from '@material-ui/core';
@@ -22,7 +23,7 @@ const styles = theme => ({
 });
 
 
-class Callback extends Component {
+class CallBack extends Component {
     
     componentDidMount() {
          this.countdown = setInterval(() => this.setState({displaySpinner: false}), 30000)
@@ -58,8 +59,9 @@ class Callback extends Component {
     };
 }
 
-Callback.propTypes = {
+CallBack.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Callback);
+CallBack = withStyles(styles)(CallBack);
+export default CallBack;

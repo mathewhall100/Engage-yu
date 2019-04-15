@@ -15,8 +15,20 @@ const persistedState = loadState()
   applyMiddleware(Thunk)
  );
 
+ // store.subscribe adds listener that triggers with any state changes so we can add the new state to local storage
+ // to prevent frequent store saves impacting performance, lodash .throttle lmiits store saves to max one per second (1000ms)
  store.subscribe(throttle(() => {
-     saveState(store.getState())
+     // we can specify any state objects we don't want persisting here in the blacklist
+    const blacklist = ['form'] 
+    let stateObj = {}
+    for (let [item, value] of Object.entries(store.getState())) {
+        if (!blacklist.includes(item)) {
+            stateObj[item] = value
+        }
+    }
+    saveState(stateObj)
+    // saveState(store.getState()) // will persist whole store
+ 
 }, 1000));
 
 export default store;

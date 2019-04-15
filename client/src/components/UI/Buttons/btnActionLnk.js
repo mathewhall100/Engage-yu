@@ -54,11 +54,12 @@ const BtnActionLink = (props) => {
 
 BtnActionLink.propTypes = {
     classes: PropTypes.object.isRequired,
+    url: PropTypes.string.isRequired,
+    text: PropTypes.string.isRequired,
     disabled: PropTypes.bool,
     marginRight: PropTypes.bool,
-    warning: PropTypes.bool,
-    url: PropTypes.string.isRequired,
-    text: PropTypes.string.isRequired
+    warning: PropTypes.bool
+    
 };
   
 export default  withStyles(styles)(BtnActionLink);

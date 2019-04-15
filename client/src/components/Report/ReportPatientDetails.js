@@ -21,7 +21,7 @@ class ReportPatientDetails extends Component {
             {caption: "Patient name", text: `${startCase(patientInfo.firstname)} ${startCase(patientInfo.lastname)}`},
             {caption: "Hospital number", text: patientInfo.hospital_id},
             {caption: "DOB", text: patientInfo.dob},
-            {caption: "btn", text: "close", url: '/admin/find'}
+            {caption: "btn", text: "close", url: '/admin/patient'}
         ];
        
         return (

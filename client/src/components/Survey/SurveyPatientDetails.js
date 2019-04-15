@@ -17,7 +17,7 @@ class SurveyPatientDetails extends PureComponent {
                 {caption: "For patient", text: `${startCase(patientInfo.firstname)} ${startCase(patientInfo.lastname)}`},
                 {caption: "Hospital number", text: patientInfo.hospital_id},
                 {caption: "DOB", text: patientInfo.dob},
-                {caption: "btn", text: "close", url: "find"}
+                {caption: "btn", text: "close", url: "patient"}
             ]
         };
 

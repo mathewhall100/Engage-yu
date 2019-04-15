@@ -14,6 +14,7 @@ const styles = (theme) => ({
 })
 
 class Footer extends Component {
+
     render() {
         const { classes } = this.props
         return (

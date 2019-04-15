@@ -59,8 +59,8 @@ class PatientEnroll extends Component {
             <div style={{position: "relative", top: "20px"}}><ProviderSelect /> </div>,
             <Typography variant="subtitle2" style={{width: "95%"}}><br />Asign a temporary passsword for this patient now which they will use, together with their email address, to login for the first time.</Typography>,
             <div />,
-            <FormText type="password" name="password1" label="Password" width="270" />,
-            <FormText type="password" name="password2" label="Re-enter Password" width="270" />,
+            <FormText type="password" name="password" label="Password" width="270" />,
+            <FormText type="password" name="passwordConfirm" label="Re-enter Password" width="270" />,
         ];
 
         return (
@@ -108,7 +108,7 @@ function validate(values) {
     errors.provider = val.validateIsRequired(values.provider)
     errors.status = val.validateStatus(values.status, true)
     errors.password1 = val.validatePassword(values.password1, true)
-    errors.password2 = val.validatePasswords(values.password1, values.password2)
+    errors.password2 = val.validatePasswordsMatch(values.password, values.passwordConfirm)
     // If errors is empty, then form good to submit
     console.log("Errors: ", errors)
     return errors;

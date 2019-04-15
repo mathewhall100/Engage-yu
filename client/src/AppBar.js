@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { startCase } from 'lodash';
-import { Redirect } from 'react-router-dom';
+import { withRouter, Redirect } from 'react-router-dom';
 import { authActions } from './actions/auth';
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
@@ -52,8 +52,12 @@ class TopBar extends Component {
 
     //Check if logged in & redirect to error page if not
     checkLoggedIn = () => {  this.setState({redirect : !this.props.auth.isAuthenticated ? true : this.state.redirect}) }
+
+    handleMyAccount = () => {
+        this.props.history.push({pathname: '/account'})
+    }
         
-    handleLogout = async () => {
+    handleLogout = () => {
         // set auth.isAuthenticated to false and auth.loggedOut to true
         this.props.logoutSuccess()
         this.setState({redirect: true})
@@ -97,7 +101,7 @@ class TopBar extends Component {
 
                     <div className={classes.appBarBtns}>
                         <BtnAction type="button" text="Help" marginRight={true}/>
-                        <BtnAction type="button" text="Settings" marginRight={true}/>
+                        <BtnAction type="button" text="My Account" marginRight={true} handleAction={this.handleMyAccount} />
                         <BtnAction type="button" text="Logout" handleAction={this.handleLogout} />
                     </div>
 
@@ -134,4 +138,7 @@ const mapDispatchToProps = dispatch => ({
     logoutSuccess: () => dispatch(authActions.logoutSuccess()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps, null, {pure:false}) (withStyles(styles) (TopBar));
+TopBar = connect(mapStateToProps, mapDispatchToProps, null, {pure:false})(TopBar)
+TopBar = withStyles(styles)(TopBar);
+TopBar = withRouter(TopBar)
+export default TopBar

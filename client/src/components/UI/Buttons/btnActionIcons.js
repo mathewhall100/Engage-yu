@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles, Tooltip } from '@material-ui/core';
 import DiaryIcon from '@material-ui/icons/ListAlt';
-import ReportIcon from '@material-ui/icons/BarChart';
+import ReportIcon from '@material-ui/icons/InsertChartOutlined';
 import EditIcon from '@material-ui/icons/Edit';
 import ContactIcon from '@material-ui/icons/ContactMail';
 

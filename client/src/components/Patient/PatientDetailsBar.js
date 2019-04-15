@@ -12,7 +12,7 @@ export default class PatientDetailsBar extends PureComponent {
             {caption: "Hospital number", text: patient.hospital_id},
             {caption: "DOB", text: patient.dob},
             {caption: "Date enrolled", text: moment(patient.date_enrolled).format("MMM Do YYYY")},
-            {caption: "btn", text: "close", url: "/admin/find"}
+            {caption: "btn", text: "close", url: "/admin/patient"}
         ];
 
         return(

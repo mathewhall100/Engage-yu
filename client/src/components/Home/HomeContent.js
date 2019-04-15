@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
@@ -7,9 +7,9 @@ import * as AuthService from '../../services/AuthService';
 import * as LocalStorage from '../../localStorage';
 import { withStyles, Typography }  from '@material-ui/core';
 import bannerImg from '../../img/dashboardBannnerImage.PNG';
-import FormBox from '../UI/Forms/formBox'
-import BtnAction from '../UI/Buttons/btnAction'
-
+import FormText from '../UI/Forms/formText';
+import BtnAction from '../UI/Buttons/btnAction';
+import HomePwdResetDialog from './HomePwdResetDialog';
 
 const styles = theme => ({
     bannerDiv: {
@@ -35,6 +35,15 @@ const styles = theme => ({
         fontSize: "62px",
         color: theme.palette.primary.main
     },
+    forgotPwd: {
+        float: 'right',
+        marginTop: "-4px",
+        color: "#555",
+        '&:hover': {
+            color: theme.palette.primary.dark,
+            cursor: "pointer"
+        },
+    }
 });
 
 
@@ -46,7 +55,8 @@ class HomeContent extends Component {
 
     state = {
         loginFail: false,
-        errorMsg: ""
+        errorMsg: "",
+        openDialog: false
     }
 
     submit(values) {
@@ -69,8 +79,7 @@ class HomeContent extends Component {
     clearStore = async () => {
         // set is authenticated to false/loggedOut to true then clear local storage of all data (auth, user and persisted state)
         this.props.logoutSuccess()
-        LocalStorage.clearLocalStorage();
-        LocalStorage.purgeState()
+        LocalStorage.clearStore();
         console.log("Store and local storage cleared")
     }
 
@@ -84,9 +93,13 @@ class HomeContent extends Component {
         this.props.reset('LoginForm')
     };
 
+    handleForgetPwd = () => {
+        this.setState({openDialog: true})
+    }
+
     render () {
         const { classes, handleSubmit, pristine, loginForm } = this.props;
-        const { loginFail, errorMsg } = this.state;
+        const { loginFail, errorMsg, openDialog } = this.state;
 
         const RenderBannerTxt = () => 
              <Typography noWrap className={classes.bannerTitle}>Engage-Yu!</Typography>
@@ -96,29 +109,38 @@ class HomeContent extends Component {
 
 
         return(
-            <div className={classes.bannerDiv}>
-                <div className={classes.bannerTextBox}>
+            <Fragment>
+                <div className={classes.bannerDiv}>
+                    <div className={classes.bannerTextBox}>
 
-                    <RenderBannerTxt/>
+                        <RenderBannerTxt/>
 
-                    {loginFail && !loginForm.values ?  <RenderErrorMsg errorMsg={errorMsg}/> : <br />}
+                        {loginFail && !loginForm.values ?  <RenderErrorMsg errorMsg={errorMsg}/> : <br />}
 
-                    <form noValidate onSubmit={handleSubmit(this.submit.bind(this))}>
-                        <FormBox name="email" label="Email" rows="1"/>
-                        <FormBox name="password" label="Password" rows="1"/>
-                        <br />
-                        <BtnAction type="submit" disabled={pristine} text="login" />
-                    </form>
+                        <form noValidate onSubmit={handleSubmit(this.submit.bind(this))}>
+                            <div style={{marginBottom: "-10px"}}>
+                                <FormText type="text" name="email" label="Email" variant="outlined" width="320" helpText={false} />
+                            </div>
+                            <div style={{marginBottom: "10px"}}>
+                                <FormText type="password" name="password" label="Password" variant="outlined" width="320" helpText={false}/>
+                            </div>
+                            
+                            <BtnAction type="submit" disabled={pristine} text="login" />
+                            <Typography variant="subtitle2" inline className={classes.forgotPwd} onClick={() => this.handleForgetPwd()}>Forgot password?</Typography>
+                        </form>
 
+                    </div>
                 </div>
-            </div>
+                
+                {openDialog && <HomePwdResetDialog />}
+            
+            </Fragment>
         );
     }
 }
 
 const formData = {
 	form: 'LoginForm', //unique identifier for this form
-	// validate    
 }
 
 const mapDispatchToProps = dispatch => ({

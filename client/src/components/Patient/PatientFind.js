@@ -63,11 +63,11 @@ class PatientFind extends Component {
             case "contact":
                 break;
             case "edit":
-                return this.props.history.push({pathname: 'updatepatient'})
+                return this.props.history.push({pathname: 'update'})
             case "reports":
-                return this.props.history.push({pathname: 'report/0'})
+                return this.props.history.push({pathname: '/admin/report/0'})
             case "new diary card":
-                return this.props.history.push({pathname: 'survey', state: {_id} })
+                return this.props.history.push({pathname: '/admin/survey', state: {_id} })
             default: return null;
         }
     };
@@ -124,5 +124,5 @@ const mapStateToProps = (state) => {
 
 PatientFind = withRouter(PatientFind)
 PatientFind = withStyles(styles)(PatientFind)
-PatientFind = connect(mapStateToProps) (PatientFind)
+PatientFind = connect(mapStateToProps)(PatientFind)
 export default PatientFind;

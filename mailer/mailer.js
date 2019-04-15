@@ -23,8 +23,6 @@ const send = ({ email, name, text }) => {
         replyTo: email
     };
 
-    console.log("email: ")
-
     return new Promise((resolve, reject) => {
         transporter.sendMail(message, (error, info) => 
             error ? reject(error) : resolve(info)

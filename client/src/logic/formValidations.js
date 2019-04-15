@@ -93,10 +93,14 @@ export const validatePassword = (value, required=false) => {
     if (!value) {if (required) return "*Required field"; else return "";}
     if (value && value.length < 8) {
         return "Password must be at least 8 characters";
+    } else if (!/\d{1}/i.test(value)) {
+        return "Password must conatin at least one number (0-9)"
+    } else if (!/[!@#$%^&*(),.?":{}|<>]/g.test(value)) {  // need to edit this to special characters allowed by auth0
+        return "Password must conatin at least one special character "
     } else return "";
 };
 
-export const validatePasswords = (value1, value2) => {
+export const validatePasswordsMatch = (value1, value2) => {
     //console.log("value: ", value1, " : ", value2);
     if (!value2) {return "*Required field"} 
     if (value1 && value2 && value1 !== value2) {

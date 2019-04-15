@@ -63,7 +63,7 @@ export const patientSave= (values) => {
                         AuthService.webAuth.signup({
                             connection: "Engage-Yu",
                             email: values.email,
-                            password: values.password1,
+                            password: values.password,
                             user_metadata: { 
                                 firstname: values.firstname,
                                 lastname: values.lastname,

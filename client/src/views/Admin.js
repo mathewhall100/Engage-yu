@@ -1,11 +1,11 @@
 import React, { Component, Fragment} from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-//import { authActions } from '../reducers/modules/auth';
 import * as AuthService from '../services/AuthService';
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Console from '../components/Console/Console';
+import Account from '../components/Account/Account';
 import Appbar from '../AppBar';
 import Footer from '../components/Footer/Footer';
 
@@ -47,7 +47,7 @@ class Admin extends Component {
 
     render () {
 
-        const { classes } = this.props;
+        const { classes, account} = this.props;
         const { redirect } = this.state;
 
         if (redirect) {
@@ -61,7 +61,7 @@ class Admin extends Component {
                 <div className={classes.root}>
                     <div className={classes.container}>
                         <Appbar />
-                        <Console />  
+                        {account ? <Account /> : <Console />  }
                     </div>
                     <div  className={classes.footer}>
                         <br />

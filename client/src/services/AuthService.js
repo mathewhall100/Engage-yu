@@ -13,7 +13,7 @@ export const webAuth = new auth0.WebAuth({
     clientID: CLIENT_ID,
     redirectUri: REDIRECT_URI,
     responseType: 'token id_token',
-    scope: 'openid profile'
+    scope: 'openid profile email'
 })
 
 
@@ -45,8 +45,13 @@ export const login = () => {
 };
 
 // Saves user token to window.localStorage
-export const setToken = idToken => {
+export const setIdToken = idToken => {
     window.localStorage.setItem('auth_id_token', idToken);
+};
+
+// Saves user token to window.localStorage
+export const setAccessToken = accessToken => {
+    window.localStorage.setItem('auth_access_token', accessToken);
 };
 
 // Saves profile data to window.localStorage
@@ -58,7 +63,7 @@ export const setProfile = profile => {
 // Retrieves the profile data from window.localStorage
 export const getProfile = () => {
     const profile = window.localStorage.getItem('auth_profile');
-    return profile ? JSON.parse(window.localStorage.auth_profile) : {};
+    return profile ? profile : {};
 };
 
 // Checks if there is a saved token and it's still valid

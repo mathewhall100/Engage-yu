@@ -9,7 +9,7 @@ export default class FormText extends Component {
 
     renderTextField(field) {
         //console.log("Field: ", field);
-        const {width, label, type, meta: {dirty, touched, error}} = field;
+        const {width, label, type, helpText, variant, meta: {dirty, touched, error}} = field;
         return (
             <React.Fragment>
 
@@ -18,31 +18,33 @@ export default class FormText extends Component {
                     {...field.input}   
                     onBlur={() => {return false}}
                     margin="normal"
-                    multiline={field.mutliline === true ? true : false}
-                    style={{width: `${width}px`}}
+                    style={{width: width}}
                     type={type}
+                    variant={variant}
                 />
 
-                {dirty && !error && <span style={{position: "relative", left: "10px", top: "32px"}}> 
+                {helpText && dirty && !error && <span style={{position: "relative", left: "10px", top: "32px"}}> 
                     <DoneIcon style={{fontSize: "28px", color: "green"}}/>
                 </span> }
 
-                <div style={{fontSize: "13px", color: "red"}}> 
+                {helpText && <div style={{fontSize: "13px", color: "red"}}> 
                     {touched ? error : ''}
-                </div>
+                </div> }
 
             </React.Fragment>
         );
     }
 
     render () {
-        const { type="text", name, width="250", label } = this.props;
+        const { name, label, type="text", width="250", variant="standard", helpText=true} = this.props;
         return (
             <Field 
                 name={name}
                 label={label}
                 type={type}
-                width={width}
+                width={`${width}px`}
+                variant={variant}
+                helpText={helpText}
                 component={this.renderTextField}
                 autoComplete="off"
             />
@@ -53,6 +55,6 @@ export default class FormText extends Component {
 FormText.PropTypes = {
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    width: PropTypes.string.isRequired,
+    width: PropTypes.string,
+    variant: PropTypes.string
 };

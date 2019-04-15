@@ -1,31 +1,25 @@
 import axios from 'axios';
-import { 
+import {
     USER_PROFILE,
-    USER_FAILURE,
+    USER_FAILURE
 } from './types';
 import * as UserService from '../services/UserService';
 
-// Takes user 'sub' from auth0, fetches user data from user collection
-// Loads user detials into localstorage
-// Then fetches further info on user  from patient or provider collection
-// Dispatches user info to reducer to be placed into store
 
 export const fetchUserDetails = (sub) => {
     console.log("Fetching from user collection with 'sub': ", sub);
-    let userInfo, userRole, userId, userDetails, url;
-    url = `/api/user/${sub.toString()}`;  
+    let userInfo, userRole, userId, url;
+    url = `/api/user/${sub.toString()}`;  // convert to user api call
     return (dispatch) => {
         axios.get(url)
         .then(res => {
             userInfo = res.data[0];
             localStorage.setItem('user_role', userInfo.role);
-            localStorage.setItem('user_app_ID', userInfo.id);
-            localStorage.setItem('user_auth_ID', userInfo.sub);
-            
+            localStorage.setItem('user_app_id', userInfo.id);
+
             if (userInfo.role) {userRole = userInfo.role} else {userRole = UserService.getUserRole()};  
-            if (userInfo.id) {userId = userInfo.id} else {userId = UserService.getUserID()};   
-        })
-        .then( () => {
+            if (userInfo.id) {userId = userInfo.id} else {userId = UserService.getUserId()};   
+
             switch(userRole) {
                 case 'patient':
                     url=`/api/patient_info/find/${userId}`;
@@ -66,17 +60,20 @@ export const fetchUserDetails = (sub) => {
                     localStorage.setItem('user_super_lastname', null);
                     localStorage.setItem('user_super_role', null);
                 }
-                userDetails = res.data
-                //console.log("userDetails: ", userDetails)
                 //console.log("userId: ", userId)
                 //console.log("userRole: ", userRole)
-                dispatch(userProfile({userRole, userId, userDetails}))
+                dispatch(userProfile({userRole, userId}))
             })
             .catch(error => {
                 console.log("No user retrieved");
                 console.log(error);
                 dispatch(userFailure(error))
             })
+        })
+        .catch(error => {
+            console.log("No user retrieved");
+            console.log(error);
+            dispatch(userFailure(error))
         })
     }
 }

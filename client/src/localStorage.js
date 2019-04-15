@@ -20,12 +20,18 @@ export const saveState = (state) => {
     }
 }
 
+export const saveReturnLocation = (href) => {
+    localStorage.setItem('return_location', href);
+}
+
 // Clear user token and profile data from window.localStorage
 export const clearLocalStorage = () => {
-    const keys = ['auth_id_token', 
+    const keys = [
+            'auth_access_token', 
+            'auth_id_token',
+            'auth_user_id',
             'auth_profile', 
-            'user_app_ID', 
-            'user_auth_ID', 
+            'user_app_id', 
             'user_provider_firstname', 
             'user_provider_lastname', 
             'user_provider_role', 
@@ -33,14 +39,23 @@ export const clearLocalStorage = () => {
             'user_provider_id', 
             'user_provider_group_id',
             'user_provider_group_name',
-            'persist:root'
         ];
     keys.forEach(key => localStorage.removeItem(key));
     return true;
 };
 
-export const purgeState = () => {
+export const clearStateFromLocalStorage = () => {
     // purge local storage of persisted state
     localStorage.removeItem('state')
+}
+
+export const clearReturnLocation = () => {
+    localStorage.removeItem('return_location')
+}
+
+export const clearStore = () => {
+    clearLocalStorage();
+    clearReturnLocation();
+    clearStateFromLocalStorage();
 }
 

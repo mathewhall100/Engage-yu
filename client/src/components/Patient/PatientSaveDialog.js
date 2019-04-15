@@ -24,7 +24,7 @@ class PatientSaveDialog extends React.Component {
 				break;
 			case 'edit':
 				this.props.dispatch(loadPatient(this.props.newPatient._id))
-				this.props.history.push({pathname: '/admin/updatepatient'})
+				this.props.history.push({pathname: '/admin/patient/update'})
 				break;
 			default: 
 				this.props.history.push({pathname: '/admin/dashboard'})

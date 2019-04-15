@@ -1,5 +1,4 @@
 export * from './ActiveSurveysAction';
-export * from './AuthAction';
 export * from './ConsoleTitleAction';
 export * from './CareGroupAction';
 export * from './CareGroupSaveAction';

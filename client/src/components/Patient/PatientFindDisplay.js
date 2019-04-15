@@ -4,7 +4,7 @@ import { startCase } from 'lodash';
 import moment from 'moment';
 import { withStyles, Card, Grid, Typography } from '@material-ui/core';
 import DiaryIcon from '@material-ui/icons/ListAlt';
-import ReportIcon from '@material-ui/icons/BarChart';
+import ReportIcon from '@material-ui/icons/InsertChartOutlined';
 import EditIcon from '@material-ui/icons/Edit';
 import ContactIcon from '@material-ui/icons/ContactMail';
 import BtnCloseIcon from '../UI/Buttons/btnCloseIcon';

@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
 import { withStyles, Dialog, DialogContent, Typography} from '@material-ui/core';
-import FormBox from '../components/UI/Forms/formBox'
+import FormText from '../components/UI/Forms/formText'
 import BtnAction from '../components/UI/Buttons/btnAction'
 import { authActions } from '../actions/auth';
 import * as AuthService from '../services/AuthService';
@@ -25,7 +25,7 @@ class LoginExpired extends Component {
     componentDidMount() {
         // save userEmail for re-login
         let profile = AuthService.getProfile()
-        this.setState({userEmail: profile.email ? profile.email : profile.name})
+        this.setState({userEmail: profile.email})
         profile = ""
         // clear local storage
         LocalStorage.clearLocalStorage()
@@ -52,8 +52,7 @@ class LoginExpired extends Component {
 
     submit(values) {
         // save the current location to local storage
-        const currentLocn = window.location.href;
-        localStorage.setItem("return_location", currentLocn)
+        LocalStorage.saveReturnLocation(window.location.href)
         // authenticate user
         const handleLogout = this.handleLogout;
         AuthService.webAuth.login({ 
@@ -85,7 +84,6 @@ class LoginExpired extends Component {
         // remove return_location from local storage
         // redirect to homepage
         this.props.logoutSuccess()
-        localStorage.removeItem("return_location")
         this.setState({redirect: true})
     };
 
@@ -114,7 +112,7 @@ class LoginExpired extends Component {
                             <br/>
                             
                             <form noValidate onSubmit={handleSubmit(this.submit.bind(this))}>
-                                <FormBox name="password" label="Password" rows="1"/>
+                                <FormText type="password" name="password" label="Password" variant="outlined" width="320" helpText={false}/>
                                 <br />
                                 <BtnAction type="submit" marginRight={true} disabled={pristine} text="resume" />
                                 <BtnAction type="button" text="logout" handleAction={() => this.handleLogout()}/>
