@@ -73,7 +73,7 @@ export default class FormTextPassword extends Component {
     }
 }
 
-FormTextPassword.PropTypes = {
+FormTextPassword.propTypes = {
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     width: PropTypes.string,

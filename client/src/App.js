@@ -15,13 +15,14 @@ import theme from './theme'
 class App extends Component {
 
 	componentDidMount() {
-		//console.log("this.props in app js file : ", this.props);
-		const { history, loginSuccess, loginError } = this.props;
 
-		// Add callback for lock's `authenticated` event (listens for authentication events from auth0)
+		// console.log("this.props in app js file : ", this.props);
+		const { history, loginSuccess, loginError } = this.props;
+		
+		// add callback for lock's `authenticated` event (listens for authentication events from auth0)
 		AuthService.lock.on('authenticated', authResult => {
 			console.log("AUTH_RESULT: ", authResult)
-
+			// **NOTE, auth0 rules check for valid email and password fields and redirect to '/emailnotverified' or '/temppwdchange' if invalid
 			// check authResult return a user, if not redirect to 'notAuthenticated view'
 			if (!authResult) {
 				history.push({ pathname: '/notAuthenticated' }) 
@@ -30,81 +31,59 @@ class App extends Component {
 				if (!authProfile) {
 					history.push({ pathname: '/notAuthenticated' }) 
 				} else {
-					const emailVerified = authProfile.email_verified
-					const pwdType = authProfile[`http://engageyu-dev.auth0.com_user_metadata`].password
-					const id = authProfile.sub
+					// prepare user login to app
+					// 1.save auth tokens and custom profile to local storage
+					const authProfile = authResult.idTokenPayload
+					AuthService.setIdToken(authResult.idToken)
+					AuthService.setAccessToken(authResult.accessToken)
+					UserService.setUserId(authProfile.sub)
+					AuthService.setProfile({
+						email: authProfile.email,
+						exp: authProfile.exp,
+						first_name: authProfile[`http://engageyu-dev.auth0.com_user_metadata`].first_name,
+						last_name: authProfile[`http://engageyu-dev.auth0.com_user_metadata`].last_name,
+						picture: authProfile.picture,
+						auth_user_id: authProfile.sub
+					})
+					
+					// 2.fetch user info from app db user collection and save to local storage 
+					this.props.fetchUserDetails(authProfile.sub) 
 
-					// check user email ? present and verified
-					if (emailVerified === (undefined || null)) {
-						history.push({ pathname: '/notAuthenticated' }) 
-					} else if (emailVerified === false) {
-						this.emailNotVerified();
+					// 3.load store with 'auth' object containing: authenticated 'true' and custom profile 
+					loginSuccess({
+						email: authProfile.email,
+						exp: authProfile.exp,
+						first_name: authProfile[`http://engageyu-dev.auth0.com_user_metadata`].first_name,
+						last_name: authProfile[`http://engageyu-dev.auth0.com_user_metadata`].last_name,
+						picture: authProfile.picture,
+						auth_user_id: authProfile.sub
+					});
+
+					// 4.redirect to appropriate page post login
+					// if return_location specified -> re-login and redirect back to previous page
+					const returnLocn = LocalStorage.getReturnLocation()
+					if (returnLocn) {
+						history.push({pathname: returnLocn.slice(22)})
+						LocalStorage.clearReturnLocation();
 					} else {
-						// check user password type ? if temporary -> force password update
-						if (pwdType === (undefined || null)) {
-							history.push({ pathname: '/notAuthenticated' }) 
-						} else if (pwdType === "temp") {
-							history.push({ 
-								pathname: '/TempPwdChange',
-								state: { id }
-							})
-						} else {
-							// if email verified and password valid -> log user in 
-							// 1.save auth tokens to local storage
-							const accessToken = authResult.accessToken
-							const idToken = authResult.idToken
-							const authProfile = authResult.idTokenPayload
-							const userId = authProfile.sub
-							const profile = {
-								email: authProfile.email,
-								exp: authProfile.exp,
-								full_name: authProfile[`http://engageyu-dev.auth0.com_user_metadata`].full_name,
-								picture: authProfile.picture,
-								auth_user_id: authProfile.sub
+						// if no return_location specified -> fresh login + rediect dependant on userRole
+						setTimeout(() => {
+							switch (UserService.getUserRole()) {
+								case 'patient':
+									return history.push({ pathname: '/' })
+								case 'provider':
+									return history.push({ pathname: '/admin/dashboard' })
+								case 'admin':
+									return history.push({ pathname: '/admin/dashboard' })
+								case 'super':
+									return history.push({ pathname: '/admin/dashboard' })
+								default: return history.push({ pathname: '/' }); 
 							}
-							AuthService.setIdToken(idToken)
-							AuthService.setAccessToken(accessToken)
-							AuthService.setProfile(profile)
-							UserService.setUserId(userId)
-
-							// 2.fetch user info from app db user collection and save to local storage 
-							this.props.fetchUserDetails(userId) 
-
-							// 3.load store with 'auth' object containing: authenticated 'true' and profile 
-							loginSuccess(profile);
-
-							// 4.redirect to appropriate page post login
-							// if return_location specified -> re-login and redirect back to previous page
-							const returnLocn = localStorage.getItem("return_location")
-							if (returnLocn) {
-								history.push({pathname: returnLocn.slice(22)})
-								LocalStorage.clearReturnLocation();
-							} else {
-								// if no return_location specified -> fresh login + rediect dependant on userRole
-								setTimeout(() => {
-									console.log("User role: ", UserService.getUserRole())
-									switch (UserService.getUserRole()) {
-										case 'patient':
-											history.push({ pathname: '/' })
-											break;
-										case 'provider':
-											history.push({ pathname: '/admin/dashboard' })
-											break;
-										case 'admin':
-											history.push({ pathname: '/admin/dashboard' })
-											break;
-										case 'super':
-											history.push({ pathname: '/admin/dashboard' })
-											break;
-										default: history.push({ pathname: '/' }); break;
-									}
-									
-								}, 500);
-							}
-							// hide the lock widget
-							AuthService.lock.hide();
-						}
+							
+						}, 500);
 					}
+					// hide the lock widget
+					AuthService.lock.hide();
 				}
 			}
 		})
@@ -161,7 +140,7 @@ const mapStateToProps = (state) => {
 	return {
 		user: state.user.user,
 		error: state.user.error
-    }
+	}
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps) (App));

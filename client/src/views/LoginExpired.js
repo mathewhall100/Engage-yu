@@ -24,19 +24,14 @@ class LoginExpired extends Component {
 
     componentDidMount() {
         // save userEmail for re-login
-        let profile = AuthService.getProfile()
-        this.setState({userEmail: profile.email})
-        profile = ""
-        // clear local storage
+        this.setState({userEmail: AuthService.getEmail()}, () => console.log("userEmail: ", this.state.userEmail) )
+        // clear profile && local storage
         LocalStorage.clearLocalStorage()
         // start countdown to logout
         this.counter = setInterval(() => {
             const count = this.calcCount()
             if (!count) this.stopCount()
         }, 1000);
-        //save the current location to local storage
-        // const currentLocn = window.location.href;
-        // localStorage.setItem("return_location", currentLocn)
     }
 
    componentWillUnmount() {
@@ -52,9 +47,9 @@ class LoginExpired extends Component {
 
     submit(values) {
         // save the current location to local storage
-        LocalStorage.saveReturnLocation(window.location.href)
+        LocalStorage.setReturnLocation(window.location.href)
         // authenticate user
-        const handleLogout = this.handleLogout;
+        const loginFailed = this.loginFailed
         AuthService.webAuth.login({ 
             realm: "Engage-Yu",
             email: this.state.userEmail,
@@ -63,9 +58,8 @@ class LoginExpired extends Component {
         }, function (error) {
             if (error) {
                 console.log("error: ", error);
-                return handleLogout(error); 
+                return loginFailed(error); 
             } 
-
         })
     }
     
@@ -76,14 +70,15 @@ class LoginExpired extends Component {
 
     stopCount() {
         clearInterval(this.counter)
-        this.handleLogout()
+        this.loginFailed()
     }    
     
-    handleLogout = () => {
+    loginFailed = () => {
         // set auth.isAuthenticated to false and auth.loggedOut to true
-        // remove return_location from local storage
+        // remove return_location from local storage 
         // redirect to homepage
         this.props.logoutSuccess()
+        LocalStorage.clearReturnLocation()
         this.setState({redirect: true})
     };
 
@@ -115,7 +110,7 @@ class LoginExpired extends Component {
                                 <FormText type="password" name="password" label="Password" variant="outlined" width="320" helpText={false}/>
                                 <br />
                                 <BtnAction type="submit" marginRight={true} disabled={pristine} text="resume" />
-                                <BtnAction type="button" text="logout" handleAction={() => this.handleLogout()}/>
+                                <BtnAction type="button" text="logout" handleAction={() => this.loginFailed()}/>
                                 <Typography variant="subtitle2" inline style={{float: "right", marginTop: "16px"}}>Logout in {counter} seconds</Typography>
                             </form>
 

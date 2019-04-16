@@ -45,6 +45,8 @@ export const providerSave = (values) => {
                     user_metadata: { 
                         firstname: values.firstname,
                         lastname: values.lastname,
+                        role: "provider",
+                        password: "temp"
                     },
                     responseType: "token id_token"
                 }, function (error, res_user) {

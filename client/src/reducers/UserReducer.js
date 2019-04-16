@@ -10,10 +10,8 @@ const userReducer = (
     }, 
     action
 ) => {
-    console.log("action.type")
     switch (action.type) {
         case USER_PROFILE : 
-        console.log("action.type: user", action.payload.user)
             return {
                 ...state,
                 user: action.payload.user,

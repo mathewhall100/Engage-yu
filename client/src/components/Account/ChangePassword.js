@@ -6,6 +6,7 @@ import FormTextPassword from '../../components/UI/Forms/formTextPassword';
 import BtnAction from '../../components/UI/Buttons/btnAction';
 import { validatePassword, validatePasswordsMatch } from '../../logic/formValidations';
 import * as AuthService from '../../services/AuthService';
+import * as UserService from '../../services/UserService';
 import authAPI from '../../utils/auth';
 
 const styles = theme => ({
@@ -17,8 +18,7 @@ class AccountChangePassword extends Component {
 
     componentDidMount() {
         // save userEmail for use later
-        let profile = AuthService.getProfile()
-        this.setState({userEmail: profile.email ? profile.email : profile.name})
+        this.setState({userEmail: AuthService.getEmail() })
     }
 
     state = {
@@ -31,12 +31,11 @@ class AccountChangePassword extends Component {
         console.log("Submitted values: ", values)
         let accessToken = ""
         authAPI.getAPIAccessToken()
-        .then(res => {
-            //console.log("result1: ", res) 
-            accessToken = res.data.access_token
-            //console.log("accessToken: ", accessToken)
+        .then(result => {
+            //console.log("result: ", result) 
+            accessToken = result.data.access_token
             authAPI.passwordChange({
-                userId: localStorage.getItem('user_auth_ID'),
+                userId: UserService.getUserId(),
                 newPassword: values.password,
                 accessToken
             })
@@ -50,7 +49,7 @@ class AccountChangePassword extends Component {
         })
         .catch(error => {
             console.log("Password update failed")
-            console.log("Err: ", error)
+            console.log("Error: ", error)
             this.setState({error: true})
         })
     }
@@ -80,7 +79,7 @@ class AccountChangePassword extends Component {
                 </Typography>
             </Fragment>
 
-        const RenderNewPwdMsg = () => 
+        const RenderMsg = () => 
             <Typography variant="subtitle1" gutterBottom>
                 Enter new password for <strong>{userEmail}</strong>
             </Typography>
@@ -89,7 +88,7 @@ class AccountChangePassword extends Component {
         return (
             <Fragment>
 
-                {!error ? <RenderNewPwdMsg /> : <RenderErrorPwdMsg />}
+                {!error ? <RenderMsg /> : <RenderErrorPwdMsg />}
                 
                 <br />
 

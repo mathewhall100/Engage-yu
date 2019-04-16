@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { startCase } from 'lodash';
 import { withRouter, Redirect } from 'react-router-dom';
 import { authActions } from './actions/auth';
+import * as AuthService from './services/AuthService'
 import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import AppBar from '@material-ui/core/AppBar';
@@ -42,16 +43,9 @@ const styles = theme =>({
 
 class TopBar extends Component {  
 
-    componentDidMount() {
-        // this.checkLoggedIn()
-    }
-
     state = {
         redirect : false,
     }
-
-    //Check if logged in & redirect to error page if not
-    checkLoggedIn = () => {  this.setState({redirect : !this.props.auth.isAuthenticated ? true : this.state.redirect}) }
 
     handleMyAccount = () => {
         this.props.history.push({pathname: '/account'})
@@ -59,7 +53,7 @@ class TopBar extends Component {
         
     handleLogout = () => {
         // set auth.isAuthenticated to false and auth.loggedOut to true
-        this.props.logoutSuccess()
+        AuthService.removeIdToken()
         this.setState({redirect: true})
     };
 

@@ -95,14 +95,14 @@ router
     .route("/pwdtypeupdate")
     .post((req,res) => {
         console.log("authRoutes: passwordType", req.body)
-        const { userId, managementAccessToken } = req.body
-        console.log("Axios call made to 'https://engageyu-dev.auth0.com/api/v2/users/userId' ", managementAccessToken);
+        const { userId, accessToken } = req.body
+        console.log("Axios call made to 'https://engageyu-dev.auth0.com/api/v2/users/userId' ", accessToken);
         return axios({
             url: `https://engageyu-dev.auth0.com/api/v2/users/${userId}`,
             method: 'PATCH',
             headers: { 
                 'content-type': 'application/json', 
-                'Authorization': 'Bearer ' + managementAccessToken
+                'Authorization': 'Bearer ' + accessToken
             },
             data: 
                 {"user_metadata" : {"password": "valid"}}, 

@@ -20,18 +20,21 @@ class Routes extends Component {
                 <Route exact path="/account" render={
                     AuthService.isAuthenticated() 
                     ? props => <Admin account={true}></Admin>
-                    : AuthService.authenticationExpired 
-                        ? props => <LoginExpired {...this.props}></LoginExpired> 
-                        : props => <NotAuthenticated {...this.props}></NotAuthenticated>
+                    : AuthService.authenticationNone()
+                        ? props => <NotAuthenticated {...this.props}></NotAuthenticated>
+                        : AuthService.authenticationExpired()
+                            ? props => <LoginExpired {...this.props}></LoginExpired> 
+                            : props => <NotAuthenticated {...this.props}></NotAuthenticated>
                 } />
                 <Route path='/admin' component={
                     AuthService.isAuthenticated() 
                     ? Admin 
-                    : AuthService.authenticationExpired 
-                        ? LoginExpired 
-                        : NotAuthenticated
-                    } 
-                /> 
+                    : AuthService.authenticationNone()
+                        ? NotAuthenticated
+                        : AuthService.authenticationExpired()
+                            ? LoginExpired 
+                            : NotAuthenticated
+                }  />
                 <Route path="/emailnotverified" component={EmailNotVerified} />
                 <Route path="/temppwdchange" component={TempPwdChange} />
                 <Route path='/callback' render={props => <CallBack {...this.props}></CallBack>} />

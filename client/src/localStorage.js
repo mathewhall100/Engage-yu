@@ -20,7 +20,11 @@ export const saveState = (state) => {
     }
 }
 
-export const saveReturnLocation = (href) => {
+export const getReturnLocation = () => {
+        return localStorage.getItem('return_location')
+}
+
+export const setReturnLocation = (href) => {
     localStorage.setItem('return_location', href);
 }
 

@@ -9,12 +9,11 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
 
-    sub: { type: String, unique: true, required: [true, 'SUB absolutely required!'] },
+    sub: { type: String, unique: true, required: [true, 'SUB (USER ID) absolutely required!'] },
     added_by: { type: Schema.Types.ObjectId, ref: 'Provider' },
     date_added: { type: Date, default: Date.now },
     role: {type: String, Enum: ['patient', 'provider', 'admin', 'support']},
     id: { type: String, unique: true, required: [true, 'user id required'] },
-    password_temporary: {type: Boolean, required: [true, 'password status required!'] },
     },
     
     { timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'} }

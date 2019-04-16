@@ -67,6 +67,8 @@ export const patientSave= (values) => {
                             user_metadata: { 
                                 firstname: values.firstname,
                                 lastname: values.lastname,
+                                role: "patient",
+                                password: "temp"
                             },
                             responseType: "token id_token"
                         }, function (error, res_user) {
@@ -79,6 +81,7 @@ export const patientSave= (values) => {
                                 sub: `auth0|${res_user.Id}`,
                                 role: "patient",
                                 id: res_info.data._id,
+
                                 // date_created: new Date()
                             })
                             .then(res_newUser => {

@@ -1,6 +1,7 @@
 import Auth0Lock from 'auth0-lock';
 import jwtDecode from 'jwt-decode';
 import auth0 from 'auth0-js';
+import { startCase } from 'lodash'
 
 const REDIRECT_URI = `http://${window.location.hostname}${window.location.hostname.includes('localhost') ? ":3000" : null}/callback`;
 const DOMAIN = 'engageyu-dev.auth0.com';
@@ -44,15 +45,29 @@ export const login = () => {
     lock.show();
 };
 
-// Saves user token to window.localStorage
+
+// Saves user token (JWT) to window.localStorage
 export const setIdToken = idToken => {
     window.localStorage.setItem('auth_id_token', idToken);
 };
 
-// Saves user token to window.localStorage
+// Retrieves user token (JWT) from window.localStorage
+export const getToken = () => {
+    const token = window.localStorage.getItem('auth_id_token');
+    return token ? token : ""
+};
+
+// removes user token (JWT) to window.localStorage
+export const removeIdToken = () => {
+    window.localStorage.removeItem('auth_id_token');
+};
+
+
+// Saves access token to window.localStorage
 export const setAccessToken = accessToken => {
     window.localStorage.setItem('auth_access_token', accessToken);
 };
+
 
 // Saves profile data to window.localStorage
 export const setProfile = profile => {
@@ -62,33 +77,42 @@ export const setProfile = profile => {
 
 // Retrieves the profile data from window.localStorage
 export const getProfile = () => {
-    const profile = window.localStorage.getItem('auth_profile');
+    const profile = JSON.parse(window.localStorage.getItem('auth_profile'));
     return profile ? profile : {};
 };
 
+ // Retrieves email of logged in user (in user profile) from window.localStorage
+export const getEmail = () => {
+    const profile = JSON.parse(window.localStorage.getItem('auth_profile'))
+    return profile ? profile.email : ""
+};
+
+ // Retrieves fullname of logged in user (in user profile) from window.localStorage
+export const getName = () => {
+    const profile = JSON.parse(window.localStorage.getItem('auth_profile'))
+    return profile ? `${startCase(profile.firstname)} ${startCase(profile.lastname)}` : ""
+};
+
+
 // Checks if there is a saved token and it's still valid
-// ? equivelent to 'isAuthenticated'
 export const isAuthenticated = () => {
     const token = getToken();
     return token && !isTokenExpired(token);
 };
 
-export const authenticationSuccess = () => {
-    if (getToken()) return true
-        else return false
+// check for presence user token (JWT); retrun true if absent
+export const authenticationNone= () => {
+    if (getToken()) return false
+        else return true
 }
 
+// Check for expiry of user token (JWT) 
 export const authenticationExpired = () =>  {
     const token = getToken();
     return isTokenExpired(token);
 }
 
-// Retrieves the user token from window.localStorage
-export const getToken = () => {
-    return window.localStorage.getItem('auth_id_token');
-};
-
-// Checks to see if token exists or has expired and returns TRUE if either
+// Checks to see if user token exists or has expired and returns TRUE if either
 export const isTokenExpired = () => {
     const token = getToken();
     if (!token) return true;
@@ -115,15 +139,6 @@ export const getTokenExpirationDate = () => {
         }
 };
 
-// Configure axios authorization header with JWT from Local storage 
-export const getHeader = () => {
-    const header = { 
-        headers: {
-            'Authorization': 'Bearer ' + localStorage.getItem('auth_id_token')  //'auth_id_token'
-        }
-    }
-    return header
-}
 
 
 
