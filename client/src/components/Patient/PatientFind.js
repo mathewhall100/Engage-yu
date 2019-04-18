@@ -19,7 +19,7 @@ const styles = () => ({
 class PatientFind extends Component {  
     
     componentDidMount() {
-        this.props.dispatch(selectConsoleTitle({title: "Find Patient"}));
+        this.props.dispatch(selectConsoleTitle({title: "Select Patient", menuIndex: 2}));
         this.props.dispatch(loadPatientsByProvider(localStorage.getItem("user_provider_id")));
     };
 

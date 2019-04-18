@@ -64,7 +64,7 @@ class TopBar extends Component {
         const { redirect } = this.state;
 
         if (redirect) {
-            const url = `/`;
+            const url = `/login`;
             return <Redirect to={url} />;
         }
 

@@ -64,6 +64,16 @@ export const validateEmail= (value, required=false) => {
     } else return "";
 };
 
+export const validateEmails= (value1, value2) => {
+    //console.log("value: ", value1, " : ", value2);
+    if (!value2) {return "*Required field"} 
+    else if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(.\w{2,3})+$/i.test(value2)) {
+        return"Invalid email address.";
+    } else if (value1 && value2 && value1 !== value2) {
+        return "*Entered emails do not match";
+    } else return "";
+};
+
 export const validatePhone= (value, required=false) => {
     //console.log("value: ", value);
     if (!value) {if (required) return "*Required field"; else return "";}
@@ -94,7 +104,7 @@ export const validatePassword = (value, required=false) => {
     if (value && value.length < 8) {
         return "Password must be at least 8 characters";
     } else if (!/\d{1}/i.test(value)) {
-        return "Password must conatin at least one number (0-9)"
+        return "Password must contain at least one number (0-9)"
     } else if (!/[!@#$%^&*]/g.test(value)) {  // need to edit this to special characters allowed by auth0
         return "Password must conatin at least one special character "
     } else return "";

@@ -21,7 +21,7 @@ const styles = () => ({
 class CareGroupAdd extends Component {
 
     componentDidMount() {
-        this.props.dispatch(selectConsoleTitle({title: "Add New Care Group"}))
+        this.props.dispatch(selectConsoleTitle({title: "Add New Care Group", menuIndex: 7}))
     }
 
     componentWillUnmount() {

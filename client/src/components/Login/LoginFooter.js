@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import Typography from '@material-ui/core/Typography'
 
-class Footer extends Component {
+class LoginFooter extends Component {
     render() {
         return (
             <Fragment>
@@ -12,4 +12,4 @@ class Footer extends Component {
     }
 }
 
-export default Footer
+export default LoginFooter

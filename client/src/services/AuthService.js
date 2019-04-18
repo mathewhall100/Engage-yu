@@ -134,7 +134,7 @@ export const getTokenExpirationDate = () => {
         else {
             const date = new Date(0); // The 0 here is the key, which sets the date to the epoch
             date.setUTCSeconds(decoded.exp);
-            console.log("token expiration date", date)
+            //console.log("token expiration: ", date)
             return date;
         }
 };

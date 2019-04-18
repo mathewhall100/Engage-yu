@@ -23,6 +23,7 @@ export default class FormTextFocused extends Component {
                     type="text"
                     variant={variant}
                     autoFocus={true}
+                    autoComplete="off"
                     
                 />
 
@@ -56,6 +57,6 @@ export default class FormTextFocused extends Component {
 FormTextFocused.propTypes = {
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
-    width: PropTypes.string,
+    width: PropTypes.number,
     variant: PropTypes.string
 };

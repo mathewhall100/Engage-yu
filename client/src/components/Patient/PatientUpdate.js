@@ -22,7 +22,7 @@ const styles = theme => ({
 class PatientUpdate extends PureComponent {  
 
     componentDidMount() {
-        this.props.dispatch(selectConsoleTitle({title: "Update Patient Details"}));
+        this.props.dispatch(selectConsoleTitle({title: "Update Patient Details", menuIndex: 2}));
     }  
     
     componentWillReceiveProps(nextProps) {

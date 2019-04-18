@@ -21,6 +21,7 @@ export default class FormText extends Component {
                     style={{width: width}}
                     type={type}
                     variant={variant}
+                    autoComplete="off"
                 />
 
                 {helpText && dirty && !error && <span style={{position: "relative", left: "10px", top: "32px"}}> 
@@ -46,7 +47,6 @@ export default class FormText extends Component {
                 variant={variant}
                 helpText={helpText}
                 component={this.renderTextField}
-                autoComplete="off"
             />
         );
     }
@@ -56,5 +56,5 @@ FormText.propTypes = {
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     width: PropTypes.string,
-    variant: PropTypes.string
+    variant: PropTypes.string,
 };

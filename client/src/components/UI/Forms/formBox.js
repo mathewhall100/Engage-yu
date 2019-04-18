@@ -23,6 +23,7 @@ export default class FormBox extends Component {
                         label={label}
                         {...field.input}  
                         style={{width: "100%", fontSize: "14px", marginTop: "10px"}} 
+                        autoComplete="off"
                     />
 
                     <div style={{fontSize: "13px", color: "red"}}> 

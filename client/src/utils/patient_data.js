@@ -1,4 +1,7 @@
 import axios from "axios";
+
+// Note axios default Authorization headers set in app.js
+
 export default {
 
     findById :function(id) {

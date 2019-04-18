@@ -10,7 +10,7 @@ import ReportListSurveys from './ReportListSurveys';
 class Report extends Component {  
 
     componentDidMount() {
-        this.props.dispatch(selectConsoleTitle({title: "Summary Report"}));
+        this.props.dispatch(selectConsoleTitle({title: "Summary Report", menuIndex: 2}));
         // console.log("Report: episode_id ", this.props.location.state.episodeId)
         // this.setState({episodeId: this.props.location.state.episodeId}) 
         const { match: { params } } = this.props

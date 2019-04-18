@@ -15,6 +15,10 @@ import { loadPatient } from '../../actions';
 
 class ConsoleMenuListItems extends Component {
 
+	componentDidMount() {
+		if (this.props.consoleTitle) {this.setState({selectedIndex: this.props.consoleTitle.menuIndex})}
+	}
+
 	state = {
 		selectedIndex: 0,
 	}
@@ -29,14 +33,14 @@ class ConsoleMenuListItems extends Component {
 		const list = [
 			{title: "Dashboard", icon: <DashboardIcon color="primary" />, lnk: "/admin/dashboard"},
 			{title: "divider", text: "My workflow"},
-			{title: "Find patient", icon: <SearchIcon color="primary" />, lnk: "/admin/patient/find"},
+			{title: "Work with a patient", icon: <SearchIcon color="primary" />, lnk: "/admin/patient/find"},
 			{title: "Enroll new patient", icon: <PersonAddIcon color="primary" />, lnk: "/admin/patient/enroll"},
-			{title: "Custom questions", icon: <BuildIcon color="primary" />, lnk: "/admin/dashboard"},
+			{title: "Custom questions", icon: <BuildIcon color="primary" />, lnk: "/admin/questions"},
 			{title: "divider", text: "Admin"},
 			{title: "Manage providers", icon: <SupervisorAccountIcon color="primary" />, lnk: "/admin/provider"},
-			{title: "Manage care groups", icon: <LocalHospitalIcon color="primary" />, lnk: "/admin/caregroup"},
+			{title: "Manage care groups", icon: <LocalHospitalIcon color="primary" />, lnk: "/admin/caregroup/find"},
 			{title: "Delete an account", icon: <DeleteIcon color="primary" />, lnk: "/admin/delete"},
-			{title: "Settings", icon: <SettingsIcon color="primary" />, lnk: "/admin/dashboard"}
+			{title: "Settings", icon: <SettingsIcon color="primary" />, lnk: "/admin/settings"}
 		]
 
 		// Render individual list item (navigation link in console menu)
@@ -78,4 +82,10 @@ class ConsoleMenuListItems extends Component {
 	}
 };
 
-export default connect(null)(ConsoleMenuListItems)
+function mapStateToProps(state) {
+    return {
+        consoleTitle: state.consoleTitle,
+    };
+}  
+
+export default connect(mapStateToProps, null)(ConsoleMenuListItems)

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
+import axios from 'axios';
 import {connect} from 'react-redux';
-import { isEmpty } from 'lodash/isEmpty'
 import PropTypes from 'prop-types';
 import * as AuthService from './services/AuthService';
 import * as UserService from './services/UserService';
@@ -45,11 +45,15 @@ class App extends Component {
 						picture: authProfile.picture,
 						auth_user_id: authProfile.sub
 					})
+
+					// 2. Set default authorization header for axios requests
+					axios.defaults.headers.common['Authorization'] = 'Bearer ' + authResult.idToken 
+
 					
-					// 2.fetch user info from app db user collection and save to local storage 
+					// 3.fetch user info from app db user collection and save to local storage 
 					this.props.fetchUserDetails(authProfile.sub) 
 
-					// 3.load store with 'auth' object containing: authenticated 'true' and custom profile 
+					// 4.load store with 'auth' object containing: authenticated 'true' and custom profile 
 					loginSuccess({
 						email: authProfile.email,
 						exp: authProfile.exp,
@@ -59,7 +63,7 @@ class App extends Component {
 						auth_user_id: authProfile.sub
 					});
 
-					// 4.redirect to appropriate page post login
+					// 5.redirect to appropriate page post login
 					// if return_location specified -> re-login and redirect back to previous page
 					const returnLocn = LocalStorage.getReturnLocation()
 					if (returnLocn) {
@@ -79,10 +83,9 @@ class App extends Component {
 									return history.push({ pathname: '/admin/dashboard' })
 								default: return history.push({ pathname: '/' }); 
 							}
-							
 						}, 500);
 					}
-					// hide the lock widget
+					// 6. hide the lock widget
 					AuthService.lock.hide();
 				}
 			}
@@ -136,7 +139,7 @@ const mapDispatchToProps = dispatch => ({
 
 
 const mapStateToProps = (state) => {
-	console.log("state in app.js : ", state);
+	//console.log("state in app.js : ", state);
 	return {
 		user: state.user.user,
 		error: state.user.error

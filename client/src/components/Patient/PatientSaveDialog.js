@@ -92,8 +92,12 @@ class PatientSaveDialog extends React.Component {
 								</Grid>
 							</Grid>
 							<br /><br />
+							<Typography variant="subtitle1" >
+								<strong>An email wil be sent to {newPatient.email} with the temporary password so that they can login to to the application.</strong> 
+							</Typography>
+							<br />
 							<Typography variant="subtitle1">
-									Click 'done' to return to dashboard, 'create Diary' to create a new diary exercise for this patient or, if any of the details above are incorrect, click 'edit' to make changes.
+								Click 'done' to return to dashboard, 'create Diary' to create a new diary exercise for this patient or, if any of the details above are incorrect, click 'edit' to make changes.
 							</Typography>
 						</DialogContent>
 						<DialogActions style={{margin: "0 20px 20px 0"}}>

@@ -21,7 +21,7 @@ const styles = () => ({
 class CareGroupUpdate extends PureComponent {  
 
     componentDidMount() {
-        this.props.dispatch(selectConsoleTitle({title: "Update Care Group"}));
+        this.props.dispatch(selectConsoleTitle({title: "Update Care Group", menuIndex: 7}));
     };
 
     componentWillReceiveProps(nextProps) {

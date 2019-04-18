@@ -8,7 +8,7 @@ import DashboardTable from './DashboardTable';
 class Dashboard extends Component {  
     
     componentDidMount() {
-        this.props.dispatch(selectConsoleTitle({title: "Dashboard"}));
+        this.props.dispatch(selectConsoleTitle({title: "Dashboard", menuIndex: 0}));
         this.setState({displayPatientId: "" });
     }
 

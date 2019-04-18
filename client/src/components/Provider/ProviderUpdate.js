@@ -24,7 +24,7 @@ class ProviderUpdate extends PureComponent {
     componentDidMount() {
         let title = "Update Provider Details";
         if (this.props.location.state.update === "reassign caregroup") {title = "Reassign Provider To Another Care Group"} 
-        this.props.dispatch(selectConsoleTitle({title}))
+        this.props.dispatch(selectConsoleTitle({title, menuIndex: 6}))
     };
 
     componentWillReceiveProps(nextProps) {

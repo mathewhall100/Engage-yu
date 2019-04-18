@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 import Account from '../components/Account/Account';
-import NotFound from '../views/NotFound';
+import NotFound from '../components/UI/notFound';
 
 export default class AccountRoutes extends Component { 
 

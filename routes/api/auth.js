@@ -1,11 +1,13 @@
 const router = require("express").Router();
 const axios = require("axios")
+const checkToken = require("../../jwt/jwt");
+const checkJwt = checkToken.getCheckToken()
 require('dotenv').config();
 
-//Matches with "/api/auth/pwdReset"
+// Matches with "/api/auth/pwdReset"
 router
     .route("/auth/pwdreset")
-    .post((req, res) => {
+    .post(checkJwt, (req, res) => {
         console.log("Axios call made to 'https://engageyu-dev.auth0.com/dbconnections/change_password' ", obj.email);
         return axios({
             url: `https://engageyu-dev.auth0.com/dbconnections/change_password`,
@@ -33,7 +35,7 @@ router
 // Matches with "/api/auth/gettoken"
 router
     .route("/gettoken")
-    .get((req, res) => {
+    .get(checkJwt, (req, res) => {
         console.log("authRoutes: getAPIAccessToken")
         return axios({
             url: `https://engageyu-dev.auth0.com/oauth/token`,
@@ -44,7 +46,7 @@ router
                     grant_type: "client_credentials",
                     client_id: process.env.CLIENT_ID,
                     client_secret: process.env.CLIENT_SECRET,
-                    audience: 'https://engageyu-dev.auth0.com/api/v2/'
+                    audience: 'https://engageyu-dev.auth0.com/api/v2/' //note different from audience used elsewhere
                 }, 
             json: true 
         })
@@ -61,7 +63,7 @@ router
 // Matches with "/api/auth"
 router
      .route("/pwdchange")
-     .post((req,res) => {
+     .post(checkJwt, (req,res) => {
         console.log("authRoutes: passwordChange", req.body)
         const { userId, newPassword, accessToken } = req.body
         console.log("Axios call made to 'https://engageyu-dev.auth0.com/api/v2/users/userId' ", userId, " ", newPassword);

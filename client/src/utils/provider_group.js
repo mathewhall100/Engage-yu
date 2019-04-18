@@ -1,4 +1,7 @@
 import axios from "axios";
+
+// Note axios default Authorization header set in app.js
+
 export default {
 
     findAll: function() {

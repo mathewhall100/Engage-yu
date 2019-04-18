@@ -15,7 +15,7 @@ const styles = (theme) => ({
     }
 })
 
-class HomeAppBar extends Component {
+class LoginAppBar extends Component {
     
 
     handleLogin = () => {
@@ -25,19 +25,18 @@ class HomeAppBar extends Component {
 
     render() {
         const { classes } = this.props
-        // const { isAuthenticated, profile } = this.props.auth;
+
         return (
             <Grid container spacing={24} className={classes.root}>
 
                 <Grid item xs={6}>
-                    {/* <Typography variant="h5" color="secondary" >Engage-Yu!</Typography> */}
                 </Grid>
 
                 <Grid item xs={6}>
                     <div className={classes.appBarBtns} > 
-        <BtnAction type="button" text={<span style={{fontSize: "15px"}}>help</span>} marginRight={true} />
-                        <BtnAction type="button" text={<span style={{fontSize: "15px"}}>contact us</span>}marginRight={true}/>  
-                        <BtnAction type="button" text={<span style={{fontSize: "15px"}}>login</span>}handleAction={this.handleLogin}/>
+                        <BtnAction type="button" text={<span style={{fontSize: "15px"}}>help</span>} marginRight={true} />
+                        <BtnAction type="button" text={<span style={{fontSize: "15px"}}>contact us</span>} marginRight={true}/>  
+                        <BtnAction type="button" text={<span style={{fontSize: "15px"}}>login</span>} handleAction={this.handleLogin}/>
                     </div>
                 </Grid>
 
@@ -54,4 +53,4 @@ const mapDispatchToProps = dispatch => ({
     logoutSuccess: () => dispatch(authActions.logoutSuccess())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps, null, {pure:false}) (withStyles(styles) (HomeAppBar));
+export default connect(mapStateToProps, mapDispatchToProps, null, {pure:false}) (withStyles(styles) (LoginAppBar));

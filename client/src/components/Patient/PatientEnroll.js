@@ -7,6 +7,7 @@ import BtnAction from '../UI/Buttons/btnAction';
 import ProviderSelect from '../UI/Forms/FormProviderSelect'
 import FormText from '../UI/Forms/formText'
 import FormTextFocused from '../UI/Forms/formTextFocused'
+import FormTextPassword from '../UI/Forms/formTextPassword'
 import FormRadio from '../UI/Forms/formRadio'
 import PatientSaveDialog from './PatientSaveDialog'
 import { selectConsoleTitle } from '../../actions/index';
@@ -24,7 +25,7 @@ const styles = () => ({
 class PatientEnroll extends Component {
 
     componentDidMount() {
-        this.props.dispatch(selectConsoleTitle({title: "Enroll New Patient"}));
+        this.props.dispatch(selectConsoleTitle({title: "Enroll New Patient", menuIndex: 3}));
     }
 
     componentWillUnmount() {
@@ -57,10 +58,6 @@ class PatientEnroll extends Component {
             <FormText name="phone" label="Contact phone "width="270" />,
             <FormText name="hospId" label="Hospital Number" width="270" />,
             <div style={{position: "relative", top: "20px"}}><ProviderSelect /> </div>,
-            <Typography variant="subtitle2" style={{width: "95%"}}><br />Asign a temporary passsword for this patient now which they will use, together with their email address, to login for the first time.</Typography>,
-            <div />,
-            <FormText type="password" name="password" label="Password" width="270" />,
-            <FormText type="password" name="passwordConfirm" label="Re-enter Password" width="270" />,
         ];
 
         return (
@@ -76,6 +73,18 @@ class PatientEnroll extends Component {
                                 </Grid>
                             )
                         })}
+                        <Grid item xs={12}>
+                            <Typography variant="subtitle2" style={{width: "83%"}}>
+                                <br />
+                                To logon for the first time, this user will use thier email address and a temporary password. When they login, they will be prompted to change the temporary password to a more secure one of their choice. Please confirm the email address and enter a temporary password for this user.
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <FormText name="emailConfirm" label="Email" variant="standard" width="270" helpText={true}/>
+                        </Grid>
+                        <Grid item xs={6}>
+                            <FormTextPassword name="password" label="Temporary password" variant="standard" width="270" helpText={true}/>
+                        </Grid>
                     </Grid>
 
                     <br /> <br /> 
@@ -107,8 +116,9 @@ function validate(values) {
     errors.phone = val.validatePhone(values.phone, true)
     errors.provider = val.validateIsRequired(values.provider)
     errors.status = val.validateStatus(values.status, true)
-    errors.password1 = val.validatePassword(values.password1, true)
-    errors.password2 = val.validatePasswordsMatch(values.password, values.passwordConfirm)
+    errors.emailConfirm = val.validateEmail(values.emailConfirm, true)
+    errors.password = val.validatePassword(values.password, true)
+
     // If errors is empty, then form good to submit
     console.log("Errors: ", errors)
     return errors;

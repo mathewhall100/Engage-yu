@@ -22,7 +22,7 @@ const styles = () => ({
 class CareGroupRemove extends Component {  
     
     componentDidMount() {
-        this.props.dispatch(selectConsoleTitle({title: "Delete Care Group"}));
+        this.props.dispatch(selectConsoleTitle({title: "Delete Care Group", menuIndex: 7}));
         this.loadProvidersByGroup(this.props.careGroup._id)
     }
 

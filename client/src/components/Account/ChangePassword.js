@@ -24,7 +24,8 @@ class AccountChangePassword extends Component {
     state = {
         userEmail: "",
         update: false,
-        error: false
+        error: false,
+        submitted: false
     }
 
     submit(values) {
@@ -60,7 +61,7 @@ class AccountChangePassword extends Component {
 
     render() {
         const { classes, handleSubmit, pristine} = this.props;
-        const { userEmail, update, error } = this.state;
+        const { userEmail, update, error, submitted } = this.state;
 
         if (update) 
             return  <Typography variant="subtitle1" style={{color: "green"}} gutterBottom>
@@ -89,14 +90,13 @@ class AccountChangePassword extends Component {
             <Fragment>
 
                 {!error ? <RenderMsg /> : <RenderErrorPwdMsg />}
-                
-                <br />
 
-                <form noValidate onSubmit={handleSubmit(this.submit.bind(this))}>
-                    <FormTextPassword name="password" label="New Password" width="320" variant="outlined"/>
-                    <br /> 
-                    <FormTextPassword name="passwordConfirm" label="Confirm new passsword" width="320" variant="outlined"/>
-                    <br /> <br />
+                <form onSubmit={handleSubmit(this.submit.bind(this))}>
+                    <FormTextPassword name="password" label="New Password" width="320" variant="outlined" helpText={true} />
+                    <div style={{marginTop: "-12px"}}>
+                        <FormTextPassword name="passwordConfirm" label="Confirm new passsword" width="320" variant="outlined" helpText={true} />
+                    </div>
+                    <br />
                     <BtnAction type="submit" marginRight={true} disabled={pristine} text="save changes" />
                 </form>
 

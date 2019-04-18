@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter} from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -9,6 +9,7 @@ import ReportTable from './ReportTable';
 import ReportBarGraph from './ReportBarGraph';
 import { displayDataCalc } from './reportLogic';
 import ReportSurveyDetails from './ReportSurveyDetails';
+import { reportData } from '../../actions';
 
 const styles = theme => ({
     root: {
@@ -58,36 +59,32 @@ const styles = theme => ({
   });
 
 
-class ReportSummary extends PureComponent {
+class ReportSummary extends Component {
 
     componentDidMount() {
         console.log("report summary: episodeId: ", this.props.episodeId);
         if (this.props.patientData && this.props.patientData.episodes && this.props.episodeId) {
-            this.setState({episodes: this.props.patientData.episodes}, 
-                () => this.prepareDataForDisplay(this.getEpisode(this.state.episodes, this.props.episodeId)) )
+            this.prepareDataForDisplay(this.props.episodeId)
         } 
      };
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.patientData !== nextProps.patientData) {
-            this.setState({episodes: nextProps.patientData.episodes},
-                () => this.prepareDataForDisplay(this.getEpisode(this.state.episodes, nextProps.episodeId)) )
-        }
-        if (this.props.episodeId !== nextProps.episodeId) {
-                this.prepareDataForDisplay(this.getEpisode(this.state.episodes, nextProps.episodeId)) 
+        if (this.props.patientData !== nextProps.patientData || this.props.episodeId !== nextProps.episodeId) {
+            this.prepareDataForDisplay(nextProps.episodeId)
+            this.setState({displayQuestion: 0})
         }
     };
 
     state = {
-        episode: [],
-        episodes: [],
         noEpisodes: false,
         displayQuestion: 0,
         episodeDataForDisplay: [],
     };
 
-    getEpisode = (episodes, episodeId) => {
-        // console.log("Report Summary: getEpisode: ", episodes, " : ", episodeId)
+    // getEpisode = (episodes, episodeId) => {
+    getEpisode = (episodeId) => {
+        let episodes = this.props.patientData.episodes;
+        console.log("Report Summary: getEpisode: ", episodes, " : ", episodeId)
         if (episodeId !== "0") {return episodes.filter(e => e._id === episodeId)[0]
         } else {
             let ep = [];
@@ -100,7 +97,9 @@ class ReportSummary extends PureComponent {
         return null
     };
 
-    prepareDataForDisplay = (episode) => {
+    // prepareDataForDisplay = (episode) => {
+    prepareDataForDisplay = (episodeId) => {
+        const episode = this.getEpisode(episodeId)
         if (episode) {
             this.setState({
                 episode,             

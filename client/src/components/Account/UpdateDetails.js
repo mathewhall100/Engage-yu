@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import { reduxForm } from 'redux-form';
-import { withStyles } from '@material-ui/core';
+// import { withStyles } from '@material-ui/core';
 import { validatePassword } from '../../logic/formValidations';
 
-const styles = theme => ({
+// const styles = theme => ({
 
-})
+// })
 
 
 class AccountUpdateDetails extends Component {
 
     render() {
-        const { classes } = this.props;
+        // const { classes } = this.props;
 
         return (
             <div>
@@ -36,5 +36,5 @@ const formData = {
 }
 
 AccountUpdateDetails = reduxForm(formData)(AccountUpdateDetails)
-AccountUpdateDetails = withStyles(styles)(AccountUpdateDetails)
+// AccountUpdateDetails = withStyles(styles)(AccountUpdateDetails)
 export default AccountUpdateDetails

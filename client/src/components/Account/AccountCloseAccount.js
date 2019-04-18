@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core';
+// import { withStyles } from '@material-ui/core';
 
-const styles = theme => ({
+// const styles = theme => ({
 
-})
+// })
 
 
 class AccountCloseAccount extends Component {
 
     render() {
-        const { classes } = this.props;
+        // const { classes } = this.props;
 
         return (
             <div>
@@ -19,5 +19,5 @@ class AccountCloseAccount extends Component {
     }
 }
 
-AccountCloseAccount = withStyles(styles)(AccountCloseAccount)
+// AccountCloseAccount = withStyles(styles)(AccountCloseAccount)
 export default AccountCloseAccount

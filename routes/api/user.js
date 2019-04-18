@@ -1,14 +1,16 @@
 const router = require("express").Router();
 const userController = require("../../controllers/userController");
+const checkToken = require("../../jwt/jwt");
+const checkJwt = checkToken.getCheckToken()
 
 // Matches with "/api/user"
 router
   .route("/:id")
-  .get(userController.userLookup)
+  .get(checkJwt, userController.userLookup)
 
 // Matches with "/api/create"
 router
   .route("/")
-  .post(userController.create)
+  .post(checkJwt, userController.create)
 
 module.exports = router;

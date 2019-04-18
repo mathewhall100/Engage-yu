@@ -6,7 +6,7 @@ import Survey from '../components/Survey/Survey';
 import Report from '../components/Report/Report';
 import Provider from '../components/Provider/Provider';
 import CareGroup from '../components/CareGroup/CareGroup';
-import NotFound from '../views/NotFound';
+import NotFound from '../components/UI/notFound';
 
 export default class AdminRoutes extends Component { 
 
@@ -15,15 +15,16 @@ export default class AdminRoutes extends Component {
             <Switch>
                 <Route exact path="/admin" component={Dashboard} />
                 <Route exact path='/admin/dashboard' component={Dashboard} />
-                <Route path='/admin/patient' component={Patient} />
+                <Route path='/admin/patient' component={Patient} />  
+                <Route exact path='/admin/survey' component={Survey} />
+                <Route path='/admin/report/:Id' component={Report} />                
+                <Route exact path='/admin/questions' component={NotFound} />
                 <Route path='/admin/provider' component={Provider} />
                 <Route path='/admin/caregroup' component={CareGroup} />
-                <Route exact path='/admin/survey' component={Survey} />
-                <Route path='/admin/report/:Id' component={Report} />
-                <Route path="/notfound" component={NotFound} />
+                <Route exact path='/admin/delete' component={NotFound} />
+                <Route exact path='/admin/settings' component={NotFound} />
                 <Route component={NotFound} />
             </Switch>
         );
     }
-    
 }

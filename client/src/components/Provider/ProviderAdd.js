@@ -6,6 +6,7 @@ import { isEmpty } from 'lodash'
 import { withStyles, Card, Typography, Grid} from '@material-ui/core';
 import FormText from '../UI/Forms/formText'
 import FormTextFocused from '../UI/Forms/formTextFocused'
+import FormTextPassword from '../UI/Forms/formTextPassword'
 import FormSelect from '../UI/Forms/formSelect'
 import FormStateSelect from '../UI/Forms/formStateSelect'
 import FormCheckbox from '../UI/Forms/formCheckbox'
@@ -27,14 +28,14 @@ const styles = () => ({
 class ProviderAdd extends Component {
 
     componentDidMount() {
-        this.props.dispatch(selectConsoleTitle({title: "Add New Provider"}));
+        this.props.dispatch(selectConsoleTitle({title: "Add New Provider", menuIndex: 6}));
     };
 
 
     componentWillUnmount() {
         this.props.dispatch(providerSave("reset"))
     }
-    
+
 
     // handle form submission and saving data to database
     submit(values) {
@@ -94,7 +95,7 @@ class ProviderAdd extends Component {
 
                         <br /><br />
 
-                         <FormCheckbox name="signUp" label="signup" />
+                        <FormCheckbox name="signUp" label="signup" />
 
                         <Typography variant="subtitle2" inline gutterBottom>Enable provider login.</Typography>
 
@@ -102,14 +103,14 @@ class ProviderAdd extends Component {
 
                         {enrollForm && enrollForm.values && enrollForm.values.signUp === true && <Fragment> 
                             <Typography variant="body1" gutterBottom style={{width: "85%", maxWidth: '900px'}}> 
-                                Log in rquires a registered email and password. Please confirm the provider's email address and enter a temporary password. The provider will be prompted to change the temporary password to a secure one of their choice when they first login. 
+                                Log in requires a registered email and password. Please confirm the provider's email address and enter a temporary password. The provider will be prompted to change the temporary password to a secure one of their choice when they first login. 
                                 </Typography>
                             <Grid container spacing={24}>
                                 <Grid item xs={6}>
-                                    <FormText name="email2" label="Confirm email" width="320" />
+                                    <FormText name="emailConfirm" label="Confirm email" width="320" />
                                 </Grid>
                                 <Grid item xs={6}>
-                                    <FormText name="password" label="Temporary password" type="passsword" width="320" />
+                                    <FormTextPassword name="password" label="Temporary password" variant="standard" width="320" helpText={true}/>
                                 </Grid>
                             </Grid>
                         </Fragment>}  
@@ -148,10 +149,9 @@ function validate(values) {
     errors.phone3 = val.validatePhoneOther(values.phone3, false)
     errors.caregroup = val.validateIsRequired(values.caregroup)
     errors.role = val.validateIsRequired(values.role)
-    errors.password1 = val.validatePassword(values.password1, true)
-    // errors.email2 = val.validateEmails(values.email, values.email2) // need to write validation code and import it
-    // errors.password2 = val.validatePasswords(values.password1, values.password2)
-    // If errors is empty, then form good to submit
+    errors.emailConfirm = val.validateEmails(values.email, values.emailConfirm) // need to write validation code and import it
+    errors.password = val.validatePassword(values.password)
+    //If errors is empty, then form good to submit
     console.log("Errors: ", errors)
     return errors;
 }

@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core';
+// import { withStyles } from '@material-ui/core';
 
-const styles = theme => ({
+// const styles = theme => ({
 
-})
+// })
 
 
 class AccountViewStats extends Component {
 
     render() {
-        const { classes } = this.props;
+        //const { classes } = this.props;
 
         return (
             <div>
@@ -19,5 +19,5 @@ class AccountViewStats extends Component {
     }
 }
 
-AccountViewStats = withStyles(styles)(AccountViewStats)
+// AccountViewStats = withStyles(styles)(AccountViewStats)
 export default AccountViewStats

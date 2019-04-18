@@ -19,7 +19,7 @@ const styles = () => ({
 class ProviderRemove extends Component {  
 
     componentDidMount() {
-        this.props.dispatch(selectConsoleTitle({title: "Remove Provider"}));
+        this.props.dispatch(selectConsoleTitle({title: "Remove Provider", menuIndex: 6}));
     }
 
     state = {

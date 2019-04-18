@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Field } from 'redux-form';
 import PropTypes from 'prop-types';
 import { TextField, IconButton, InputAdornment } from '@material-ui/core';
@@ -20,7 +20,7 @@ export default class FormTextPassword extends Component {
 
     renderTextField(field) {
         //console.log("Field: ", field);
-        const {width, label, variant, meta: {dirty, touched, error}} = field;
+        const {width, label, variant, helpText, submitted, meta: {dirty, touched, error}} = field;
         return (
             <React.Fragment>
 
@@ -42,22 +42,35 @@ export default class FormTextPassword extends Component {
                             </IconButton>
                         </InputAdornment>,
                       }}
+                      autoComplete="off"
                 />
 
-                {dirty && !error && <span style={{position: "relative", left: "10px", top: "32px"}}> 
+                {helpText && dirty && !error && <span style={{position: "relative", left: "10px", top: "32px"}}> 
                     <DoneIcon style={{fontSize: "28px", color: "green"}}/>
                 </span> }
-
-                <div style={{fontSize: "13px", color: "red"}}> 
-                    {touched ? error : ''}
-                </div>
+                
+                {dirty && submitted ?
+                    <Fragment>
+                        {console.log("1: ", dirty, submitted)}
+                        {helpText && <span style={{color: "red", position: "relative", left: "10px", top: "32px"}}> 
+                            { error }
+                        </span> }
+                    </Fragment>
+                    :
+                    <Fragment>
+                         {console.log("2: ", dirty, submitted)}
+                        {helpText && <div style={{fontSize: "13px", color: "red"}}> 
+                            {touched ? error : ''}
+                        </div> }
+                    </Fragment>
+                }
 
             </React.Fragment>
         );
     }
 
     render () {
-        const { name, label, width="250", variant="outlined" } = this.props;
+        const { name, label, width="250", variant="outlined", helpText=false, submitted=false} = this.props;
         return (
             <Field 
                 name={name}
@@ -65,7 +78,8 @@ export default class FormTextPassword extends Component {
                 width={`${width}px`}
                 variant={variant}
                 component={this.renderTextField}
-                autoComplete="off"
+                helpText={helpText}
+                submitted={submitted}
                 handleShowPassword={this.handleShowPassword}
                 showPassword={this.state.showPassword}
             />
@@ -77,5 +91,6 @@ FormTextPassword.propTypes = {
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     width: PropTypes.string,
-    variant: PropTypes.string
+    variant: PropTypes.string,
+    submitted: PropTypes.bool
 };
