@@ -43,6 +43,12 @@ export const clearLocalStorage = () => {
             'user_provider_id', 
             'user_provider_group_id',
             'user_provider_group_name',
+            'dashboard_table_person_filter',
+            'dashboard_table_status_filter',
+            'dashboard_table_checked_filter',
+            'patient_find_form_list',
+            'patient_find_form_name',
+            'patient_find_form_hospId'
         ];
     keys.forEach(key => localStorage.removeItem(key));
     return true;

@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import Card from '@material-ui/core/Card';
+import { isEmpty } from 'lodash'
+import { Typography, Card } from '@material-ui/core';
 import { selectConsoleTitle, loadQuestions, loadProvider } from '../../actions';
 import SurveyPatientDetails from './SurveyPatientDetails';
 import SurveyForm from './SurveyForm';
@@ -16,14 +17,14 @@ class Survey extends Component {
 
     render () {
 
-
         return (
-            <React.Fragment>
+
+            <Fragment>
                 <SurveyPatientDetails /> <br />
                 <Card style={{padding: "40px"}}>
                     <SurveyForm />
                 </Card>
-            </React.Fragment>
+            </Fragment>
         );
     }
 }

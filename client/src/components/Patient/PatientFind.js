@@ -45,11 +45,7 @@ class PatientFind extends Component {
     };
 
     filterByList = (value) => {
-        if (value === "all care group patients") {
-            this.props.dispatch(loadPatientsByCareGroup(localStorage.getItem("user_provider_group_id")))
-        } else {
-            this.props.dispatch(loadPatientsByProvider(localStorage.getItem("user_provider_id")))
-        }
+        this.setState({filterList: value})
     };
 
     infoPanel = (status) => {
@@ -85,12 +81,13 @@ class PatientFind extends Component {
                         filterByName={this.filterByName} 
                         filterByNumber={this.filterByNumber} 
                         filterByList={this.filterByList}
+                        infoPanel={this.infoPanel}
                     />
                     <br />
 
                     {infoPanel && 
                         <PatientFindDisplay
-                            handleActionBtn={this.actions} 
+                            handleBtns={this.actions} 
                             infoPanel={this.infoPanel}
                         /> 
                     }
@@ -102,6 +99,7 @@ class PatientFind extends Component {
                 <PatientFindTable 
                     filterName={this.state.filterName} 
                     filterNumber={this.state.filterNumber} 
+                    filterList={this.state.filterList}
                     displayPatientDetails={this.displayPatientDetails}
                     handleActionBtn={this.actions}
                     infoPanel={this.infoPanel}

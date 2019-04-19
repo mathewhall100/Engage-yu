@@ -77,7 +77,7 @@ class CareGroupSaveDialog extends React.Component {
 								{btn: "edit", type: "button", id: "0"},
 								{btn: "done", type: "button", id: "1"}
 							]} 
-							handleActionBtns={this.handleRedirects} 
+							handleBtns={this.handleRedirects} 
 							/>
 					</DialogActions>
 				</Dialog>

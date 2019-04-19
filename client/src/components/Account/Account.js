@@ -61,11 +61,6 @@ class Account extends Component {
         selected: [true, false, false]
     }
 
-    // Check if logged in & redirect to error page if not
-    checkLoggedIn = () => {  
-        this.setState({redirect : !AuthService.isAuthenticated() ? true : this.state.redirect}) 
-    }
-
     handleSelected = (index) => {
         console.log("index: ", index)
         let tempArray = [];

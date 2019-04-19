@@ -30,30 +30,11 @@ const styles = theme => ({
 });
 
 
-class Admin extends Component { 
-
-    state = {
-        redirect: false
-    }
-
-    componentDidMount() {
-        this.checkLoggedIn()
-    }
-
-    // Check if logged in & redirect to error page if not
-    checkLoggedIn = () => {  
-        this.setState({redirect : !AuthService.isAuthenticated() ? true : this.state.redirect}) 
-    }
-
+class Admin extends Component {   
+    
     render () {
 
         const { classes, account} = this.props;
-        const { redirect } = this.state;
-
-        if (redirect) {
-            const url = `/notauthenticated`;
-            return <Redirect to={url} />;
-        }
 
         return (
             <Fragment>

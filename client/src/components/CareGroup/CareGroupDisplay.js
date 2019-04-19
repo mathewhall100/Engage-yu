@@ -160,7 +160,7 @@ class CareGroupDisplay extends Component {
                 <BtnGroup 
                     btns={btns} 
                     _id={careGroup._id}
-                    handleActionBtns={this.handleAction}
+                    handleBtns={this.handleAction}
                 />   
 
             </Card>  

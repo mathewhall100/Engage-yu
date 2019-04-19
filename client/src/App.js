@@ -46,14 +46,10 @@ class App extends Component {
 						auth_user_id: authProfile.sub
 					})
 
-					// 2. Set default authorization header for axios requests
-					axios.defaults.headers.common['Authorization'] = 'Bearer ' + authResult.idToken 
-
-					
-					// 3.fetch user info from app db user collection and save to local storage 
+					// 2.fetch user info from app db user collection and save to local storage 
 					this.props.fetchUserDetails(authProfile.sub) 
 
-					// 4.load store with 'auth' object containing: authenticated 'true' and custom profile 
+					// 3.load store with 'auth' object containing: authenticated 'true' and custom profile 
 					loginSuccess({
 						email: authProfile.email,
 						exp: authProfile.exp,
@@ -63,7 +59,7 @@ class App extends Component {
 						auth_user_id: authProfile.sub
 					});
 
-					// 5.redirect to appropriate page post login
+					// 4.redirect to appropriate page post login
 					// if return_location specified -> re-login and redirect back to previous page
 					const returnLocn = LocalStorage.getReturnLocation()
 					if (returnLocn) {

@@ -27,7 +27,7 @@ class NotAuthenticated extends Component {
 
         return <div className={classes.root}>
             <div className={classes.center}>
-                <Typography variant="h4" align="center" color="primary" gutterBottom >Whoops!</Typography>
+                <Typography variant="h4" color="primary" gutterBottom >Whoops!</Typography>
                 <br />
                 <br />
                 <Typography variant="h6">You are not authenticated to view this resource.</Typography>

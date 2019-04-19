@@ -107,7 +107,7 @@ class PatientSaveDialog extends React.Component {
 									{btn: "edit", type: "button", id: "1"},
 									{btn: "done", type: "button", id: "2"}
 								]} 
-								handleActionBtns={this.handleRedirects} 
+								handleBtns={this.handleRedirects} 
 							/>
 						</DialogActions>
 					</Fragment> }

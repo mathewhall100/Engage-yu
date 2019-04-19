@@ -27,7 +27,7 @@ class NotFound extends Component {
 
         return <div className={classes.root}>
             <div className={classes.center}>
-                <Typography variant="h4" align="center" color="primary" gutterBottom >Whoops! Page not Found</Typography>
+                <Typography variant="h4" color="primary" gutterBottom >Whoops! Page not Found</Typography>
                 <br />
                 <br />
                 <Typography variant="h6">The requested page was not found. Please use the application menu to find what you need. </Typography>

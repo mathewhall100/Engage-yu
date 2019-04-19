@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { startCase } from 'lodash';
+import { startCase, isEmpty } from 'lodash';
 import moment from 'moment';
 import { withStyles, Paper } from '@material-ui/core';
 import TableGeneric from '../UI/Tables/tableGeneric';
 import CallBack from '../UI/callback'
-import { loadPatient } from '../../actions'
+import { loadPatient, loadPatientsByProvider, loadPatientsByCareGroup } from '../../actions'
 import { createData, filterByName, filterByNumber } from './patientLogic'
 
 
@@ -18,21 +18,40 @@ const styles = () => ({
 
 class PatientFindTable extends Component {
 
-   componentWillReceiveProps(nextProps) {
+    componentDidMount() {
+        if (localStorage.getItem("patient_find_form_list") === "all care group patients") {
+            this.props.dispatch(loadPatientsByCareGroup(localStorage.getItem("user_provider_group_id")))
+        } else  {
+            this.props.dispatch(loadPatientsByProvider(localStorage.getItem("user_provider_id")))
+        } 
 
-        if (nextProps.patientsByCareGroup !== this.props.patientsByCareGroup) {
-            this.setState({tableData: createData(nextProps.patientsByCareGroup) },
-                () => this.setState({tableDataFiltered: this.filterData(this.state.tableData, nextProps.filterName, nextProps.filterNumber) }) )
-        } 
-        else if (nextProps.patientsByProvider !== this.props.patientsByProvider) { 
-            this.setState({tableData: createData(nextProps.patientsByProvider) },
-                () => this.setState({tableDataFiltered: this.filterData(this.state.tableData, nextProps.filterName, nextProps.filterNumber) }) )
-        } 
-        else if (nextProps.filterName !== this.props.filterName || nextProps.filterNumber !== this.props.filterNumber) {
-            this.setState({tableDataFiltered: this.filterData(this.state.tableData, nextProps.filterName, nextProps.filterNumber) })
-        } 
-        else return null   
+        if (this.props.patientInfo) {this.props.infoPanel("open") }
+    }
+
+   componentWillReceiveProps(nextProps) {
+        let tableData = []
+
+        if (nextProps.filterList !== this.props.filterList) {
+            if (nextProps.filterList === "all care group patients") {
+                this.props.dispatch(loadPatientsByCareGroup(localStorage.getItem("user_provider_group_id")))
+            } else  {
+                this.props.dispatch(loadPatientsByProvider(localStorage.getItem("user_provider_id")))
+            } 
+        }
+
+        if ((nextProps.filterList === "all care group patients" || localStorage.getItem("patient_find_form_list") === "all care group patients") && nextProps.patientsByCareGroup) {
+            tableData = createData(nextProps.patientsByCareGroup)
+        } else if (nextProps.patientsByProvider) {
+            tableData = createData(nextProps.patientsByProvider)
+        }
+
+        this.setState({tableDataFiltered: this.filterData(
+            tableData, 
+            localStorage.getItem("patient_find_form_name") ? localStorage.getItem("patient_find_form_name") : nextProps.filterName, 
+            localStorage.getItem("patient_find_form_hospId") ? localStorage.getItem("patient_find_form_hospId") : nextProps.filterNumber, 
+        )} )
     };
+
 
     state = {
         tableData: [],
@@ -54,15 +73,8 @@ class PatientFindTable extends Component {
     };
 
     // Filters   
-    filterData = (data, filterName, filterNumber ) => {
+    filterData = (data, filterName, filterNumber) => {
         const filteredData = filterByNumber(filterByName(data, filterName), filterNumber)
-        if ( 
-            !(filteredData.length === 1 && this.state.tableDataFiltered.length === 1 && this.state.tableDataFiltered[0]._id === filteredData[0]._id) 
-            || (filterName === "" && filterNumber === "") 
-        ) {
-            this.props.dispatch(loadPatient("reset"))
-            this.props.infoPanel("close")
-        }
         return filteredData;
     };
 
@@ -112,7 +124,7 @@ class PatientFindTable extends Component {
 
 
 const mapStateToProps = (state) => {
-    //console.log("State : ", state);
+    console.log("State : ", state);
     return {
         patientsByProvider: state.patientsByProvider.listPatients,
         loadingProviderPatients: state.patientsByProvider.loading,
@@ -121,8 +133,11 @@ const mapStateToProps = (state) => {
         patientsByCareGroup: state.patientsByCareGroup.listPatients,
         loadingCareGroupPatients: state.patientsByCareGroup.loading,
         errorCareGroupPatients: state.patientsByCareGroup.error,
+
+        patientInfo: state.patient.patient.patientInfo,
     }
 };
+
 PatientFindTable = withRouter(PatientFindTable)
 PatientFindTable = connect(mapStateToProps)(PatientFindTable)
 PatientFindTable = withStyles(styles)(PatientFindTable)

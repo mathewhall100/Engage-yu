@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { withRouter} from 'react-router-dom';
 import { connect } from 'react-redux';
+import { isEmpty } from 'lodash'
 import { selectConsoleTitle } from '../../actions/index';
+import Typography from '@material-ui/core/Typography'
 import CallBack from '../UI/callback'
 import ReportFull from './ReportFull';
 import ReportSummary from './ReportSummary';
@@ -11,10 +13,8 @@ class Report extends Component {
 
     componentDidMount() {
         this.props.dispatch(selectConsoleTitle({title: "Summary Report", menuIndex: 2}));
-        // console.log("Report: episode_id ", this.props.location.state.episodeId)
-        // this.setState({episodeId: this.props.location.state.episodeId}) 
         const { match: { params } } = this.props
-        this.setState({episodeId: params.Id}, () => console.log(this.state.episodeId))
+        this.setState({episodeId: params.Id})
     }
         
     state = {
@@ -49,7 +49,6 @@ class Report extends Component {
         const { patientInfo, patientData, error, loading } = this.props
         const { openFull, episodeId, episode, questions, episodeDataForReport } = this.state
 
-        
         if (error) {
             return <div>Error! {error.message}</div>
         }
@@ -68,10 +67,10 @@ class Report extends Component {
         }
 
         return (
-            <React.Fragment>
+            <Fragment>
                 <ReportSummary  episodeId={episodeId} handleFullReport={this.handleOpenFull} /> <br /> 
                 <ReportListSurveys changeEpisode={this.handleChangeEpisode} /> 
-            </React.Fragment> 
+            </Fragment> 
         );
     }
 }

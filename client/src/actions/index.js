@@ -3,7 +3,6 @@ export * from './ConsoleTitleAction';
 export * from './CareGroupAction';
 export * from './CareGroupSaveAction';
 export * from './CareGroupUpdateSaveAction';    
-export * from './DashboardDataAction';
 export * from './PatientAction';
 export * from './PatientsByCareGroupAction';
 export * from './PatientsByProviderAction';

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
-import { startCase } from 'lodash';
+import { startCase, isEmpty } from 'lodash';
 import moment from 'moment';
 import { withStyles, Card, Grid, Typography } from '@material-ui/core';
 import DiaryIcon from '@material-ui/icons/ListAlt';
@@ -9,7 +9,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import ContactIcon from '@material-ui/icons/ContactMail';
 import BtnCloseIcon from '../UI/Buttons/btnCloseIcon';
 import BtnGroup from '../UI/Buttons/btnGroup';
-
+import { loadPatient } from '../../actions'
 import CallBack from '../UI/callback'
 
 const styles = () => ({
@@ -36,6 +36,7 @@ class PatientFindDetails extends PureComponent {
     }
 
     handleClose = () => {
+        this.props.dispatch(loadPatient("reset"))
         this.props.infoPanel("close")
     }
 
@@ -67,7 +68,7 @@ class PatientFindDetails extends PureComponent {
             return <div>Error! {error}</div>
         }
 
-        if (loading || !patientInfo._id) {
+        if (loading || (isEmpty(patientInfo))) {
             return <CallBack />
         }
 
@@ -105,7 +106,7 @@ class PatientFindDetails extends PureComponent {
                 </Grid>
 
                 <br /> <hr className={classes.hrStyled}/> <br />   
-                <BtnGroup btns={btns} _id={patientInfo._id} handleActionBtns={this.props.handleActionBtn} />
+                <BtnGroup btns={btns} _id={patientInfo._id} handleBtns={this.props.handleBtns} />
                 <br />
 
             </Card>

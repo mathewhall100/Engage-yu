@@ -44,7 +44,7 @@ const BtnGroup = (props) => {
                     size="small" 
                     variant="outlined" 
                     className={classes.btn} 
-                    onClick = {btn.type === "submit" ? null : () => props.handleActionBtns(btn.btn, _id)}
+                    onClick = {btn.type === "submit" ? null : () => props.handleBtns(btn.btn, _id)}
                     >
                         {btn.icon && <span className={classes.btnIcon}>{btn.icon}</span>} 
                         <span className={classes.btnText}>{btn.btn}</span>
@@ -56,9 +56,9 @@ const BtnGroup = (props) => {
 
 BtnGroup.propTypes = {
     classes: PropTypes.object.isRequired,
-    btns: PropTypes.array.isRequired,
+    btns: PropTypes.array.isRequired, // array form [{type: type, btn: "text", icon: <icon component>}]
     _id: PropTypes.string,
-    handleActionBtns: PropTypes.func.isRequired
+    handleBtns: PropTypes.func.isRequired
 };
   
 export default  withStyles(styles)(BtnGroup);

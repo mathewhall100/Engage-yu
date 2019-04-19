@@ -53,8 +53,9 @@ class Callback extends Component {
         else 
             return <div className={classes.root}>
                 <div className={classes.center}>
-                    <Typography variant="h6">Sorry!</Typography>
-                    <Typography variant="subtitle1">Loading/saving data operation has timed out.</Typography>
+                    <Typography variant="h6">There isn't any data to display.</Typography>
+                    <br />
+                    <Typography variant="subtitle1">Try refeshing the browser or using the main menu to reselect a patient.</Typography>
                 </div>
             </div>
     };

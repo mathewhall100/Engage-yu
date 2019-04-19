@@ -130,7 +130,7 @@ class ProviderSaveDialog extends React.Component {
 							<BtnGroup 
 								type="submit"
 								btns={[{btn: "done", type: "submit", id: "1"}]} 
-								handleActionBtns={this.handleRedirects} 
+								handleBtns={this.handleRedirects} 
 								/>
 						</DialogActions>	
 					</form>

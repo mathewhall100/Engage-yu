@@ -24,7 +24,12 @@ class ConsoleMenuListItems extends Component {
 	}
 
 	handleListItemClick = (event, index) => {
-		if (index !== 2) {this.props.dispatch(loadPatient("reset"))}
+		if (index !== 2) {
+			localStorage.removeItem("patient_find_form_name")
+			localStorage.removeItem("patient_find_form_hospId")
+			localStorage.setItem("patient_find_form_list", "my patient list")
+			this.props.dispatch(loadPatient("reset"))
+		}
 		this.setState({ selectedIndex: index });
 	};
 
@@ -37,7 +42,7 @@ class ConsoleMenuListItems extends Component {
 			{title: "Enroll new patient", icon: <PersonAddIcon color="primary" />, lnk: "/admin/patient/enroll"},
 			{title: "Custom questions", icon: <BuildIcon color="primary" />, lnk: "/admin/questions"},
 			{title: "divider", text: "Admin"},
-			{title: "Manage providers", icon: <SupervisorAccountIcon color="primary" />, lnk: "/admin/provider"},
+			{title: "Manage providers", icon: <SupervisorAccountIcon color="primary" />, lnk: "/admin/provider/find"},
 			{title: "Manage care groups", icon: <LocalHospitalIcon color="primary" />, lnk: "/admin/caregroup/find"},
 			{title: "Delete an account", icon: <DeleteIcon color="primary" />, lnk: "/admin/delete"},
 			{title: "Settings", icon: <SettingsIcon color="primary" />, lnk: "/admin/settings"}

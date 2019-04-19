@@ -101,7 +101,7 @@ class GenericTable extends Component {
                                 );
                             }, this)}
                             { lastCellRightAlign && 
-                                <CustomTableCell align="right" style={{paddingRight: 0}}>
+                                <CustomTableCell align="right" style={{paddingRight: "5px"}}>
                                     <Typography variant="subtitle2">{lastCellHeading}</Typography>
                                 </CustomTableCell>
                             }
@@ -123,7 +123,7 @@ class GenericTable extends Component {
                                         } )}
 
                                         { lastCellRightAlign && 
-                                            <CustomTableCell align="right" style={{paddingRight: 0}}>
+                                            <CustomTableCell align="right" style={{paddingRight: "5px"}}>
                                                 {getLastCell(row)}
                                             </CustomTableCell>
                                         } 

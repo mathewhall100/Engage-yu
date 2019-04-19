@@ -42,36 +42,30 @@ const CustomTableCell = withStyles(theme => ({
 class DashboardTable extends Component {
 
     componentDidMount() {
-        const { dashboardData, dashboardChecked, dashboardStatus } = this.props
-        if (dashboardData && dashboardData.length > 0) {
-            this.setState({
-                tableDataFiltered: dashboardData,
-                selected: dashboardChecked,
-                statusFilter: dashboardStatus
-            })
-        } 
         this.props.dispatch(loadActiveSurveys(localStorage.getItem("user_provider_id")));
+        if (!localStorage.getItem("dashboard_table_status_filter")) {localStorage.setItem("dashboard_table_status_filter", JSON.stringify(["active"]) )} 
+        if (!localStorage.getItem("dashboard_table_person_filter")) {localStorage.setItem("dashboard_table_person_filter", "requester" )} 
+        if (!localStorage.getItem("dashboard_table_checked_filter")) {localStorage.setItem("dashboard_table_checked_filter", [] )} 
+        this.setState({
+            selected: localStorage.getItem("dashboard_table_checked_filter"), 
+            statusFilter: localStorage.getItem("dashboard_table_status_filter"), 
+            personFilter: localStorage.getItem("dashboard_table_person_filter") 
+        })
     }
 
     componentWillReceiveProps(nextProps) {
-        // Load list of activeSurveys from store
-        // Then filter by survey status (default: active), scope (deafult: requester only) and checkbox selection (default: none)
-        // Gives this.state.tableDataFiltered array.
         if (nextProps.activeSurveys) {
             this.setState({ tableData: nextProps.activeSurveys},
-                () => {
-                    if (!this.state.tableDataFiltered.length) {
-                        this.setState({ tableDataFiltered: this.filterData(this.state.tableData, this.state.personFilter, this.state.statusFilter, this.state.checked) })
-                        
-                    }
-                } 
+                () => {this.setState({ tableDataFiltered: 
+                    this.filterData(
+                        this.state.tableData,
+                        localStorage.getItem("dashboard_table_person_filter") ? localStorage.getItem("dashboard_table_person_filter") : "", 
+                        localStorage.getItem("dashboard_table_status_filter") ? localStorage.getItem("dashboard_table_status_filter") : [],  
+                        localStorage.getItem("dashboard_table_checked_filter") ? localStorage.getItem("dashboard_table_checked_filter") : []
+                    ) 
+                }) }
             )
         }
-    }
-
-
-    componentWillUnmount() {
-        this.props.dispatch(dashboardData(this.state.tableDataFiltered, this.state.selected, this.state.statusFilter));
     }
 
     state = {
@@ -97,12 +91,14 @@ class DashboardTable extends Component {
 
     // Refilter in response to user selecting a navLink
     navLinksFilter = (filter) => {
+        localStorage.setItem("dashboard_table_person_filter", filter)
         this.setState({tableDataFiltered: this.filterData(this.state.tableData, filter, this.state.statusFilter, this.state.selected) });
         this.setState({personFilter: filter})
     };
 
     // Refilter in response to user selecting different status, 'active", 'awaiting review' or 'pending'
     statusFilter = (filter) => {
+        localStorage.setItem("dashboard_table_status_filter", JSON.stringify(filter))
         let statusFilter = this.state.statusFilter;
         let filterAdded = []
         let tableDataAdd = []
@@ -118,6 +114,7 @@ class DashboardTable extends Component {
 
     // Refilter in response to user selecting specific surveys using checkboxes
     checkedFilter = () => {
+        localStorage.setItem("dashboard_table_checked_filter", this.state.selected)
         this.setState({tableDataFiltered: this.filterData(this.state.tableData, this.state.personFilter, this.state.statusFilter, this.state.selected) });
     };
 
@@ -129,7 +126,9 @@ class DashboardTable extends Component {
         this.setState({ order, orderBy });
     };
 
-    handleDeSelectAllClick = () => { this.setState({ selected: [] }, () => this.checkedFilter());};
+    handleDeSelectAllClick = () => { 
+        this.setState({ selected: [] }, () => this.checkedFilter());
+    };
 
     handleRowClick = (patientId, episodeId) => {
         this.props.dispatch(loadPatient(patientId))
@@ -153,6 +152,7 @@ class DashboardTable extends Component {
                 newSelected = newSelected.concat(selected.slice(0, selectedIndex),selected.slice(selectedIndex + 1));
         }
         this.setState({ selected: newSelected });
+        
     };
 
     handleChangePage = (event, page) => {this.setState({ page }); };
@@ -184,11 +184,10 @@ class DashboardTable extends Component {
 
         return (
             <Paper className={classes.root}>
-
                 <DashboardTableToolbar 
                     numSelected={selected.length}
-                    initialStatus={statusFilter}
-                    navLinksSwitch={this.state.personFilter}
+                    initialStatus={localStorage.getItem("dashboard_table_status_filter") ? JSON.parse(localStorage.getItem("dashboard_table_status_filter")) : []}
+                    navLinksSwitch={localStorage.getItem("dashboard_table_person_filter") ? localStorage.getItem("dashboard_table_person_filter") : "requester"}
                     navLinksFilter={this.navLinksFilter}
                     statusFilter={this.statusFilter}
                     checkedFilter={this.checkedFilter}
@@ -277,9 +276,6 @@ const mapStateToProps = (state) => {
         loading: state.activeSurveys.loading,
         error: state.activeSurveys.error,
         user: state.user,
-        dashboardData: state.dashboardData.tableData,
-        dashboardChecked: state.dashboardData.checked,
-        dashboardStatus: state.dashboardData.status
     };
 };
 

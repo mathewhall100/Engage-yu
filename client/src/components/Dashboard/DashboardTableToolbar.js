@@ -78,7 +78,7 @@ class DashboardTableToolbar extends Component {
 
 		const navLinks = [
 			{tooltip: "Select diary cards requested by me", key: "requester",  text: "As requester"},
-			{tooltip: "Select diary cards where I am the patient's primary provider", key: "rprovider",  text: "As primary provider"},
+			{tooltip: "Select diary cards where I am the patient's primary provider", key: "provider",  text: "As primary provider"},
 			{tooltip: "Select all diary cards where I am the requester or primary provider", key: "all",  text: "All"},
 		]
 
@@ -123,7 +123,10 @@ class DashboardTableToolbar extends Component {
 				<div className={classes.spacer} />
 	
 				<span className={classes.selects}>
-					<FormMultipleSelectWithChips menuItems={multipleSelectMenuItems} selectStatus={this.handleStatusFilter} initialStatus={initialStatus}/>
+					<FormMultipleSelectWithChips 
+						menuItems={multipleSelectMenuItems} 
+						selectStatus={this.handleStatusFilter} 
+						initialStatus={initialStatus}/>
 				</span>
 
 				<div className={classes.filterIconBox}>

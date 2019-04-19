@@ -157,7 +157,7 @@ class ProviderDisplay extends Component {
                 <BtnGroup
                     btns={btns} 
                     _id={provider._id}
-                    handleActionBtns={this.handleAction}
+                    handleBtns={this.handleAction}
                 />   
 
             </Card> 

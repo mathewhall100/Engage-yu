@@ -385,7 +385,7 @@ class SurveyForm extends Component {
                             </div>              
                         </Collapse>
                             
-                        <Collapse in={settings} timeout={1000} ease >
+                        <Collapse in={settings} timeout={1000} >
                             <div className={classes.settingsContainer}>
 
                                 <div className={classes.containerTitleBanner}>

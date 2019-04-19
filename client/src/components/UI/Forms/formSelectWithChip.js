@@ -29,7 +29,7 @@ const MenuProps = {
 class FormSelectWithChip extends Component {
 	
 	state = {
-		selected: this.props.menuItems[0],
+		selected: this.props.initialSelected,
 	};
 
 	handleChange = event => {
@@ -38,7 +38,7 @@ class FormSelectWithChip extends Component {
 	};
 
 	render() {
-		const { classes, menuItems, label, theme } = this.props;
+		const { classes, menuItems, label, theme} = this.props;
 		const { selected } = this.state;
 
 		const getStyles = (item, selected) => {

@@ -24,7 +24,7 @@ class LoginExpired extends Component {
 
     componentDidMount() {
         // save userEmail for re-login
-        this.setState({userEmail: AuthService.getEmail()}, () => console.log("userEmail: ", this.state.userEmail) )
+        this.setState({userEmail: AuthService.getEmail()})
         // clear profile && local storage
         LocalStorage.clearLocalStorage()
         // start countdown to logout
