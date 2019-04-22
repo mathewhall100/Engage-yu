@@ -21,6 +21,7 @@ class PatientFind extends Component {
     componentDidMount() {
         this.props.dispatch(selectConsoleTitle({title: "Select Patient", menuIndex: 2}));
         this.props.dispatch(loadPatientsByProvider(localStorage.getItem("user_provider_id")));
+        localStorage.removeItem("report_return_locn")
     };
 
     componentWillReceiveProps(nextProps) {
@@ -49,7 +50,9 @@ class PatientFind extends Component {
     };
 
     infoPanel = (status) => {
-        this.setState({infoPanel: status === "open" ? true : false})
+        this.setState({infoPanel: status === "open" ? true : false}, 
+            () => localStorage.setItem("patient_find_info_panel", JSON.stringify(this.state.infoPanel))
+        )
     }
 
     actions = (btn, _id) => {

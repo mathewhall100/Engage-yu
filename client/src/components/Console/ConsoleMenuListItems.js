@@ -28,6 +28,8 @@ class ConsoleMenuListItems extends Component {
 			localStorage.removeItem("patient_find_form_name")
 			localStorage.removeItem("patient_find_form_hospId")
 			localStorage.setItem("patient_find_form_list", "my patient list")
+			localStorage.removeItem("report_episode")
+			localStorage.removeItem("report_return_locn")
 			this.props.dispatch(loadPatient("reset"))
 		}
 		this.setState({ selectedIndex: index });

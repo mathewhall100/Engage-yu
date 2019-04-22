@@ -4,7 +4,7 @@ import { isEmpty } from 'lodash'
 import { withStyles, Typography, Grid } from '@material-ui/core';
 import FormStreamTextInput from '../UI/Forms/formStreamTextInput';
 import FormSelectWithChip from '../UI/Forms/formSelectWithChip';
-import BtnGroup from '../UI/Buttons/btnGroup';
+import Btn from '../UI/Buttons/btn';
 
 const styles = () => ({
     textPosn: {
@@ -56,11 +56,17 @@ class PatientFindForm extends Component {
         this.props.infoPanel("close")
         this.props.reset('PatientFindForm')
         this.onChangeList(localStorage.getItem("patient_find_form_list"))
+        this.props.filterByName("") 
+        this.props.filterByNumber("")
+
     }
 
     render () {
-        const { classes  } = this.props;
-        const selectMenuItems = ["my patient list", "all care group patients"]
+        const { classes, pristine  } = this.props;
+        const selectMenuItems = [
+            {text: "my patient list", value: "my patient list"},
+            {text: "all care group patients", value: "all care group patients"}
+        ];
 
         return (
             <form autoComplete="off" >
@@ -99,7 +105,13 @@ class PatientFindForm extends Component {
                     </Grid>
                     <Grid item xs={2}>
                         <div style={{float: "right", margin: "20px 36px 0 0"}}>
-                            <BtnGroup btns={[{type: "button", btn: "clear"}]} handleBtns={this.handleClearForm} />
+                            <Btn 
+                                type="button" 
+                                text="clear form" 
+                                disabled={pristine && !localStorage.getItem("patient_find_form_name") && !localStorage.getItem("patient_find_form_hospId") } 
+                                warning={true} 
+                                handleBtn={this.handleClearForm} 
+                            />
                         </div>
                     </Grid>
                 </Grid>

@@ -327,7 +327,7 @@ class SurveyForm extends Component {
                           
                                 <div className={classes.customContent}>
 
-                                    <Collapse in={toggleCollapse[0]} collapsedHeight="38px" timeout={1000}>
+                                    <Collapse in={toggleCollapse[0]} collapsedHeight="38px" timeout={400}>
                                         <div className={classes.customBox} >
                                             <Typography variant="subtitle1" inline>My question lists</Typography>
                                             <SurveyPanelExpandButton 
@@ -345,7 +345,7 @@ class SurveyForm extends Component {
                                         </div>
                                     </Collapse>
 
-                                    <Collapse in={toggleCollapse[1]} collapsedHeight="38px" timeout={1000}>
+                                    <Collapse in={toggleCollapse[1]} collapsedHeight="38px" timeout={400}>
                                         <div className={classes.customBox} >
                                             <Typography variant="subtitle1" inline >My questions</Typography>
                                             <SurveyPanelExpandButton 
@@ -363,7 +363,7 @@ class SurveyForm extends Component {
                                         </div>
                                     </Collapse>
 
-                                    <Collapse in={toggleCollapse[2]} collapsedHeight="38px" timeout={1000}>
+                                    <Collapse in={toggleCollapse[2]} collapsedHeight="38px" timeout={400}>
                                         <div className={classes.customBox}>
                                             <Typography variant="subtitle1" inline>All questions</Typography>
                                             <SurveyPanelExpandButton 
@@ -385,7 +385,7 @@ class SurveyForm extends Component {
                             </div>              
                         </Collapse>
                             
-                        <Collapse in={settings} timeout={1000} >
+                        <Collapse in={settings} timeout={400} >
                             <div className={classes.settingsContainer}>
 
                                 <div className={classes.containerTitleBanner}>
@@ -426,7 +426,7 @@ class SurveyForm extends Component {
 
                         <div className={classes.actionBtnsContainer}>
                             <BtnAction type="submit" disabled={submitting || (slider1Value === 0 && slider2Value === 20)} text="create diary card" marginRight={true}/>
-                            <BtnActionLink url='/admin/find' text="cancel" warning={true}/>
+                            <BtnActionLink url='/admin/patient/find' text="cancel" warning={true}/>
                             {!settings &&
                                 <Typography variant="button" inline className={classes.underlineBtn} onClick={() => this.setState({settings: true}) } >
                                     settings

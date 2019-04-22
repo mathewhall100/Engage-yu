@@ -7,7 +7,7 @@ import DetailsBar from '../UI/detailsBar';
 
 const styles = theme => ({
     root: {
-        margin: "16px 20px 20px 0",
+        margin: "16px 0 20px 0",
     },
 })
 
@@ -21,12 +21,12 @@ class ReportPatientDetails extends Component {
             {caption: "Patient name", text: `${startCase(patientInfo.firstname)} ${startCase(patientInfo.lastname)}`},
             {caption: "Hospital number", text: patientInfo.hospital_id},
             {caption: "DOB", text: patientInfo.dob},
-            {caption: "btn", text: "close", url: window.location.href.slice(-2) === "/0" ? '/admin/patient/find' : '/admin/dashboard'}
+            {caption: "btn", text: "close", url: localStorage.getItem("report_return_locn")},
+            {caption: "btn", text: "full report", url: '/admin/reportfull'}
         ];
        
         return (
             <div className={classes.root}>
-                <br />
                 <DetailsBar items={patientDetails}/> 
             </div>
         );
@@ -39,7 +39,7 @@ ReportPatientDetails.propTypes = {
   };
   
   const mapStateToProps = (state) => {
-    console.log("State : ", state);
+    //console.log("State : ", state);
     return {
         patientInfo: state.patient.patient.patientInfo,
         error: state.patient.error,

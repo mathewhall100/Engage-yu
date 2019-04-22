@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles, Input, InputLabel, MenuItem, FormControl, Select, Chip} from '@material-ui/core';
+import { withStyles, Input, InputLabel, MenuItem, FormControl, Select, Chip } from '@material-ui/core';
 
 const styles = theme => ({
 	root: {
@@ -44,7 +44,7 @@ class FormSelectWithChip extends Component {
 		const getStyles = (item, selected) => {
 			return {
                 fontSize: "12px",
-				fontWeight: selected  === item ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium
+				fontWeight: selected === item ? theme.typography.fontWeightRegular : theme.typography.fontWeightMedium
 			}
 		};
 		 
@@ -62,8 +62,8 @@ class FormSelectWithChip extends Component {
 						MenuProps={MenuProps}
 					>
 						{menuItems.map(item => (
-							<MenuItem key={item} value={item} style={getStyles(item, selected)} >
-								{item}
+							<MenuItem key={item.key} value={item.value} style={getStyles(item.value, selected)} >
+								{item.text}
 							</MenuItem>
 						))}
 					</Select>

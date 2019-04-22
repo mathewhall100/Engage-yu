@@ -8,7 +8,7 @@ import ReportPanel from './ReportPanel';
 const panels = [
     {status: "pending", actions: ["view", "cancel"]},
     {status: "active", actions: ["view", "cancel"]},
-    {status: "awaiting review", actions: ["view"]},
+    {status: "awaiting review", actions: ["view", "actioned"]},
     {status: "actioned", actions: ["view", "archive"]},
     {status: "archived", actions: ["view"]},
     {status: "cancelled", actions: ["view"]},
@@ -58,11 +58,14 @@ class ReportListSurveys extends Component {
     };
 
     handleAction = (btn, row) => {
+        console.log("action: ", btn, " : ", row)
         switch (btn) {
             case "view":
                 this.props.changeEpisode(row._id)
                 break;
             case "cancel":
+                break;
+            case "actioned":
                 break;
             case "archive":
                 break;
@@ -92,7 +95,7 @@ class ReportListSurveys extends Component {
 
                 <br />
 
-                {(panelStatus[4] || panelStatus[5])  && 
+                {(panelStatus[4] > 0 || panelStatus[5] > 0)  && 
                     <Button onClick={() => this.setState({morePanels: !this.state.morePanels}) }>
                         {morePanels ? "Hide..." : "Show more..." }
                     </Button>} 

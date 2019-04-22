@@ -54,7 +54,7 @@ export default class CareGroupSelect extends Component {
         const { careGroups } = this.state
         const { width } = this.props
         return (
-                <FormSelect name="caregroup" label="Care Group" width={width ? width : "215"} items={careGroups}/>
+                <FormSelect name="caregroup" label="Select care group" width={width ? width : "215"} items={careGroups}/>
         )
     }
 }

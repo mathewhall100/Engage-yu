@@ -7,6 +7,7 @@ import UpdatePatient from '../components/Patient/PatientUpdate';
 import EnrollPatient from '../components/Patient/PatientEnroll';
 import Survey from '../components/Survey/Survey';
 import Report from '../components/Report/Report';
+import ReportFull from '../components/Report/ReportFull';
 import ProviderAdd from '../components/Provider/ProviderAdd';
 import ProviderFind from '../components/Provider/ProviderFind';
 import ProviderRemove from '../components/Provider/ProviderRemove';
@@ -32,6 +33,7 @@ export default class AdminRoutes extends Component {
                 <Route exact path='/admin/survey' component={Survey} />
 
                 <Route path='/admin/report/:Id' component={Report} />
+                <Route exact path='/admin/reportfull' component={ReportFull} />
 
                 <Route exact path='/admin/questions' component={NotFound} />
                 <Route exact path='/admin/delete' component={NotFound} />

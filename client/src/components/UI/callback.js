@@ -37,33 +37,44 @@ class Callback extends Component {
     }
     
     render () {
-        const { classes, text="" } = this.props
+        const { classes, noSpin=false, text="", fallbackTitle=null, fallbackText=null } = this.props
         const { displaySpinner } = this.state
 
-        if (displaySpinner) 
+        if (!noSpin && displaySpinner) 
             return <div className={classes.root}>
-                <div className={classes.center}>
-                    <Typography variant="h6">{text}</Typography>
-                    <br />
-                    <br />
-                    <CircularProgress size={32} className={classes.progress} color="primary" />
-                </div>
-            </div>
+                        <div className={classes.center}>
+                            <Typography variant="h6">{text}</Typography>
+                            <br />
+                            <br />
+                            <CircularProgress size={32} className={classes.progress} color="primary" />
+                        </div>
+                    </div>
 
-        else 
+        else if (fallbackTitle || fallbackText) 
             return <div className={classes.root}>
-                <div className={classes.center}>
-                    <Typography variant="h6">There isn't any data to display.</Typography>
-                    <br />
-                    <Typography variant="subtitle1">Try refeshing the browser or using the main menu to reselect a patient.</Typography>
+                    <div className={classes.center}>
+                        <Typography variant="h6">{fallbackTitle}</Typography>
+                        <br />
+                        <Typography variant="subtitle1">{fallbackText}</Typography>
+                    </div>
                 </div>
-            </div>
+
+        else return <div className={classes.root}>
+                        <div className={classes.center}>
+                            <Typography variant="h6">There isn't any data to display.</Typography>
+                            <br />
+                            <Typography variant="subtitle1">Try refeshing the browser or using the main menu to reselect a patient.</Typography>
+                        </div>
+                    </div>
     };
 }
 
 Callback.propTypes = {
     classes: PropTypes.object.isRequired,
-    text: PropTypes.string
+    text: PropTypes.string,
+    fallbackTitle: PropTypes.string,
+    fallBacktext: PropTypes.string,
+    noSpin: PropTypes.boolean
 };
 
 export default withStyles(styles)(Callback);

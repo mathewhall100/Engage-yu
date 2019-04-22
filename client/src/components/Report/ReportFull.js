@@ -1,25 +1,25 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { startCase } from 'lodash'
+import { startCase, isEmpty } from 'lodash'
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { withStyles, Paper, Grid, Typography} from '@material-ui/core';
-import Callback from '../UI/callback';
+import CallBack from '../UI/callback';
 import BtnTooltipGroup from '../UI/Buttons/btnTooltipGroup'
 import ReportTable from './ReportTable';
 import ReportEntriesTable from './ReportEntriesTable'
 import ReportBarGraph from './ReportBarGraph';
 import DetailsBar from '../UI/detailsBar';
+import { selectConsoleTitle } from '../../actions/index';
 import { displayDataCalc } from './reportLogic';
 import ReportRequestDetails from './ReportRequestDetails'
 import ReportSurveyDetails from './ReportSurveyDetails'
 
 const styles = theme => ({
     root: {
-    //   width: "1160px",
-      marginBottom: "20px",
-      padding: "20px 20px 20px 40px"
+        marginBottom: "20px",
+        padding: "20px 20px 20px 40px"
     },    
     btnsContainer: {
         float: "right"
@@ -54,15 +54,17 @@ const styles = theme => ({
 class ReportFull extends Component {
 
     componentDidMount() {
-        // console.log("full report episode: ", this.props.episode)
-        let episode = this.props.episode
-        this.setState({ 
-            episode,
-            records: episode.records,
-            questions: episode.questions,
-            episodeDataForReport: displayDataCalc(episode.records, episode.num_days, episode.records.length/episode.num_days, episode.questions.length),
-        })
-    } 
+        this.props.dispatch(selectConsoleTitle({title: "Full Report"}));
+        let episode =  JSON.parse(localStorage.getItem("report_episode")) 
+        if (episode) {
+            this.setState({ 
+                episode,
+                records: episode.records,
+                questions: episode.questions,
+                episodeDataForReport: displayDataCalc(episode.records, episode.num_days, episode.records.length/episode.num_days, episode.questions.length),
+            })
+        }
+    }
 
     state = {
         episode: {},
@@ -76,7 +78,9 @@ class ReportFull extends Component {
         console.log("handleActions: ", btn)
         switch (btn) {
             case "close":
-                this.props.handleClose(this.props.episode._id)
+                this.props.history.push({
+                    pathname: `/admin/report/${this.state.episode._id}`
+                })
                 break;
             default: return null
         }
@@ -86,7 +90,7 @@ class ReportFull extends Component {
     render () {
 
         const { episode, questions, records, episodeDataForReport } = this.state
-        const { classes, patientInfo } = this.props  
+        const { classes, loading, error, patientInfo } = this.props  
 
         const btns = [
             {tooltip: "Close page", text: "close"},
@@ -106,108 +110,122 @@ class ReportFull extends Component {
                 {props.text}
             </Typography>
 
+        if (loading || error) { 
+            return <CallBack text="loading..." fallbackText="Unable to retrieve requested data"/>
+        }
+
         return (
-            <React.Fragment>
-                { episode._id && records && questions ? 
-                    <Paper className={classes.root}>
+            <Paper className={classes.root}>
 
-                        <Grid container spacing={24}> 
-                            <Grid item xs={7}>
-                                <Typography variant="h5" align="center" style={{position: "relative", top: "4px", left: "120px", fontWeight: 500}} >
-                                    Diary Card Report
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={5} style={{position: "relative", top: "4px"}}>
-                                <BtnTooltipGroup btns={btns} handleBtns={this.handleBtns}/>
-                            </Grid>
-                           
-                        </Grid>
+                <Grid container spacing={24}> 
+                    <Grid item xs={7}>
+                        <Typography variant="h5" align="center" style={{position: "relative", top: "4px", left: "120px", fontWeight: 500}} >
+                            Diary Card Report
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={5} style={{position: "relative", top: "4px"}}>
+                        <BtnTooltipGroup btns={btns} handleBtns={this.handleBtns}/>
+                    </Grid>
+                </Grid>
 
-                        <br /><hr /><br />
-                    
+                <br /><hr /><br />
+
+                <DetailsBar items={patientDetails} /> 
+
+                {!isEmpty(episode) ?
+                    <Fragment>
+
                         <Grid container spacing={24}>
-                            <Grid item xs={12}>
-                                <DetailsBar items={patientDetails}/> 
+                            <Grid item xs={6}>
+                                <ReportSurveyDetails episode={episode}/> 
                             </Grid>
                             <Grid item xs={6}>
-                                {episode && <ReportSurveyDetails episode={episode}/> }
-                            </Grid>
-                            <Grid item xs={6}>
-                                 <ReportRequestDetails episode={episode}/>
+                                <ReportRequestDetails episode={episode}/>
                             </Grid>
                         </Grid>
-                    
-                        {questions.map((question, index) => {
-                            return (
-                                <React.Fragment key={index}>
 
-                                    <Grid container spacing={24}>
-                                        <Grid item xs={12}> 
-                                            <Typography variant="h6" >
-                                                Question {index+1}: {question.question}
-                                            </Typography>
-                                        </Grid>
-                                    </Grid>
+                        {episode.status === "pending" ?
+                            <Typography variant="subtitle1" >
+                                <br /> <br />
+                                <strong>No Data to report:</strong> this diary card has not yet been started by the patient.
+                            </Typography>
+                            :
+                            <Fragment>
+                                {questions.map((question, index) => {
+                                    return (
+                                        <Fragment key={index}>
 
-                                    <Grid container spacing={24}>
-                                        <Grid item xs={6}>
+                                            <Grid container spacing={24}>
+                                                <Grid item xs={12}> 
+                                                    <Typography variant="h6" >
+                                                        Question {index+1}: {question.question}
+                                                    </Typography>
+                                                </Grid>
+                                            </Grid>
 
-                                            <div className={classes.graphContainer}>
-                                                <RenderSubtitle text="Summary Graph" />
-                                                <ReportBarGraph 
-                                                    displayData={episodeDataForReport}
-                                                    displayQuestion={index}
-                                                    question={question}
-                                                    height={230}
-                                                    responsive="true"
-                                                />
-                                            </div>
+                                            <Grid container spacing={24}>
+                                                <Grid item xs={6}>
 
-                                            <div className={classes.tableContainer}>
-                                                <RenderSubtitle text="Summary Table" />
-                                                <ReportTable 
-                                                    displayData={episodeDataForReport}
-                                                    displayQuestion={index}
-                                                    question={question}
-                                                    numDays={episode.num_days}
-                                                />
-                                            </div>
+                                                    <div className={classes.graphContainer}>
+                                                        <RenderSubtitle text="Summary Graph" />
+                                                        <ReportBarGraph 
+                                                            displayData={episodeDataForReport}
+                                                            displayQuestion={index}
+                                                            question={question}
+                                                            height={230}
+                                                            responsive="true"
+                                                        />
+                                                    </div>
 
-                                        </Grid>
+                                                    <div className={classes.tableContainer}>
+                                                        <RenderSubtitle text="Summary Table" />
+                                                        <ReportTable 
+                                                            displayData={episodeDataForReport}
+                                                            displayQuestion={index}
+                                                            question={question}
+                                                            numDays={episode.num_days}
+                                                        />
+                                                    </div>
 
-                                        <Grid item xs={6}> 
+                                                </Grid>
 
-                                            <div className={classes.entriesContainer}>
-                                                <RenderSubtitle text="Patient Entries (raw data)" />
-                                                <ReportEntriesTable 
-                                                    records={records} 
-                                                    startTime={episode.start_time}
-                                                    index={index}
-                                                    question={question}
-                                                />
-                                            </div>
+                                                <Grid item xs={6}> 
 
-                                        </Grid> 
-                                    </Grid>
-                                    
-                                    <br /><br />
-                          
-                                </React.Fragment>
+                                                    <div className={classes.entriesContainer}>
+                                                        <RenderSubtitle text="Patient Entries (raw data)" />
+                                                        <ReportEntriesTable 
+                                                            records={records} 
+                                                            startTime={episode.start_time}
+                                                            index={index}
+                                                            question={question}
+                                                        />
+                                                    </div>
 
-                            ) 
-                        }) }
-                            
-                        <br /><hr /><br />
-                        <Typography align="right">
-                            {moment().format("dddd, MMMM Do YYYY, h:mm:ss a")}
-                        </Typography> 
-                        <br />
-
-                    </Paper> 
+                                                </Grid> 
+                                            </Grid>
+                                            
+                                            <br /><br />
+                                
+                                        </Fragment>
+                                    ) 
+                                }) }
+                            </Fragment>
+                        }
+                    </Fragment>
                     :
-                    <Callback />
+                    <Typography variant="subtitle1" >
+                        <br /> <br />
+                        <strong>No Data to report:</strong> no diary cards found for this patient.
+                    </Typography>
                 }
-            </React.Fragment>
+                   
+                <br /><hr /><br />
+                <Typography align="right">
+                    {moment().format("dddd, MMMM Do YYYY, h:mm:ss a")}
+                </Typography> 
+                <br />
+
+            </Paper> 
         ); 
     }    
 }
@@ -221,7 +239,6 @@ const mapStateToProps = (state) => {
     //console.log("State : ", state);
     return {
         patientInfo: state.patient.patient.patientInfo,
-        patientData: state.patient.patient.patientData,
         error: state.patient.error,
         loading: state.patient.loading
     }

@@ -8,22 +8,16 @@ module.exports = {
     // Returns json of patient episodes
     findById: function(req, res) {
         console.log("Patient_data controller called to 'findById'", req.params.id);
-        //console.log(`Requester:  ${req.user}`);
-        //if(req.user){
-            console.log("patient data findbyid controller id: ", req.params.id)
-            db.Patient_data
-            .find({ _id: req.params.id })
-            .then(patient => {
-                console.log("RESULT FOR PATIENT_DATA:", patient);
-                res.json(patient)
-            })
-            .catch(err => {
-                console.log(`CONTROLLER ERROR: ${err}`);
-                res.status(422).json(err);
-            })
-        // }else{
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
+        db.Patient_data
+        .find({ _id: req.params.id })
+        .then(patient => {
+            console.log("RESULT FOR PATIENT_DATA:", patient);
+            res.json(patient)
+        })
+        .catch(err => {
+            console.log(`CONTROLLER ERROR: ${err}`);
+            res.status(422).json(err);
+        })
     },
 
     // Get all those data records by provider Id (either requeter or primary provider) and with episode status of pending/active or awaiting review
@@ -33,8 +27,6 @@ module.exports = {
     fetchActive: function(req, res) {
         console.log("patient_data controller called to 'active' ", req.params.id)
         id = req.params.id
-        //console.log(`Requester:  ${req.user}`);
-        //if(req.user){
         db.Patient_data
             .find({ 
                 $and : [
@@ -62,9 +54,7 @@ module.exports = {
                             id: index, 
                             patientInfoId: pt._id,
                             name: `${pt.firstname} ${pt.lastname}`, 
-                            number: pt.hospital_id, 
-                            primary: pt.primary_provider_name,
-                            primaryId: pt.primary_provider_id,
+                            number: pt.hospital_id,   
                         }
                         patient.episodes
                         .filter(ep => ep.status === "active" || ep.status === "pending" || ep.status === "awaiting review")
@@ -73,6 +63,8 @@ module.exports = {
                                 episodeId: ep._id,
                                 requester: `${ep.requesting_provider_firstname} ${ep.requesting_provider_lastname}`,
                                 requesterId: ep.requesting_provider_id,
+                                primary: `${ep.primary_provider_firstname} ${ep.primary_provider_lastname}`,
+                                primaryId: ep.primary_provider_id,
                                 status: ep.status,
                                 start: ep.start_date, 
                                 end: ep.end_date,
@@ -95,9 +87,6 @@ module.exports = {
                 console.log(`CONTROLLER ERROR: ${err}`);
                 res.status(422).json(err);
         })
-        // }else{
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
     },
 
     // Add new patient_data document
@@ -105,102 +94,87 @@ module.exports = {
     // Returns json object of new doctor
     create: function(req, res) {
         console.log("Patient_data controller called to 'create'" );
-        //console.log(`Requester:  ${req.user}`);
-        //if(req.user){
-            let patient = new db.Patient_data(req.body)
-            patient.save()
-            .then(result => {
-                console.log("RESULT:", result);
-                res.json(result)
-            })
-                .catch(err => {
-                    console.log(`CONTROLLER ERROR: ${err}`);
-                    res.status(422).json(err);
-            })  
-        // }else{
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
+        let patient = new db.Patient_data(req.body)
+        patient.save()
+        .then(result => {
+            console.log("RESULT:", result);
+            res.json(result)
+        })
+            .catch(err => {
+                console.log(`CONTROLLER ERROR: ${err}`);
+                res.status(422).json(err);
+        })  
+
     },
 
     // Insert data ref during patient enroll
     // To be sent req.params.id of patient to be updated and req.body with new patient_data ref id
     insertRef: function(req, res) {
         console.log("Patient_data controller called to 'insert Ref': ", req.params.id, " : ", req.body);
-        //console.log(`Requester:  ${req.user}`);
-        //if(req.user){
+        db.Patient_data
+        .find({_id: req.params.id}, {"episodes": 1})
+        .then(result => {
+            let lastEpisode = result.episodes[result.episodes.length-1]
+            lastEpisode.active_record_ref = req.body.active_record_ref
+            lastEpisode.active_record_id = req.body.active_record_id
 
-            db.Patient_data
-            .find({_id: req.params.id}, {"episodes": 1})
-            .then(result => {
-                let lastEpisode = result.episodes[result.episodes.length-1]
-                lastEpisode.active_record_ref = req.body.active_record_ref
-                lastEpisode.active_record_id = req.body.active_record_id
+                db.Patient_data
+                .findOneAndUpdate(
+                    { _id: req.params.id},
+                    { $pop: {"episodes": 1} } 
+                )
+                .then(result => {
 
-                 db.Patient_data
+                    db.Patient_data
                     .findOneAndUpdate(
-                        { _id: req.params.id},
-                        { $pop: {"episodes": 1} } 
+                        { _id: req.params.id },
+                        { $push: {"episodes": lastEpisode} }
                     )
-                    .then(result => {
-
-                        db.Patient_data
-                        .findOneAndUpdate(
-                            { _id: req.params.id },
-                            { $push: {"episodes": lastEpisode} }
-                        )
-                         .then(result => {
-                            // console.log("RESULT:", result);
-                            res.json(result)
-                         })
-                    })
-            })
-            .catch(err => {
-                console.log(`CONTROLLER ERROR: ${err}`);
-                res.status(422).json(err);
-            })
-        // }else{
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
+                        .then(result => {
+                        // console.log("RESULT:", result);
+                        res.json(result)
+                        })
+                })
+        })
+        .catch(err => {
+            console.log(`CONTROLLER ERROR: ${err}`);
+            res.status(422).json(err);
+        })
     },
 
     // Insert message into new episode
     // To be sent req.params.id of patient to be updated and req.body with message string
     insertMsg: function(req, res) {
         console.log("Patient_data controller called to 'insert Ref': ", req.params.id, " : ", req.body);
-        //console.log(`Requester:  ${req.user}`);
-        //if(req.user){
+        db.Patient_data
+        .findById({
+            _id: req.params.id}, {"episodes": 1}
+        )
+        .then(result => {
+            console.log("result : ", result);
+            let lastEpisode = result.episodes[result.episodes.length-1]
+            lastEpisode.messages.push(req.body);
             db.Patient_data
-            .findById({
-                _id: req.params.id}, {"episodes": 1}
-            )
-            .then(result => {
-                console.log("result : ", result);
-                let lastEpisode = result.episodes[result.episodes.length-1]
-                lastEpisode.messages.push(req.body);
-                db.Patient_data
+                .findOneAndUpdate(
+                    { _id: req.params.id},
+                    { $pop: {"episodes": 1} } 
+                )
+                .then(result => {
+                    db.Patient_data
                     .findOneAndUpdate(
-                        { _id: req.params.id},
-                        { $pop: {"episodes": 1} } 
+                        { _id: req.params.id },
+                        { $push: {"episodes": lastEpisode} }
                     )
-                    .then(result => {
-                        db.Patient_data
-                        .findOneAndUpdate(
-                            { _id: req.params.id },
-                            { $push: {"episodes": lastEpisode} }
-                        )
-                         .then(result => {
-                            console.log("RESULT:", result);
-                            res.json(result)
-                         })
-                    })
-            })
-            .catch(err => {
-                console.log(`CONTROLLER ERROR: ${err}`);
-                res.status(422).json(err);
-            })
-        // }else{
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
+                        .then(result => {
+                        console.log("RESULT:", result);
+                        res.json(result)
+                        })
+                })
+        })
+        .catch(err => {
+            console.log(`CONTROLLER ERROR: ${err}`);
+            res.status(422).json(err);
+        })
     },
 
     
@@ -211,29 +185,25 @@ module.exports = {
         console.log(`Requester:  ${req.user}`);
         console.log("PatientData_id:", req.params.id)
         console.log(`data:  ${req.body}`);
-        // if(req.user) {
+        db.Patient_data
+        .findOneAndUpdate(
+            { _id: req.params.id },
+            { $push: {episodes: req.body} }
+        )
+        .then(result => {
+            console.log("RESULT:", result);
+            res.json(result)
             db.Patient_data
-            .findOneAndUpdate(
-                { _id: req.params.id },
-                { $push: {episodes: req.body} }
-            )
-            .then(result => {
-                console.log("RESULT:", result);
-                res.json(result)
-                db.Patient_data
-                     .findById(req.params.id)
-                     .then(patient => {
-                    console.log("RESULT:", patient);
-                    res.json(patient.episodes[patient.episodes.length -1])
-                     })
-            })
-            .catch(err => {
-                console.log(`CONTROLLER ERROR: ${err}`);
-                res.status(422).json(err);
-            })
-        // }else{
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
+                    .findById(req.params.id)
+                    .then(patient => {
+                console.log("RESULT:", patient);
+                res.json(patient.episodes[patient.episodes.length -1])
+                    })
+        })
+        .catch(err => {
+            console.log(`CONTROLLER ERROR: ${err}`);
+            res.status(422).json(err);
+        })
     },
 
     editActiveStatus : function(req, res) {
@@ -261,7 +231,7 @@ module.exports = {
                         { $push: { "episodes": episodeSelected } }
                         )
                         .then(result => {
-                            //console.log("RESULT:", result);
+                            console.log("RESULT:", result);
                             res.json(result)
                         })
                 })
@@ -277,41 +247,39 @@ module.exports = {
         console.log("record id is : ", req.body.record_id);
         console.log("episode is : ", req.body.episode);
         console.log("status is : ", req.body.new_status);
-        //console.log(`Requester:  ${req.user}`);
-        // if(req.user){
         db.Patient_data
-            .find({_id: req.params.id}, { "episodes": 1 })
-            .then(result => {
-                let episodeSelected = result[0].episodes[parseInt(req.params.episode)]
-                let records = episodeSelected.records;
-                // edit the entry here...
-                for(let i =0; i <= records.length-1; i++){
-                    if(records[i]._id == req.params.record_id){
-                        records[i] = req.body;
-                    }
+        .find({_id: req.params.id}, { "episodes": 1 })
+        .then(result => {
+            let episodeSelected = result[0].episodes[parseInt(req.params.episode)]
+            let records = episodeSelected.records;
+            // edit the entry here...
+            for(let i =0; i <= records.length-1; i++){
+                if(records[i]._id == req.params.record_id){
+                    records[i] = req.body;
                 }
-                episodeSelected.records = records;
-                db.Patient_data
-                    .findOneAndUpdate(
-                    { _id: req.params.id },
-                    { $pop: { "episodes": 1 } }
-                    )
-                    .then(result => {
-                        db.Patient_data
-                            .findOneAndUpdate(
-                            { _id: req.params.id },
-                            { $push: { "episodes": episodeSelected } }
-                            )
-                            .then(result => {
-                                //console.log("RESULT:", result);
-                                res.json(result)
-                            })
-                    })
-            })
-            .catch(err => {
-                console.log(`EDIT RECORD CONTROLLER ERROR: ${err}`);
-                res.status(422).json(err);
-            })
+            }
+            episodeSelected.records = records;
+            db.Patient_data
+                .findOneAndUpdate(
+                { _id: req.params.id },
+                { $pop: { "episodes": 1 } }
+                )
+                .then(result => {
+                    db.Patient_data
+                        .findOneAndUpdate(
+                        { _id: req.params.id },
+                        { $push: { "episodes": episodeSelected } }
+                        )
+                        .then(result => {
+                            console.log("RESULT:", result);
+                            res.json(result)
+                        })
+                })
+        })
+        .catch(err => {
+            console.log(`EDIT RECORD CONTROLLER ERROR: ${err}`);
+            res.status(422).json(err);
+        })
     },
     
 
@@ -320,60 +288,51 @@ module.exports = {
     addRecord: function(req, res) {
         console.log("Patient_data controller called to 'addRecord'", req.body );
         console.log("id is  : " , req.params.id);
-        //console.log(`Requester:  ${req.user}`);
-        // if(req.user){
+        db.Patient_data
+        .find({
+            _id: req.params.id}, {"episodes": 1}
+        )
+        .then(result => {
+            console.log("result : ", result[0]);
+            let lastEpisode = result[0].episodes[result[0].episodes.length-1]
+            lastEpisode.records.push(req.body);;
             db.Patient_data
-            .find({
-                _id: req.params.id}, {"episodes": 1}
-            )
-            .then(result => {
-                console.log("result : ", result[0]);
-                let lastEpisode = result[0].episodes[result[0].episodes.length-1]
-                lastEpisode.records.push(req.body);;
-                db.Patient_data
+                .findOneAndUpdate(
+                    { _id: req.params.id},
+                    { $pop: {"episodes": 1} } 
+                )
+                .then(result => {
+                    db.Patient_data
                     .findOneAndUpdate(
-                        { _id: req.params.id},
-                        { $pop: {"episodes": 1} } 
+                        { _id: req.params.id },
+                        { $push: {"episodes": lastEpisode} }
                     )
-                    .then(result => {
-                        db.Patient_data
-                        .findOneAndUpdate(
-                            { _id: req.params.id },
-                            { $push: {"episodes": lastEpisode} }
-                        )
-                         .then(result => {
-                            console.log("RESULT:", result);
-                            res.json(result)
-                         })
-                    })
-            })
-            .catch(err => {
-                console.log(`CONTROLLER ERROR: ${err}`);
-                res.status(422).json(err);
-            })
-        // }else{
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
+                        .then(result => {
+                        console.log("RESULT:", result);
+                        res.json(result)
+                        })
+                })
+        })
+        .catch(err => {
+            console.log(`CONTROLLER ERROR: ${err}`);
+            res.status(422).json(err);
+        })
     },
 
     // Remove patient data 
     // To be sent req.params.id of patient data collection to be deleted
     delete: function(req, res) {
         console.log("Patient-dataController called to 'remove' " + req.params.id);
-        // if(req.user) {
-            db.Patient_data
-            .findByIdAndRemove({_id: req.params.id})
-            .then(result => {
-                console.log(result);
-                res.json(result)
-            })
-            .catch(err => {
-                console.log(`CONTROLLER ERROR: ${err}`);
-                res.status(422).json(err);
-            })
-        // } else {
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
+        db.Patient_data
+        .findByIdAndRemove({_id: req.params.id})
+        .then(result => {
+            console.log(result);
+            res.json(result)
+        })
+        .catch(err => {
+            console.log(`CONTROLLER ERROR: ${err}`);
+            res.status(422).json(err);
+        })
     },
 
 };

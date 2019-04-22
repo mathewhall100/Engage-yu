@@ -8,7 +8,6 @@ import DoneIcon from '@material-ui/icons/Done';
 export default class FormSelect extends Component {  
 
     renderSelect(field) {
-        //console.log("field: ", field);
         const {input, label, width, meta: { error, dirty, touched }, children, ...custom} = field;
 
         return (
@@ -17,7 +16,7 @@ export default class FormSelect extends Component {
                 <InputLabel>{label}</InputLabel> 
                 <Select
                     {...input}
-                    onSelect={(value) => input.onChange(value)}
+                    onSelect={(value) => input.onChange(value) }
                     children={children}
                     {...custom}
                 >

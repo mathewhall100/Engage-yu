@@ -14,7 +14,7 @@ const styles = theme => ({
         margin: '20px 40px 0 40px'
     },
     selectPosn: {
-        margin: "0 40px"
+        margin: "4px 40px 0 40px"
     },
     btn: {
         height: "26px", 
@@ -27,7 +27,6 @@ const FormFind = (props) =>  {
 
     return (
         <div className={classes.root}>   
-            {/* <Typography variant="h6" className={classes.textPosn}>{title}</Typography> */}
             <span className={classes.selectPosn}>
                 {select} 
             </span>

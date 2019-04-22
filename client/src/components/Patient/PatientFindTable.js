@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { startCase, isEmpty } from 'lodash';
 import moment from 'moment';
-import { withStyles, Paper } from '@material-ui/core';
+import { withStyles, Paper, Typography } from '@material-ui/core';
 import TableGeneric from '../UI/Tables/tableGeneric';
 import CallBack from '../UI/callback'
 import { loadPatient, loadPatientsByProvider, loadPatientsByCareGroup } from '../../actions'
@@ -25,7 +25,11 @@ class PatientFindTable extends Component {
             this.props.dispatch(loadPatientsByProvider(localStorage.getItem("user_provider_id")))
         } 
 
-        if (this.props.patientInfo) {this.props.infoPanel("open") }
+        if (JSON.parse(localStorage.getItem("patient_find_info_panel")) && !isEmpty(this.props.patientInfo)) {
+            this.props.infoPanel("open")
+        } else {
+            this.props.infoPanel("close")
+        }
     }
 
    componentWillReceiveProps(nextProps) {
@@ -52,7 +56,6 @@ class PatientFindTable extends Component {
         )} )
     };
 
-
     state = {
         tableData: [],
         tableDataFiltered: [],
@@ -67,7 +70,7 @@ class PatientFindTable extends Component {
                 "dob": d.dob,
                 "hospital number": d.number,
                 "date enrolled": moment(d.enrolled).format("MMM Do YYYY"),
-                "most recent survey": "TBA"
+                "primary provider": d.provider
             }
         })
     };
@@ -91,11 +94,15 @@ class PatientFindTable extends Component {
     render () {
         const { classes, loadingCareGroupPatients, errorCareGroupPatients, loadingProviderPatients, errorProviderPatients } = this.props;
         const { tableDataFiltered } = this.state;
-
+        let text = "";
+        
         if (errorCareGroupPatients || errorProviderPatients) {
-            const error = `${errorCareGroupPatients ? errorCareGroupPatients.message : errorProviderPatients.message}`
-            const errorMsg = error.includes('401') ? <CallBack text="Whoops! Looks like you are not authorized to access this resource" /> : error
-            return <div>Error! {errorMsg}</div>
+            if ((errorCareGroupPatients.message || errorProviderPatients.message).includes('401')) { 
+                text="Whoops! Looks like you are not authorized to access this resource"
+            } else {
+                text="Sorry an error occurred while fetching data. Please refresh the browser (F5) or try again." 
+            }
+            return <CallBack title="" text={text}/>
         }
 
         if (loadingCareGroupPatients || loadingProviderPatients ) {
@@ -105,7 +112,7 @@ class PatientFindTable extends Component {
         if (tableDataFiltered.length > 0) {
             return <Paper className={classes.root}>
                 <TableGeneric 
-                    tableHeadings={["firstname", "lastname", "dob", "hospital number", "date enrolled", "most recent survey"]}
+                    tableHeadings={["firstname", "lastname", "dob", "hospital number", "date enrolled", "primary provider"]}
                     tableData={this.createTableData(tableDataFiltered)}
                     lastCellRightAlign={true}
                     lastCellHeading={"Actions"}
@@ -116,6 +123,12 @@ class PatientFindTable extends Component {
                 />
             </Paper> 
         }
+
+        return <Paper className={classes.root}>
+                <Typography variant="subtitle1">
+                    No patients meet the search criteria.
+                </Typography>
+            </Paper>
 
         return <div />
 
@@ -135,6 +148,7 @@ const mapStateToProps = (state) => {
         errorCareGroupPatients: state.patientsByCareGroup.error,
 
         patientInfo: state.patient.patient.patientInfo,
+        patientData: state.patient.patient.patientData
     }
 };
 

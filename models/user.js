@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// UserRpoles schema stores the AuthO id (sub) together with the user role and info collectin id
-// When autheticator returns a 'sub', this is used to pull out the user role and id from the user_role collection
+// User  schema stores the AuthO id (sub) together with the user role and info collectin id
+// When autheticator returns a 'sub', this is used to pull out the user 'role' and id from the user collection
 // These are then stored in local storage as the 'current user' and used to identify the user information 
 //      in the patient_info, provider_info and active collections. 
-// patient data can be obtained from the patient_info collection, patient_data_id filed. 
+// patient data can be obtained from the patient_info collection, patient_data_id field. 
 
 const userSchema = new Schema({
 

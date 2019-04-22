@@ -18,11 +18,11 @@ const patient_dataSchema = new Schema({
 handleError = (error, doc, next) => {
     console.log('Operation failed')
     console.log(`Error name: ${error.name}  + error code: ${error.code}`)
-    // if (error.name === "ValidationError") {
-    //     next(new Error(`New/updated document failed Mongoose validation.`));
-    // } else {
+    if (error.name === "ValidationError") {
+         next(new Error(`New/updated document failed Mongoose validation.`));
+     } else {
         next()
-     //}
+     }
 };
 patient_dataSchema.post('save', handleError);
 patient_dataSchema.post('findOneAndUpdate', handleError);

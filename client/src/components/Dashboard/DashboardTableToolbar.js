@@ -20,14 +20,11 @@ const toolbarStyles = theme => ({
 	},
 	navLinks: {
 	  marginRight: "20px",
-	  textDecoration: "underline",
-	  color: "#666666",
-	  fontWeight: 400,
+	  color: theme.palette.primary.main,
+	  fontWeight: 500,
 	  '&:hover': {
-		color: theme.palette.primary.main,
+		textDecoration: "underline",
 		cursor: "pointer",
-		fontWeight: 500,
-		marginRight: "18.5px"
 	  },
 	},
 	customWidth: {
@@ -83,7 +80,7 @@ class DashboardTableToolbar extends Component {
 		]
 
 		 const getNavLinkStyles = (navLinksSwitch, navKey) => {
-			if (navLinksSwitch === navKey) {return {color: "#000000", fontWeight: 500}}
+			if (navLinksSwitch === navKey) {return {textDecoration: "underline"}}
 		}
 
 		const RenderNavLink = (props) => 

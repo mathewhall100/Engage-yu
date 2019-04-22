@@ -23,8 +23,8 @@ const episodeSchema = new Schema({
     start_date: { type: Date, required: [true, "No episode start date"] },
     end_date: { type: Date, required: [true, "No episode end date"] }, 
     num_days: { type: Number, min: 1, max: 30, required: [true, "No episode number of days"] },
-    start_time: { type: String, required: [true, "No timeframe start"] },
-    end_time: { type: String, required: [true,  "No timeframe end"] },
+    start_time: { type: String, enum: ["6am", "7am", "8am", "9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm", "9pm", "10pm", "11pm", "12am", "1am", "2am", "0600", "0700", "0800", "0900", "1000", "1100", "1200", "1300", "1400", "1500", "1600", "1700", "1800", "1900", "2000", "2100", "2200", "2300", "2400", "0100", "0200"], required: [true, "No timeframe start"] },
+    end_time: { type: String, enum: ["6am", "7am", "8am", "9am", "10am", "11am", "12pm", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm", "9pm", "10pm", "11pm", "12am", "1am", "2am", "0600", "0700", "0800", "0900", "1000", "1100", "1200", "1300", "1400", "1500", "1600", "1700", "1800", "1900", "2000", "2100", "2200", "2300", "2400", "0100", "0200"], required: [true,  "No timeframe end"] },
     interval_mins: { type: Number, enum: [ 30, 60, 120, 240 ], required: [true, "No timeframe interval"] },
     margin_mins: { type: Number, min: 5, max: 60, default: 15 },
      
@@ -49,7 +49,7 @@ const episodeSchema = new Schema({
     active_record_id: { type: String, required: [true, "No active record id supplied"]},
     
     status: {type: String, enum: ["pending", "active", "cancelled", "awaiting review", "actioned", "archived" ], default: "pending"},
-    reviewed_by: String,
+    actioned_by: String,
     archived_by: String,
     cancelled_by: String,
 

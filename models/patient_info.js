@@ -22,14 +22,13 @@ const patient_infoSchema = new Schema({
             },
             message: props => `${props.value} is not a valid hospital id!`
         },   
-    
     },
 
     firstname: { type: String, required: [true, "No patient first name"],
         validate: {
             validator: function(val) {
-                //should be between 2 and 30 characters and contain only letters
-                let re = /^[a-zA-Z0-9' ]{2,30}$/
+                //should be between 2 and 30 characters and contain only lettermand ', - or space
+                let re = /^[a-zA-Z0-9'- ]{2,30}$/
                 return re.test(val);
             },
             message: props => `${props.value} is not a valid name!`
@@ -39,8 +38,8 @@ const patient_infoSchema = new Schema({
     lastname: { type: String, required: [true, "No patient last name"],
         validate: {
             validator: function(val) {
-                //should be between 2 and 30 characters and contain only letters
-                let re = /^[a-zA-Z0-9' ]{2,30}$/
+                //should be between 2 and 30 characters and contain only letters and ', - or space
+                let re = /^[a-zA-Z0-9'- ]{2,30}$/
                 return re.test(val);
             },
             message: props => `${props.value} is not a valid name!`
@@ -74,7 +73,7 @@ const patient_infoSchema = new Schema({
     phone: { type: String, required: [true, "No patient phone number"],
         validate: {
             validator: function(val) {
-                //must be of xxx-xxx-xxxx format with numbers and '-' only
+                //must be of xxx-xxx-xxxx or xxxxxxxxxx format with numbers and '-' only
                 const re =  /^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/
                 return re.test(val);
             },
@@ -101,11 +100,11 @@ const patient_infoSchema = new Schema({
 handleError = (error, doc, next) => {
     console.log('Operation failed')
     console.log(`Error name: ${error.name}  + error code: ${error.code}`)
-    // if (error.name === 'ValidationError') {
-    //     next(new Error(`New/updated document failed Mongoose validation.`));
-    // } else {
+    if (error.name === 'ValidationError') {
+         next(new Error(`New/updated document failed Mongoose validation.`));
+     } else {
         next()
-     //}
+     }
 };
 patient_infoSchema.post('save', handleError);
 patient_infoSchema.post('findOneAndUpdate', handleError);

@@ -2,43 +2,15 @@ const db = require("../models");
 
 module.exports = {
 
-    // Fetch personal details of all patients in Patient_info collection
-    // Include their provider (populate)
-    // Returns json list of patients details only (sorted alphabeltically by last_name)
-    findAll: function(req, res) {
-        console.log("Patient_info controller called to 'find all'");
-        //console.log(`Requester:  ${req.user}`);
-        //if(req.user){
-            db.Patient_info
-            .find( {}, {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1} )
-            .sort( {"patient_details.lastname": 1} )
-            .then(patientList => {
-                console.log("RESULT:", patientList)
-                res.json({
-                    patientList: patientList,
-                });
-            })
-            .catch(err => {
-                console.log(`CONTROLLER ERROR: ${err}`);
-                res.status(422).json(err);
-            })
-        // }else{
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
-        
-    },   
-
-
     // Fetch personal details of all patients of a particular physician
     // requires physician id as searchterm in req.body.searchId
     // Returns json list of patients details only (sorted alphabeltically by last_name)
     findAllByProvider: function(req, res) {
         console.log("Patient_info controller called to 'find all by provider'" + req.params.id);
         console.log(`Requester:  ${req.user}`);
-        //if(req.user){
-            
+
             db.Patient_info
-            .find( {primary_provider_id: req.params.id}, {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1} )
+            .find( {primary_provider_id: req.params.id}, {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1, primary_provider_firstname: 1, primary_provider_lastname: 1} )
             .sort( {"patient_details.lastname": 1} )
             .then(patients=> {
                 console.log("RESULT:", patients)
@@ -48,10 +20,6 @@ module.exports = {
                 console.log(`CONTROLLER ERROR: ${err}`)
                 res.status(422).json(err);
             })
-        // }else{
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
-        
     }, 
 
      // Fetch personal details of all patients of a particular care group
@@ -59,10 +27,8 @@ module.exports = {
     // Returns json list of patients details only (sorted alphabeltically by last_name)
     findAllByGroup: function(req, res) {
         console.log("Patient_info controller called to 'find all by provider group'", req.body );
-        //console.log(`Requester:  ${req.user}`);
-        //if(req.user){
             db.Patient_info
-            .find( {provider_group_id: req.params.id}, {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1} )
+            .find( {provider_group_id: req.params.id}, {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1, primary_provider_firstname: 1, primary_provider_lastname: 1} )
             .sort( {"patient_details.lastname": 1} )
             .then(patients=> {
                 console.log("RESULT:", patients)
@@ -72,10 +38,6 @@ module.exports = {
                 console.log(`CONTROLLER ERROR: ${err}`);
                 res.status(422).json(err);
             })
-        // }else{
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
-        
     }, 
 
 
@@ -84,8 +46,6 @@ module.exports = {
     // Returns json of patient data (all) + providers (via populate)
     findById: function(req, res) {
         console.log("Patient_info controller called to 'findById'");
-        //console.log(`Requester:  ${req.user}`);
-        //if(req.user){
             db.Patient_info
             .findById(req.params.id)
             .populate("enrolled_by_ref", "firstname lastname")
@@ -98,9 +58,6 @@ module.exports = {
                 console.log(`CONTROLLER ERROR IN PATIENT INFO: ${err}`);
                 res.status(422).json(err);
             })
-        // }else{
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
     },
 
     // Fetch FULL patienrt record (info + data) by patient  id 
@@ -108,8 +65,6 @@ module.exports = {
     // Returns json of patient info + patient data
     findFullById: function(req, res) {
         console.log("Patient_info controller called to 'findFullById'");
-        //console.log(`Requester:  ${req.user}`);
-        //if(req.user){
             db.Patient_info
             .findById(req.params.id)
             .populate("patient_data_ref")
@@ -121,9 +76,6 @@ module.exports = {
                 console.log(`CONTROLLER ERROR: ${err}`);
                 res.status(422).json(err);
             })
-        // }else{
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
     },
 
     // Search patient_info documents
@@ -131,8 +83,6 @@ module.exports = {
     // Return json of patient data (all) + provider details (via populate)
    findBySearchterm: function(req, res) {
         console.log("Patient_info controller called to 'findBySearchterm' ", req.body);
-        //console.log(`Requester:  ${req.user}`);
-        //if(req.user){
             db.Patient_info
             .find(req.body,  {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1})
             .populate("enrolled_by", "name")
@@ -144,11 +94,7 @@ module.exports = {
             .catch(err => {
                 console.log(`CONTROLLER ERROR: ${err}`);
                 res.status(422).json(err);
-            })
-        // }else{
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
-        
+            }) 
     },
 
     // Add new patient_info document
@@ -156,8 +102,6 @@ module.exports = {
     // Returns json object of new doctor
     create: function(req, res) {
         console.log("Patient controller called to 'create'" );
-        //console.log(`Requester:  ${req.user}`);
-        //if(req.user){
             let patient = new db.Patient_info(req.body)
             patient.save()
             .then(result=> {
@@ -168,18 +112,12 @@ module.exports = {
                     console.log(`CONTROLLER ERROR: ${err}`);
                     res.status(422).json(err);
             })  
-        // }else{
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
     },
 
     // INsert data ref during patient enroll
     // To be sent req.params.id of patient to be updated and req.body with new patient_data ref id
     insertRef: function(req, res) {
         console.log("Patient_info controller called to 'insert Ref'" );
-        //console.log(`Requester:  ${req.user}`);
-        //if(req.user){
-
         let opts = {runValidators: true};
             db.Patient_info
             .findOneAndUpdate(
@@ -198,9 +136,6 @@ module.exports = {
                 console.log(`CONTROLLER ERROR: ${err}`);
                 res.status(422).json(err);
             })
-        // }else{
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
     },
 
 
@@ -208,9 +143,6 @@ module.exports = {
     // To be sent req.params.id of patient to be updated and req.body with new patient info
     updateEmail: function(req, res) {
         console.log("Patient_info controller called to 'update email'" );
-        //console.log(`Requester:  ${req.user}`);
-        //if(req.user){
-
         let opts = {runValidators: true};
             db.Patient_info
             .findOneAndUpdate(
@@ -226,18 +158,12 @@ module.exports = {
                 console.log(`CONTROLLER ERROR: ${err}`);
                 res.status(422).json(err);
             })
-        // }else{
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
     },
 
     // Update patient phone number
     // To be sent req.params.id of patient to be updated and req.body with new patient info
     updatePhone: function(req, res) {
         console.log("Patient_info controller called to 'updatePhone'" );
-        //console.log(`Requester:  ${req.user}`);
-        //if(req.user){
-
         let opts = {runValidators: true};
             db.Patient_info
             .findOneAndUpdate(
@@ -253,9 +179,6 @@ module.exports = {
                 console.log(`CONTROLLER ERROR: ${err}`);
                 res.status(422).json(err);
             })
-        // }else{
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
     },
 
     
@@ -263,8 +186,6 @@ module.exports = {
     // To be sent req.params.id of patient and req.body of status
     updateStatus: function(req, res) {
         console.log("Patient_info controller called to 'updateStatus'" );
-        //console.log(`Requester:  ${req.user}`);
-        // if(req.user){
             db.Patient_info
             .findOneAndUpdate(
                 { _id: req.params.id },
@@ -278,17 +199,12 @@ module.exports = {
                 console.log(`CONTROLLER ERROR: ${err}`);
                 res.status(422).json(err);
             })
-        // }else{
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
     },
 
     // Update patient name
     // To be sent req.params.id of patient and req.body of new patient info
     updateName: function(req, res) {
         console.log("Patient_info controller called to 'updateName" );
-        //console.log(`Requester:  ${req.user}`);
-        // if(req.user){
             let opts = {runValidators: true};
             db.Patient_info
             .findOneAndUpdate(
@@ -307,9 +223,6 @@ module.exports = {
                 console.log(`CONTROLLER ERROR: ${err}`);
                 res.status(422).json(err);
             })
-        // }else{
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
     },
 
 
@@ -317,31 +230,26 @@ module.exports = {
     // To be sent req.params.id of patient and req.body of new patient info
     updateProvider: function(req, res) {
         console.log("Patient_info controller called to 'updateProvider" );
-        //console.log(`Requester:  ${req.user}`);
-        // if(req.user){
-            let opts = {runValidators: true};
-            db.Patient_info
-            .findOneAndUpdate(
-                { _id: req.params.id },
-                { $set: {
-                    "primary_provider_ref": req.body.primary_provider_ref,
-                    "primary_provider_id": req.body.primary_provider_id,
-                    "primary_provider_firstname": req.body.primary_provider_firstname,
-                    "primary_provider_lastname": req.body.primary_provider_lastname
-                     } 
-                }, opts
-            )
-            .then(result => {
-                console.log("RESULT: ", result);
-                res.json(result)
-            })
-            .catch(err => {
-                console.log(`CONTROLLER ERROR: ${err}`);
-                res.status(422).json(err);
-            })
-        // }else{
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
+        let opts = {runValidators: true};
+        db.Patient_info
+        .findOneAndUpdate(
+            { _id: req.params.id },
+            { $set: {
+                "primary_provider_ref": req.body.primary_provider_ref,
+                "primary_provider_id": req.body.primary_provider_id,
+                "primary_provider_firstname": req.body.primary_provider_firstname,
+                "primary_provider_lastname": req.body.primary_provider_lastname
+                    } 
+            }, opts
+        )
+        .then(result => {
+            console.log("RESULT: ", result);
+            res.json(result)
+        })
+        .catch(err => {
+            console.log(`CONTROLLER ERROR: ${err}`);
+            res.status(422).json(err);
+        })
     },
 
 
@@ -349,50 +257,41 @@ module.exports = {
     // To be sent req.params.id of patient and req.body of new patient info
     updateProviderGroup: function(req, res) {
         console.log("Patient_info controller called to 'updateProviderGroup" );
-        //console.log(`Requester:  ${req.user}`);
-        // if(req.user){
-            let opts = {runValidators: true};
-            db.Patient_info
-            .findOneAndUpdate(
-                { _id: req.params.id },
-                { $set: {
-                    "provider_group_ref": req.body.provider_group_ref,
-                    "provider_group_id": req.body.provider_group_id,
-                    "provider_group_name": req.body.provider_group_name
-                     } 
-                }, opts
-            )
-            .then(result => {
-                console.log("RESULT: ", result);
-                res.json(result)
-            })
-            .catch(err => {
-                console.log(`CONTROLLER ERROR: ${err}`);
-                res.status(422).json(err);
-            })
-        // }else{
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
+        let opts = {runValidators: true};
+        db.Patient_info
+        .findOneAndUpdate(
+            { _id: req.params.id },
+            { $set: {
+                "provider_group_ref": req.body.provider_group_ref,
+                "provider_group_id": req.body.provider_group_id,
+                "provider_group_name": req.body.provider_group_name
+                    } 
+            }, opts
+        )
+        .then(result => {
+            console.log("RESULT: ", result);
+            res.json(result)
+        })
+        .catch(err => {
+            console.log(`CONTROLLER ERROR: ${err}`);
+            res.status(422).json(err);
+        })
     },
 
     // Remove patient account
     // To be sent req.params.id of patient to be deleted
     delete: function(req, res) {
         console.log("Patient-infoController called to 'remove' " + req.params.id);
-        // if(req.user) {
-            db.Patient_info
-            .findByIdAndRemove({_id: req.params.id})
-            .then(result => {
-                console.log(result);
-                res.json(result)
-            })
-            .catch(err => {
-                console.log(`CONTROLLER ERROR: ${err}`);
-                res.status(422).json(err);
-            })
-        // } else {
-        //     res.status(422).json('You do not have proper credential to perform this action.')
-        // }
+        db.Patient_info
+        .findByIdAndRemove({_id: req.params.id})
+        .then(result => {
+            console.log(result);
+            res.json(result)
+        })
+        .catch(err => {
+            console.log(`CONTROLLER ERROR: ${err}`);
+            res.status(422).json(err);
+        })
     },
 
 

@@ -8,7 +8,8 @@ const styles = () => ({
         fontWeight: 500,
       },
     backBtn: {
-        margin: "8px 0 0 0"
+        float: "right",
+        margin: "12px 0 0 0"
     }
 });
 
@@ -50,9 +51,9 @@ const DetailsBar = (props) => {
                 { items.map((i, idx) => {
                     return (
                         <React.Fragment key={idx}>      
-                            {i.text === "close" ?
-                                <Typography align="right" className={classes.backBtn} >
-                                    <BtnLink url={i.url} text="close"/>
+                            {i.caption === "btn" ?
+                                <Typography inline className={classes.backBtn} >
+                                    <BtnLink url={i.url} text={i.text}/>
                                 </Typography>
                                 : null 
                             }

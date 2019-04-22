@@ -1,20 +1,27 @@
 import React, { Component, Fragment } from 'react';
-import { withRouter} from 'react-router-dom';
 import { connect } from 'react-redux';
-import { isEmpty } from 'lodash'
-import { selectConsoleTitle } from '../../actions/index';
-import Typography from '@material-ui/core/Typography'
+import { withStyles, Typography, Paper } from '@material-ui/core'
 import CallBack from '../UI/callback'
-import ReportFull from './ReportFull';
+import ReportPatientDetails from './ReportPatientDetails'
 import ReportSummary from './ReportSummary';
 import ReportListSurveys from './ReportListSurveys';
+import ReportFull from './ReportFull';
+
+const styles = theme => ({
+    root: {
+        width: "100%",
+        marginBottom: "12px",
+        padding: "0 20px",
+        minHeight: "470px"
+    },
+});
 
 class Report extends Component {  
 
     componentDidMount() {
-        this.props.dispatch(selectConsoleTitle({title: "Summary Report", menuIndex: 2}));
         const { match: { params } } = this.props
         this.setState({episodeId: params.Id})
+        localStorage.setItem("report_return_locn", params.Id === "0" ? '/admin/patient/find' : '/admin/dashboard')
     }
         
     state = {
@@ -24,30 +31,12 @@ class Report extends Component {
     }
 
     handleChangeEpisode = (id) => {
-        console.log("Report: handleChangeEpisode: ", id)
         this.setState({episodeId: id})
     }
 
-    handleOpenFull = (episode, questions, episodeDataForReport) => {
-        this.props.dispatch(selectConsoleTitle({title: "Full Report"}));
-        this.setState({
-            episode,
-            questions,
-            episodeDataForReport
-            },  () => this.setState({openFull: true}) 
-        )
-    }
-
-    handleCloseFull = (id) => {
-        this.props.dispatch(selectConsoleTitle({title: "Summary Report"}));
-        this.setState({episodeId: id}, () =>
-            {this.setState({openFull: false}) }
-        )
-    }
-
     render () {
-        const { patientInfo, patientData, error, loading } = this.props
-        const { openFull, episodeId, episode, questions, episodeDataForReport } = this.state
+        const { classes, patientInfo, patientData, loading, error } = this.props
+        const { episodeId } = this.state
 
         if (error) {
             return <div>Error! {error.message}</div>
@@ -57,20 +46,12 @@ class Report extends Component {
             return <CallBack />
         }
 
-        if (openFull) {
-            return <ReportFull 
-                episode={episode} 
-                questions={questions}
-                episodeDataForReport={episodeDataForReport}
-                handleClose={this.handleCloseFull}
-            />
-        }
-
         return (
-            <Fragment>
-                <ReportSummary  episodeId={episodeId} handleFullReport={this.handleOpenFull} /> <br /> 
+            <Paper className={classes.root}>
+                <ReportPatientDetails />
+                <ReportSummary  episodeId={episodeId} /> <br /> 
                 <ReportListSurveys changeEpisode={this.handleChangeEpisode} /> 
-            </Fragment> 
+            </Paper> 
         );
     }
 }
@@ -83,10 +64,9 @@ const mapStateToProps = (state) => {
         patientData: state.patient.patient.patientData,
         error: state.patient.error,
         loading: state.patient.loading,
-        user: state.user
     }
 };
 
 Report= connect(mapStateToProps)(Report)
-Report = withRouter(Report)
+Report = withStyles(styles)(Report)
 export default Report;

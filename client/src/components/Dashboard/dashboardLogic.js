@@ -60,13 +60,21 @@ export const createStatus = (ep) => {
 // **** Filter data ****
 // Filter by requester/provider
 export const filterByPerson = (data, id, filter, ) => {
-    //console.log("filterByPerson data IN", data, " ",  id, " ", filter)
+    console.log("filterByPerson data IN", data, " ",  id, " ", filter)
+    let filteredData
     switch (filter) {
     case "provider":
-        return data.filter(d => d.primaryId === id)
+        filteredData = data.filter(d => d.primaryId === id)
+        console.log("Dataout: ", filter, " : ", filteredData)
+        return filteredData
     case "all":
-        return data.filter(d => d.requesterId === id || d.primaryId === id);
-    default: return data
+        filteredData =  data.filter(d => d.requesterId === id || d.primaryId === id);
+        console.log("dataout: ", filter, " : ", filteredData)
+        return filteredData
+    default:  
+        filteredData =  data.filter(d => d.requesterId === id);
+        console.log("dataout: ", filter, " : ", filteredData)
+        return filteredData
     }
 };
 

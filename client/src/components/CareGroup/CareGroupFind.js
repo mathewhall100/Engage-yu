@@ -18,7 +18,7 @@ const styles = () => ({
 class CareGroupFind extends Component {  
     
     componentDidMount() {
-        this.props.dispatch(selectConsoleTitle({title: "Manage Care Group", menuIndex: 7}));
+        this.props.dispatch(selectConsoleTitle({title: "Manage Care Groups", menuIndex: 7}));
     }
 
     state = {

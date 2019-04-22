@@ -1,4 +1,4 @@
-
+import { startCase } from 'lodash'
 
 // **** Create data object ****
 export const createData = (data) => {
@@ -10,7 +10,8 @@ export const createData = (data) => {
           lastname: d.lastname,
           number: d.hospital_id, 
           dob: d.dob, 
-          enrolled: d.date_enrolled, 
+          enrolled: d.date_enrolled,
+          provider: `Dr. ${startCase(d.primary_provider_firstname)} ${startCase(d.primary_provider_lastname)}` 
         };
     })
 };

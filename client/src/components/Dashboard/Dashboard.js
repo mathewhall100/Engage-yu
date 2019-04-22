@@ -10,6 +10,7 @@ class Dashboard extends Component {
     componentDidMount() {
         this.props.dispatch(selectConsoleTitle({title: "Dashboard", menuIndex: 0}));
         this.setState({displayPatientId: "" });
+        localStorage.removeItem("report_return_locn")
     }
 
     state = {

@@ -27,7 +27,7 @@ const styles = () => ({
     },
 })
 
-class PatientFindDetails extends PureComponent {  
+class PatientFindDisplay extends PureComponent {  
 
     findNumSurveys = (filter) => {
         if (this.props.patientData && this.props.patientData.episodes) {
@@ -126,6 +126,6 @@ const mapStateToProps = (state) => {
     }
 };
 
-PatientFindDetails = connect(mapStateToProps)(PatientFindDetails)
-PatientFindDetails = withStyles(styles)(PatientFindDetails)
-export default PatientFindDetails;
+PatientFindDisplay = connect(mapStateToProps)(PatientFindDisplay)
+PatientFindDisplay = withStyles(styles)(PatientFindDisplay)
+export default PatientFindDisplay;
