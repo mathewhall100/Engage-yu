@@ -4,6 +4,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { withStyles, Typography, Grid } from '@material-ui/core';
 import { complianceCalc } from './reportLogic';
+import ProviderName from '../UI/providerName';
 
 const styles = () => ({
     root: {
@@ -73,7 +74,11 @@ class ReportSurveyDetails extends PureComponent {
                         }
 
                         <Typography variant="body2">
-                            Dr. {episode.requesting_provider_firstname} {episode.requesting_provider_lastname}
+                            <ProviderName 
+                                title={episode.requesting_provider.title} 
+                                firstname={episode.requesting_provider.firstname} 
+                                lastname={episode.requesting_provider.lastname} 
+                            />
                         </Typography>
 
                     </Grid>

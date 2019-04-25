@@ -52,11 +52,12 @@ export const fetchUserDetails = (sub) => {
                 }
                 if(userRole === 'provider'){
                     localStorage.setItem('user_provider_id', res.data._id);
+                    localStorage.setItem('user_provider_title', res.data.title);
                     localStorage.setItem('user_provider_firstname', res.data.firstname);
                     localStorage.setItem('user_provider_lastname', res.data.lastname);
-                    localStorage.setItem('user_provider_role', res.data.role);
-                    localStorage.setItem('user_provider_group_name', res.data.provider_group_name);
-                    localStorage.setItem('user_provider_group_id', res.data.provider_group_id)
+                    localStorage.setItem('user_provider_role', res.data.provider_role.role);
+                    localStorage.setItem('user_provider_group_name', res.data.provider_group.name);
+                    localStorage.setItem('user_provider_group_id', res.data.provider_group.id)
                 }
                 if(userRole === 'admin'){
                     localStorage.setItem('user_admin_id', null);

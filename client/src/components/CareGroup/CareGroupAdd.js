@@ -10,6 +10,7 @@ import FormTextFocused from '../UI/Forms/formTextFocused';
 import { selectConsoleTitle, careGroupSave } from '../../actions';
 import { validateName } from '../../logic/formValidations';
 import CareGroupSaveDialog from './CareGroupSaveDialog'
+import ProviderName from '../UI/providerName'
 
 const styles = () => ({
     root: {
@@ -43,11 +44,17 @@ class CareGroupAdd extends Component {
 
                     <Grid container spacing={24}>
                         <Grid item xs={5}>
-                            <FormTextFocused name="caregroup" label="New Care Group" width="350" />
+                            <FormTextFocused name="caregroup" label="New Care Group" width="320" />
                         </Grid>
                         <Grid item xs={3} style={{paddingTop: "40px"}}>
                             <Typography variant="caption" >Added by:</Typography>
-                            <Typography variant="subtitle1">{localStorage.getItem("user_provider_firstname")} {localStorage.getItem("user_provider_lastname")}</Typography >
+                            <Typography variant="subtitle1">
+                                <ProviderName 
+                                    title={localStorage.getItem("user_provider_title")} 
+                                    firstname={localStorage.getItem("user_provider_firstname")}
+                                    lastname={localStorage.getItem("user_provider_lastname")}
+                                />
+                            </Typography >
                         </Grid>
                         <Grid item xs={4} style={{paddingTop: "40px"}}>
                             <Typography variant="caption">Date added:</Typography>

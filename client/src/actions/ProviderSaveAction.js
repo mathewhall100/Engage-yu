@@ -20,12 +20,17 @@ export const providerSave = (values) => {
             dispatch(providerSaveBegin());
             return  providerAPI.create({
                 date_added: new Date(),
+                added_by: {
+                    ref: localStorage.getItem("user_provider_id"),
+                    id: localStorage.getItem("user_provider_id"),
+                    title: localStorage.getItem("user_provider_title"),
+                    firstname: localStorage.getItem("user_provider_firstname"),
+                    lastname: localStorage.getItem("user_provider_lastname"),
+                    role: localStorage.getItem("user_provider_role")
+                },
+                title: values.title.toLowerCase(),
                 firstname: values.firstname,
-                lastname: values.lastname,
-                provider_group_ref: values.caregroup[0],
-                provider_group_id: values.caregroup[0],
-                provider_group_name: values.caregroup[1],
-                role: values.role, 
+                lastname: values.lastname, 
                 office: {
                     name: values.officename,
                     street: values.officestreet,
@@ -34,43 +39,58 @@ export const providerSave = (values) => {
                     zip: values.officezip,
                 },
                 email: values.email, 
-                phone: preparePhoneNums(values.phone1, values.phone2, values.phone3)
+                phone_office: values.phoneoffice,
+                phone_cell: values.phonecell,
+                phone_pager: values.phonepager,
+                provider_role: {
+                    role: values.role.toLowerCase()
+                },
+                provider_group: {
+                    ref: values.caregroup[0],
+                    id: values.caregroup[0],
+                    name: values.caregroup[1]
+                },
+                custom_question_list: []
             })
             .then(res_data => {
                 console.log("res.data: ", res_data.data) 
-                AuthService.webAuth.signup({
-                    connection: "Engage-Yu",
-                    email: values.email,
-                    password: values.password,
-                    user_metadata: { 
-                        firstname: values.firstname,
-                        lastname: values.lastname,
-                        role: "provider",
-                        password: "temp"
-                    },
-                    responseType: "token id_token"
-                }, function (error, res_user) {
-                    if (error) {
-                        dispatch(providerSaveFailure(error))
-                        saveFailedCleanup(res_data.data._id, error) // inner
-                    }
-                    console.log("New user Created: ", res_user)
-                    userAPI.userCreate({
-                        sub: `auth0|${res_user.Id}`,
-                        role: "provider",
-                        id: res_data.data._id,
-                        // date_created: new Date()
-                    })
-                    .then(res_newUser => {
-                        console.log("res_newUser: ", res_newUser)
-                        
-                        dispatch(providerSaveSuccess(res_data.data))
-                    })
-                    .catch(error => { 
-                        dispatch(providerSaveFailure(error))
-                        saveFailedCleanup(res_data.data._id, error) // first middle block
-                    })
-                }) 
+                if (values.signup && values.email && values.password) {
+                    AuthService.webAuth.signup({
+                        connection: "Engage-Yu",
+                        email: values.email,
+                        password: values.password,
+                        user_metadata: { 
+                            firstname: values.firstname,
+                            lastname: values.lastname,
+                            role: "provider",
+                            password: "temp"
+                        },
+                        responseType: "token id_token"
+                    }, function (error, res_user) {
+                        if (error) {
+                            dispatch(providerSaveFailure(error))
+                            saveFailedCleanup(res_data.data._id, error) // inner
+                        }
+                        console.log("New user Created: ", res_user)
+                        userAPI.userCreate({
+                            sub: `auth0|${res_user.Id}`,
+                            role: "provider",
+                            id: res_data.data._id
+                        })
+                        .then(res_newUser => {
+                            console.log("res_newUser: ", res_newUser)
+                            res_data.data["password"] = values.password
+                            dispatch(providerSaveSuccess(res_data.data))
+                        })
+                        .catch(error => { 
+                            dispatch(providerSaveFailure(error))
+                            saveFailedCleanup(res_data.data._id, error) // first middle block
+                        })
+                    }) 
+                } else {
+                    console.log("res_newUser: ", res_data.data)
+                    dispatch(providerSaveSuccess(res_data.data))
+                }
             })
             .catch(error => {
                 console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
@@ -81,17 +101,6 @@ export const providerSave = (values) => {
     }
 }
     
-const preparePhoneNums = (phone1, phone2, phone3) => {
-    let phoneNos = [{
-        phone: "office", 
-        number: `${phone1.slice(0, phone1.indexOf("ext")).trim()}`, 
-        ext:  `${phone1.slice((phone1.indexOf("ext")+3)).trim()}`
-        }];
-    if (phone2) {phoneNos.push({ phone: "cell", number: `${phone2.trim()}`, ext:  ""})}
-    if (phone3) {phoneNos.push({ phone: "cell", number: `${phone2.trim()}`, ext:  ""})};
-    return phoneNos
-}
-
 // When enroll fails, need to remove any documents created during the sequence of enroll database actions
 const saveFailedCleanup = (id, err) => {
     console.log(`OOPS! A fatal problem occurred and your request could not be completed`);

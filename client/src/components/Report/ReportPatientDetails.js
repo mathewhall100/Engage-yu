@@ -7,7 +7,7 @@ import DetailsBar from '../UI/detailsBar';
 
 const styles = theme => ({
     root: {
-        margin: "16px 0 20px 0",
+        paddingTop: "20px"
     },
 })
 

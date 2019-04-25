@@ -10,6 +10,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import BtnAction from "./components/UI/Buttons/btnAction";
+import ProviderName from './components/UI/providerName'
 
 
 const styles = theme =>({
@@ -85,7 +86,12 @@ class TopBar extends Component {
                             {profile ? 
                                 <span>
                                     <img src={profile.picture} height="45px" alt="profile" className={classes.avatar}/> 
-                                    Welcome, &nbsp;&nbsp;Dr. {startCase(localStorage.getItem("user_provider_firstname"))} {startCase(localStorage.getItem("user_provider_lastname"))} 
+                                    Welcome, &nbsp;&nbsp;
+                                    <ProviderName 
+                                        title={localStorage.getItem("user_provider_title")} 
+                                        firstname={localStorage.getItem("user_provider_firstname")} 
+                                        lastname={localStorage.getItem("user_provider_lastname")} 
+                                    />
                                 </span>
                                 :
                                 <span>Error: this user has no profile</span>

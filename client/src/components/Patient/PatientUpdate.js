@@ -10,6 +10,7 @@ import DialogSaveFailure from '../UI/Dialogs/dialogSaveFailure'
 import PatientDetailsBar from './PatientDetailsBar';
 import FormUpdateUnit from '../UI/Forms/formUpdateUnit'
 import { selectConsoleTitle, loadPatient, patientUpdateSave } from '../../actions';
+import { providerName } from '../../logic/textFunctions'
 import { validateName, validateEmail, validatePhone, validateStatus, validateIsRequired } from '../../logic/formValidations'
 
 
@@ -91,7 +92,7 @@ class PatientUpdate extends PureComponent {
                 formElement: <FormTextFocused name="phone" label="New phone number" width={215}/>
             },{
                 rowLabel: "Primary Provider", 
-                fieldContent: `Dr. ${startCase(patientInfo.primary_provider_firstname)} ${startCase(patientInfo.primary_provider_lastname)}`, 
+                fieldContent: providerName(patientInfo.primary_provider.title, patientInfo.primary_provider.firstname, patientInfo.primary_provider.lastname), 
                 formElement: <ProviderSelect />
             },{
                 rowLabel: "Patient Status",

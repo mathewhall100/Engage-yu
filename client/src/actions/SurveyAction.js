@@ -25,17 +25,23 @@ export const saveSurvey = (
     const remindStatus = values.reminder === "off" ? "off" : "on";
     const remindMinsBefore = values.reminder !== "off" ? values.reminder : "";
 
+    const requestingProvider = {
+            ref: localStorage.getItem("user_provider_id"),
+            id: localStorage.getItem("user_provider_id"),
+            title: localStorage.getItem("user_provider_title"),
+            firstname: localStorage.getItem("user_provider_firstname"),
+            lastname: localStorage.getItem("user_provider_lastname"),
+            role: localStorage.getItem("user_provider_role")
+    };
+
     const surveyObj = {
         episode_number: patientData.episodes.length,
         date_requested: moment(),
-        requesting_provider_ref: localStorage.getItem("user_provider_id"),
-        requesting_provider_id: localStorage.getItem("user_provider_id"),
-        requesting_provider_firstname: localStorage.getItem("user_provider_firstname"),
-        requesting_provider_lastname: localStorage.getItem("user_provider_lastname"),
-        primary_provider_ref: patientInfo.primary_provider_id,
-        primary_provider_id: patientInfo.primary_provider_id,
-        primary_provider_firstname: patientInfo.primary_provider_firstname,
-        primary_provider_lastname: patientInfo.primary_provider_lastname,
+        requesting_provider: requestingProvider,
+        // primary_provider_ref: patientInfo.primary_provider_id,
+        // primary_provider_id: patientInfo.primary_provider_id,
+        // primary_provider_firstname: patientInfo.primary_provider_firstname,
+        // primary_provider_lastname: patientInfo.primary_provider_lastname,
         start_date: startDate,
         end_date: endDate,
         num_days: parseInt(values.duration, 10),
@@ -46,15 +52,11 @@ export const saveSurvey = (
         remind_status: remindStatus,
         remind_mins_before: remindMinsBefore,
         questions: createSurveyQuestions(selectedQuestions),
-        notes: "",
         records: createRecordsArray(startDate, startTime, values.duration, values.frequency, entriesPerDay),
         status: "pending",
+        messages: [],
         report_to: [
-            {   provider_ref: patientInfo.primary_provider_id,
-                provider_id: patientInfo.primary_provider_id,
-                provider_firstname: patientInfo.primary_provider_firstname,
-                provider_lastname: patientInfo.primary_provider_lastname
-            }
+            // need to add code to allow user to enter 'report_to's
         ]
     }
 

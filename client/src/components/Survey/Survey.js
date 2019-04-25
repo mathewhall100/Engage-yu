@@ -18,9 +18,9 @@ class Survey extends Component {
     render () {
 
         return (
-
             <Fragment>
-                <SurveyPatientDetails /> <br />
+                <SurveyPatientDetails /> 
+                <br />
                 <Card style={{padding: "40px"}}>
                     <SurveyForm />
                 </Card>

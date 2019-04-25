@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { startCase } from 'lodash'
 import moment from 'moment';
 import Button from '@material-ui/core/Button'
 import ReportPanel from './ReportPanel';
+import ProviderName from '../UI/providerName'
 
 const panels = [
     {status: "pending", actions: ["view", "cancel"]},
@@ -40,8 +41,8 @@ class ReportListSurveys extends Component {
     }
 
     createTableData = (data) => {
-          return data.map((episode, index) => {
-              return {
+        return data.map((episode, index) => {
+            return {
                 "id": index,
                 "_id": episode._id,
                 "start": moment(episode.start_date).format("MMM Do YYYY"),
@@ -49,8 +50,8 @@ class ReportListSurveys extends Component {
                 "timeframe": `${episode.start_time.slice(0,2)}:${episode.start_time.slice(-2)} - ${episode.end_time.slice(0,2)}:${episode.end_time.slice(-2)}`,
                 "interval": `${episode.interval_mins} mins`, 
                 "questions": episode.questions.length === 1 ? `${episode.questions.length} question` : `${episode.questions.length} questions`,
-                "requested by": startCase(`Dr. ${episode.requesting_provider_firstname} ${episode.requesting_provider_lastname}`),
-                "reviewed by": "TBA", 
+                "requested by": <ProviderName title={episode.requesting_provider.title} firstname={episode.requesting_provider.firstname} lastname={episode.requesting_provider.lastname} />,
+                "actioned by": "TBA", 
                 "archived by": "TBA", 
                 "cancelled by": "TBA"
             }
@@ -77,13 +78,13 @@ class ReportListSurveys extends Component {
         const { episodes, panelStatus, morePanels } = this.state
 
         return (
-            <React.Fragment>
+            <Fragment>
 
                 {panelStatus.slice(0,4).map((panel, idx) => {
                     return (
                         <ReportPanel key={idx}
                             summary = { `${startCase(panels[idx].status)} (${panel})` }
-                            tableHeadings = {["start", "end", "timeframe", "interval", "questions", "requested by"].concat(idx===3 ? ["archived by"] : [])}
+                            tableHeadings = {["start", "end", "timeframe", "interval", "questions", "requested by"].concat(idx===3 ? ["actioned by"] : [])}
                             tableData = {this.createTableData(episodes.filter(episode => episode.status === panels[idx].status )) }
                             lastCellRightAlign={true}
                             lastCellHeading={"Actions"}
@@ -103,11 +104,11 @@ class ReportListSurveys extends Component {
                 <br /><br />
                 
                 {morePanels === true && 
-                    <React.Fragment>
+                    <Fragment>
                         
                         <ReportPanel
                             summary = { `Archived (${panelStatus[4]})` }
-                            tableHeadings = {["start", "end", "timeframe", "interval", "questions", "requested by", "reviewed by", "archived by"]}
+                            tableHeadings = {["start", "end", "timeframe", "interval", "questions", "requested by", "actioned by", "archived by"]}
                             tableData = {this.createTableData(episodes.filter(episode => episode.status === "archived"))}
                             lastCellRightAlign={true}
                             lastCellHeading="Actions"
@@ -125,10 +126,10 @@ class ReportListSurveys extends Component {
                             handleActionBtn = {this.handleAction}
                         />
 
-                    </React.Fragment>
+                    </Fragment>
                 }
                 
-            </React.Fragment>
+            </Fragment>
         );
     }
 };

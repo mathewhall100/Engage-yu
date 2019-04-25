@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { startCase } from 'lodash';
+import { startCase, upperFirst } from 'lodash';
 import moment from 'moment';
 import { withStyles, Card, Grid, Typography } from '@material-ui/core';
 import BtnGroup from '../UI/Buttons/btnGroup'
@@ -59,8 +59,8 @@ class ProviderDisplay extends Component {
         const { classes, error, loading, provider} = this.props;
 
         const infoH = (provider) => [
-            {caption: "Role", info: provider.role},
-            {caption: "Care Group", info: startCase(provider.provider_group_name)},
+            {caption: "Role", info: upperFirst(provider.provider_role.role)},
+            {caption: "Care Group", info: startCase(provider.provider_group.name)},
             {caption: "Added", info: moment(provider.date_added).format("MMM Do YYYY")}
         ];
         const btns = [
@@ -102,33 +102,25 @@ class ProviderDisplay extends Component {
                 
                 <Grid container spacing={24}>
                     <Grid item xs={2}>
+                        <Typography variant="subtitle1">Office:</Typography>
+                        <Typography variant="subtitle1">&nbsp;</Typography>
+                        <Typography variant="subtitle1">&nbsp;</Typography>
+                        <Typography variant="subtitle1" gutterBottom>&nbsp;</Typography>
                         <Typography variant="subtitle1" gutterBottom>Email:</Typography>
-                        <Typography variant="subtitle1">Phone:</Typography>
-                        <Typography variant="subtitle1" style={{marginTop: "52px"}}>Office:</Typography>
+                        <Typography variant="subtitle1">Office Phone:</Typography>
+                        {provider.phone_cell && <Typography variant="subtitle1">Cell</Typography>}
+                        {provider.phone_pager && <Typography variant="subtitle1">Pager</Typography>}
+                        
                     </Grid>
                     <Grid item xs={10}>
+                        <Typography variant="subtitle1" className={classes.fwMedium}>{startCase(provider.office.name)}</Typography>
+                        <Typography variant="subtitle1" className={classes.fwMedium}>{startCase(provider.office.street)}</Typography> 
+                        <Typography variant="subtitle1" className={classes.fwMedium}>{startCase(provider.office.city)}</Typography> 
+                        <Typography variant="subtitle1" className={classes.fwMedium} gutterBottom>{startCase(provider.office.state)}, {startCase(provider.office.zip)}</Typography>
                         <Typography variant="subtitle1" className={classes.fwMedium} gutterBottom>{provider.email}</Typography>
-                        <table>
-                            <tbody>
-                                {provider.phone.map((phone, index) => {
-                                    return (
-                                    <tr key={index} >
-                                        <td style={{width: "200px"}}>
-                                            <Typography variant="subtitle1" className={classes.fwMedium} style={{lineHeight: "20px"}}>{phone.number}{phone.ext && <span> ext. {phone.ext}</span>}</Typography>
-                                        </td>
-                                        <td style={{width: "100px"}}>
-                                            {phone.number && <Typography variant="subtitle1" className={classes.fwMedium} style={{lineHeight: "20px"}}>({phone.phone})</Typography>}
-                                        </td>
-                                    </tr>
-                                    )
-                                }) }
-                            </tbody>
-                        </table>
-                        <Typography variant="subtitle1" className={classes.fwMedium} style={{marginTop: "8px", lineHeight: "24px"}}>{startCase(provider.office.name)}</Typography>
-                        <Typography variant="subtitle1" className={classes.fwMedium} style={{lineHeight: "24px"}}>{startCase(provider.office.street)}</Typography> 
-                        <Typography variant="subtitle1" className={classes.fwMedium} style={{lineHeight: "24px"}}>{startCase(provider.office.city)}</Typography> 
-                        <Typography variant="subtitle1" className={classes.fwMedium} style={{lineHeight: "24px"}}>{startCase(provider.office.state)}</Typography>
-                        <Typography variant="subtitle1" className={classes.fwMedium} style={{lineHeight: "24px"}}>{startCase(provider.office.zip)}</Typography>
+                        <Typography variant="subtitle1" className={classes.fwMedium}>{provider.phone_office}</Typography>
+                        {provider.phone_cell && <Typography variant="subtitle1" className={classes.fwMedium}>{provider.phone_cell}</Typography>}
+                        {provider.phone_pager && <Typography variant="subtitle1" className={classes.fwMedium}>{provider.phone_pager}</Typography>}
                     </Grid>
                 </Grid> 
 

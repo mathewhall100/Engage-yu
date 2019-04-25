@@ -36,6 +36,7 @@ export const clearLocalStorage = () => {
             'auth_user_id',
             'auth_profile', 
             'user_app_id', 
+            'user_provider_title',
             'user_provider_firstname', 
             'user_provider_lastname', 
             'user_provider_role', 
@@ -48,7 +49,8 @@ export const clearLocalStorage = () => {
             'dashboard_table_checked_filter',
             'patient_find_form_list',
             'patient_find_form_name',
-            'patient_find_form_hospId'
+            'patient_find_form_hospId',
+            'patient_find_info_panel'
         ];
     keys.forEach(key => localStorage.removeItem(key));
     return true;

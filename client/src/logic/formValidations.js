@@ -8,15 +8,25 @@ export const validateIsRequired = (value) => {
 export const validateName = (value, required=false) => {
     //console.log("value: ", value);
     if (!value) {if (required) return "*Required field"; else return "";}
-    else if (!/^[a-zA-Z0-9' ]{2,30}$/i.test(value))  {
+    else if (!/^[a-zA-Z0-9\\'\\-\\.\\,\\ ]{2,30}$/.test(value))  {
         return "*Must be between 2 and 30 characters, numbers, ', or -";
     } else return "";
 };
 
+export const validateAddress = (value, required=false) => {
+    //console.log("value: ", value);
+    if (!value) {if (required) return "*Required field"; else return "";}
+    else if (!/^[a-zA-Z0-9\\'\\-\\.\\,\\ ]{5,50}$/.test(value))  {
+        return "*Must be between 2 and 30 characters, numbers, ', or -";
+    } else return "";
+};
+
+
+
 export const validateHospId = (value, required=false) => {
     //console.log("value: ", value);
     if (!value) {if (required) return "*Required field"; else return "";}
-    else if (!/^[a-zA-Z0-9/-]{2,12}$/i.test(value))  {
+    else if (!/^[a-zA-Z0-9/-]{2,12}$/.test(value))  {
         return "*Invalid hospId. Only characters, numbers and '/' and '-' allowed";
     } else return "";
 };
@@ -40,7 +50,7 @@ export const validateGender = (value, required=false)=> {
 export const validateZip = (value, required=false) => {
     //console.log("value: ", value);
     if (!value) {if (required) return "*Required field"; else return "";}
-    else if (!/^[0-9]{5}$/i.test(value))  {
+    else if (!/^[0-9]{5}$/.test(value))  {
         return "*Invalid zip code. Must be 5 numbers.";
     } else return "";
 };
@@ -56,7 +66,7 @@ export const validateState = (value, required=false) => {
     } else return "";
 };
 
-export const validateEmail= (value, required=false) => {
+export const validateEmail = (value, required=false) => {
     //console.log("value: ", value);
     if (!value) {if (required) return "*Required field"; else return "";}
     else if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(.\w{2,3})+$/i.test(value)) {
@@ -64,7 +74,7 @@ export const validateEmail= (value, required=false) => {
     } else return "";
 };
 
-export const validateEmails= (value1, value2) => {
+export const validateEmails = (value1, value2) => {
     //console.log("value: ", value1, " : ", value2);
     if (!value2) {return "*Required field"} 
     else if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(.\w{2,3})+$/i.test(value2)) {

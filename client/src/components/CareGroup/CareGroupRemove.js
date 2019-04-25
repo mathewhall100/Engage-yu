@@ -51,7 +51,7 @@ class CareGroupRemove extends Component {
         })
     };
 
-    handleDelete() {
+    handleDelete = () => {
         console.log("handleDelete: ", this.props.careGroup._id)
         provider_groupAPI.remove(this.props.careGroup._id)
         .then(res => {
@@ -111,7 +111,7 @@ class CareGroupRemove extends Component {
                         <br /> <HrStyled /> <br />
                     
                         <BtnAction type ="button" disabled={false} text="cancel" marginRight={true} handleAction={this.handleCancel} />
-                        <BtnAction type="button" disabled={false} text="delete" warning={true} handleAction={this.handledelete} />
+                        <BtnAction type="button" disabled={false} text="delete" warning={true} handleAction={this.handleDelete} />
 
                     </React.Fragment> 
                 }

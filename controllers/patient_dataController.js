@@ -31,8 +31,8 @@ module.exports = {
             .find({ 
                 $and : [
                     { $or: [
-                        { "episodes.requesting_provider_id" : id },
-                        { "episodes.primary_provider_id" : id } 
+                        { "episodes.requesting_provider.id" : id },
+                        { "episodes.primary_provider.id" : id } 
                     ]},
                     { $or: [
                         { "episodes.status" : "pending" },
@@ -54,17 +54,16 @@ module.exports = {
                             id: index, 
                             patientInfoId: pt._id,
                             name: `${pt.firstname} ${pt.lastname}`, 
-                            number: pt.hospital_id,   
+                            number: pt.hospital_id,
+                            primary: pt.primary_provider   
                         }
                         patient.episodes
                         .filter(ep => ep.status === "active" || ep.status === "pending" || ep.status === "awaiting review")
                         .map(ep => {
                             epObj = {
                                 episodeId: ep._id,
-                                requester: `${ep.requesting_provider_firstname} ${ep.requesting_provider_lastname}`,
-                                requesterId: ep.requesting_provider_id,
-                                primary: `${ep.primary_provider_firstname} ${ep.primary_provider_lastname}`,
-                                primaryId: ep.primary_provider_id,
+                                requester: ep.requesting_provider,
+                                //primary: ep.primary_provider,
                                 status: ep.status,
                                 start: ep.start_date, 
                                 end: ep.end_date,
@@ -206,41 +205,47 @@ module.exports = {
         })
     },
 
-    editActiveStatus : function(req, res) {
-        console.log("Patient_data controller called to 'editActiveStatus");
+    // Edit the status field of an episode
+    // To be sent req.params.id of patient and req.body of episode id to chnage and new status
+    updateStatus : function(req, res) {
+        console.log("Patient_data controller called to 'updateStatus");
+        console.log("patient id is  : ", req.params.id);
+        console.log("episodeI id is : ", req.body.episode_id);
+        console.log("status is : ", req.body.new_status);
+        let episodeIndex = null
         db.Patient_data
         .find({
             _id: req.params.id
         }, { "episodes" : 1 }
         ).then( result => {
-            let episodeSelected = result[0].episodes[result[0].episodes.length-1];
-            if(req.params.status != episodeSelected.status){
-                episodeSelected.status = req.body.status;
+            let episodes = result[0].episodes || []
+            episodes.map((ep, index)=> {
+                if (ep._id === req.body.episodeId) {
+                    episodeIndex = index
+                }
+            })
+            if (episodeIndex !== null) {
+                episodes[episodeindex].status = req.body.new_status
             }
-            episodeSelected.num_entries = episodeSelected.num_entries + 1;
-            episodeSelected.last_entry = moment();
             db.Patient_data
                 .findOneAndUpdate(
-                { _id: req.params.id },
-                { $pop: { "episodes": 1 } }
-                )
-                .then(result => {
-                    db.Patient_data
-                        .findOneAndUpdate(
-                        { _id: req.params.id },
-                        { $push: { "episodes": episodeSelected } }
-                        )
-                        .then(result => {
-                            console.log("RESULT:", result);
-                            res.json(result)
-                        })
+                    { _id: req.params.id },
+                    { $set: { "email": req.body.email }
                 })
-            }).catch(err => {
+                .then(result => {
+                    console.log("RESULT:", result);
+                    res.json(result)
+                })
+            })
+            .catch(err => {
                 console.log(`EDIT ACTIVE STATUS CONTROLLER ERROR: ${err}`);
                 res.status(422).json(err);
             })
         
     },
+
+     // Edit the data filed of a record
+    // To be sent req.params.id of patient and req.body of new episode info
     editRecord : function(req, res) {
         console.log("Patient_data controller called to 'editRecord'", req.body);
         console.log("id is  : ", req.params.id);

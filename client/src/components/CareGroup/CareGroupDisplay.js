@@ -12,6 +12,7 @@ import BtnCloseIcon from '../UI/Buttons/btnCloseIcon';
 import CallBack from '../UI/callback';
 import providerAPI from "../../utils/provider.js";
 import  { loadCareGroup } from '../../actions';
+import ProviderName from '../UI/providerName';
 
 const styles = () => ({
     root: {
@@ -43,8 +44,8 @@ class CareGroupDisplay extends Component {
                 res.data.providerList.map(provider => {
                     return (
                         providerList.push({
-                            name: `Dr. ${startCase(provider.firstname)} ${startCase(provider.lastname)}`,
-                            role: provider.role,
+                            name: <ProviderName title={provider.title} firstname={provider.firstname} lastname={provider.lastname} />,
+                            role: provider.provider_role.role,
                             office: provider.office.name,
                         })
                     )
@@ -89,7 +90,7 @@ class CareGroupDisplay extends Component {
         const { showProviders, providerList} = this.state;
 
         const infoH = (careGroup) => [
-            {grid: 3, caption: "Added by", info: `Dr. ${startCase(careGroup.added_by_name)}`},
+            {grid: 3, caption: "Added by", info: <ProviderName title={careGroup.added_by.title} firstname={careGroup.added_by.firstname} lastname={careGroup.added_by.lastname} />} ,
             {grid: 2, caption: "Date added", info: moment(careGroup.date_added).format("MMM Do YYYY")},
             {grid: 7, caption: "Providers", info: `Currently ${this.state.providerList.length} providers in this care group`}
         ];

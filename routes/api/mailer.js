@@ -6,7 +6,7 @@ const checkJwt = checkToken.getCheckToken()
 // Matches with "/api/mailer"
 router
     .route("/send")
-    .post((checkJwt, req, res) => {
+    .post((req, res) => {
         console.log("mailerRoute: ", req.body)
         const { email = "", name = "", text = "" } = req.body
 

@@ -3,14 +3,24 @@ const Schema = mongoose.Schema;
 
 const questionSchema = new Schema({
     
-    question_number: Number,
-    question: { type: String, required: [true, "No question supplied"] },
-    answers: [
-        { type: String, required: [true, "No answers supplied"] }
-    ],
-    hints: [
-        { type: String }
-    ],
+    question_number: {
+        type: Number
+    },
+
+    question: { 
+        type: String, 
+        required: [true, "No question supplied"] 
+    },
+
+    answers: [{ 
+        type: String, 
+        required: [true, "No answers supplied"] 
+    }],
+
+    hints: [{ 
+        type: String
+    }]
+    
 });
 
 

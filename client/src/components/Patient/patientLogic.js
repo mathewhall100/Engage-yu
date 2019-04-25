@@ -1,4 +1,5 @@
 import { startCase } from 'lodash'
+import { providerName } from '../../logic/textFunctions'
 
 // **** Create data object ****
 export const createData = (data) => {
@@ -11,7 +12,7 @@ export const createData = (data) => {
           number: d.hospital_id, 
           dob: d.dob, 
           enrolled: d.date_enrolled,
-          provider: `Dr. ${startCase(d.primary_provider_firstname)} ${startCase(d.primary_provider_lastname)}` 
+          provider: providerName( d.primary_provider.title, d.primary_provider.firstname, d.primary_provider.lastname )
         };
     })
 };

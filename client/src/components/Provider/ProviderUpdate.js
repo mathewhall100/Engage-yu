@@ -7,6 +7,7 @@ import FormTextFocused from '../UI/Forms/formTextFocused';
 import FormStateSelect from '../UI/Forms/formStateSelect';
 import DialogSaveFailure from '../UI/Dialogs/dialogSaveFailure';
 import FormUpdateUnit from '../UI/Forms/formUpdateUnit';
+import ProviderName from '../UI/providerName'
 import { validateName, validateZip, validateState, validateEmail, validatePhone, validatePhoneOther } from '../../logic/formValidations';
 import { selectConsoleTitle, loadProvider, providerUpdateSave } from '../../actions';
 import CareGroupSelect from '../CareGroup/CareGroupSelect'
@@ -106,23 +107,23 @@ class ProviderUpdate extends PureComponent {
                 formElement:  <FormTextFocused name="email" label="Email" width={215}/>
                 },{
                 rowLabel: "Office phone",
-                fieldContent: `${provider.phone[0].number} ${provider.phone[0].ext ? `ext: ${provider.phone[0].ext}` : ""}`,
-                formElement:  <FormTextFocused name="phone1"  label="Office phone (000-000-0000)" width={215}/>
+                fieldContent: provider.phone_office,
+                formElement:  <FormTextFocused name="phoneoffice"  label="Office phone (000-000-0000)" width={215}/>
                 },{
                 rowLabel: "Cell",
-                fieldContent: `${provider.phone[1].number}`,
-                formElement:  <FormTextFocused name="phone2"  label="Cell" width={215}/>
+                fieldContent: provider.phone_cell,
+                formElement:  <FormTextFocused name="phonecell"  label="Cell" width={215}/>
                 },{
-                rowLabel: "Other phone/pager",
-                fieldContent: `${provider.phone[2].number} ${provider.phone[2].ext ? `ext: ${provider.phone[2].ext}` : ""}`,
-                formElement:  <FormTextFocused name="phone3" label="Other phone/pager" width={215} />
+                rowLabel: "Pager",
+                fieldContent: provider.phone_pager,
+                formElement:  <FormTextFocused name="phonepager" label="Pager" width={215} />
             }];
         };
 
         const reassignCareGroupFormField = (provider) => {
             return [{
                 rowLabel: "Care group",
-                fieldContent: startCase(provider.provider_group_name),
+                fieldContent: startCase(provider.provider_group.name),
                 formElement:  <CareGroupSelect />
             }]
         }
@@ -139,7 +140,7 @@ class ProviderUpdate extends PureComponent {
             <Fragment>
                 <Card className={classes.root}>
                     <ProviderDetailsBar provider={provider} />
-
+                    
                     <Typography variant="subtitle1" gutterBottom>
                         {update === "provider details" ? 
                             "Click 'update' next to the information you want to edit."
@@ -186,9 +187,9 @@ const validate = (values) => {
     errors.officestate = validateState(values.officestate)
     errors.officezip = validateZip(values.officezip)
     errors.email = validateEmail(values.email)
-    errors.phone1 = validatePhone(values.phone1)
-    errors.phone2 = validatePhone(values.phone2)
-    errors.phone3 = validatePhoneOther(values.phone3)
+    errors.phoneoffice = validatePhone(values.phoneoffice)
+    errors.phonecell = validatePhone(values.phonecell)
+    errors.phonepager = validatePhoneOther(values.phonepager)
     errors.caregroup = validateName(values.careGroup)
     // If errors is empty, then form good to submit
     //console.log("Errors: ", errors)

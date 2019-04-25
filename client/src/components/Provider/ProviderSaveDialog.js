@@ -1,7 +1,8 @@
-import React, { Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { reduxForm } from 'redux-form';
 import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
+import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { Dialog, DialogActions, DialogContent, DialogTitle, withMobileDialog, Typography, Grid} from '@material-ui/core'
 import BtnGroup from '../UI/Buttons/btnGroup'
@@ -11,7 +12,12 @@ import DialogSaving from '../UI/Dialogs/dialogSaving'
 import { emailNewProvider } from '../../actions'
 
 
-class ProviderSaveDialog extends React.Component {
+class ProviderSaveDialog extends Component {
+
+	componentDidMount() {
+		console.log("providerSaveDialog: ", this.props.enableLogin)
+	}
+
 
 	state = {
 		open: true
@@ -21,44 +27,46 @@ class ProviderSaveDialog extends React.Component {
 		this.setState({ open: false });
 	};
 
-	handleRedirects = (btn) => {
-		this.props.history.push({pathname: '/admin/dashboard'})
+	handleRedirects = () => {
+		this.handleClose()
+		this.props.history.push({pathname: '/admin/provider/find'})
 	}
 
 	submit = (values) => {
 		console.log("Submitted values: ", values)
-		const { newProvider } = this.props
- 		const fullName = `Dr. ${newProvider.firstname} ${newProvider.lastname}`;
-		const msg = {
-			email: newProvider.email,
-			name: "admin @engage-yu",
-			subject: `${fullName}: Welcome to Engage-yu`,
-			text: `
-				${fullName}
-				Welcome to Engage-Yu
-				You have been registered with the Engage-Yu application by your colleague, Dr. ${localStorage.getItem("user_provider_firstname")} ${localStorage.getItem("user_provider_lastname")}. 
-				You may now log in and use the application with the following credentials: 
-					email : 	${newProvider.email}
-					password: 	${newProvider.password}
+		if (values.emailLoginCreds) {
+			const { newProvider } = this.props
+			const fullName = `Dr. ${newProvider.firstname} ${newProvider.lastname}`;
+			const msg = {
+				email: newProvider.email,
+				name: "admin @engage-yu",
+				subject: `${fullName}: Welcome to Engage-yu`,
+				text: `
+					${fullName}
+					Welcome to Engage-Yu
+					You have been registered with the Engage-Yu application by your colleague, Dr. ${localStorage.getItem("user_provider_firstname")} ${localStorage.getItem("user_provider_lastname")}. 
+					You may now log in and use the application with the following credentials: 
+						email : 	${newProvider.email}
+						password: 	${newProvider.password}
 
-				This passowod is temporary and you will be prompted to cahnge it to a more secure passord of your choice when you first login. 
-				Note that you will also recieve a separate email from our authorization system asking you to confirm your email address. 
-				
-				Regards
-				The Engage-Yu team
-				`
+					This passowod is temporary and you will be prompted to change it to a more secure passord of your choice when you first login. Note that before you can login, you must have verified your email address by following the instructions on a separate email we have sent you. 
+					
+					Regards
+					The Engage-Yu team
+					`
+			}
+			this.props.dispatch(emailNewProvider(msg))
 		}
-		this.props.dispatch(emailNewProvider(msg))
-		this.handleClose()
+		this.handleRedirects()
 	}
 
 	render() {
 		const { fullScreen, handleSubmit, newProvider, loadingNewProvider, errorNewProvider, enableLogin } = this.props;
 
 		if (errorNewProvider) 
-			return <DialogSaveFailure text="An error ocurred and this provider's details could not be saved at this time." cancelUrl={"/admin/find"} /> 
+			return <DialogSaveFailure text="An error ocurred and this provider's details could not be saved at this time." cancelUrl={"/admin/provider/find"} /> 
 		
-		else if (loadingNewProvider && !newProvider._id) 
+		else if (loadingNewProvider || isEmpty(newProvider))
 			return <DialogSaving />
 		
 		else
@@ -92,43 +100,41 @@ class ProviderSaveDialog extends React.Component {
 								</Grid>
 								<Grid item xs={6}>
 									<Typography variant="subtitle2" gutterBottom>{newProvider.firstname} {newProvider.lastname}</Typography> 
-									<Typography variant="subtitle2" gutterBottom>{newProvider.role}</Typography> 
+									<Typography variant="subtitle2" gutterBottom>{newProvider.provider_role.role}</Typography> 
 									<Typography variant="subtitle2" gutterBottom>{newProvider.office.name}</Typography> 
 									<Typography variant="subtitle2" gutterBottom>{newProvider.email}</Typography> 
-									<Typography variant="subtitle2" gutterBottom>{newProvider.phone[0].number}</Typography> 
-									<Typography variant="subtitle2" gutterBottom>{newProvider.provider_group_name}</Typography> 
+									<Typography variant="subtitle2" gutterBottom>{newProvider.phone_office}</Typography> 
+									<Typography variant="subtitle2" gutterBottom>{newProvider.provider_group.name}</Typography> 
 								</Grid>
 							</Grid>
 							<br /> <br />
 
-							{enableLogin && <Fragment>
-								<Typography variant="subtitle1" gutterBottom>
-									New provider can login for the first time with their registered email address, {newProvider.email}, and temporary password. 
-								</Typography>
-								
-									<FormCheckbox name="includePwd" label="includePwd" value={true}/>
-									<Typography variant="subtitle2" inline gutterBottom> 
-										Email new provider with login credentials. 
+							{enableLogin && 
+								<Fragment>
+									<Typography variant="subtitle1" gutterBottom>
+										New provider can login for the first time with their registered email address, {newProvider.email}, and temporary password. 
 									</Typography>
-							
-								
-							</Fragment> }
+									<FormCheckbox name="emailLoginCreds" label="emailLoginCreds" value={true}/>
+									<Typography variant="subtitle2" inline gutterBottom> 
+										Email new provider with login credentials? 
+									</Typography>
+								</Fragment> }
 
-							{!enableLogin && <Fragment>
-								<Typography variant="subtitle1" gutterBottom>
-									This provider will NOT HAVE permissions to login to the application themselves.
-								</Typography>
-							</Fragment> }
+							{!enableLogin && 
+								<Fragment>
+									<Typography variant="subtitle1" gutterBottom>
+										This provider will <strong>NOT HAVE</strong> permissions to login to the application themselves.
+									</Typography>
+								</Fragment> }
 
 							<Typography  variant="subtitle1" gutterBottom>
-								If any provider details and login permissions can be edited and/or updated by using the manage provider menu. 
+								Provider details and login permissions can be edited and/or updated at any time using the 'manage provider' menu. 
 							</Typography>
 							<br />
 						</DialogContent>
 
 						<DialogActions style={{margin: "0 20px 20px 0"}}>
 							<BtnGroup 
-								type="submit"
 								btns={[{btn: "done", type: "submit", id: "1"}]} 
 								handleBtns={this.handleRedirects} 
 								/>

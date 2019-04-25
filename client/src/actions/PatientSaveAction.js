@@ -22,9 +22,14 @@ export const patientSave= (values) => {
             dispatch(patientSaveBegin());
             return  patient_infoAPI.createNewPatient({
                 date_enrolled: new Date(),
-                enrolled_by_ref: localStorage.getItem("user_provider_id"),
-                enrolled_by_id: localStorage.getItem("user_provider_id"),
-                enrolled_by_name: `${localStorage.getItem("user_provider_firstname")} ${localStorage.getItem("user_provider_lastname")}`,
+                enrolled_by: {
+                    ref: localStorage.getItem("user_provider_id"),
+                    id: localStorage.getItem("user_provider_id"),
+                    title: `${localStorage.getItem("user_provider_title")}`,
+                    firstname: `${localStorage.getItem("user_provider_firstname")}`,
+                    lastname: `${localStorage.getItem("user_provider_lastname")}`,
+                    role: `${localStorage.getItem("user_provider_role")}`
+                },
                 patient_data_ref: "000000000000000000000000",
                 patient_data_id:  "000000000000000000000000",
                 status: "active",
@@ -35,13 +40,19 @@ export const patientSave= (values) => {
                 dob: values.dob,
                 email: values.email,
                 phone: values.phone,
-                primary_provider_ref: values.provider[0],
-                primary_provider_id: values.provider[0],
-                primary_provider_firstname: `${startCase(values.provider[1])}`,
-                primary_provider_lastname: `${startCase(values.provider[2])}`,
-                provider_group_ref: values.provider[3],
-                provider_group_id: values.provider[4],
-                provider_group_name: values.provider[5]
+                primary_provider: {
+                    ref: values.provider[0],
+                    id: values.provider[0],
+                    title: values.provider[1],
+                    firstname: values.provider[2],
+                    lastname: values.provider[3],
+                    role: values.provider[4]
+                },
+                provider_group: {
+                    ref: values.provider[5],
+                    id: values.provider[6],
+                    name: values.provider[7]
+                }
             })
             .then(res_info => {
                 console.log("res_info.data: ", res_info.data)
@@ -81,8 +92,6 @@ export const patientSave= (values) => {
                                 sub: `auth0|${res_user.Id}`,
                                 role: "patient",
                                 id: res_info.data._id,
-
-                                // date_created: new Date()
                             })
                             .then(res_newUser => {
                                 console.log("res_newUser: ", res_newUser)

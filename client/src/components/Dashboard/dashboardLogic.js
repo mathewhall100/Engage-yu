@@ -64,15 +64,15 @@ export const filterByPerson = (data, id, filter, ) => {
     let filteredData
     switch (filter) {
     case "provider":
-        filteredData = data.filter(d => d.primaryId === id)
+        filteredData = data.filter(d => d.primary.id === id)
         console.log("Dataout: ", filter, " : ", filteredData)
         return filteredData
     case "all":
-        filteredData =  data.filter(d => d.requesterId === id || d.primaryId === id);
+        filteredData =  data.filter(d => d.requester.id === id || d.primary.id === id);
         console.log("dataout: ", filter, " : ", filteredData)
         return filteredData
     default:  
-        filteredData =  data.filter(d => d.requesterId === id);
+        filteredData =  data.filter(d => d.requester.id === id);
         console.log("dataout: ", filter, " : ", filteredData)
         return filteredData
     }

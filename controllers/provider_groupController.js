@@ -8,7 +8,7 @@ module.exports = {
         console.log("Provider_group controller called to 'findAll'");
         db.Provider_group
         .find({})
-        .sort( {"name" : 1} )
+        .sort( {"group_name" : 1} )
         .then(provider_groupList =>  {
             console.log("provider_group controller returned", provider_groupList.length, " provider groups:")
             console.log(provider_groupList.map(group => {console.log(">> ", group.group_name) }) )

@@ -42,10 +42,14 @@ export const patientUpdateSave= (values, patientInfo) => {
                 .catch(error => {dispatch(patientUpdateSaveFailure(error)) })
             } else if (values.provider) {
                     return patient_infoAPI.updateProvider(patientInfo._id, {
-                    primary_provider_ref: values.provider[0],
-                    primary_provider_id: values.provider[0],
-                    primary_provider_firstname: `${values.provider[1]}`,
-                    primary_provider_lastname: `${values.provider[2]}`,
+                    primary_provider: {
+                        ref: values.provider[0],
+                        id: values.provider[0],
+                        title: values.provider[1],
+                        firstname: values.provider[2],
+                        lastname: values.provider[3],
+                        role: values.provider[4]
+                    }
                 })
                 .then(res => {dispatch(patientUpdateSaveSuccess(res.data))})
                 .catch(error => {dispatch(patientUpdateSaveFailure(error)) })

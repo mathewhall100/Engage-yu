@@ -1,7 +1,7 @@
 import React, {Component}from 'react';
 import providerAPI from "../../../utils/provider.js";
 import FormSelect from './formSelect';
-import { startCase } from 'lodash';
+import ProviderName from '../providerName'
 
 export default class FormProviderSelect extends Component {
 
@@ -18,15 +18,17 @@ export default class FormProviderSelect extends Component {
             providers = res.data.providerList.map(provider => {
                 let val = [
                     provider._id, 
+                    provider.title,
                     provider.firstname,
                     provider.lastname,
+                    provider.provider_role.role,
                     provider.provider_group_ref,
                     provider.provider_group_id,
                     provider.provider_group_name,
                 ];
                 return {
                     value: val,
-                    text: `Dr ${startCase(provider.firstname)} ${startCase(provider.lastname)}`,
+                    text: <ProviderName title={provider.title} firstname={provider.firstname} lastname={provider.lastname} />,
                 };
             })
             if (providers && providers.length > 0) this.setState({providers: providers})
@@ -50,7 +52,7 @@ export default class FormProviderSelect extends Component {
                 localStorage.getItem("user_provider_group_ref"),
                 localStorage.getItem("user_provider_group_name") 
             ],
-            text: `Dr ${startCase(localStorage.getItem("user_provider_firstname"))} ${startCase(localStorage.getItem("user_provider_lastname"))}`
+            text: <ProviderName title={""} firstname={localStorage.getItem("user_provider_firstname")} lastname={localStorage.getItem("user_provider_lastname")} />
             },{
             value: [
                 "",

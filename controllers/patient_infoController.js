@@ -7,10 +7,9 @@ module.exports = {
     // Returns json list of patients details only (sorted alphabeltically by last_name)
     findAllByProvider: function(req, res) {
         console.log("Patient_info controller called to 'find all by provider'" + req.params.id);
-        console.log(`Requester:  ${req.user}`);
 
             db.Patient_info
-            .find( {primary_provider_id: req.params.id}, {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1, primary_provider_firstname: 1, primary_provider_lastname: 1} )
+            .find( {"primary_provider.id" : req.params.id}, {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1, primary_provider: 1} )
             .sort( {"patient_details.lastname": 1} )
             .then(patients=> {
                 console.log("RESULT:", patients)
@@ -22,13 +21,13 @@ module.exports = {
             })
     }, 
 
-     // Fetch personal details of all patients of a particular care group
-     //requires caregroup id as searchterm in req.body.searchId
+    // Fetch personal details of all patients of a particular care group
+    //requires caregroup id as searchterm in req.body.searchId
     // Returns json list of patients details only (sorted alphabeltically by last_name)
     findAllByGroup: function(req, res) {
         console.log("Patient_info controller called to 'find all by provider group'", req.body );
             db.Patient_info
-            .find( {provider_group_id: req.params.id}, {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1, primary_provider_firstname: 1, primary_provider_lastname: 1} )
+            .find( {"provider_group.id": req.params.id}, {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1, primary_provider: 1 } )
             .sort( {"patient_details.lastname": 1} )
             .then(patients=> {
                 console.log("RESULT:", patients)
@@ -48,7 +47,7 @@ module.exports = {
         console.log("Patient_info controller called to 'findById'");
             db.Patient_info
             .findById(req.params.id)
-            .populate("enrolled_by_ref", "firstname lastname")
+            .populate("enrolled_by.ref", "firstname lastname")
             .populate("primary_provider_ref", "firstname lastname")
             .then(patient => {
                 console.log("RESULT:", patient);
@@ -235,11 +234,8 @@ module.exports = {
         .findOneAndUpdate(
             { _id: req.params.id },
             { $set: {
-                "primary_provider_ref": req.body.primary_provider_ref,
-                "primary_provider_id": req.body.primary_provider_id,
-                "primary_provider_firstname": req.body.primary_provider_firstname,
-                "primary_provider_lastname": req.body.primary_provider_lastname
-                    } 
+                "primary_provider" : req.body.primary_provider
+            } 
             }, opts
         )
         .then(result => {

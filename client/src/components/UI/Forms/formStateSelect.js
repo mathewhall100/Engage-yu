@@ -20,7 +20,7 @@ export default class FormStateSelect extends PureComponent {
         };
 
         return (
-            <FormSelect name={name} label="State" items={getStatesList(states)} width={215}/>
+            <FormSelect name={name} label="State" items={getStatesList(states)} width={180}/>
         );
     }
 }

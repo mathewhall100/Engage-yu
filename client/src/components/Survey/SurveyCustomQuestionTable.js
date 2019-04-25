@@ -91,7 +91,7 @@ class SurveyCustomQuestionTable extends Component {
 
     render () {
 
-        const { classes, customQuestions, selected, type } = this.props;
+        const { classes, customQuestions=[], selected, type } = this.props;
         const { rowsPerPage, page, popperContent, popperOpen, popperType, arrowRef, anchorEl } = this.state;
 
 
@@ -179,10 +179,6 @@ class SurveyCustomQuestionTable extends Component {
                                                     </tbody>
                                                 </table>
                                             <br />
-                                            <Typography variant="subtitle2">
-                                                {!popperContent.addedBy ? `Added ` : popperContent.addedBy === `Default question` ? `Default question.` : `Added by ${popperContent.addedBy}.`}
-                                                {popperContent.date_added ? ` on ${moment(popperContent.date_added).format("MMM Do YYYY")}` : null}
-                                            </Typography>
                                         </div>
                                     }
 

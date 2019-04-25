@@ -103,7 +103,7 @@ export default {
     },
 
     updateProvider: function(id, info) {
-        console.log("Axios call made to '/api/patient_info' to 'updateProvider' ", id);
+        console.log("Axios call made to '/api/patient_info' to 'updateProvider' ", id, info);
         return axios.put("/api/patient_info/updateProvider/"+id, info, { 
             headers: {
                 'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')

@@ -49,8 +49,10 @@ class Report extends Component {
         return (
             <Paper className={classes.root}>
                 <ReportPatientDetails />
-                <ReportSummary  episodeId={episodeId} /> <br /> 
+                <ReportSummary  episodeId={episodeId} /> 
+                <br /> 
                 <ReportListSurveys changeEpisode={this.handleChangeEpisode} /> 
+                <br />
             </Paper> 
         );
     }

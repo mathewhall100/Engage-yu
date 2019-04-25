@@ -10,6 +10,7 @@ import ContactIcon from '@material-ui/icons/ContactMail';
 import BtnCloseIcon from '../UI/Buttons/btnCloseIcon';
 import BtnGroup from '../UI/Buttons/btnGroup';
 import { loadPatient } from '../../actions'
+import { providerName } from '../../logic/textFunctions'
 import CallBack from '../UI/callback'
 
 const styles = () => ({
@@ -51,9 +52,9 @@ class PatientFindDisplay extends PureComponent {
             {caption: "", info: ""},
             {caption: "", info: ""}
         ]};
-        const getInfoV = (patientInfo) => {return [
+        const getInfoV = (patientInfo) => { return [
              ["Email", "Contact phone", "Primary provider", "Care group"],
-             [patientInfo.email, patientInfo.phone, startCase(`Dr. ${patientInfo.primary_provider_firstname} ${patientInfo.primary_provider_lastname}`), startCase(`${patientInfo.provider_group_name}`)],
+             [patientInfo.email, patientInfo.phone, providerName(patientInfo.primary_provider.title, patientInfo.primary_provider.firstname, patientInfo.primary_provider.lastname), startCase(`${patientInfo.provider_group.name}`)],
              ["Active diary cards", "Pending diary cards", "Awaiting review", "Actioned"],
              [this.findNumSurveys("active"), this.findNumSurveys("pending"),this.findNumSurveys("awaiting review"), this.findNumSurveys("actioned")]
         ]};

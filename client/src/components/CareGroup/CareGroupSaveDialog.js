@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom';
-import { isEmpty } from 'lodash'
+import { startCase, isEmpty } from 'lodash'
 import PropTypes from 'prop-types';
 import { Dialog, DialogActions, DialogContent, DialogTitle, withMobileDialog, Typography, Grid} from '@material-ui/core'
 import BtnGroup from '../UI/Buttons/btnGroup'
@@ -63,7 +63,7 @@ class CareGroupSaveDialog extends React.Component {
 								<Typography variant="subtitle2" gutterBottom>Name:</Typography> 
 							</Grid>
 							<Grid item xs={10}>
-								<Typography variant="subtitle2" gutterBottom>{newCareGroup.group_name}</Typography> 
+								<Typography variant="subtitle2" gutterBottom>{startCase(newCareGroup.group_name)}</Typography> 
 							</Grid>
 						</Grid>
 						<br /> <br />

@@ -116,7 +116,7 @@ function validate(values) {
     errors.phone = val.validatePhone(values.phone, true)
     errors.provider = val.validateIsRequired(values.provider)
     errors.status = val.validateStatus(values.status, true)
-    errors.emailConfirm = val.validateEmail(values.emailConfirm, true)
+    errors.emailConfirm = val.validateEmails(values.email, values.emailConfirm) 
     errors.password = val.validatePassword(values.password, true)
 
     // If errors is empty, then form good to submit

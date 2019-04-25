@@ -13,6 +13,7 @@ import DashboardTableStatusBar from './DashboardTableStatusBar';
 import { loadActiveSurveys, loadPatient, dashboardData } from '../../actions';
 import { filterByPerson, filterByStatus, filterByChecked } from './dashboardLogic';
 import { stableSort, getSorting } from '../../logic/tableSortFunctions';
+import ProviderName from '../UI/providerName'
 
 const styles = () => ({
     root: {
@@ -171,7 +172,7 @@ class DashboardTable extends Component {
             { id: 'end', numeric: false, disablePadding: false, label: 'End Date' },
             { id: 'timeframe', numeric: false, disablePadding: false, label: 'Timeframe' },
             { id: 'progress', numeric: false, disablePadding: false, label: 'Progress' },
-            { id: 'requester', numeric: false, disablePadding: false, label: 'Requester' }
+            { id: 'requester', numeric: false, disablePadding: false, label: 'Requesting Provider' }
         ];
 
         if (error) {
@@ -228,7 +229,13 @@ class DashboardTable extends Component {
                                                 <CustomTableCell>
                                                     <DashboardTableStatusBar adjustedStatus={d.adjustedStatus} compliance={d.compliance} progress={d.progress} />
                                                 </CustomTableCell>
-                                                <CustomTableCell>Dr. {startCase(d.requester)}</CustomTableCell>
+                                                <CustomTableCell onMouseOver={() => {console.log("hover")}}>
+                                                    <ProviderName 
+                                                        title={d.requester.title} 
+                                                        firstname={d.requester.firstname} 
+                                                        lastname={d.requester.lastname} 
+                                                    />
+                                                </CustomTableCell>
                                             </TableRow>
                                         );
                                     })

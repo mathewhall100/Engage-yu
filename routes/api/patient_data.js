@@ -40,13 +40,13 @@ router
 
 // Matches with '/api/patient_data/editRecord/'
 router
-    .route('/editRecord/:id/:episode/:record_id/:status')
+    .route('/editRecord/:id')
     .put(checkJwt, patient_dataController.editRecord);
 
 // Matches with '/api/patient_data/editLastEpisode/'
 router
-    .route('/editLastEpisode/:id/:status')
-    .put(checkJwt, patient_dataController.editActiveStatus);
+    .route('/updateStatus/:id/')
+    .put(checkJwt, patient_dataController.updateStatus);
 
 router
     .route('/delete/:id')

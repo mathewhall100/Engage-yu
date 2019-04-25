@@ -8,7 +8,7 @@ import BtnGroup from '../UI/Buttons/btnGroup'
 import DialogSaveFailure from '../UI/Dialogs/dialogSaveFailure'
 import DialogSaving from '../UI/Dialogs/dialogSaving'
 import { loadPatient } from '../../actions'
-
+import ProviderName from '../UI/providerName'
 
 class PatientSaveDialog extends React.Component {
 
@@ -88,7 +88,7 @@ class PatientSaveDialog extends React.Component {
 									<Typography variant="subtitle2" gutterBottom>{newPatient.email}</Typography>
 									<Typography variant="subtitle2" gutterBottom>{newPatient.phone}</Typography>
 									<Typography variant="subtitle2" gutterBottom>{newPatient.hospital_id}</Typography>
-									<Typography variant="subtitle2" gutterBottom>{`Dr. ${newPatient.primary_provider_firstname} ${newPatient.primary_provider_lastname}`}</Typography>
+									<Typography variant="subtitle2" gutterBottom><ProviderName title={newPatient.primary_provider.title} firstname={newPatient.primary_provider.firstname} lastname={newPatient.primary_provider.lastname} /></Typography>
 								</Grid>
 							</Grid>
 							<br /><br />

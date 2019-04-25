@@ -26,7 +26,7 @@ module.exports = {
     findAllByGroup: function(req, res) {
         console.log("Provider controller called to 'find all by provider group' ", req.params.id );
         db.Provider
-        .find( {provider_group_id: req.params.id} )
+        .find( {"provider_group.id": req.params.id} )
         .sort( {"lastname": 1} )
         .then(providerList => {
             console.log("RESULT:", providerList)

@@ -43,6 +43,15 @@ class ProviderAdd extends Component {
         this.props.dispatch(providerSave(values))
      }
 
+    // Check if provider should be added as a user with login capability
+    queryEnableLogin = () => {
+        if (this.props.enrollForm && this.props.enrollForm.values) {
+            const { signup, email, password } = this.props.enrollForm.values
+            if (signup && email && password) return true
+        }
+        return false
+    }
+
     // Clear form entries and reset values using Redux Form 'reset'.
     handleClearForm = () => {
         this.props.reset('EnrollProviderForm')
@@ -52,29 +61,58 @@ class ProviderAdd extends Component {
     render() {
         const { handleSubmit, classes, pristine, submitting, newProvider, errorNewProvider, loadingNewProvider, enrollForm  } = this.props;
 
+        const titleList = [
+            {id: "1", value: 'prof', text: 'Prof.' },
+            {id: "2", value: 'dr', text: 'Dr.' },
+            {id: "3", value: 'rn', text: 'RN' },
+            {id: "4", value: 'np', text: 'NP' },
+            {id: "5", value: 'dnp', text: 'DNP' },
+            {id: "6", value: 'admin', text: 'admin' },
+            {id: "7", value: 'other', text: 'other' },
+        ]
+
         const roleList =  [
-            {id: "1", value: 'Physician (specialist)', text: 'Physician (specialist)' },
-            {id: "2", value: 'Physician (hospitalist)', text: 'Physician (specialist)' },
-            {id: "3", value: 'Physician (primary care)', text: 'Physician (primary care)' },
-            {id: "4", value: 'Nurse (specialist)', text: 'Nurse (specialist)'},
-            {id: "5", value: 'Other', text: 'Other'}
+            {id: "1", value: 'physician (specialist)', text: 'Physician (specialist)' },
+            {id: "2", value: 'physician (hospitalist)', text: 'Physician (specialist)' },
+            {id: "3", value: 'physician (primary care)', text: 'Physician (primary care)' },
+            {id: "4", value: 'nurse (registered)', text: 'Nurse (registered)'},
+            {id: "5", value: 'nurse practitioner', text: 'Nurse practitioner'},
+            {id: "6", value: 'admin', text: 'Admin'},
+            {id: "7", value: 'other', text: 'Other'},
         ]
 
         const formComponents = [
-            <FormTextFocused name="firstname" label="Firstname" width="320" />,
+            <div style={{width: "320px"}}> 
+                <span style={{position: "relative", top: "16px"}}>
+                    <FormSelect name="title" label="Title" width="70" items={titleList} />
+                </span>
+                <span style={{float: "right"}}> 
+                    <FormTextFocused name="firstname" label="Firstname" width="170" />
+                </span>
+            </div>,
+          
             <FormText name="lastname" label="Lastname" width="320" />,
             <FormText name="officename" label="Office/Hospital" width="320" />,
             <FormText name="officestreet" label="Address (street)" width="320" />,
             <FormText name="officecity" label="City" width="320" />,
-            <div style={{paddingTop: "32px"}}><FormStateSelect name="officestate"/></div>,
-            <FormText name="officezip" label="Zip" width="320" />,
-            <div />,
+            <div style={{width: "320px"}}>
+                <span style={{position: "relative", top: "16px"}}>
+                    <FormStateSelect name="officestate"/>
+                </span>
+                <span style={{float: 'right'}}>
+                    <FormText name="officezip" label="Zip" width="60" />
+                </span>
+            </div>,
             <FormText name="email" label="Email (john.doe@caregroup.com)" width="320" />,
-            <FormText name="phone1" label="Office phone (000-000-0000)" width="320" />,
-            <FormText name="phone2" label="Cell (optional)" width="320" />,
-            <FormText name="phone3" label="Other phone/pager" width="320" />,
-            <div style={{paddingTop: "32px"}}><FormSelect name="role" label="Role" width="320" items={roleList} /></div>,
-            <div style={{paddingTop: "32px"}}><CareGroupSelect width="320" /></div>,
+            <FormText name="phoneoffice" label="Office phone (000-000-0000)" width="320" />,
+            <FormText name="phonecell" label="Cell (optional)" width="320" />,
+            <FormText name="phonepager" label="Pager (optional)" width="320" />,
+            <div style={{paddingTop: "32px"}}>
+                <FormSelect name="role" label="Role" width="320" items={roleList} />
+            </div>,
+            <div style={{paddingTop: "32px"}}>
+                <CareGroupSelect width="320" />
+            </div>,
         ]
 
         return (
@@ -95,13 +133,13 @@ class ProviderAdd extends Component {
 
                         <br /><br />
 
-                        <FormCheckbox name="signUp" label="signup" />
+                        <FormCheckbox name="signup" label="signup" />
 
                         <Typography variant="subtitle2" inline gutterBottom>Enable provider login.</Typography>
 
                         <br />
 
-                        {enrollForm && enrollForm.values && enrollForm.values.signUp === true && <Fragment> 
+                        {enrollForm && enrollForm.values && enrollForm.values.signup === true && <Fragment> 
                             <Typography variant="body1" gutterBottom style={{width: "85%", maxWidth: '900px'}}> 
                                 Log in requires a registered email and password. Please confirm the provider's email address and enter a temporary password. The provider will be prompted to change the temporary password to a secure one of their choice when they first login. 
                                 </Typography>
@@ -123,7 +161,7 @@ class ProviderAdd extends Component {
 
                 </Card>
 
-                {(loadingNewProvider || errorNewProvider || !isEmpty(newProvider)) && <ProviderSaveDialog enableLogin={enrollForm.values.signUp}/> }
+                {(loadingNewProvider || errorNewProvider || !isEmpty(newProvider)) && <ProviderSaveDialog enableLogin={this.queryEnableLogin()}/> }
 
             </Fragment>
         );
@@ -136,20 +174,21 @@ function validate(values) {
     console.log("Error values: ", values) // -> { object containing all values of form entries } 
     const errors = {}; // error accumulator
     // validate inputs from 'values'; true=required
+    errors.title = val.validateIsRequired(values.title)
     errors.firstname = val.validateName(values.firstname, true)
     errors.lastname = val.validateName(values.lastname, true)
-    errors.officename = val.validateName(values.officename, true)
-    errors.officestreet = val.validateName(values.officestreet, true)
+    errors.officename = val.validateAddress(values.officename, true)
+    errors.officestreet = val.validateAddress(values.officestreet, true)
     errors.officecity = val.validateName(values.officecity, true)
     errors.officestate = val.validateState(values.officestate, true)
     errors.officezip = val.validateZip(values.officezip, true)
     errors.email = val.validateEmail(values.email, true)
-    errors.phone1 = val.validatePhone(values.phone1, true)
-    errors.phone2 = val.validatePhone(values.phone2, false)
-    errors.phone3 = val.validatePhoneOther(values.phone3, false)
+    errors.phoneoffice = val.validatePhone(values.phoneoffice, true)
+    errors.phonecell = val.validatePhone(values.phonecell, false)
+    errors.phonepager = val.validatePhoneOther(values.phonepager, false)
     errors.caregroup = val.validateIsRequired(values.caregroup)
     errors.role = val.validateIsRequired(values.role)
-    errors.emailConfirm = val.validateEmails(values.email, values.emailConfirm) // need to write validation code and import it
+    errors.emailConfirm = val.validateEmails(values.email, values.emailConfirm) 
     errors.password = val.validatePassword(values.password)
     //If errors is empty, then form good to submit
     console.log("Errors: ", errors)

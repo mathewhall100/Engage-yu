@@ -48,21 +48,35 @@ export const providerUpdateSave = (values, provider) => {
                     dispatch(providerUpdateSaveFailure(error)) 
                 })
     
-            } else if (values.phone2 || values.phone2 || values.phone3) {
+            } else if (values.phoneoffice) {
                 providerAPI.update(provider._id, {
-                    phone: [{
-                        phone: "office", 
-                        number: values.phone1 ? `${values.phone1.slice(0, values.phone1.indexOf("ext")).trim()}` : provider.phone[0].number, 
-                        ext:  values.phone1 ? `${values.phone1.slice((values.phone1.indexOf("ext")+3)).trim()}` : provider.phone[0].ext
-                        }, {
-                        phone: "cell", 
-                        number: values.phone2 ? values.phone2 : provider.phone[1].number,
-                        ext: "" 
-                        }, {
-                        phone: "other", 
-                        number: values.phone3 ? `${values.phone3.slice(0, values.phone3.indexOf("ext")).trim()}` : provider.phone[2].number,
-                        ext:  values.phone3 ? `${values.phone3.slice((values.phone3.indexOf("ext")+3)).trim()}` : provider.phone[2].ext
-                    }]
+                    phone_office: values.phoneoffice,
+                })
+                .then(res => {
+                    dispatch(providerUpdateSaveSuccess(res.data))
+                    console.log("res.data: ", res.data)
+                })
+                .catch(error => {
+                    console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
+                    console.log(error);
+                    dispatch(providerUpdateSaveFailure(error)) 
+                })
+            } else if (values.phonecell) {
+                providerAPI.update(provider._id, {
+                    phone_cell: values.phonecell,
+                })
+                .then(res => {
+                    dispatch(providerUpdateSaveSuccess(res.data))
+                    console.log("res.data: ", res.data)
+                })
+                .catch(error => {
+                    console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
+                    console.log(error);
+                    dispatch(providerUpdateSaveFailure(error)) 
+                })
+            } else if (values.phonepager) {
+                providerAPI.update(provider._id, {
+                    phone_pager: values.phonepager,
                 })
                 .then(res => {
                     dispatch(providerUpdateSaveSuccess(res.data))
@@ -75,9 +89,11 @@ export const providerUpdateSave = (values, provider) => {
                 })
             } else if (values.caregroup) {
                 providerAPI.update(provider._id, {
-                    provider_group_ref: values.caregroup[0],
-                    provider_group_id: values.caregroup[0],
-                    provider_group_name: values.caregroup[1]
+                    provider_group: {
+                        ref: values.caregroup[0],
+                        id: values.caregroup[0],
+                        name: values.caregroup[1]
+                    }
                 })
                 .then(res => {
                     dispatch(providerUpdateSaveSuccess(res.data))

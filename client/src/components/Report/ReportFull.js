@@ -140,7 +140,7 @@ class ReportFull extends Component {
                                 <ReportSurveyDetails episode={episode}/> 
                             </Grid>
                             <Grid item xs={6}>
-                                <ReportRequestDetails episode={episode}/>
+                                <ReportRequestDetails episode={episode} patientInfo={patientInfo}/>
                             </Grid>
                         </Grid>
 

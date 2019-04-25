@@ -39,7 +39,7 @@ const styles = theme => ({
         display: 'flex', 
         flexDirection: 'row', 
         justifyContent: "space-between", 
-        marginTop: "10px"
+        marginTop: "12px",
     },
     customQuestionsContainer: {
         width: "500px",
@@ -119,9 +119,7 @@ class SurveyForm extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.defaultQuestion !== this.props.defaultQuestion) {
-            const tempArray = []
-            tempArray.push(nextProps.defaultQuestion)
-            this.setState({selectedQuestions: tempArray})
+            this.setState({selectedQuestions: [nextProps.defaultQuestion]})
         }
     }
 
@@ -252,7 +250,7 @@ class SurveyForm extends Component {
                 <form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
 
                         <Typography variant="subtitle1" className={classes.questionLabel}>Start Date</Typography>
-                        <div style={{display: 'flex', flexDirection: 'row', marginBottom: "24px"}}>
+                        <div style={{display: 'flex', flexDirection: 'row', marginBottom: "16px"}}>
                             <SurveyFormRadio  
                                 name="startdate"
                                 items={startDates}
@@ -264,7 +262,7 @@ class SurveyForm extends Component {
                         </div>
 
                         <Typography variant="subtitle1" className={classes.questionLabel} >Duration</Typography>
-                        <div style={{marginBottom: "32px"}}>
+                        <div style={{marginBottom: "20px"}}>
                             <SurveyFormRadio
                                 name="duration" 
                                 items={durations} 
@@ -283,7 +281,7 @@ class SurveyForm extends Component {
                                 {selectedQuestions ? 
                                     <React.Fragment>
                                         {selectedQuestions.map((question, idx) =>
-                                            <div key={idx}style={{marginTop: "8px"}}>
+                                            <div key={idx} style={{marginBottom: "6px"}}>
                                                 <SurveyQuestionPanel
                                                     question = {question}
                                                     checked={true}
@@ -389,7 +387,7 @@ class SurveyForm extends Component {
                             <div className={classes.settingsContainer}>
 
                                 <div className={classes.containerTitleBanner}>
-                                    <Typography variant="subtitle1" inline className={classes.containerTitleText}>Settings</Typography>
+                                    <Typography variant="subtitle1" inline className={classes.containerTitleText}>Advanced settings</Typography>
                                     <Button className={classes.closeBtn} onClick={() => this.setState({settings: false})}>
                                         <CancelIcon className={classes.closeIcon} />
                                     </Button>
@@ -398,7 +396,7 @@ class SurveyForm extends Component {
                                 <div className={classes.customContent}>
                                     <br />
                                     <Typography variant="subtitle1" className={classes.questionLabel}>Interval between entries</Typography>
-                                    <div style={{marginBottom: "24px"}}>
+                                    <div style={{marginBottom: "16px"}}>
                                         <SurveyFormRadio
                                             name="frequency"
                                             items={frequencies}
@@ -406,7 +404,7 @@ class SurveyForm extends Component {
                                     </div>
                                     
                                     <Typography variant="subtitle1" className={classes.questionLabel}>Time margin for entries</Typography>
-                                    <div style={{marginBottom: "24px"}}>
+                                    <div style={{marginBottom: "16px"}}>
                                         <SurveyFormRadio
                                             name="timeMargin"
                                             items={timeMargins}
@@ -429,7 +427,7 @@ class SurveyForm extends Component {
                             <BtnActionLink url='/admin/patient/find' text="cancel" warning={true}/>
                             {!settings &&
                                 <Typography variant="button" inline className={classes.underlineBtn} onClick={() => this.setState({settings: true}) } >
-                                    settings
+                                    advanced settings
                                 </Typography> 
                             }
                         </div>

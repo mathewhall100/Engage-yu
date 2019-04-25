@@ -14,7 +14,6 @@ const transporter = nodemailer.createTransport({
 })
 
 const send = ({ email, name, text }) => {
-    // const from = name && email ? `${name} <${email}>` : `${name || email}`
     const message = {
         from: email, 
         to: "mathew.hall100@gmail.com",

@@ -74,7 +74,7 @@ Callback.propTypes = {
     text: PropTypes.string,
     fallbackTitle: PropTypes.string,
     fallBacktext: PropTypes.string,
-    noSpin: PropTypes.boolean
+    //noSpin: PropTypes.boolean
 };
 
 export default withStyles(styles)(Callback);
