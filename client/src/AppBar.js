@@ -48,6 +48,10 @@ class TopBar extends Component {
         redirect : false,
     }
 
+    handleHelp = () => {
+        // this.props.history.push({pathname: '/help'}) --> when coded out
+    }
+
     handleMyAccount = () => {
         this.props.history.push({pathname: '/account'})
     }
@@ -100,7 +104,7 @@ class TopBar extends Component {
                     </div>
 
                     <div className={classes.appBarBtns}>
-                        <BtnAction type="button" text="Help" marginRight={true}/>
+                        <BtnAction type="button" text="Help" marginRight={true} handleAction={this.handleHelp}/>
                         <BtnAction type="button" text="My Account" marginRight={true} handleAction={this.handleMyAccount} />
                         <BtnAction type="button" text="Logout" handleAction={this.handleLogout} />
                     </div>

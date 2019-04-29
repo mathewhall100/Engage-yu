@@ -61,8 +61,8 @@ class FormSelectWithChip extends Component {
 						renderValue={selected => ( <Chip key={selected} label={selected} className={classes.chip}/> )}
 						MenuProps={MenuProps}
 					>
-						{menuItems.map(item => (
-							<MenuItem key={item.key} value={item.value} style={getStyles(item.value, selected)} >
+						{menuItems.map((item, idx) => (
+							<MenuItem key={idx} value={item.value} style={getStyles(item.value, selected)} >
 								{item.text}
 							</MenuItem>
 						))}

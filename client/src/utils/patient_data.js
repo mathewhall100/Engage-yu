@@ -46,7 +46,7 @@ export default {
     },
 
     updateStatus: function(id, info){
-        console.log("Axios call made to '/api/patient_data' to 'updateStatus'");
+        console.log("Axios call made to '/api/patient_data' to 'updateStatus'", id, " : ", info);
         return axios.put("/api/patient_data/updateStatus/"+id, info, { 
             headers: {'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')}
         });

@@ -3,10 +3,8 @@ import { connect } from 'react-redux';
 import { withRouter} from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
-import { withStyles, Button, Grid, Paper, Typography} from '@material-ui/core';
+import { withStyles, Grid, Typography} from '@material-ui/core';
 import CallBack from '../UI/callback';
-import Btn from '../UI/Buttons/btn'
-import ReportPatientDetails from './ReportPatientDetails';
 import ReportTable from './ReportTable';
 import ReportBarGraph from './ReportBarGraph';
 import ReportGraphQuestionBar from './ReportGraphQuestionBar'
@@ -99,7 +97,7 @@ class ReportSummary extends Component {
 
     render () {
         const { classes, patientInfo, patientData, error, loading } = this.props;
-        const { episode, questions, episodeDataForDisplay, displayQuestion, noEpisodes, noDiaryCard } = this.state;
+        const { episode, questions, episodeDataForDisplay, displayQuestion, noDiaryCard } = this.state;
 
         const RenderPendingMsg = () => 
             <div className={classes.graphContainer}>
@@ -110,11 +108,6 @@ class ReportSummary extends Component {
             <div className={classes.graphContainer}>
                 We cannot display this diary card at present. Try refreshing the browser or try viewing another diary card.
             </div> 
-
-        const RenderNoDiaryCardsMsg = () => 
-            <Typography variant="subtitle1">
-                There are no diary cards to display for this patient. 
-            </Typography> 
 
         if (loading) { 
             return <CallBack />

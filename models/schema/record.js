@@ -45,9 +45,20 @@ const recordSchema = new Schema({
     data: [{ 
         question_number: Number,
         question_answers: [{type: Boolean }]
-    }]
 
-});
+        // other data
+        // patient notes/message
+        // audio message
+        // voice recording
+        // video 
+        // wearable data // apple watch // great lakes neurotech
+        // specific kinetic tests// finger tap etc
+    }]
+}, 
+
+    { _id: false }
+
+);
 
 
 module.exports = recordSchema; 

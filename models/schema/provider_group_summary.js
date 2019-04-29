@@ -27,7 +27,11 @@ const provider_group_summarySchema = new Schema({
             },
             message: props => `${props.value} is not a valid name!`
         },
-    },
-});
+    }
+},
+
+    { _id: false }
+
+);
 
 module.exports = provider_group_summarySchema;

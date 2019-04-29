@@ -16,12 +16,10 @@ export const createStatus = (ep) => {
     let currentHour = 0
 
     // If active but passed the survey end date, then set as awaiting review.
-   
     if (ep.status === "active" && (moment().isAfter(moment(end).add(1, 'd')))) { 
         adjustedStatus = "awaiting review"
-        //console.log("end: ", end, " & ", moment()) 
-        
-        // api call here to change status in database
+        //console.log("end: ", end, " & ", moment())
+        // *********** api call here to change status in database ***************
     } else {adjustedStatus = ep.status}
     
          

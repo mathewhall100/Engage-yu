@@ -8,7 +8,6 @@ import FormBox from '../UI/Forms/formBox'
 import { validateIsRequired } from '../../logic/formValidations';
 import providerAPI from "../../utils/provider.js";
 import { loadProvider } from '../../actions'
-// import { providerAction } from '../../actions'
 
 const styles = theme => ({
 	textField: {

@@ -48,7 +48,7 @@ module.exports = {
             db.Patient_info
             .findById(req.params.id)
             .populate("enrolled_by.ref", "firstname lastname")
-            .populate("primary_provider_ref", "firstname lastname")
+            .populate("primary_provider.ref", "firstname lastname")
             .then(patient => {
                 console.log("RESULT:", patient);
                 res.json(patient)
@@ -84,8 +84,8 @@ module.exports = {
         console.log("Patient_info controller called to 'findBySearchterm' ", req.body);
             db.Patient_info
             .find(req.body,  {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1})
-            .populate("enrolled_by", "name")
-            .populate("primary_provider_ref", "name")
+            .populate("enrolled_by.ref", "name")
+            .populate("primary_provider.ref", "name")
             .then(patient => {
                 console.log("RESULT:", patient);
                 res.json(patient);

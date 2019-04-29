@@ -30,10 +30,7 @@ module.exports = {
         db.Patient_data
             .find({ 
                 $and : [
-                    { $or: [
-                        { "episodes.requesting_provider.id" : id },
-                        { "episodes.primary_provider.id" : id } 
-                    ]},
+                    { "episodes.requesting_provider.id" : id },
                     { $or: [
                         { "episodes.status" : "pending" },
                         { "episodes.status" : "active" },
@@ -208,43 +205,62 @@ module.exports = {
     // Edit the status field of an episode
     // To be sent req.params.id of patient and req.body of episode id to chnage and new status
     updateStatus : function(req, res) {
-        console.log("Patient_data controller called to 'updateStatus");
+        console.log("Patient_data controller called to 'updateStatus'");
         console.log("patient id is  : ", req.params.id);
-        console.log("episodeI id is : ", req.body.episode_id);
-        console.log("status is : ", req.body.new_status);
-        let episodeIndex = null
-        db.Patient_data
-        .find({
-            _id: req.params.id
-        }, { "episodes" : 1 }
-        ).then( result => {
-            let episodes = result[0].episodes || []
-            episodes.map((ep, index)=> {
-                if (ep._id === req.body.episodeId) {
-                    episodeIndex = index
-                }
-            })
-            if (episodeIndex !== null) {
-                episodes[episodeindex].status = req.body.new_status
-            }
+        console.log("episodeI id is : ", req.body.episodeId);
+        console.log("status is : ", req.body.newStatus);
+        console.log("updater : ", req.body.updater);
+        console.log("msg : ", req.body.msg);
+        let updObj= {};
+        let msgObj = {};
+        switch (req.body.newStatus) {
+            case "cancelled":
+                updObj = {"episodes.$[elem].status" : req.body.newStatus, "episodes.$[elem].cancelled" : req.body.updater}
+                break;
+            case "actioned":
+                updObj = {"episodes.$[elem].status" : req.body.newStatus, "episodes.$[elem].actioned" : req.body.updater}
+                break;
+            case "archived":
+                updObj = {"episodes.$[elem].status" : req.body.newStatus, "episodes.$[elem].archived" : req.body.updater}
+                break;
+            default: updObj = null
+        }
+        if (req.body.msg) {
+            msgObj = {"episodes.$[elem].messages" : req.body.msg}
             db.Patient_data
                 .findOneAndUpdate(
                     { _id: req.params.id },
-                    { $set: { "email": req.body.email }
-                })
+                    { $set: updObj, $push: msgObj },
+                    { arrayFilters: [ { "elem._id": req.body.episodeId} ] }
+                )
                 .then(result => {
                     console.log("RESULT:", result);
                     res.json(result)
                 })
-            })
             .catch(err => {
                 console.log(`EDIT ACTIVE STATUS CONTROLLER ERROR: ${err}`);
                 res.status(422).json(err);
             })
-        
+        } else {
+            db.Patient_data
+            .findOneAndUpdate(
+                { _id: req.params.id },
+                { $set: updObj },
+                { arrayFilters: [ { "elem._id": req.body.episodeId} ] }
+            )
+            .then(result => {
+                console.log("RESULT:", result);
+                res.json(result)
+            })
+        .catch(err => {
+            console.log(`EDIT ACTIVE STATUS CONTROLLER ERROR: ${err}`);
+            res.status(422).json(err);
+        })
+        }
+            
     },
 
-     // Edit the data filed of a record
+     // Edit the data field of a record
     // To be sent req.params.id of patient and req.body of new episode info
     editRecord : function(req, res) {
         console.log("Patient_data controller called to 'editRecord'", req.body);

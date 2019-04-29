@@ -196,6 +196,11 @@ const validate = (values) => {
     return errors;
 }
 
+const formData = {
+    form: 'updateForm', //unique identifier for this form 
+    validate     
+}
+
 const mapStateToProps = (state) => {
     console.log("State : ", state);
     return {
@@ -207,11 +212,6 @@ const mapStateToProps = (state) => {
         loadingProviderUpdate: state.providerUpdate.loading
     }
 };
-
-const formData = {
-    form: 'updateForm', //unique identifier for this form 
-    validate     
-}
 
 ProviderUpdate = connect(mapStateToProps)(ProviderUpdate)
 ProviderUpdate = reduxForm(formData)(ProviderUpdate)

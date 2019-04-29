@@ -23,8 +23,17 @@ const messageSchema = new Schema({
         required: [true, "No question supplied"]
     },
 
-    read: { type: Boolean },
-    time_read: { type: Date, default: new Date()},
-});
+    read: { 
+        type: Boolean
+    },
+
+    time_read: { 
+        type: Date, 
+    } 
+},
+
+    { _id: false}
+    
+);
 
 module.exports = messageSchema; 

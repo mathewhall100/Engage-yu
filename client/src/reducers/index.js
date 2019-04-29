@@ -10,6 +10,7 @@ import careGroup from './CareGroupReducer';
 import careGroupSave from './CareGroupSaveReducer';
 import careGroupUpdate from './CareGroupUpdateSaveReducer';
 import consoleTitle from './ConsoleTitleReducer';
+import episodeStatusUpdate from './EpisodeStatusUpdateReducer';
 import patientSave from './PatientSaveReducer'
 import patient from './PatientReducer';
 import patientsByProvider from './PatientsByProviderReducer';
@@ -29,6 +30,7 @@ const combinedReducer = combineReducers({
     careGroupSave,
     careGroupUpdate,
     consoleTitle,
+    episodeStatusUpdate,
     form: formReducer,
     patient,
     patientSave,

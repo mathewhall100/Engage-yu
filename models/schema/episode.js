@@ -5,6 +5,9 @@ const questionSchema = require("./question");
 const messageSchema = require("./message");
 const provider_summarySchema = require("./provider_summary");
 
+// episode schema also to include list medications pulled from FIHR database
+// + compliance from patient questionnaire/smart pillboxes
+
 const episodeSchema = new Schema({
 
     episode_number: { 
@@ -91,13 +94,13 @@ const episodeSchema = new Schema({
     actioned: {
         date: {
             type: Date, 
-            default: new Date(0)
+            default: new Date()
         },
-        by: { 
+        actioned_by: { 
             type: {provider_summarySchema}, 
             required: [true, 'No requesting_provider details supplied']
         },
-        message_id: {
+        msg_id: {
             type: String
         }
     },
@@ -105,9 +108,9 @@ const episodeSchema = new Schema({
     archived: {
         date: {
             type: Date, 
-            default: new Date(0)
+            default: new Date()
         },
-        by: { 
+        archived_by: { 
             type: {provider_summarySchema}, 
             required: [true, 'No requesting_provider details supplied']
         }
@@ -116,13 +119,13 @@ const episodeSchema = new Schema({
     cancelled: {
         date: {
             type: Date, 
-            default: new Date(0)
+            default: new Date()
         },
-        by: { 
+        cancelled_by: { 
             type: {provider_summarySchema}, 
             required: [true, 'No requesting_provider details supplied']
         },
-        message_id: {
+        msg_id: {
             type: String
         }
     },
@@ -133,8 +136,11 @@ const episodeSchema = new Schema({
 
     report_to: [
         provider_summarySchema
-    ], 
+    ],
+},
 
-});
+    { timestamps: {createdAt: 'created_at', updatedAt: 'updated_at'} }
+
+);
 
 module.exports = episodeSchema; 

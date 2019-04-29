@@ -20,8 +20,11 @@ const questionSchema = new Schema({
     hints: [{ 
         type: String
     }]
+},
+
+    { _id: false}
     
-});
+);
 
 
 module.exports = questionSchema; 

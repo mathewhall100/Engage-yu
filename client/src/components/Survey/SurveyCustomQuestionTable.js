@@ -95,7 +95,6 @@ class SurveyCustomQuestionTable extends Component {
         const { rowsPerPage, page, popperContent, popperOpen, popperType, arrowRef, anchorEl } = this.state;
 
 
-        // GenericTable component return
         return (
             <React.Fragment>
                 {customQuestions.length > 0 ? 

@@ -17,8 +17,11 @@ const custom_question_listSchema = new Schema({
         question: {type: String, required: [true, "No question supplied"]},
         answers: [ {type: String, required: [true, "No answers supplied"]} ],
         hints: [ {type: String} ]
-    }]
+    }], 
+},
+
+    {_id: false}
   
-});
+);
 
 module.exports = custom_question_listSchema; 

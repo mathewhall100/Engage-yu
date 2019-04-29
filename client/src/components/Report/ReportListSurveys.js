@@ -5,11 +5,12 @@ import moment from 'moment';
 import Button from '@material-ui/core/Button'
 import ReportPanel from './ReportPanel';
 import ProviderName from '../UI/providerName'
+import ReportStatusUpdateDialog from './ReportStatusUpdateDialog'
 
 const panels = [
     {status: "pending", actions: ["view", "cancel"]},
     {status: "active", actions: ["view", "cancel"]},
-    {status: "awaiting review", actions: ["view", "actioned"]},
+    {status: "awaiting review", actions: ["view", "action"]},
     {status: "actioned", actions: ["view", "archive"]},
     {status: "archived", actions: ["view"]},
     {status: "cancelled", actions: ["view"]},
@@ -28,12 +29,15 @@ class ReportListSurveys extends Component {
         if (this.props.patientData !== nextProps.patientData) {
             this.setState({episodes: nextProps.patientData.episodes}, () => this.displayPanels(this.state.episodes) )
         }
+        this.setState({dialogOpen: false})
     };
 
     state = {
         episodes: [],
+        episode: {},
         panelStatus: [],
         morePanels: false,
+        dialogOpen: false
     };
 
     displayPanels = (episodes) => {
@@ -50,13 +54,22 @@ class ReportListSurveys extends Component {
                 "timeframe": `${episode.start_time.slice(0,2)}:${episode.start_time.slice(-2)} - ${episode.end_time.slice(0,2)}:${episode.end_time.slice(-2)}`,
                 "interval": `${episode.interval_mins} mins`, 
                 "questions": episode.questions.length === 1 ? `${episode.questions.length} question` : `${episode.questions.length} questions`,
-                "requested by": <ProviderName title={episode.requesting_provider.title} firstname={episode.requesting_provider.firstname} lastname={episode.requesting_provider.lastname} />,
-                "actioned by": "TBA", 
-                "archived by": "TBA", 
-                "cancelled by": "TBA"
+                "requested by": episode.requesting_provider ? this.getProvider(episode.requesting_provider) : "n/a", // change to fuction so can be sorted
+                "actioned by": episode.actioned && episode.actioned.actioned_by ? this.getProvider(episode.actioned.actioned_by) : "n/a", 
+                "archived by": episode.archived && episode.archived.archived_by ? this.getProvider(episode.archived.archived_by) : "n/a", 
+                "cancelled by": episode.cancelled && episode.cancelled.cancelled_by ? this.getProvider(episode.cancelled.cancelled_by) : "n/a", 
+                "messages": episode.messages
             }
         })
     };
+
+    getProvider = (provider) => {
+        return <ProviderName 
+                    title={provider.title} 
+                    firstname={provider.firstname} 
+                    lastname={provider.lastname} 
+                />
+    }
 
     handleAction = (btn, row) => {
         console.log("action: ", btn, " : ", row)
@@ -65,17 +78,27 @@ class ReportListSurveys extends Component {
                 this.props.changeEpisode(row._id)
                 break;
             case "cancel":
+                this.setState({newStatus: "cancelled"})
                 break;
-            case "actioned":
+            case "action":
+                this.setState({newStatus: "actioned"})
                 break;
             case "archive":
+                this.setState({newStatus: "archived"})
                 break;
             default: return null;
+        }
+        if (btn !== "view") {
+            this.setState({episode: row})
+            this.setState({dialogOpen: false},
+                () => this.setState({dialogOpen: true})
+            )
         }
     };
 
     render () {
-        const { episodes, panelStatus, morePanels } = this.state
+        const { episodes, panelStatus, morePanels, dialogOpen } = this.state
+        const { patientInfo, patientData, currentEpisode } = this.props
 
         return (
             <Fragment>
@@ -83,12 +106,13 @@ class ReportListSurveys extends Component {
                 {panelStatus.slice(0,4).map((panel, idx) => {
                     return (
                         <ReportPanel key={idx}
+                            activeEpisode={currentEpisode}
                             summary = { `${startCase(panels[idx].status)} (${panel})` }
+                            patient = {`${patientInfo.firstname} ${patientInfo.lastname}` }
                             tableHeadings = {["start", "end", "timeframe", "interval", "questions", "requested by"].concat(idx===3 ? ["actioned by"] : [])}
                             tableData = {this.createTableData(episodes.filter(episode => episode.status === panels[idx].status )) }
-                            lastCellRightAlign={true}
                             lastCellHeading={"Actions"}
-                            lastCellData = {["report actions", panels[idx].actions]}
+                            lastCellData = {panels[idx].actions}
                             handleActionBtn = {this.handleAction}
                         />
                     )
@@ -107,27 +131,29 @@ class ReportListSurveys extends Component {
                     <Fragment>
                         
                         <ReportPanel
+                            activeEpisode={currentEpisode}
                             summary = { `Archived (${panelStatus[4]})` }
                             tableHeadings = {["start", "end", "timeframe", "interval", "questions", "requested by", "actioned by", "archived by"]}
                             tableData = {this.createTableData(episodes.filter(episode => episode.status === "archived"))}
-                            lastCellRightAlign={true}
                             lastCellHeading="Actions"
-                            lastCellData = {["report actions", panels[4].actions]}
+                            lastCellData = {panels[4].actions}
                             handleActionBtn = {this.handleAction}
                         /> 
                     
                         <ReportPanel
+                            activeEpisode={currentEpisode}
                             summary = { `Cancelled (${panelStatus[5]})` }
                             tableHeadings = {["start", "end", "timeframe", "interval", "questions", "requested by", "cancelled by"]}
                             tableData = {this.createTableData(episodes.filter(episode => episode.status === "cancelled"))}
-                            lastCellRightAlign={true}
                             lastCellHeading="Actions"
-                            lastCellData = {["report actions", panels[5].actions]}
+                            lastCellData = {panels[5].actions}
                             handleActionBtn = {this.handleAction}
                         />
 
                     </Fragment>
                 }
+
+                {dialogOpen && <ReportStatusUpdateDialog patientId={patientInfo._id} patientDataId={patientData._id} episode={this.state.episode} newStatus={this.state.newStatus}/> }
                 
             </Fragment>
         );

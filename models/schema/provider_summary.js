@@ -11,7 +11,8 @@ const provider_summarySchema = new Schema({
 
     id: {
         type: String, 
-        required: [true, "No primary provider id supplied"]
+        required: [true, "No primary provider id supplied"],
+        index: true // set as secondary index
     },
 
     title: { 
@@ -30,6 +31,12 @@ const provider_summarySchema = new Schema({
     },
     
     provider_roleSchema
-});
+
+},
+
+    { _id: false},
+    // { autoIndex: false } --> set in in production see https://mongoosejs.com/docs/guide.html#indexes
+
+);
 
 module.exports = provider_summarySchema;

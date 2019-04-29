@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles, Typography,ExpansionPanel,ExpansionPanelSummary,ExpansionPanelDetails } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import TableGeneric from '../UI/Tables/tableGeneric'
+import ReportPanelTable from './ReportPanelTable'
 
 const styles = () => ({
   	root: {
@@ -11,6 +11,10 @@ const styles = () => ({
 });
 
 class ReportPanel extends Component {
+
+	state = {
+		popperClose: false
+	}
 
 	handleActionBtn = (btn, row) => {
         this.props.handleActionBtn(btn, row)
@@ -21,17 +25,24 @@ class ReportPanel extends Component {
 		const { summary, tableData, classes } = this.props
 
 		return (
-			<ExpansionPanel className={classes.root}>
+			<ExpansionPanel className={classes.root} > 
 
-				<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} >
+			<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} onClick={() => this.setState({popperClose: true})} >
 					<Typography variant="button">{summary}</Typography>
 				</ExpansionPanelSummary>
 			
 				<ExpansionPanelDetails >
 					{tableData && tableData.length > 0 ?
-						<TableGeneric {...this.props} handleActionBtn={this.handleActionBtn}/>
+						<ReportPanelTable 
+							{...this.props} 
+							popperClose={this.state.popperClose} 
+							handleActionBtn={this.handleActionBtn}
+						/>
 						: 
-						<Typography variant="body2" gutterBottom>No diary cards to display</Typography>
+						<Typography 
+							variant="body2" 
+							gutterBottom>No diary cards to display
+						</Typography>
 					}
 				</ExpansionPanelDetails>
 
@@ -41,7 +52,7 @@ class ReportPanel extends Component {
 }
 
 ReportPanel.propTypes = {
-  classes: PropTypes.object.isRequired,
+  	classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(ReportPanel);

@@ -51,7 +51,7 @@ class Report extends Component {
                 <ReportPatientDetails />
                 <ReportSummary  episodeId={episodeId} /> 
                 <br /> 
-                <ReportListSurveys changeEpisode={this.handleChangeEpisode} /> 
+                <ReportListSurveys changeEpisode={this.handleChangeEpisode} currentEpisode={episodeId}/> 
                 <br />
             </Paper> 
         );

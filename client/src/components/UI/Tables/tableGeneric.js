@@ -7,9 +7,7 @@ import BtnActionIcons from '../Buttons/btnActionIcons';
 import { stableSort, getSorting } from '../../../logic/tableSortFunctions';
 
 const styles = () =>  ({
-    root: {
-        width: "100%"
-    }
+
 });
 
 const CustomTableCell = withStyles(theme => ({
@@ -60,13 +58,9 @@ class GenericTable extends Component {
         const { order, orderBy, rowsPerPage, page } = this.state;
 
         const getLastCell = (row) => {
-            switch (lastCellData[0]) {
-                case "report actions":
-                    return <BtnActionGroup actions={lastCellData[1]} row={row} align={"right"} handleActionBtn={this.handleActionBtn} /> 
-                case "find actions":
-                    return <BtnActionIcons _id={row._id} handleActionBtn={this.handleActionBtn} /> 
-                default: return <Typography>{lastCellData[0]}</Typography>
-            }
+            if  (lastCellData[0] = "actions") {
+                    return <BtnActionIcons _id={row._id} handleActionBtn={this.handleActionBtn} />  
+            } else return <Typography>{lastCellData[0]}</Typography>
         };
 
         const getTableCell = (row, idx) => {
@@ -146,7 +140,8 @@ class GenericTable extends Component {
                         nextIconButtonProps={{'aria-label': 'Next Page'}}
                         onChangePage={this.handleChangePage}
                         onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                />  }
+                    />  
+                }
 
             </div>
         );

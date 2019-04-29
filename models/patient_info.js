@@ -16,10 +16,6 @@ const patient_infoSchema = new Schema({
         required: [true, 'No enrolled_by details supplied']
     },
 
-    // enrolled_by_ref: { type: Schema.Types.ObjectId, ref: 'Provider', required: [true, 'No primary physician'] },
-    // enrolled_by_id:  {type: String, required: [true, 'No primary physician']},
-    // enrolled_by_name:  {type: String, required: [true, 'No primary physician']},
-
     patient_data_ref: { 
         type: Schema.Types.ObjectId, 
         ref: 'Patient_data', 
@@ -140,12 +136,15 @@ const patient_infoSchema = new Schema({
 handleError = (error, doc, next) => {
     console.log('Operation failed')
     console.log(`error code: ${error.code}`)
-    console.log(`Error name: ${error}`)
-    if (error.name === "ValidationError") {
+    console.log(`Error name: ${error.name}`)
+    console.log(`Error: ${error}`)
+    if (error.name === "MongoError" && error.code === 11000) {
+        next(new Error('Duplicate key error'))  // returned to console as CONTROLLER ERROR:
+    } else if (error.name === "ValidationError") {
          next(new Error(`New/updated document failed Mongoose validation.`));
-     } else {
-        next(new Error('An error occurred during saving due to a corrupted model/schema')) // returned to app as CONTROLLER ERROR:
-     }
+    } else {
+        next(new Error('An unspecified error occurred while saving the data')) 
+    }
 };
 patient_infoSchema.post('save', handleError);
 patient_infoSchema.post('findOneAndUpdate', handleError);

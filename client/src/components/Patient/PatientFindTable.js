@@ -116,7 +116,7 @@ class PatientFindTable extends Component {
                     tableData={this.createTableData(tableDataFiltered)}
                     lastCellRightAlign={true}
                     lastCellHeading={"Actions"}
-                    lastCellData={["find actions"]}
+                    lastCellData={["actions"]}
                     handleActionBtn = {this.handleActionClick}
                     handleRowClick = {this.handleRowClick}
                     hover={true}
