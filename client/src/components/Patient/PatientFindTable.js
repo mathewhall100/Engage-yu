@@ -130,8 +130,6 @@ class PatientFindTable extends Component {
                 </Typography>
             </Paper>
 
-        return <div />
-
     }
 }
 

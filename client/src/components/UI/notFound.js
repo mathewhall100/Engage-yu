@@ -23,7 +23,7 @@ const styles = theme => ({
 class NotFound extends Component {
     
     render () {
-        const { classes, text="" } = this.props
+        const { classes } = this.props
 
         return <div className={classes.root}>
             <div className={classes.center}>
@@ -38,7 +38,6 @@ class NotFound extends Component {
 
 NotFound.propTypes = {
     classes: PropTypes.object.isRequired,
-    text: PropTypes.string
 };
 
 export default withStyles(styles)(NotFound);

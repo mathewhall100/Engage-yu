@@ -24,13 +24,6 @@ export default {
         });
     },
 
-    insertRef: function(id, info) {
-        console.log("Axios call made to '/api/patient_data' to 'insertRef' ", id);
-        return axios.put("/api/patient_data/insertRef/"+id, info, { 
-            headers: {'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')}
-        });
-    },
-
     insertMsg: function(id, info) {
         console.log("Axios call made to '/api/patient_data' to 'insertMsg' ", id);
         return axios.put("/api/patient_data/insertMsg/"+id, info, { 
@@ -52,12 +45,13 @@ export default {
         });
     },
 
-    addRecord: function(id, record){
-        console.log("Axios call made to '/api/patient_data' to 'addRecord'");
-        return axios.put("/api/patient_data/record/"+id, record, { 
-            headers: {'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')}
-        });
-    },
+    // addRecord: function(id, record){
+    //     console.log("Axios call made to '/api/patient_data' to 'addRecord'");
+    //     return axios.put("/api/patient_data/record/"+id, record, { 
+    //         headers: {'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')}
+    //     });
+    // },
+
     remove: function(id){
         console.log("Axios call made to '/api/patient_info' to 'remove' " + id);
         return axios.delete("/api/patient_data/delete/"+id, { 

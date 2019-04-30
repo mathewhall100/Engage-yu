@@ -1,5 +1,4 @@
 import React, {Component}  from 'react';
-import moment from 'moment'
 import PropTypes from 'prop-types';
 import { withStyles, Paper, Table, Typography, TableBody, TableCell, TableRow, TablePagination, Fade, Popper} from '@material-ui/core';
 import SurveyCheckbox from './SurveyCheckbox';

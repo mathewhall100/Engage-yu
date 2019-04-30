@@ -1,17 +1,12 @@
 import React, { Component } from 'react' ;
 import { withRouter } from 'react-router'
-import {  withStyles, Typography } from '@material-ui/core'
+import { Typography } from '@material-ui/core/Typography'
 import BtnActionLnk from '../UI/Buttons/btnActionLnk'
 import LoginBanner from './LoginBanner'
-
-const styles = theme => ({
-
-})
 
 class EmailNotVerified extends Component {
 
     render () {
-        const { classes } = this.props
 
         const RenderBannerTitle = () => 
             <Typography variant="h4" align="center" color="primary" gutterBottom >Welcome to Engage-Yu!</Typography>
@@ -43,4 +38,4 @@ class EmailNotVerified extends Component {
 }
 
 EmailNotVerified = withRouter(EmailNotVerified)
-export default withStyles(styles)(EmailNotVerified)
+export default EmailNotVerified

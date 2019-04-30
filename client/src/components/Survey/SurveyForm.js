@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { reduxForm} from 'redux-form';
 import { connect } from 'react-redux';
 import { startCase } from 'lodash';
@@ -56,7 +56,6 @@ const styles = theme => ({
     containerTitleBanner: {
         padding: "20px 0 20px 30px",
         backgroundColor: "#eee"
-        
     },
     containerTitleText: {
         fontWeight: 500, 
@@ -105,13 +104,13 @@ const styles = theme => ({
         marginTop: "60px"
     },
     // Collapse panels
-      container: {
+    container: {
         width: "100%"
-      },
-      customBox: {
+    },
+    customBox: {
         height: "auto",
         width: "100%",
-      },
+    }
 }); 
 
 
@@ -236,7 +235,9 @@ class SurveyForm extends Component {
         const { selectedQuestions, selectedList, slider1Value, slider2Value, settings, customize, toggleCollapse, saveList } = this.state;
 
         if (errorPatient || errorProvider || errorQuestions) {
-            return <div>Error! {errorPatient.message} {errorProvider.message} {errorQuestions.message}</div>
+            return <div>
+                Unfortuneately an proble occurred and a new Diary card cannot be created at this time. 
+                </div>
         }
 
         if (loadingPatient || loadingProvider || loadingQuestions || !patientInfo || !provider || !defaultQuestion || !customQuestions.questionList ) {
@@ -279,7 +280,7 @@ class SurveyForm extends Component {
                         <div className={classes.selectedQuestionsContainer}>
                             <span style={{width: "500px"}}>
                                 {selectedQuestions ? 
-                                    <React.Fragment>
+                                    <Fragment>
                                         {selectedQuestions.map((question, idx) =>
                                             <div key={idx} style={{marginBottom: "6px"}}>
                                                 <SurveyQuestionPanel
@@ -289,7 +290,7 @@ class SurveyForm extends Component {
                                                 />
                                             </div> 
                                         )}
-                                    </React.Fragment>
+                                    </Fragment>
                                     : 
                                     CallBack
                                 }
@@ -434,8 +435,11 @@ class SurveyForm extends Component {
 
                 </form>
 
-                {saveList && <SurveySaveListDialog questions={selectedQuestions} providerId={localStorage.getItem("user_provider_id")}/>}
-                {(loadingSurvey || survey.start || errorSurvey) && 
+                {saveList && 
+                    <SurveySaveListDialog questions={selectedQuestions} providerId={localStorage.getItem("user_provider_id")}/>
+                }
+
+                {(loadingSurvey || survey.newEpisodeId || errorSurvey) && 
                     <SurveySaveDialog 
                         start={survey.start} 
                         name={`${startCase(patientInfo.firstname)} ${startCase(patientInfo.lastname)}`} 
@@ -449,7 +453,6 @@ class SurveyForm extends Component {
 };
 
 function validate(values) {
-    console.log("Error values: ", values) 
     const errors = {};
     if (values.startdate === "date" && !values.datepick) {
         errors.datepick = "Please enter a valid date";   

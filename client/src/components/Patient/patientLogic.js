@@ -1,4 +1,3 @@
-import { startCase } from 'lodash'
 import { providerName } from '../../logic/textFunctions'
 
 // **** Create data object ****

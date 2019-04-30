@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react' ;
 import { withRouter } from 'react-router'
 import { reduxForm } from 'redux-form';
-import PropTypes from 'prop-types';
 import { withStyles, Typography } from '@material-ui/core'
 import BtnAction from '../UI/Buttons/btnAction'
 import FormText from '../UI/Forms/formText'
@@ -117,8 +116,6 @@ function validate(values) {
 	return errors;
 }
 
-LoginPwdReset.propTypes = {
-};
 
 const formData = {
 	form: 'PwdResetForm', //unique identifier for this form

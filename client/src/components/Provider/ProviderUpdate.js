@@ -7,7 +7,6 @@ import FormTextFocused from '../UI/Forms/formTextFocused';
 import FormStateSelect from '../UI/Forms/formStateSelect';
 import DialogSaveFailure from '../UI/Dialogs/dialogSaveFailure';
 import FormUpdateUnit from '../UI/Forms/formUpdateUnit';
-import ProviderName from '../UI/providerName'
 import { validateName, validateZip, validateState, validateEmail, validatePhone, validatePhoneOther } from '../../logic/formValidations';
 import { selectConsoleTitle, loadProvider, providerUpdateSave } from '../../actions';
 import CareGroupSelect from '../CareGroup/CareGroupSelect'

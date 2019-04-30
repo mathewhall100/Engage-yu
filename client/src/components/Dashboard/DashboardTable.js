@@ -10,7 +10,7 @@ import TableEnhancedTableHead from '../UI/Tables/tableEnhancedTableHead';
 import CallBack from '../UI/callback'
 import DashboardTableToolbar from './DashboardTableToolbar';
 import DashboardTableStatusBar from './DashboardTableStatusBar';
-import { loadActiveSurveys, loadPatient, dashboardData } from '../../actions';
+import { loadActiveSurveys, loadPatient } from '../../actions';
 import { filterByPerson, filterByStatus, filterByChecked } from './dashboardLogic';
 import { stableSort, getSorting } from '../../logic/tableSortFunctions';
 import ProviderName from '../UI/providerName'

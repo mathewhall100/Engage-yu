@@ -8,7 +8,6 @@ import * as AuthService from '../services/AuthService';
 import patient_infoAPI from '../utils/patient_info';
 import patient_dataAPI from '../utils/patient_data';
 import userAPI from '../utils/user';
-import { startCase } from 'lodash'
 
 export const patientSave= (values) => {
     console.log("patientSaveAction: ", values);
@@ -64,7 +63,7 @@ export const patientSave= (values) => {
                 .then(res_data => {
                     console.log("res_data.data: ", res_data.data)
                     // Then go back and save the patient_data_id into the patientInfo collection
-                    patient_infoAPI.insertRef(res_info.data._id, {
+                    patient_infoAPI.update(res_info.data._id, {
                         patient_data_ref: res_data.data._id,
                         patient_data_id: res_data.data._id
                     })

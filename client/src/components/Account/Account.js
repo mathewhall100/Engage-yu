@@ -2,7 +2,6 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { withStyles, Grid, Typography } from '@material-ui/core';
 import { selectConsoleTitle } from '../../actions'
-import * as AuthService from '../../services/AuthService';
 import BtnLink from '../UI/Buttons/btnLink';
 import ConsoleTitle from '../Console/ConsoleTitle'
 import AccountViewStats from './ViewStats'

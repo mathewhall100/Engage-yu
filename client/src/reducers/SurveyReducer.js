@@ -1,7 +1,8 @@
 import {
     SURVEY_BEGIN,
     SURVEY_SUCCESS,
-    SURVEY_FAILURE
+    SURVEY_FAILURE,
+    SURVEY_RESET
 } from '../actions/types';
 
 const initialState = {
@@ -34,6 +35,14 @@ export default function surveyReducer(
                 ...state,
                 loading: false,
                 error: action.payload.error,
+                survey: []
+            };
+
+        case SURVEY_RESET:
+            return {
+                ...state,
+                loading: false,
+                error: null,
                 survey: []
             };
 

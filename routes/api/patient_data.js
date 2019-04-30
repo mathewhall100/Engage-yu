@@ -8,7 +8,7 @@ router
     .route("/:id")
     .get(checkJwt, patient_dataController.findById)
 
-    // Matches with "/api/active/"id"
+// Matches with "/api/active/"id"
 router
     .route("/active/:id")
     .get(checkJwt, patient_dataController.fetchActive)
@@ -18,12 +18,7 @@ router
   .route("/new")
   .post(checkJwt, patient_dataController.create);
 
-// Matches with "/api/patient_info/insertRef/:id" 
-router
-    .route('/insertRef/:id')
-    .put(checkJwt, patient_dataController.insertRef)
-
-// Matches with "/api/patient_info/insertRef/:id" 
+// Matches with "/api/patient_info/insertMsg/:id" 
 router
     .route('/insertMsg/:id')
     .put(checkJwt, patient_dataController.insertMsg)

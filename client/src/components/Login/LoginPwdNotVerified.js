@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
 import { withRouter } from 'react-router-dom';
 import { startCase } from 'lodash'
-import { withStyles, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core/Typography';
 import FormTextPassword from '../UI/Forms/formTextPassword';
 import BtnAction from '../UI/Buttons/btnAction';
 import BtnActionLnk from '../UI/Buttons/btnActionLnk';
@@ -11,10 +11,6 @@ import LoginBanner from './LoginBanner'
 import * as val from '../../logic/formValidations'
 import authAPI from '../../utils/auth';
 import jwtDecode from 'jwt-decode';
-
-const styles = theme => ({
-
-})
 
 class LoginPwdNotVerified extends PureComponent {
 
@@ -84,7 +80,7 @@ class LoginPwdNotVerified extends PureComponent {
 
     render () {
 
-        const { classes, handleSubmit, pristine, submitting} = this.props;
+        const { handleSubmit, pristine, submitting} = this.props;
         const { userEmail, update, error, submitted } = this.state;
 
         const RenderErrorPwdMsg = () => 
@@ -172,5 +168,4 @@ const mapStateToProps = (state) => {
 LoginPwdNotVerified = reduxForm(formData)(LoginPwdNotVerified)
 LoginPwdNotVerified = withRouter(LoginPwdNotVerified)
 LoginPwdNotVerified = connect(mapStateToProps)(LoginPwdNotVerified)
-LoginPwdNotVerified = withStyles(styles)(LoginPwdNotVerified)
 export default LoginPwdNotVerified

@@ -2,7 +2,6 @@ import React, {Component}  from 'react';
 import PropTypes from 'prop-types';
 import { startCase } from 'lodash';
 import { withStyles, Typography, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel, TablePagination} from '@material-ui/core';
-import BtnActionGroup from '../Buttons/btnActionGroup';
 import BtnActionIcons from '../Buttons/btnActionIcons';
 import { stableSort, getSorting } from '../../../logic/tableSortFunctions';
 
@@ -58,7 +57,7 @@ class GenericTable extends Component {
         const { order, orderBy, rowsPerPage, page } = this.state;
 
         const getLastCell = (row) => {
-            if  (lastCellData[0] = "actions") {
+            if  (lastCellData[0] === "actions") {
                     return <BtnActionIcons _id={row._id} handleActionBtn={this.handleActionBtn} />  
             } else return <Typography>{lastCellData[0]}</Typography>
         };

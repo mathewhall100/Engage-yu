@@ -1,6 +1,7 @@
 
 // import the moment.js library for date and time handling
 import moment from 'moment';
+import patient_dataAPI from '../../utils/patient_data';
 
 
 // **** Get status of each survey entry in data object ****
@@ -18,8 +19,19 @@ export const createStatus = (ep) => {
     // If active but passed the survey end date, then set as awaiting review.
     if (ep.status === "active" && (moment().isAfter(moment(end).add(1, 'd')))) { 
         adjustedStatus = "awaiting review"
-        //console.log("end: ", end, " & ", moment())
-        // *********** api call here to change status in database ***************
+        patient_dataAPI.updateStatus(ep.patientDataId, {
+            episodeId: ep.episodeId, 
+            newStatus: adjustedStatus,
+            msg: null,
+            updater: null
+        })
+        .then(res => {
+            console.log("res.data: ", res.data)
+        })
+        .catch(error => {
+            console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
+            console.log(error);
+        })
     } else {adjustedStatus = ep.status}
     
          
@@ -33,9 +45,9 @@ export const createStatus = (ep) => {
     } else {
         diffDays = numDays; diffHours = 0
     }
+
     // console.log("currentHour: ", currentHour, " ", parseInt(startTime, 10), " ", parseInt(endTime, 10))
     // console.log("diffdays: ", diffDays, " --- diffHours: ", diffHours)
-
     expectedEntries = diffDays*entriesPerDay+diffHours
     actualEntries = records.filter(rec => rec.valid).length
     if (actualEntries > expectedEntries) {actualEntries = expectedEntries}
@@ -58,20 +70,20 @@ export const createStatus = (ep) => {
 // **** Filter data ****
 // Filter by requester/provider
 export const filterByPerson = (data, id, filter, ) => {
-    console.log("filterByPerson data IN", data, " ",  id, " ", filter)
+    //console.log("filterByPerson data IN", data, " ",  id, " ", filter)
     let filteredData
     switch (filter) {
     case "provider":
         filteredData = data.filter(d => d.primary.id === id)
-        console.log("Dataout: ", filter, " : ", filteredData)
+        //console.log("Dataout: ", filter, " : ", filteredData)
         return filteredData
     case "all":
         filteredData =  data.filter(d => d.requester.id === id || d.primary.id === id);
-        console.log("dataout: ", filter, " : ", filteredData)
+        //console.log("dataout: ", filter, " : ", filteredData)
         return filteredData
     default:  
         filteredData =  data.filter(d => d.requester.id === id);
-        console.log("dataout: ", filter, " : ", filteredData)
+        //console.log("dataout: ", filter, " : ", filteredData)
         return filteredData
     }
 };

@@ -1,18 +1,13 @@
 import React, { Component, Fragment } from 'react';
 import { reduxForm } from 'redux-form';
 import { withRouter } from 'react-router-dom';
-import { withStyles, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core/Typography';
 import FormTextPassword from '../../components/UI/Forms/formTextPassword';
 import BtnAction from '../../components/UI/Buttons/btnAction';
 import { validatePassword, validatePasswordsMatch } from '../../logic/formValidations';
 import * as AuthService from '../../services/AuthService';
 import * as UserService from '../../services/UserService';
 import authAPI from '../../utils/auth';
-
-const styles = theme => ({
-
-})
-
 
 class AccountChangePassword extends Component {
 
@@ -24,8 +19,7 @@ class AccountChangePassword extends Component {
     state = {
         userEmail: "",
         update: false,
-        error: false,
-        submitted: false
+        error: false
     }
 
     submit(values) {
@@ -60,8 +54,8 @@ class AccountChangePassword extends Component {
     }
 
     render() {
-        const { classes, handleSubmit, pristine} = this.props;
-        const { userEmail, update, error, submitted } = this.state;
+        const { handleSubmit, pristine} = this.props;
+        const { userEmail, update, error} = this.state;
 
         if (update) 
             return  <Typography variant="subtitle1" style={{color: "green"}} gutterBottom>
@@ -121,5 +115,4 @@ const formData = {
 
 AccountChangePassword = withRouter(AccountChangePassword)
 AccountChangePassword = reduxForm(formData)(AccountChangePassword)
-AccountChangePassword = withStyles(styles)(AccountChangePassword)
 export default AccountChangePassword

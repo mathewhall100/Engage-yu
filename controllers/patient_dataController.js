@@ -50,9 +50,10 @@ module.exports = {
                         let ptObj = {
                             id: index, 
                             patientInfoId: pt._id,
+                            patientDataId: pt.patient_data_id,
                             name: `${pt.firstname} ${pt.lastname}`, 
                             number: pt.hospital_id,
-                            primary: pt.primary_provider   
+                            primary: pt.primary_provider
                         }
                         patient.episodes
                         .filter(ep => ep.status === "active" || ep.status === "pending" || ep.status === "awaiting review")
@@ -103,79 +104,10 @@ module.exports = {
 
     },
 
-    // Insert data ref during patient enroll
-    // To be sent req.params.id of patient to be updated and req.body with new patient_data ref id
-    insertRef: function(req, res) {
-        console.log("Patient_data controller called to 'insert Ref': ", req.params.id, " : ", req.body);
-        db.Patient_data
-        .find({_id: req.params.id}, {"episodes": 1})
-        .then(result => {
-            let lastEpisode = result.episodes[result.episodes.length-1]
-            lastEpisode.active_record_ref = req.body.active_record_ref
-            lastEpisode.active_record_id = req.body.active_record_id
 
-                db.Patient_data
-                .findOneAndUpdate(
-                    { _id: req.params.id},
-                    { $pop: {"episodes": 1} } 
-                )
-                .then(result => {
-
-                    db.Patient_data
-                    .findOneAndUpdate(
-                        { _id: req.params.id },
-                        { $push: {"episodes": lastEpisode} }
-                    )
-                        .then(result => {
-                        // console.log("RESULT:", result);
-                        res.json(result)
-                        })
-                })
-        })
-        .catch(err => {
-            console.log(`CONTROLLER ERROR: ${err}`);
-            res.status(422).json(err);
-        })
-    },
-
-    // Insert message into new episode
-    // To be sent req.params.id of patient to be updated and req.body with message string
-    insertMsg: function(req, res) {
-        console.log("Patient_data controller called to 'insert Ref': ", req.params.id, " : ", req.body);
-        db.Patient_data
-        .findById({
-            _id: req.params.id}, {"episodes": 1}
-        )
-        .then(result => {
-            console.log("result : ", result);
-            let lastEpisode = result.episodes[result.episodes.length-1]
-            lastEpisode.messages.push(req.body);
-            db.Patient_data
-                .findOneAndUpdate(
-                    { _id: req.params.id},
-                    { $pop: {"episodes": 1} } 
-                )
-                .then(result => {
-                    db.Patient_data
-                    .findOneAndUpdate(
-                        { _id: req.params.id },
-                        { $push: {"episodes": lastEpisode} }
-                    )
-                        .then(result => {
-                        console.log("RESULT:", result);
-                        res.json(result)
-                        })
-                })
-        })
-        .catch(err => {
-            console.log(`CONTROLLER ERROR: ${err}`);
-            res.status(422).json(err);
-        })
-    },
-
-    
     // Create a new patient_data episode 
     // To be sent req.params.id of patient and req.body of new episode info
+    // Retursn _id of episode created
     newEpisode: function(req, res) {
         console.log("Patient_data controller called to 'newEpisode" );
         console.log(`Requester:  ${req.user}`);
@@ -187,14 +119,32 @@ module.exports = {
             { $push: {episodes: req.body} }
         )
         .then(result => {
+            db.Patient_data
+            .findById(req.params.id)
+            .then(result => {
+                console.log("RESULT:", result);
+                res.json(result)
+            })
+        })
+        .catch(err => {
+            console.log(`CONTROLLER ERROR: ${err}`);
+            res.status(422).json(err);
+        })
+    },
+
+    // Insert message into an episode
+    // To be sent req.params.id of patient to be updated and req.body with episodeId and message string
+    insertMsg: function(req, res) {
+        console.log("Patient_data controller called to 'insert msg': ", req.params.id, " : ", req.body);
+        db.Patient_data
+        .findOneAndUpdate(
+            {_id: req.params.id},
+            { $push: {"episodes.$[elem].messages" : req.body.msg} },
+            { arrayFilters: [ { "elem._id": req.body.newEpisodeId} ] }
+        )
+        .then(result => {
             console.log("RESULT:", result);
             res.json(result)
-            db.Patient_data
-                    .findById(req.params.id)
-                    .then(patient => {
-                console.log("RESULT:", patient);
-                res.json(patient.episodes[patient.episodes.length -1])
-                    })
         })
         .catch(err => {
             console.log(`CONTROLLER ERROR: ${err}`);
@@ -205,23 +155,18 @@ module.exports = {
     // Edit the status field of an episode
     // To be sent req.params.id of patient and req.body of episode id to chnage and new status
     updateStatus : function(req, res) {
-        console.log("Patient_data controller called to 'updateStatus'");
-        console.log("patient id is  : ", req.params.id);
-        console.log("episodeI id is : ", req.body.episodeId);
-        console.log("status is : ", req.body.newStatus);
-        console.log("updater : ", req.body.updater);
-        console.log("msg : ", req.body.msg);
+        console.log("Patient_data controller called to 'updateStatus'", req.params.id, " ", req.body);
         let updObj= {};
         let msgObj = {};
         switch (req.body.newStatus) {
             case "cancelled":
-                updObj = {"episodes.$[elem].status" : req.body.newStatus, "episodes.$[elem].cancelled" : req.body.updater}
-                break;
+                updObj = {"episodes.$[elem].cancelled" : req.body.updater}
+                break; 
             case "actioned":
-                updObj = {"episodes.$[elem].status" : req.body.newStatus, "episodes.$[elem].actioned" : req.body.updater}
+                updObj = {"episodes.$[elem].actioned" : req.body.updater}
                 break;
             case "archived":
-                updObj = {"episodes.$[elem].status" : req.body.newStatus, "episodes.$[elem].archived" : req.body.updater}
+                updObj = {"episodes.$[elem].archived" : req.body.updater}
                 break;
             default: updObj = null
         }
@@ -230,11 +175,11 @@ module.exports = {
             db.Patient_data
                 .findOneAndUpdate(
                     { _id: req.params.id },
-                    { $set: updObj, $push: msgObj },
+                    { $set: {"episodes.$[elem].status" : req.body.newStatus, ...updObj}, $push: msgObj },
                     { arrayFilters: [ { "elem._id": req.body.episodeId} ] }
                 )
                 .then(result => {
-                    console.log("RESULT:", result);
+                    console.log("RESULT1:", result);
                     res.json(result)
                 })
             .catch(err => {
@@ -245,7 +190,7 @@ module.exports = {
             db.Patient_data
             .findOneAndUpdate(
                 { _id: req.params.id },
-                { $set: updObj },
+                { $set: {"episodes.$[elem].status" : req.body.newStatus, ...updObj} },
                 { arrayFilters: [ { "elem._id": req.body.episodeId} ] }
             )
             .then(result => {
@@ -263,11 +208,7 @@ module.exports = {
      // Edit the data field of a record
     // To be sent req.params.id of patient and req.body of new episode info
     editRecord : function(req, res) {
-        console.log("Patient_data controller called to 'editRecord'", req.body);
-        console.log("id is  : ", req.params.id);
-        console.log("record id is : ", req.body.record_id);
-        console.log("episode is : ", req.body.episode);
-        console.log("status is : ", req.body.new_status);
+        console.log("Patient_data controller called to 'editRecord'", req.params.id, " ", req.body);
         db.Patient_data
         .find({_id: req.params.id}, { "episodes": 1 })
         .then(result => {
@@ -282,8 +223,8 @@ module.exports = {
             episodeSelected.records = records;
             db.Patient_data
                 .findOneAndUpdate(
-                { _id: req.params.id },
-                { $pop: { "episodes": 1 } }
+                    { _id: req.params.id },
+                    { $pop: { "episodes": 1 } }
                 )
                 .then(result => {
                     db.Patient_data

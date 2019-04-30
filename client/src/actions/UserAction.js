@@ -41,9 +41,7 @@ export const fetchUserDetails = (sub) => {
                 default: url = `/`
             } 
             axios.get(url, { 
-                headers: {
-                    'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')
-                }
+                headers: {'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')}
             })
             .then(res => {
                 console.log("patient/provider info", res)
@@ -71,8 +69,6 @@ export const fetchUserDetails = (sub) => {
                     localStorage.setItem('user_super_lastname', null);
                     localStorage.setItem('user_super_role', null);
                 }
-                //console.log("userId: ", userId)
-                //console.log("userRole: ", userRole)
                 dispatch(userProfile({userRole, userId}))
             })
             .catch(error => {

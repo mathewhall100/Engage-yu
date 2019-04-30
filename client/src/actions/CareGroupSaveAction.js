@@ -7,8 +7,7 @@ import {
 import provider_groupAPI from '../utils/provider_group';
 
 export const careGroupSave = (values) => {
-    console.log("careGroupSaveAction: ", values);
-    
+
     if (values === "reset") {
         return dispatch => {
             dispatch(careGroupSaveReset())

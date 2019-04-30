@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { reduxForm } from 'redux-form';
-import { isEmpty } from 'lodash'
 import { withStyles, Typography, Grid } from '@material-ui/core';
 import FormStreamTextInput from '../UI/Forms/formStreamTextInput';
 import FormSelectWithChip from '../UI/Forms/formSelectWithChip';

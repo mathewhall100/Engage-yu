@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter} from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
-import { withStyles, Grid, Typography} from '@material-ui/core';
+import { withStyles, Grid } from '@material-ui/core';
 import CallBack from '../UI/callback';
 import ReportTable from './ReportTable';
 import ReportBarGraph from './ReportBarGraph';

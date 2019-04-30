@@ -54,7 +54,6 @@ class FormMultipleSelectWithChips extends React.Component {
 
 		return (
 			<div className={classes.root}>
-			{console.log("selection: ", selection)}
 				<FormControl className={classes.formControl}>
 				<InputLabel htmlFor="select-multiple-chip">Filter by status</InputLabel>
 					<Select

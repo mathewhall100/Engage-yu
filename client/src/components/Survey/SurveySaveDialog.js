@@ -9,7 +9,7 @@ import BtnAction from '../UI/Buttons/btnAction'
 import BtnLink from '../UI/Buttons/btnLink'
 import FormBox from '../UI/Forms/formBox'
 import DialogSaveFailure from '../UI/Dialogs/dialogSaveFailure'
-import DialogSaving from '../UI/Dialogs/dialogSaving'
+import CallBack from '../UI/callback'
 import { validateIsRequired } from '../../logic/formValidations';
 import patient_dataAPI from "../../utils/patient_data.js";
 
@@ -25,25 +25,23 @@ class SurveySaveDialog extends Component {
 		console.log("Submitted values: ", values);
 
 		const msgObj = {
-			sender_role: "provider",
-			sender_ref: localStorage.getItem("user_provider_id"),
-			sender_id:  localStorage.getItem("user_provider_id"),
-			sender_firstname: localStorage.getItem("user_provider_firstname"),
-			sender_lastname: localStorage.getItem("user_provider_lastname"),
+			msg_id: "requested",
 			msg_date: new Date(),
 			msg_title: values.title,
 			msg_body: values.msg,
 		}
-		console.log("msgObj: ", msgObj)
-		patient_dataAPI.insertMsg(this.props.patientDataId, msgObj)
+		patient_dataAPI.insertMsg(
+			this.props.patientDataId, 
+			{newEpisodeId: this.props.survey.newEpisodeId, msg: msgObj}
+		)
 		.then(res => {
 			console.log("res.data: ", res.data)
-			this.props.history.push('/admin/find')
+			this.props.history.push('/admin/patient/find')
 		})
 		.catch(err => {
 			console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
 			console.log(err);
-			this.setState({failed: true}); // save success dialog
+			this.setState({failed: true}); // failed dialog
 		})
 	}
 
@@ -66,54 +64,53 @@ class SurveySaveDialog extends Component {
 		const { fullScreen, handleSubmit, pristine, survey, errorSurvey, loadingSurvey, name } = this.props;
 
 		if (errorSurvey) 
-			return <DialogSaveFailure text="This diary card could not be completed at this time." cancelurl={"/admin/find"} /> 
+			return <DialogSaveFailure text="This diary card could not be completed at this time." cancelurl={"/admin/patient/find"} /> 
 		
-		else if (loadingSurvey && !survey.Start) 
-			return <DialogSaving />
-		
-		else 
-		 	return <Dialog
-				fullScreen={fullScreen}
-				open={this.state.open}
-				disableBackdropClick 
-				onClose={this.handleClose}
-				aria-labelledby="responsive-dialog-title"
-				PaperProps={{
-					style: {
-						padding: "40px",
-						width: "60%"
-					}
-				}}
-				>
-					{survey.start && <Fragment>
-						<DialogTitle id="responsive-dialog-title">Success!</DialogTitle>
-						<DialogContent>
-							<Typography variant="subtitle1" gutterBottom>
-								New diary card successfully created for <b>{name}</b> and due to start {this.getStart(survey.start)}. This entry will appear in the active diary cards as 'pending' and become 'active' once the patient logs in and starts to enter information.
+		if (loadingSurvey) 
+			return <CallBack text="Saving..." />
+
+		return <Dialog
+			fullScreen={fullScreen}
+			open={this.state.open}
+			disableBackdropClick 
+			onClose={this.handleClose}
+			aria-labelledby="responsive-dialog-title"
+			PaperProps={{
+				style: {
+					padding: "40px",
+					width: "60%"
+				}
+			}}
+			>
+				<Fragment>
+					<DialogTitle id="responsive-dialog-title">Success!</DialogTitle>
+					<DialogContent>
+						<Typography variant="subtitle1" gutterBottom>
+							New diary card successfully created for <b>{name}</b> and due to start {this.getStart(survey.start)}. This entry will appear in the active diary cards as 'pending' and become 'active' once the patient logs in and starts to enter information.
+						</Typography>
+						<br />
+						<Typography variant="subtitle1" gutterBottom>
+							Enter an optional message for the patient when they first interact with this diary card.
+						</Typography> 
+						<form noValidate onSubmit={handleSubmit(this.submit.bind(this))}>
+							<br />
+							<FormBox name="title" label="RE:" rows="1"/>
+							<br />
+							<FormBox name="msg" label="Enter message" rows="3"/>		
+							<br />
+							<Typography variant="subtitle2" align="right">
+								{`Sender: Dr. ${localStorage.getItem("user_provider_firstname")} ${localStorage.getItem("user_provider_lastname")} on ${moment().format('MMMM Do YYYY, h:mm a')}`}
 							</Typography>
 							<br />
-							<Typography variant="subtitle1" gutterBottom>
-								Enter an optional message for the patient when they first interact with this diary card.
-							</Typography> 
-							<form noValidate onSubmit={handleSubmit(this.submit.bind(this))}>
-								<br />
-								<FormBox name="title" label="RE:" rows="1"/>
-								<br />
-								<FormBox name="msg" label="Enter message" rows="3"/>		
-								<br />
-								<Typography variant="subtitle2" align="right">
-									{`Sender: Dr. ${localStorage.getItem("user_provider_firstname")} ${localStorage.getItem("user_provider_lastname")} on ${moment().format('MMMM Do YYYY, h:mm a')}`}
-								</Typography>
-								<br />
-								<BtnAction type="submit" disabled={pristine} text="send" />
-								<span style={{marginRight: "15px"}}>
-									<BtnLink text="no thanks" url="/admin/find" />
-								</span>
-							</form>
-						</DialogContent> 
-					</Fragment> }
+							<BtnAction type="submit" disabled={pristine} text="send" />
+							<span style={{marginRight: "15px"}}>
+								<BtnLink text="no thanks" url="/admin/patient/find" />
+							</span>
+						</form>
+					</DialogContent> 
+				</Fragment> 
 
-			</Dialog>
+		</Dialog>
 		
 	}
 }

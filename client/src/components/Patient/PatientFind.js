@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 import { withStyles, Card } from '@material-ui/core';
-import { selectConsoleTitle, loadPatientsByProvider, loadPatientsByCareGroup, loadPatient } from '../../actions';
+import { selectConsoleTitle, loadPatientsByProvider, loadPatient } from '../../actions';
 import PatientFindForm from './PatientFindForm';
 import PatientFindTable from './PatientFindTable';
 import PatientFindDisplay from './PatientFindDisplay';

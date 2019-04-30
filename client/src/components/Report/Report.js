@@ -1,11 +1,10 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withStyles, Typography, Paper } from '@material-ui/core'
+import { withStyles, Paper } from '@material-ui/core'
 import CallBack from '../UI/callback'
 import ReportPatientDetails from './ReportPatientDetails'
 import ReportSummary from './ReportSummary';
 import ReportListSurveys from './ReportListSurveys';
-import ReportFull from './ReportFull';
 
 const styles = theme => ({
     root: {
