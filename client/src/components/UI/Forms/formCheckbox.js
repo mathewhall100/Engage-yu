@@ -51,5 +51,5 @@ export default class FormCheckbox extends Component {
 
 FormCheckbox.propTypes = {
     name: PropTypes.string.isRequired,
-    label: PropTypes.array.isRequired,
+    label: PropTypes.string.isRequired,
 };

@@ -51,10 +51,13 @@ export default class FormSelect extends Component {
     }
 }
 
-FormSelect.PropTypes = {
+FormSelect.propTypes = {
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
-    width: PropTypes.string.isRequired,
+    width:  PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ]),
     items: PropTypes.array.isRequired
 };
 

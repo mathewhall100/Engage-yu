@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import Typography from '@material-ui/core/Typography'
-import { withStyles } from "@material-ui/core/styles"
+import { withStyles, Button } from "@material-ui/core"
+import patient_dataAPI from '../../utils/patient_data'
+
 
 const styles = (theme) => ({
     root: {
@@ -15,6 +17,35 @@ const styles = (theme) => ({
 
 class Footer extends Component {
 
+    test = () => {
+        console.log("test clicked")
+
+        let patient_dataId = "5ca62fc08961572d7cf0f26d";
+        let episodeId = "5ca62fdc8961572d7cf0f26f";
+        let newRecord={
+            "valid" : true,
+            "late" : false,
+            "data" : [],
+            "record_number" : 100,
+            "day" : 0,
+            "time" : "1500",
+            "scheduled_datetime" : "2019-04-05T15:00:00.051-04:00"
+        }
+        let recordNumber = 100 // to replace 
+
+        patient_dataAPI.updateRecords(patient_dataId, {
+            episode_id: episodeId,
+            record_number: recordNumber,
+            new_record: newRecord
+        })
+        .then(res => {
+            console.log(res.data)
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }
+
     render() {
         const { classes } = this.props
         return (
@@ -22,6 +53,7 @@ class Footer extends Component {
                 <br />
                 <Typography variant="subtitle1" align="center" color="primary"><span style={{fontSize: "20px"}}>&copy;</span> Engage-Yu 2019</Typography>
                 <br />
+                <Button onClick={() => {this.test()}} >test</Button>
             </div>
         )
     }

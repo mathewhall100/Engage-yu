@@ -29,7 +29,7 @@ class DialogSaving extends React.Component {
 			>
 				<DialogTitle id="responsive-dialog-title"> </DialogTitle>
 				<DialogContent>
-					<CallBack text="saving..." />
+					<CallBack text="Saving..." />
 				</DialogContent>
 			</Dialog>
 		);

@@ -104,9 +104,7 @@ class PatientEnroll extends Component {
 
 
 function validate(values) {
-    console.log("Error values: ", values) // -> { object containing all values of form entries } 
     const errors = {}; // error accumulator
-    // validate inputs from 'values'
     errors.firstname = val.validateName(values.firstname, true)
     errors.lastname = val.validateName(values.lastname, true)
     errors.dob = val.validateDOB(values.dob, true)
@@ -118,7 +116,6 @@ function validate(values) {
     errors.status = val.validateStatus(values.status, true)
     errors.emailConfirm = val.validateEmails(values.email, values.emailConfirm) 
     errors.password = val.validatePassword(values.password, true)
-
     // If errors is empty, then form good to submit
     console.log("Errors: ", errors)
     return errors;

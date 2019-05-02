@@ -23,7 +23,6 @@ const styles = theme => ({
 
 class Callback extends Component {
     
-
     componentDidMount() {
          this.countdown = setInterval(() => this.setState({displaySpinner: false}), 5000)
     }
@@ -40,6 +39,7 @@ class Callback extends Component {
         const { classes, noSpin=false, text="", fallbackTitle=null, fallbackText=null } = this.props
         const { displaySpinner } = this.state
 
+        // Custom message to display with spinner
         if (!noSpin && displaySpinner) 
             return <div className={classes.root}>
                         <div className={classes.center}>
@@ -50,6 +50,7 @@ class Callback extends Component {
                         </div>
                     </div>
 
+        // Custom message to dispaly if spinner times out
         else if (fallbackTitle || fallbackText) 
             return <div className={classes.root}>
                     <div className={classes.center}>
@@ -59,6 +60,7 @@ class Callback extends Component {
                     </div>
                 </div>
 
+        // Default message to dispaly if spinner times out
         else return <div className={classes.root}>
                         <div className={classes.center}>
                             <Typography variant="h6">There isn't any data to display.</Typography>
@@ -74,7 +76,7 @@ Callback.propTypes = {
     text: PropTypes.string,
     fallbackTitle: PropTypes.string,
     fallBacktext: PropTypes.string,
-    //noSpin: PropTypes.boolean
+    noSpin: PropTypes.bool
 };
 
 export default withStyles(styles)(Callback);

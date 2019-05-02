@@ -173,15 +173,15 @@ module.exports = {
         if (req.body.msg) {
             msgObj = {"episodes.$[elem].messages" : req.body.msg}
             db.Patient_data
-                .findOneAndUpdate(
-                    { _id: req.params.id },
-                    { $set: {"episodes.$[elem].status" : req.body.newStatus, ...updObj}, $push: msgObj },
-                    { arrayFilters: [ { "elem._id": req.body.episodeId} ] }
-                )
-                .then(result => {
-                    console.log("RESULT1:", result);
-                    res.json(result)
-                })
+            .findOneAndUpdate(
+                { _id: req.params.id },
+                { $set: {"episodes.$[elem].status" : req.body.newStatus, ...updObj}, $push: msgObj },
+                { arrayFilters: [ { "elem._id": req.body.episodeId} ] }
+            )
+            .then(result => {
+                console.log("RESULT1:", result);
+                res.json(result)
+            })
             .catch(err => {
                 console.log(`EDIT ACTIVE STATUS CONTROLLER ERROR: ${err}`);
                 res.status(422).json(err);
@@ -205,82 +205,27 @@ module.exports = {
             
     },
 
-     // Edit the data field of a record
-    // To be sent req.params.id of patient and req.body of new episode info
-    editRecord : function(req, res) {
-        console.log("Patient_data controller called to 'editRecord'", req.params.id, " ", req.body);
+    // Replaces a single record in records array of an episode
+    // episode identified by -id "inner._id" and record by record_number "inner.record_number" (can be anything in record object) 
+    // To be sent req.params.id of patient and req.body of episode contaiing episode Id & records field array
+    updateRecords : function(req, res) {
+        console.log("Patient_data controller called to 'updateRecord'", req.params.id, " ", req.body);
         db.Patient_data
-        .find({_id: req.params.id}, { "episodes": 1 })
+        .findOneAndUpdate(
+            { _id: req.params.id },
+            { $set: {"episodes.$[outer].records.$[inner]" : req.body.new_record} },
+            { arrayFilters: [ { "outer._id": req.body.episode_id}, {"inner.record_number": req.body.record_number} ] }
+        )
         .then(result => {
-            let episodeSelected = result[0].episodes[parseInt(req.params.episode)]
-            let records = episodeSelected.records;
-            // edit the entry here...
-            for(let i =0; i <= records.length-1; i++){
-                if(records[i]._id == req.params.record_id){
-                    records[i] = req.body;
-                }
-            }
-            episodeSelected.records = records;
-            db.Patient_data
-                .findOneAndUpdate(
-                    { _id: req.params.id },
-                    { $pop: { "episodes": 1 } }
-                )
-                .then(result => {
-                    db.Patient_data
-                        .findOneAndUpdate(
-                        { _id: req.params.id },
-                        { $push: { "episodes": episodeSelected } }
-                        )
-                        .then(result => {
-                            console.log("RESULT:", result);
-                            res.json(result)
-                        })
-                })
+            console.log("RESULT:", result);
+            res.json(result)
         })
         .catch(err => {
-            console.log(`EDIT RECORD CONTROLLER ERROR: ${err}`);
+            console.log(`EDIT ACTIVE STATUS CONTROLLER ERROR: ${err}`);
             res.status(422).json(err);
         })
     },
     
-
-    // add a new record to an episode
-    // To be sent req.params.id of patient and req.body of new record data
-    addRecord: function(req, res) {
-        console.log("Patient_data controller called to 'addRecord'", req.body );
-        console.log("id is  : " , req.params.id);
-        db.Patient_data
-        .find({
-            _id: req.params.id}, {"episodes": 1}
-        )
-        .then(result => {
-            console.log("result : ", result[0]);
-            let lastEpisode = result[0].episodes[result[0].episodes.length-1]
-            lastEpisode.records.push(req.body);;
-            db.Patient_data
-                .findOneAndUpdate(
-                    { _id: req.params.id},
-                    { $pop: {"episodes": 1} } 
-                )
-                .then(result => {
-                    db.Patient_data
-                    .findOneAndUpdate(
-                        { _id: req.params.id },
-                        { $push: {"episodes": lastEpisode} }
-                    )
-                        .then(result => {
-                        console.log("RESULT:", result);
-                        res.json(result)
-                        })
-                })
-        })
-        .catch(err => {
-            console.log(`CONTROLLER ERROR: ${err}`);
-            res.status(422).json(err);
-        })
-    },
-
     // Remove patient data 
     // To be sent req.params.id of patient data collection to be deleted
     delete: function(req, res) {

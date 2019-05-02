@@ -1,0 +1,8 @@
+
+
+@media print {
+    .page-break {
+        padding-top: 20px;
+        display: block; 
+        page-break-after: always; }
+}

@@ -28,20 +28,15 @@ router
     .route('/episode/:id')
     .put(checkJwt, patient_dataController.newEpisode); 
 
-// Matches with "/api/patient-data/newRecord/:id" 
-router
-    .route('/record/:id')
-    .put(checkJwt, patient_dataController.addRecord); 
-
-// Matches with '/api/patient_data/editRecord/'
-router
-    .route('/editRecord/:id')
-    .put(checkJwt, patient_dataController.editRecord);
-
 // Matches with '/api/patient_data/editLastEpisode/'
 router
     .route('/updateStatus/:id/')
     .put(checkJwt, patient_dataController.updateStatus);
+
+// Matches with '/api/patient_data/updateRecord/'
+router
+    .route('/updateRecords/:id')
+    .put(patient_dataController.updateRecords);
 
 router
     .route('/delete/:id')

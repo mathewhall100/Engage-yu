@@ -171,7 +171,6 @@ class ProviderAdd extends Component {
 
 
 function validate(values) {
-    console.log("Error values: ", values) // -> { object containing all values of form entries } 
     const errors = {}; // error accumulator
     // validate inputs from 'values'; true=required
     errors.title = val.validateIsRequired(values.title)

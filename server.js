@@ -18,8 +18,8 @@ const corsOptions = {
 app.use(cors(corsOptions))
 
 // Configure body parser for AJAX requests
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ limit: '1mb', extended: true }));
+app.use(bodyParser.json({limit: '1mb'}));
 
 // Serve up static assets (usually on heroku)
 if (process.env.NODE_ENV === "production") {

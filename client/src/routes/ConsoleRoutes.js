@@ -33,7 +33,7 @@ export default class AdminRoutes extends Component {
                 <Route exact path='/admin/survey' component={Survey} />
 
                 <Route path='/admin/report/:Id' component={Report} />
-                <Route exact path='/admin/reportfull' component={ReportFull} />
+                <Route exact path='/admin/reportFull' component={ReportFull} />
 
                 <Route exact path='/admin/questions' component={NotFound} />
                 <Route exact path='/admin/delete' component={NotFound} />

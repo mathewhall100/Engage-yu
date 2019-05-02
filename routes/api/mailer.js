@@ -8,11 +8,11 @@ router
     .route("/send")
     .post((req, res) => {
         console.log("mailerRoute: ", req.body)
-        const { email = "", name = "", text = "" } = req.body
+        const { email="", name="", subject="", text="", html="", attachments=[] } = req.body
 
-        mailer.send({ email, name, text })
+        mailer.send({ email, name, subject, text, html, attachments })
             .then(res => {
-                console.log("Message sent: ", res.data)
+                console.log("Message sent: ", res)
             })
             .catch(error => {
                 console.log("Mailer error: ", error)

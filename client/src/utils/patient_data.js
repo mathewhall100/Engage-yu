@@ -45,12 +45,12 @@ export default {
         });
     },
 
-    // addRecord: function(id, record){
-    //     console.log("Axios call made to '/api/patient_data' to 'addRecord'");
-    //     return axios.put("/api/patient_data/record/"+id, record, { 
-    //         headers: {'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')}
-    //     });
-    // },
+    updateRecords: function(id, record){
+        console.log("Axios call made to '/api/patient_data' to 'updateRecords'", id, " : ", record);
+        return axios.put("/api/patient_data/updateRecords/"+id, record, { 
+            headers: {'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')}
+        });
+    },
 
     remove: function(id){
         console.log("Axios call made to '/api/patient_info' to 'remove' " + id);

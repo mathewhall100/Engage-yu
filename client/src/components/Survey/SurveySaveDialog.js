@@ -9,7 +9,7 @@ import BtnAction from '../UI/Buttons/btnAction'
 import BtnLink from '../UI/Buttons/btnLink'
 import FormBox from '../UI/Forms/formBox'
 import DialogSaveFailure from '../UI/Dialogs/dialogSaveFailure'
-import CallBack from '../UI/callback'
+import DialogSaving from '../UI/Dialogs/dialogSaving'
 import { validateIsRequired } from '../../logic/formValidations';
 import patient_dataAPI from "../../utils/patient_data.js";
 
@@ -41,7 +41,7 @@ class SurveySaveDialog extends Component {
 		.catch(err => {
 			console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
 			console.log(err);
-			this.setState({failed: true}); // failed dialog
+			this.setState({failed: true}); // open failed dialog
 		})
 	}
 
@@ -67,7 +67,7 @@ class SurveySaveDialog extends Component {
 			return <DialogSaveFailure text="This diary card could not be completed at this time." cancelurl={"/admin/patient/find"} /> 
 		
 		if (loadingSurvey) 
-			return <CallBack text="Saving..." />
+			return <DialogSaving />
 
 		return <Dialog
 			fullScreen={fullScreen}
@@ -116,11 +116,9 @@ class SurveySaveDialog extends Component {
 }
 
 function validate(values) {
-	console.log("Error values: ", values) 
 	const errors = {}; 
 	errors.title = validateIsRequired(values.title)
 	errors.msg = validateIsRequired(values.msg)
-	console.log("Errors: ", errors)
 	return errors;
 }
 

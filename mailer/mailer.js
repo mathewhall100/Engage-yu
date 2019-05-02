@@ -13,12 +13,14 @@ const transporter = nodemailer.createTransport({
     },
 })
 
-const send = ({ email, name, text }) => {
+const send = ({ email, name, subject, text, html, attachments }) => {
     const message = {
         from: email, 
-        to: "mathew.hall100@gmail.com",
-        subject: "new email from engage-yu", 
+        to: "mathew.hall100@gmail.com", // to be replaced by the 'to' prop 
+        subject, 
         text,
+        html,
+        attachments,
         replyTo: email
     };
 

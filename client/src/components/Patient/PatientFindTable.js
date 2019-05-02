@@ -97,7 +97,11 @@ class PatientFindTable extends Component {
         let text = "";
         
         if (errorCareGroupPatients || errorProviderPatients) {
-            if ((errorCareGroupPatients.message || errorProviderPatients.message).includes('401')) { 
+            if ( 
+                (errorCareGroupPatients && errorCareGroupPatients.message && errorCareGroupPatients.message.includes('401')) 
+                || 
+                (errorProviderPatients && errorProviderPatients && errorProviderPatients.message.includes('401')) 
+            ) { 
                 text="Whoops! Looks like you are not authorized to access this resource"
             } else {
                 text="Sorry an error occurred while fetching data. Please refresh the browser (F5) or try again." 

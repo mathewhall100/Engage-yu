@@ -74,7 +74,7 @@ export default class FormRadio extends Component {
     }
 }
 
-FormRadio.PropTypes = {
+FormRadio.propTypes = {
     name: PropTypes.string.isRequired,
     items: PropTypes.array.isRequired,
 };

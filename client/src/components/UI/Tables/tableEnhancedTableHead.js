@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles, TableCell, TableHead, TableRow, TableSortLabel, Tooltip, Checkbox} from '@material-ui/core';
+import { withStyles, TableCell, TableHead, TableRow, TableSortLabel, Tooltip, Checkbox, Typography} from '@material-ui/core';
 
 
 const CustomTableCell = withStyles(style => ({
@@ -51,7 +51,7 @@ class TableEnhancedTableHead extends PureComponent {
 											direction={order}
 											onClick={this.createSortHandler(row.id)}
 										>
-											{row.label}
+											<Typography variant="subtitle2">{row.label}</Typography>
 										</TableSortLabel>
 									</Tooltip>
 								</CustomTableCell>

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
@@ -196,7 +196,7 @@ class DashboardTable extends Component {
 
                 <div className={classes.tableWrapper}>
                     <Table aria-labelledby="tableTitle">
-
+ {tableDataFiltered.length ? <Fragment>
                         <TableEnhancedTableHead
                             numSelected={selected.length}
                             order={order}
@@ -208,7 +208,7 @@ class DashboardTable extends Component {
                             rows={rows}
                             />
 
-                        {tableDataFiltered.length ? 
+                       
                             <TableBody>
                                 {/* {console.log("tableDataFiltered: ", tableDataFiltered)} */}
                                 { stableSort(tableDataFiltered, getSorting(order, orderBy))
@@ -240,12 +240,13 @@ class DashboardTable extends Component {
                                         );
                                     })
                                 }
-                            </TableBody>
+                            </TableBody></Fragment>
                             : 
                             <TableBody>
                                 <TableRow>   
                                     <CustomTableCell style={{border: "none"}}>
-                                        <Typography variant="subtitle1" style={{margin: "40px 0"}}>No active surveys to display at this time.</Typography>
+                                    <hr /><br /><br />
+                                        <Typography variant="subtitle1" inline style={{margin: "40px 0"}}>No active surveys to display at this time.</Typography>
                                     </CustomTableCell>
                                 </TableRow>
                             </TableBody>
