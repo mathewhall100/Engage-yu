@@ -25,6 +25,28 @@ const styles = theme => ({
         hover: {},
         disabled: {},
     },
+    warningBtn: {
+        height: "32px",
+        padding: "0 5px",
+        marginLeft: "15px",
+        float: "right",
+        color: theme.palette.primary.main,
+        backgroundColor: "#eeeeee",
+        borderColor: theme.palette.primary.main,
+        borderRadius: "5px",  
+        textDecoration: "none",
+        '&:hover': {
+            backgroundColor: "#871c1c",
+            color: "#FFF",
+            cursor: 'pointer'
+        },
+        '&:disabled': {
+            color: "grey",
+            cursor: 'disabled'
+        },
+        hover: {},
+        disabled: {},
+    },
     btnIcon: {
         margin: "0 4px 0 0px",
         position: "relative", top: "4px"
@@ -43,7 +65,7 @@ const BtnGroup = (props) => {
                     type={btn.type}
                     size="small" 
                     variant="outlined" 
-                    className={classes.btn} 
+                    className={btn.warning ? classes.warningBtn : classes.btn} 
                     onClick = {btn.type === "submit" ? null : () => props.handleBtns(btn.btn, _id)}
                     >
                         {btn.icon && <span className={classes.btnIcon}>{btn.icon}</span>} 

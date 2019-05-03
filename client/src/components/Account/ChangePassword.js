@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { reduxForm } from 'redux-form';
 import { withRouter } from 'react-router-dom';
-import { Typography } from '@material-ui/core/Typography';
+import Typography from '@material-ui/core/Typography';
 import FormTextPassword from '../../components/UI/Forms/formTextPassword';
 import BtnAction from '../../components/UI/Buttons/btnAction';
 import { validatePassword, validatePasswordsMatch } from '../../logic/formValidations';

@@ -121,7 +121,7 @@ class ReportSummary extends Component {
                         noSpin={true} 
                         text="Loading..." 
                         fallbackTitle="" 
-                        fallbackText="There are no diary cards to display for this patient." 
+                        fallbackText="There are no diary cards to report for this patient." 
                     />
                     :
                     <Grid container spacing={24}>

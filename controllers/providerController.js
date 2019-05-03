@@ -47,7 +47,7 @@ module.exports = {
         console.log("Provider controller called to 'findById' ", req.params.id);
         db.Provider
         .findById(req.params.id)
-        .populate("provider_group_ref", "group_name")
+        //.populate("provider_group.ref", "group_name") -> needs reviewing
         .then(provider => {
             console.log("Provider controller (findById) returned: ")
             console.log(">>", provider.firstname, provider.lastname)

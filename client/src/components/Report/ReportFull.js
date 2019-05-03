@@ -7,7 +7,7 @@ import moment from 'moment';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import PropTypes from 'prop-types';
-import { withStyles, Paper, Grid, Typography, Button} from '@material-ui/core';
+import { withStyles, Paper, Grid, Typography, Button, Tooltip} from '@material-ui/core';
 import CallBack from '../UI/callback';
 import ReportTable from './ReportTable';
 import ReportEntriesTable from './ReportEntriesTable'
@@ -19,6 +19,7 @@ import { selectConsoleTitle } from '../../actions/index';
 import { displayDataCalc } from './reportLogic';
 import ReportRequestDetails from './ReportRequestDetails'
 import ReportSurveyDetails from './ReportSurveyDetails'
+import ReportEmailDialog from './ReportEmailDialog'
 import mailerAPI from '../../utils/mailer'
 import './reportPrint.css'
 
@@ -126,105 +127,114 @@ class ReportFullPrepare extends Component {
 
         return (
             <Paper id="report" className={classes.root}>
+                {!isEmpty(episode) ? 
+                    <Fragment>
+                        {questions.map((question, index) => {
+                            return (       
+                                <div className='page-break' key={index} >
+                                
+                                    <Typography variant="h5" align="center" style={{fontWeight: 500}} >
+                                        Diary Card Report
+                                    </Typography>
 
-                {questions.map((question, index) => {
-                    return (       
-                        <div className='page-break' key={index} >
-                        
-                            <Typography variant="h5" align="center" style={{fontWeight: 500}} >
-                                Diary Card Report
-                            </Typography>
+                                    <br /><hr /><br />
 
-                            <br /><hr /><br />
+                                    <DetailsBar items={patientDetails} /> 
 
-                            <DetailsBar items={patientDetails} /> 
-
-                            {!isEmpty(episode) ?
-                                <Fragment>
-
-                                    <Grid container spacing={24}>
-                                        <Grid item xs={6}>
-                                            <ReportSurveyDetails episode={episode}/> 
-                                        </Grid>
-                                        <Grid item xs={6}>
-                                            <ReportRequestDetails episode={episode} patientInfo={patientInfo}/>
-                                        </Grid>
-                                    </Grid>
-
-                                    {episode.status === "pending" ?
-                                        <Typography variant="subtitle1" >
-                                            <br /> <br />
-                                            <strong>No Data to report:</strong> this diary card has not yet been started by the patient.
-                                        </Typography>
-                                        :
-                                        <Fragment>
-                                            <Grid container spacing={24}>
-                                                <Grid item xs={12}> 
-                                                    <Typography variant="h6" >
-                                                        Question {index+1}: {question.question}
-                                                    </Typography>
-                                                </Grid>
+                                        <Grid container spacing={24}>
+                                            <Grid item xs={6}>
+                                                <ReportSurveyDetails episode={episode}/> 
                                             </Grid>
+                                            <Grid item xs={6}>
+                                                <ReportRequestDetails episode={episode} patientInfo={patientInfo}/>
+                                            </Grid>
+                                        </Grid>
 
-                                            <Grid container spacing={24}>
-                                                <Grid item xs={6}>
-
-                                                    <div className={classes.graphContainer}>
-                                                        <RenderSubtitle text="Summary Graph" />
-                                                        <ReportBarGraph 
-                                                            displayData={episodeDataForReport}
-                                                            displayQuestion={index}
-                                                            question={question}
-                                                            height={230}
-                                                            responsive="true"
-                                                        />
-                                                    </div>
-
-                                                    <div className={classes.tableContainer}>
-                                                        <RenderSubtitle text="Summary Table" />
-                                                        <ReportTable 
-                                                            displayData={episodeDataForReport}
-                                                            displayQuestion={index}
-                                                            question={question}
-                                                            numDays={episode.num_days}
-                                                        />
-                                                    </div>
-
+                                        {episode.status === "pending" ?
+                                            <Typography variant="subtitle1" >
+                                                <br /> <br />
+                                                <strong>No Data to report:</strong> this diary card has not yet been started by the patient.
+                                            </Typography>
+                                            :
+                                            <Fragment>
+                                                <Grid container spacing={24}>
+                                                    <Grid item xs={12}> 
+                                                        <Typography variant="h6" >
+                                                            Question {index+1}: {question.question}
+                                                        </Typography>
+                                                    </Grid>
                                                 </Grid>
 
-                                                <Grid item xs={6}> 
+                                                <Grid container spacing={24}>
+                                                    <Grid item xs={6}>
 
-                                                    <div className={classes.entriesContainer}>
-                                                        <RenderSubtitle text="Patient Entries (raw data)" />
-                                                        <ReportEntriesTable 
-                                                            records={records} 
-                                                            startTime={episode.start_time}
-                                                            index={index}
-                                                            question={question}
-                                                        />
-                                                    </div>
+                                                        <div className={classes.graphContainer}>
+                                                            <RenderSubtitle text="Summary Graph" />
+                                                            <ReportBarGraph 
+                                                                displayData={episodeDataForReport}
+                                                                displayQuestion={index}
+                                                                question={question}
+                                                                height={230}
+                                                                responsive="true"
+                                                            />
+                                                        </div>
 
-                                                </Grid> 
-                                            </Grid>
-                                              
-                                        </Fragment>
-                                    }
-                                </Fragment>
-                                :
-                                <Typography variant="subtitle1" >
-                                    <br /> <br />
-                                    <strong>No Data to report:</strong> no diary cards found for this patient.
-                                </Typography>
-                            }
-                            
-                            <br /><hr /><br />
-                            <Typography align="right">
-                                {moment().format("dddd, MMMM Do YYYY, h:mm:ss a")}
-                            </Typography> 
-                            <br />
-                        </div>
-                    ) 
-                }) } 
+                                                        <div className={classes.tableContainer}>
+                                                            <RenderSubtitle text="Summary Table" />
+                                                            <ReportTable 
+                                                                displayData={episodeDataForReport}
+                                                                displayQuestion={index}
+                                                                question={question}
+                                                                numDays={episode.num_days}
+                                                            />
+                                                        </div>
+
+                                                    </Grid>
+
+                                                    <Grid item xs={6}> 
+
+                                                        <div className={classes.entriesContainer}>
+                                                            <RenderSubtitle text="Patient Entries (raw data)" />
+                                                            <ReportEntriesTable 
+                                                                records={records} 
+                                                                startTime={episode.start_time}
+                                                                index={index}
+                                                                question={question}
+                                                            />
+                                                        </div>
+
+                                                    </Grid> 
+                                                </Grid>
+                                                
+                                            </Fragment>
+                                        }
+                                        
+                                    <br /><hr /><br />
+                                    <Typography align="right">
+                                        {moment().format("dddd, MMMM Do YYYY, h:mm:ss a")}
+                                    </Typography> 
+                                    <br />
+                                </div>
+                            )   
+                        })} 
+                    </Fragment>
+                    :
+                    <Fragment>
+                        <Typography variant="h5" align="center" style={{fontWeight: 500}} >
+                            Diary Card Report
+                        </Typography>
+                        <br /><hr /><br />
+                        <DetailsBar items={patientDetails} /> 
+                        <Typography variant="subtitle1" >
+                            <CallBack 
+                            noSpin={true} 
+                            text="Loading..." 
+                            fallbackTitle="" 
+                            fallbackText="There are no diary cards to report for this patient." 
+                        />
+                        </Typography>
+                    </Fragment>
+                }
 
             </Paper> 
         ); 
@@ -232,6 +242,15 @@ class ReportFullPrepare extends Component {
 }
 
 class ReportFull extends Component {
+
+    componentDidMount() {
+        this.setState({episode: JSON.parse(localStorage.getItem("report_episode")) })
+    }
+
+    state = {
+        episode: {},
+        openDialog: false
+    }
 
     pxToMm = (px) => {
         return px/document.getElementById('myMm').offsetHeight
@@ -242,7 +261,9 @@ class ReportFull extends Component {
     }
 
     handleCreatePdf = () => {
-        const a4WidthMm = 210;
+            const USLetterWidthMm = 216;
+            const USLetterHeightMm = 279;
+            const a4WidthMm = 210;
             const a4HeightMm = 297;
             const printPageWidthPx = 830;
             const printPageWidthMm = 290;
@@ -282,26 +303,7 @@ class ReportFull extends Component {
     }
 
     handleEmail = () => {
-        const patient = this.props.patientInfo ? `${startCase(this.props.patientInfo.firstname)} ${startCase(this.props.patientInfo.lastname)}` : null
-        const msg = {
-            email: "mathew.hall100@gmail.com",  // delete this where providers have real email address
-            name: "admin @engage-yu",
-            subject: `${patient}: Diary card report for patent: `,
-            text: "",
-            html: `<H3>Diary Card report for ${patient} is ready to be veiwed</h3>
-                    <p>Login to the Engage-Yu application to view the report and respond to the patient.</p>
-                    <p>Thank you</p>
-                    <p>The Engage-Yu team,/P>`,
-        }
-        mailerAPI.send(msg)
-        .then(res => {
-            console.log(res.data)
-        })
-        .catch(error => {
-            console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-            console.log("No active surveys retrieved");
-            console.log(error);
-        })
+        this.setState({openDialog: false}, () => {this.setState({openDialog: true}) } )
     }
 
     handleSendToEHR = () => {
@@ -312,6 +314,7 @@ class ReportFull extends Component {
     render() {
 
         const { classes } = this.props
+        const { openDialog, episode } = this.state
         
         return (
             <Fragment>
@@ -319,17 +322,26 @@ class ReportFull extends Component {
                 {/* dummy component to get the height of 1mm in pixels for the pdf function */}
                 <div id="myMm" style={{height: "1mm" }} /> 
                     <ReactToPrint
-                        trigger={() => <Button variant="outlined" size="small" className={classes.btn}>print</Button>} 
+                        trigger={() =>  <Tooltip title="Open print menu to print or save report" enterDelay={300}>
+                                            <Button variant="outlined" size="small" disabled={isEmpty(episode)} className={classes.btn}>print</Button>
+                                        </Tooltip>
+                                } 
                         content={() => this.componentRef}
                     />
-                    
-                    <Button variant="outlined" size="small" className={classes.btn} onClick={() => this.handleCreatePdf()}>create PDF</Button>
-                    <Button variant="outlined" size="small" className={classes.btn} onClick={() => this.handleEmail()}>email</Button>
-                    <Button variant="outlined" size="small" className={classes.btn} onClick={() => this.handleEhr()}>send to ehr</Button>
-                    <BtnLink type="button" text='close' url={`/admin/report/${JSON.parse(localStorage.getItem("report_episode"))._id}`} />
+                     <Tooltip title="Generate PDF to download, print or email" enterDelay={300}>
+                        <Button variant="outlined" size="small" disabled={isEmpty(episode)} className={classes.btn} onClick={() => this.handleCreatePdf()}>create PDF</Button>
+                    </Tooltip>
+                    <Tooltip title="Open Email dialog to send report to other providers" enterDelay={300}>
+                        <Button variant="outlined" size="small" disabled={isEmpty(episode)}className={classes.btn} onClick={() => this.handleEmail()}>email</Button>
+                    </Tooltip>
+                    <Tooltip title="Send report direct to patient's electronic health record (EHR)" enterDelay={300}>
+                        <Button variant="outlined" size="small" disabled={isEmpty(episode)}className={classes.btn} onClick={() => this.handleSendToEHR()}>send to ehr</Button>
+                    </Tooltip>
+                    <BtnLink type="button" text='back' url={localStorage.getItem("report_episode") ? `/admin/report/${JSON.parse(localStorage.getItem("report_episode"))._id}` : '/admin/report/0'} />
                 </div>              
                 <br /><br />
                 <ReportFullPrepare id="report" ref={el => (this.componentRef = el)} />
+                {openDialog && <ReportEmailDialog />}
             </Fragment>
         )
     }

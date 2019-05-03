@@ -8,7 +8,7 @@ import DoneIcon from '@material-ui/icons/Done';
 export default class FormSelect extends Component {  
 
     renderSelect(field) {
-        const {input, label, width, meta: { error, dirty, touched }, children, ...custom} = field;
+        const {input, label, width, helpText, meta: { error, dirty, touched }, children, ...custom} = field;
 
         return (
             <FormControl style={{width: `${width}px`}}>
@@ -22,25 +22,26 @@ export default class FormSelect extends Component {
                 >
                 </Select>
 
-                {dirty && !error && <span style={{position: "relative", left: `${width}px`, top: '-28px'}}> 
+                {helpText && dirty && !error && <span style={{position: "relative", left: `${width}px`, top: '-28px'}}> 
                     &nbsp;&nbsp;<DoneIcon style={{fontSize: "28px", color: "green"}}/>
                 </span> }
 
-                <span style={{fontSize: "13px", color: "red", marginTop: "8px"}}> 
+                {helpText && <span style={{fontSize: "13px", color: "red", marginTop: "8px"}}> 
                     {touched ? error : ''}
-                </span>
+                </span> }
 
             </FormControl>
         );
     }
 
     render () {
-        const { items, name, label, width="250" } = this.props;
+        const { items, name, label, width="250", helpText=true} = this.props;
         return (
             <Field 
                 name={name} 
                 label={label}
                 width={width}
+                helpText={helpText}
                 component={this.renderSelect} 
             >
                 {items.map(item => 
@@ -58,6 +59,7 @@ FormSelect.propTypes = {
         PropTypes.string,
         PropTypes.number
     ]),
+    helpText: PropTypes.bool,
     items: PropTypes.array.isRequired
 };
 

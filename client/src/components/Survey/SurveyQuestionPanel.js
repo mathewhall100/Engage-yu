@@ -7,13 +7,13 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ProviderName from '../UI/providerName'
 
 const styles = theme => ({
-		root: {
-		},
-		heading: {
-			fontSize: theme.typography.pxToRem(16),
+	root: {
+	},
+	heading: {
+		fontSize: theme.typography.pxToRem(16),
 		fontWeight: theme.typography.fontWeightMedium,
 		marginLeft: "15px"
-		},
+	},
 });
 
 const checkboxTheme = createMuiTheme({

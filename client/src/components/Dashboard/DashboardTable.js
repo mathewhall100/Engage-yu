@@ -196,51 +196,51 @@ class DashboardTable extends Component {
 
                 <div className={classes.tableWrapper}>
                     <Table aria-labelledby="tableTitle">
- {tableDataFiltered.length ? <Fragment>
-                        <TableEnhancedTableHead
-                            numSelected={selected.length}
-                            order={order}
-                            orderBy={orderBy}
-                            onDeSelectAllClick={this.handleDeSelectAllClick}
-                            onRequestSort={this.handleRequestSort}
-                            rowCount={this.state.tableDataFiltered.length}
-                            displayCheckbox={true}
-                            rows={rows}
-                            />
+                        {tableDataFiltered.length ? <Fragment>
+                            <TableEnhancedTableHead
+                                numSelected={selected.length}
+                                order={order}
+                                orderBy={orderBy}
+                                onDeSelectAllClick={this.handleDeSelectAllClick}
+                                onRequestSort={this.handleRequestSort}
+                                rowCount={this.state.tableDataFiltered.length}
+                                displayCheckbox={true}
+                                rows={rows}
+                                />
 
-                       
-                            <TableBody>
-                                {/* {console.log("tableDataFiltered: ", tableDataFiltered)} */}
-                                { stableSort(tableDataFiltered, getSorting(order, orderBy))
-                                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                    .map((d, index)=> {
-                                        return (
-                                            <TableRow hover onClick={event => this.handleRowClick(d.patientInfoId, d.episodeId)} tabIndex={-1} key={index} >
-                                                <CustomTableCell>
-                                                    <MuiThemeProvider theme={checkboxTheme}>
-                                                        <Checkbox style={{paddingLeft: 0}} checked={this.state.selected.indexOf(d.episodeId) !== -1} onClick={event => this.handleCheckBoxClick(event, d.episodeId)}/>
-                                                    </MuiThemeProvider>
-                                                </CustomTableCell>
-                                                <CustomTableCell component="th" scope="row" padding="none">{startCase(d.name)}</CustomTableCell> 
-                                                <CustomTableCell>{d.number}</CustomTableCell>
-                                                <CustomTableCell>{moment(d.start).format("MMM Do YYYY")}</CustomTableCell>
-                                                <CustomTableCell>{moment(d.end).format("MMM Do YYYY")}</CustomTableCell>
-                                                <CustomTableCell>{d.timeframe}</CustomTableCell>
-                                                <CustomTableCell>
-                                                    <DashboardTableStatusBar adjustedStatus={d.adjustedStatus} compliance={d.compliance} progress={d.progress} />
-                                                </CustomTableCell>
-                                                <CustomTableCell onMouseOver={() => {console.log("hover")}}>
-                                                    <ProviderName 
-                                                        title={d.requester.title} 
-                                                        firstname={d.requester.firstname} 
-                                                        lastname={d.requester.lastname} 
-                                                    />
-                                                </CustomTableCell>
-                                            </TableRow>
-                                        );
-                                    })
-                                }
-                            </TableBody></Fragment>
+                                <TableBody>
+                                    {/* {console.log("tableDataFiltered: ", tableDataFiltered)} */}
+                                    { stableSort(tableDataFiltered, getSorting(order, orderBy))
+                                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                        .map((d, index)=> {
+                                            return (
+                                                <TableRow hover onClick={event => this.handleRowClick(d.patientInfoId, d.episodeId)} tabIndex={-1} key={index} >
+                                                    <CustomTableCell>
+                                                        <MuiThemeProvider theme={checkboxTheme}>
+                                                            <Checkbox style={{paddingLeft: 0}} checked={this.state.selected.indexOf(d.episodeId) !== -1} onClick={event => this.handleCheckBoxClick(event, d.episodeId)}/>
+                                                        </MuiThemeProvider>
+                                                    </CustomTableCell>
+                                                    <CustomTableCell component="th" scope="row" padding="none">{startCase(d.name)}</CustomTableCell> 
+                                                    <CustomTableCell>{d.number}</CustomTableCell>
+                                                    <CustomTableCell>{moment(d.start).format("MMM Do YYYY")}</CustomTableCell>
+                                                    <CustomTableCell>{moment(d.end).format("MMM Do YYYY")}</CustomTableCell>
+                                                    <CustomTableCell>{d.timeframe}</CustomTableCell>
+                                                    <CustomTableCell>
+                                                        <DashboardTableStatusBar adjustedStatus={d.adjustedStatus} compliance={d.compliance} progress={d.progress} />
+                                                    </CustomTableCell>
+                                                    <CustomTableCell onMouseOver={() => {console.log("hover")}}>
+                                                        <ProviderName 
+                                                            title={d.requester.title} 
+                                                            firstname={d.requester.firstname} 
+                                                            lastname={d.requester.lastname} 
+                                                        />
+                                                    </CustomTableCell>
+                                                </TableRow>
+                                            );
+                                        })
+                                    }
+                                </TableBody>
+                            </Fragment>
                             : 
                             <TableBody>
                                 <TableRow>   

@@ -15,7 +15,7 @@ import { emailNewProvider } from '../../actions'
 class ProviderSaveDialog extends Component {
 
 	componentDidMount() {
-		console.log("providerSaveDialog: ", this.props.enableLogin)
+		//console.log("providerSaveDialog: ", this.props.enableLogin)
 	}
 
 
@@ -66,82 +66,81 @@ class ProviderSaveDialog extends Component {
 		if (errorNewProvider) 
 			return <DialogSaveFailure text="An error ocurred and this provider's details could not be saved at this time." cancelUrl={"/admin/provider/find"} /> 
 		
-		else if (loadingNewProvider || isEmpty(newProvider))
+		if (loadingNewProvider || isEmpty(newProvider))
 			return <DialogSaving />
 		
-		else
-			return <Dialog
-				fullScreen={fullScreen}
-				open={this.state.open}
-				disableBackdropClick 
-				onClose={this.handleClose}
-				aria-labelledby="responsive-dialog-title"
-				PaperProps={{
-					style: {
-					padding: "40px",
-					width: "60%",
-					}
-				}}
-				>
-					<DialogTitle id="responsive-dialog-title">Success!</DialogTitle>
+		return <Dialog
+			fullScreen={fullScreen}
+			open={this.state.open}
+			disableBackdropClick 
+			onClose={this.handleClose}
+			aria-labelledby="responsive-dialog-title"
+			PaperProps={{
+				style: {
+				padding: "40px",
+				width: "60%",
+				}
+			}}
+			>
+				<DialogTitle id="responsive-dialog-title">Success!</DialogTitle>
 
-					<form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
-						<DialogContent>
-							<Typography variant="subtitle1">New provider successfully added with the following details:</Typography>
-							<br /> <br />
-							<Grid container spacing={24} >
-								<Grid item xs={6}>
-									<Typography variant="subtitle2" gutterBottom>Name:</Typography> 
-									<Typography variant="subtitle2" gutterBottom>Role:</Typography> 
-									<Typography variant="subtitle2" gutterBottom>Office:</Typography> 
-									<Typography variant="subtitle2" gutterBottom>Email:</Typography> 
-									<Typography variant="subtitle2" gutterBottom>Office phone:</Typography> 
-									<Typography variant="subtitle2" gutterBottom>Care group:</Typography> 
-								</Grid>
-								<Grid item xs={6}>
-									<Typography variant="subtitle2" gutterBottom>{newProvider.firstname} {newProvider.lastname}</Typography> 
-									<Typography variant="subtitle2" gutterBottom>{newProvider.provider_role.role}</Typography> 
-									<Typography variant="subtitle2" gutterBottom>{newProvider.office.name}</Typography> 
-									<Typography variant="subtitle2" gutterBottom>{newProvider.email}</Typography> 
-									<Typography variant="subtitle2" gutterBottom>{newProvider.phone_office}</Typography> 
-									<Typography variant="subtitle2" gutterBottom>{newProvider.provider_group.name}</Typography> 
-								</Grid>
+				<form autoComplete="off" onSubmit={handleSubmit(this.submit.bind(this))}>
+					<DialogContent>
+						<Typography variant="subtitle1">New provider successfully added with the following details:</Typography>
+						<br /> <br />
+						<Grid container spacing={24} >
+							<Grid item xs={6}>
+								<Typography variant="subtitle2" gutterBottom>Name:</Typography> 
+								<Typography variant="subtitle2" gutterBottom>Role:</Typography> 
+								<Typography variant="subtitle2" gutterBottom>Office:</Typography> 
+								<Typography variant="subtitle2" gutterBottom>Email:</Typography> 
+								<Typography variant="subtitle2" gutterBottom>Office phone:</Typography> 
+								<Typography variant="subtitle2" gutterBottom>Care group:</Typography> 
 							</Grid>
-							<br /> <br />
+							<Grid item xs={6}>
+								<Typography variant="subtitle2" gutterBottom>{newProvider.firstname} {newProvider.lastname}</Typography> 
+								<Typography variant="subtitle2" gutterBottom>{newProvider.provider_role.role}</Typography> 
+								<Typography variant="subtitle2" gutterBottom>{newProvider.office.name}</Typography> 
+								<Typography variant="subtitle2" gutterBottom>{newProvider.email}</Typography> 
+								<Typography variant="subtitle2" gutterBottom>{newProvider.phone_office}</Typography> 
+								<Typography variant="subtitle2" gutterBottom>{newProvider.provider_group.name}</Typography> 
+							</Grid>
+						</Grid>
+						<br /> <br />
 
-							{enableLogin && 
-								<Fragment>
-									<Typography variant="subtitle1" gutterBottom>
-										New provider can login for the first time with their registered email address, {newProvider.email}, and temporary password. 
-									</Typography>
-									<FormCheckbox name="emailLoginCreds" label="emailLoginCreds" value={true}/>
-									<Typography variant="subtitle2" inline gutterBottom> 
-										Email new provider with login credentials? 
-									</Typography>
-								</Fragment> }
+						{enableLogin && 
+							<Fragment>
+								<Typography variant="subtitle1" gutterBottom>
+									New provider can login for the first time with their registered email address, {newProvider.email}, and temporary password. 
+								</Typography>
+								<FormCheckbox name="emailLoginCreds" label="emailLoginCreds" value={true}/>
+								<Typography variant="subtitle2" inline gutterBottom> 
+									Email new provider with login credentials? 
+								</Typography>
+							</Fragment> }
 
-							{!enableLogin && 
-								<Fragment>
-									<Typography variant="subtitle1" gutterBottom>
-										This provider will <strong>NOT HAVE</strong> permissions to login to the application themselves.
-									</Typography>
-								</Fragment> }
+						{!enableLogin && 
+							<Fragment>
+								<Typography variant="subtitle1" gutterBottom>
+									This provider will <strong>NOT HAVE</strong> permissions to login to the application themselves.
+								</Typography>
+							</Fragment> }
 
-							<Typography  variant="subtitle1" gutterBottom>
-								Provider details and login permissions can be edited and/or updated at any time using the 'manage provider' menu. 
-							</Typography>
-							<br />
-						</DialogContent>
+						<Typography  variant="subtitle1" gutterBottom>
+							Provider details and login permissions can be edited and/or updated at any time using the 'manage provider' menu. 
+						</Typography>
+						<br />
+					</DialogContent>
 
-						<DialogActions style={{margin: "0 20px 20px 0"}}>
-							<BtnGroup 
-								btns={[{btn: "done", type: "submit", id: "1"}]} 
-								handleBtns={this.handleRedirects} 
-								/>
-						</DialogActions>	
-					</form>
-				</Dialog>
-		
+					<DialogActions style={{margin: "0 20px 20px 0"}}>
+						<BtnGroup 
+							btns={[{btn: "done", type: "submit", id: "1"}]} 
+							handleBtns={this.handleRedirects} 
+							/>
+					</DialogActions>	
+
+				</form>
+			</Dialog>
 	}
 }
 

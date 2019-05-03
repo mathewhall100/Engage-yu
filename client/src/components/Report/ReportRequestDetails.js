@@ -49,7 +49,7 @@ export default class ReportRequestDetails extends PureComponent {
                         <Fragment>
                             {report_to.map((d, index) => {
                                 return (
-                                    <Typography variant="body2">
+                                    <Typography variant="body2" key={index}>
                                         ({index+3})&nbsp;
                                         <ProviderName 
                                             title={d.title} 

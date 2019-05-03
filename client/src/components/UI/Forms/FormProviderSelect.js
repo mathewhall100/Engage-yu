@@ -22,9 +22,10 @@ export default class FormProviderSelect extends Component {
                     provider.firstname,
                     provider.lastname,
                     provider.provider_role.role,
-                    provider.provider_group_ref,
-                    provider.provider_group_id,
-                    provider.provider_group_name,
+                    provider.provider_group.id,
+                    provider.provider_group.name,
+                    provider.office.name
+
                 ];
                 return {
                     value: val,
@@ -48,8 +49,7 @@ export default class FormProviderSelect extends Component {
                 localStorage.getItem("user_provider_firstname"),
                 localStorage.getItem("user_provider_lastname"),
                 localStorage.getItem("user_provider._id"),
-                localStorage.getItem("user_provider_group_ref"),
-                localStorage.getItem("user_provider_group_ref"),
+                localStorage.getItem("user_provider_group_id"),
                 localStorage.getItem("user_provider_group_name") 
             ],
             text: <ProviderName title={""} firstname={localStorage.getItem("user_provider_firstname")} lastname={localStorage.getItem("user_provider_lastname")} />
