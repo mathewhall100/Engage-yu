@@ -35,7 +35,7 @@ const provider_summarySchema = new Schema({
 },
 
     { _id: false},
-    // { autoIndex: false } --> set in in production see https://mongoosejs.com/docs/guide.html#indexes
+    // { autoIndex: false } --> set in production see https://mongoosejs.com/docs/guide.html#indexes
 
 );
 

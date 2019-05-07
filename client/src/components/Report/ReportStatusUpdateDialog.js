@@ -7,6 +7,7 @@ import { withStyles, Dialog, DialogContent, DialogTitle, withMobileDialog, Typog
 import BtnAction from '../UI/Buttons/btnAction'
 import FormBox from '../UI/Forms/formBox'
 import CallBack from '../UI/callback'
+import BtnCloseIcon from '../UI/Buttons/btnCloseIcon'
 import { validateIsRequired } from '../../logic/formValidations';
 import { updateEpisodeStatus, loadPatient } from '../../actions'
 import ProviderName from '../UI/providerName'
@@ -14,6 +15,10 @@ import ProviderName from '../UI/providerName'
 const styles = theme => ({
 	textField: {
 	width: "100%",
+	},
+	closeIcon: {
+		float: "right",
+		position: 'relative', top: "-4px", left: "16px",
 	}
 })
 
@@ -63,12 +68,18 @@ class ReportStatusUpdateDialog extends Component {
 			aria-labelledby="responsive-dialog-title"
 			PaperProps={{
 				style: {
-				padding: "40px",
-				width: "800px",
-				maxWidth: "60%"
+					border: "2px solid  #28353d",
+                    borderRadius: "5px",
+                    padding: "20px 40px",
+					width: "800px",
+					minWidth: "600px",
+					maxWidth: "60%"
 				}
 			}}
 			>
+
+			<span className={classes.closeIcon}><BtnCloseIcon handleBtnClick={this.handleClose}/></span>
+
 				{newStatus === "actioned" && <DialogTitle id="responsive-dialog-title">MARK DIARY CARD AS ACTIONED</DialogTitle> }
 				{newStatus === "archived" && <DialogTitle id="responsive-dialog-title">ARCHIVE DIARY CARD'</DialogTitle> }
 				{newStatus === "cancelled" && <DialogTitle id="responsive-dialog-title">CANCEL DIARY CARD</DialogTitle> }
@@ -121,9 +132,9 @@ class ReportStatusUpdateDialog extends Component {
 														Sent by: <ProviderName title={localStorage.getItem("user_provider_title")} firstname={localStorage.getItem("user_provider_firstname")} lastname={localStorage.getItem("user_provider_lastname")}/>
 													</Typography>
 													<br />
-													<BtnAction type="submit" disabled={pristine} text="confirm action and send message" marginRight={true}/>
-													<BtnAction type="button" text="confirm action (no message)" handleAction={this.handleConfirm} marginRight={true}/>
-													<BtnAction type="button" text="cancel action" handleAction={this.handleClose} warning={true}/>
+													<BtnAction type="submit" disabled={pristine} text="confirm & send message" marginRight={true}/>
+													<BtnAction type="button" text="confirm (no message)" handleAction={this.handleConfirm} marginRight={true}/>
+													{/* <BtnAction type="button" text="cancel action" handleAction={this.handleClose} warning={true}/> */}
 												</form>
 											</Fragment>
 										}
@@ -132,7 +143,7 @@ class ReportStatusUpdateDialog extends Component {
 											<Fragment>
 												<br /> <br />
 												<BtnAction type="button" text="confirm archive" handleAction={this.handleConfirm} marginRight={true}/>
-												<BtnAction type="button" text="cancel" handleAction={this.handleClose} warning={true} />
+												{/* <BtnAction type="button" text="cancel" handleAction={this.handleClose} warning={true} /> */}
 											</Fragment>
 										}
 									</Fragment>

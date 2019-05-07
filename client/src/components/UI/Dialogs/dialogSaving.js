@@ -22,8 +22,11 @@ class DialogSaving extends React.Component {
 				aria-labelledby="responsive-dialog-title"
 				PaperProps={{
 					style: {
-						padding: "40px",
-						width: "60%"
+						border: "2px solid  #28353d",
+						borderRadius: "5px",
+						padding: "20px 40px",
+						width: "600px",
+						maxWidth: "60%"
 					}
 				}}
 			>

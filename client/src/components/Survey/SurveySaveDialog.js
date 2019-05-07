@@ -36,6 +36,7 @@ class SurveySaveDialog extends Component {
 		)
 		.then(res => {
 			console.log("res.data: ", res.data)
+			this.handleClose()
 			this.props.history.push('/admin/patient/find')
 		})
 		.catch(err => {
@@ -57,6 +58,7 @@ class SurveySaveDialog extends Component {
 
 	handleClose = () => {
 		this.setState({ open: false });
+		this.props.saveListClose()
 	};
 
 
@@ -77,8 +79,12 @@ class SurveySaveDialog extends Component {
 			aria-labelledby="responsive-dialog-title"
 			PaperProps={{
 				style: {
-					padding: "40px",
-					width: "60%"
+					border: "2px solid  #28353d",
+               	 	borderRadius: "5px",
+                	padding: "20px 40px",
+					width: "800px",
+                    minWidth: "600px",
+                    maxWidth: "60%"
 				}
 			}}
 			>
@@ -104,7 +110,7 @@ class SurveySaveDialog extends Component {
 							<br />
 							<BtnAction type="submit" disabled={pristine} text="send" />
 							<span style={{marginRight: "15px"}}>
-								<BtnLink text="no thanks" url="/admin/patient/find" />
+								<BtnLink text="skip" url="/admin/patient/find" />
 							</span>
 						</form>
 					</DialogContent> 

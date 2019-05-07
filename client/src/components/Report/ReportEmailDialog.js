@@ -3,25 +3,23 @@ import { reduxForm } from 'redux-form';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { startCase, isEmpty } from 'lodash';
+import { startCase, isEmpty, upperFirst } from 'lodash';
 import PropTypes from 'prop-types';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
-import { withStyles, Dialog, DialogActions, DialogContent, DialogTitle, withMobileDialog,  ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Checkbox, Typography, Grid, Tooltip} from '@material-ui/core'
+import { withStyles, Dialog, DialogActions, DialogContent, DialogTitle, withMobileDialog,  ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Typography,Tooltip} from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import DeleteIcon from '@material-ui/icons/DeleteOutline'
 import BtnGroup from '../UI/Buttons/btnGroup'
+import BtnCloseIcon from '../UI/Buttons/btnCloseIcon'
 import FormSelect from '../UI/Forms/formSelect'
-import ProviderSelect from '../UI/Forms/FormProviderSelect'
-import DialogSaveFailure from '../UI/Dialogs/dialogSaveFailure'
-import DialogSaving from '../UI/Dialogs/dialogSaving'
 import ProviderName from '../UI/providerName'
-import providerAPI from "../../utils/provider.js";
-//import { emailReport } from '../../actions'
+import CallBack from '../UI/callback'
+import { loadProvidersByCareGroup, mailer } from '../../actions';
+
 
 const styles = theme => ({
-	expRoot: {
-        width: '360px',
-	},
+    expRoot: {
+        width: "360px"
+    },
 	heading: {
 		fontSize: theme.typography.pxToRem(16),
 		fontWeight: theme.typography.fontWeightMedium,
@@ -43,49 +41,38 @@ const styles = theme => ({
             cursor: "pointer"
         }
     },
-    fwMedium: {
-        fontWeight: 500
+    closeIcon: {
+		float: "right",
+		position: 'relative', top: "-4px", left: "16px",
+	},
+    addRecipientBox: {
+        width: "360px",
     }
 });
 
 class ReportEmailDialog extends Component {
 
     componentDidMount() {
-        let providers = [];
-        providerAPI.findAllByGroup(localStorage.getItem("user_provider_group_id"))
-        .then(res => {
-            console.log("res.data: ", res.data);       
-            providers = res.data.providerList.map(provider => {
-                let val = [
-                    provider._id, 
-                    provider.title,
-                    provider.firstname,
-                    provider.lastname,
-                    provider.provider_role.role,
-                    provider.provider_group.name,
-                    provider.office.name,
-                    provider.email
-                ];
-                return {
-                    value: val,
-                    text: <ProviderName title={val[1]} firstname={val[2]} lastname={val[3]} />,
-                };
-            })
-            if (providers && providers.length > 0) {
-                this.setState({providers: providers}, () => {this.getInitialRecipients()} )
-            } 
-        })
-        .catch(err => {
-            console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-            console.log(err);
-            this.setState({providers: []})
-        })
+        const id = localStorage.getItem("user_provider_group_id")
+        if (this.props.providers && this.props.providers.length) {
+            this.setState({providers: this.props.providers}, () => this.getInitialRecipients())
+        } else {
+            this.props.dispatch(loadProvidersByCareGroup(id))
+        }
+        this.props.dispatch(mailer("reset"))
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.state.recipients.length > 0 && nextProps.reportForm.values && nextProps.reportForm.values !== this.props.reportForm.values) {
+        if (nextProps.reportForm && this.props.reportForm && nextProps.reportForm.values !== this.props.reportForm.values) {
             this.addRecipientToList(nextProps.reportForm.values)
         }
+        if (nextProps.providers && nextProps.providers.length && nextProps.providers !== this.props.providers) {
+            this.setState({providers: nextProps.providers}, () => this.getInitialRecipients())
+        }
+    }
+
+    componentWillUnmount() {
+        this.props.dispatch(mailer("reset"))
     }
 
 	state = {
@@ -100,44 +87,38 @@ class ReportEmailDialog extends Component {
     }
 
     getDiaryCard = () => {
-        const reportEpisode = JSON.parse(localStorage.getItem("report_episode"))
-        const start = moment(reportEpisode.start_date).format('MMMM Do YYYY')
-        const end = moment(reportEpisode.end_date).format('MMMM Do YYYY')
-        return `${start} - ${end}`
+        const episode = this.props.episode
+        if (episode) {
+            const start = moment(episode.start_date).format('MMMM Do YYYY')
+            const end = moment(episode.end_date).format('MMMM Do YYYY')
+            return `${start} - ${end}`
+        }
     }
 
     getInitialRecipients = () => {
         const { providers } = this.state
-        const reportEpisode = JSON.parse(localStorage.getItem("report_episode"))
-        let primProvider = providers.filter(provider => {return provider.value[0] === this.props.patientInfo.primary_provider.id})
-        let reqProvider = providers.filter(provider => {return provider.value[0] === reportEpisode.requesting_provider.id}) 
-        primProvider = [...primProvider[0].value, "(primary provider)"]
-        reqProvider = [...reqProvider[0].value, "(requesting provider)"]
-        let reportTos = []
-        if (!isEmpty(reportEpisode.report_to)) {
-            reportEpisode.report_to.map(to => {
-                const reportTo = providers.filter(provider => {return provider.value[0] === to.id}) 
-                reportTos.push(reportTo[0].value)
+        const episode = this.props.episode
+        let reportTos = [];
+        if (!isEmpty(episode.report_to)) {
+            reportTos = episode.report_to.map(to => {
+                return providers.filter(provider => {return provider.value[0] === to.id})[0].value
             })
         }
-        this.setState({ recipients: [primProvider, reqProvider, ...reportTos] })
+        this.setState({ recipients: [...reportTos] })
     }
 
     addRecipientToList = (recipient) => {
-        let recipients = this.state.recipients
-        if (!recipients.includes(recipient.provider)) {
-            recipients.push(recipient.provider)
+        const { recipients } = this.state;
+        if (recipient && !recipients.includes(recipient.provider)) {
+            this.setState({recipients: [...recipients, recipient.provider]})
+            this.props.reset('ReportEmailForm') 
         }
-        this.setState({recipients: recipients})
-        this.props.reset('ReportEmailForm')
     }
 
     removeRecipientFromList = (recipient) => {
-        let recipients = this.state.recipients
-        if (recipients.includes(recipient)) {
-            recipients.splice(recipients.indexOf(recipient), 1)
-            this.setState({recipients: recipients})
-        }
+        const { recipients } = this.state
+        const index = recipients.findIndex(r => r[0] === recipient[0])
+        this.setState({recipients: [...recipients.slice(0,index), ...recipients.slice(index+1)] })
     }
 
 	handleClose = () => {
@@ -145,73 +126,71 @@ class ReportEmailDialog extends Component {
 	};
 
 	handleBtns = (index) => {
-        console.log("handleBtns: ", index)
 		if (index === "send") {
-            this.state.recipients.map(recipient => {return console.log("email: ", recipient[7])})
+            const { patientInfo } = this.props
+            const patient = patientInfo ? `${startCase(patientInfo.firstname)} ${startCase(patientInfo.lastname)}` : null
+            const emailTo = this.state.recipients.map(recipient => {return recipient[8]})
+            console.log("email To: ", emailTo)
+            const msg = {
+                email: emailTo, 
+                name: "admin @engage-yu",
+                subject: `${patient}: Diary card report for patent: `,
+                text: "",
+                html: `<H3>Diary Card report for ${patient} is ready to be veiwed</h3>
+                        <p>Login to the Engage-Yu application to view the report and respond to the patient.</p>
+                        <p>Regards</p>
+                        <p>The Engage-Yu team</p>`,
+                }
+                this.props.dispatch(mailer(msg))
         }
-        else if (index === "cancel") {
+        else if (index === "cancel" || index === "finish") {
             this.handleClose()
-        }
-
+        } else null
     }
 
-	submit = (values) => {
-        const { patientInfo } = this.props
-		console.log("Submitted values: ", values)
-		const patient = patientInfo ? `${startCase(patientInfo.firstname)} ${startCase(patientInfo.lastname)}` : null
-        const { newProvider } = this.props
-        const fullName = `Dr. ${newProvider.firstname} ${newProvider.lastname}`;
-        const msg = {
-            email: "mathew.hall100@gmail.com",  // email recipients
-            name: "admin @engage-yu",
-            subject: `${patient}: Diary card report for patent: `,
-            text: "",
-            html: `<H3>Diary Card report for ${patient} is ready to be veiwed</h3>
-                    <p>Login to the Engage-Yu application to view the report and respond to the patient.</p>
-                    <p>Regards</p>
-                    <p>The Engage-Yu team</p>`,
-            }
-			//this.props.dispatch(emailReport(msg))
+    getRecipientName = (recipient) => {
+        let addOn = "";
+        if (recipient[0] === this.props.patientInfo.primary_provider.id) {
+            addOn = "(primary provider)"
+        } else if (recipient[0] === this.props.episode.requesting_provider.id) {
+            addOn = "(requesting provider)"
+        } else {addOn = ""}
+        return  <Fragment>
+                    <ProviderName 
+                        title={recipient[1]} 
+                        firstname={recipient[2]} 
+                        lastname={recipient[3]} />
+                    <span style={{marginLeft: "10px"}}>{addOn}</span>
+                </Fragment>
     }
+           
 
 	render() {
-        const { classes, fullScreen, handleSubmit, errorReport, loadingReport, ReportEmail } = this.props;
+        const { classes, fullScreen, errorMail, loadingMail, mail } = this.props;
         const { providers, recipients } = this.state
         
-        const RenderReportEmailSuccess = () =>
-            <Fragment />
-
         const RenderEmailRecipientPanel = (props) =>
             <ExpansionPanel className={classes.expRoot} >
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon className={classes.expandIcon}/>}>
                     <Typography variant="subtitle1">
-                        <ProviderName title={props.recipient[1]} firstname={props.recipient[2]} lastname={props.recipient[3]} />
-                        <span style={{marginLeft: "10px"}}>{props.recipient[8]}</span>
+                        {this.getRecipientName(props.recipient)}
                     </Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails >
                     <Typography variant="subtitle2">
                         <table style={{marginTop: "-15px"}}>
                             <tbody>
-                                <tr><td style={{width: "80px"}}>Email: </td><td>{props.recipient[7]}</td></tr>
-                                <tr><td style={{width: "80px"}}>Office: </td><td>{props.recipient[6]}</td></tr>
-                                <tr><td style={{width: "80px"}}>Role: </td><td>{props.recipient[4]}</td></tr>
-                                <tr><td style={{width: "80px"}}>Care group: </td><td>{props.recipient[5]}</td></tr>
+                                <tr><td style={{width: "80px"}}>Email: </td><td>{props.recipient[8]}</td></tr>
+                                <tr><td style={{width: "80px"}}>Office: </td><td>{startCase(props.recipient[7])}</td></tr>
+                                <tr><td style={{width: "80px"}}>Role: </td><td>{upperFirst(props.recipient[4])}</td></tr>
+                                <tr><td style={{width: "80px"}}>Care group: </td><td>{startCase(props.recipient[6])}</td></tr>
                             </tbody>
                         </table> 
                     </Typography>
                 </ExpansionPanelDetails>
             </ExpansionPanel>
 
-		if (errorReport) 
-            return <DialogSaveFailure text="An error ocurred and email could not be sent at this time." cancelUrl={"/admin/reportfull"} /> 
-		
-		if (loadingReport)
-			return <DialogSaving />
 
-        if (ReportEmail)
-            <RenderReportEmailSuccess />
-		
         return <Dialog
             fullScreen={fullScreen}
             open={this.state.open}
@@ -220,67 +199,96 @@ class ReportEmailDialog extends Component {
             aria-labelledby="responsive-dialog-title"
             PaperProps={{
                 style: {
-                border: "2px solid #2d404b",
-                borderRadius: "5px",
-                padding: "20px 40px",
-                width: "60%",
+                    border: "2px solid  #28353d",
+                    borderRadius: "5px",
+                    padding: "20px 40px",
+                    width: "800px",
+                    minWidth: "600px",
+                    maxWidth: "60%"
                 }
             }}
             >
+
+                <span className={classes.closeIcon}><BtnCloseIcon handleBtnClick={this.handleClose}/></span>
+                
                 <DialogTitle id="responsive-dialog-title">Email Report</DialogTitle>
 
                     <DialogContent>
-
-                        <Typography variant="subtitle1">
-                            The report on {this.getPatient()}'s diary card:  {this.getDiaryCard()} will be sent to the following recipients:
-                            <br /> <br />
-                        </Typography>
-                        
-                        <div style={{width: "360px"}}>
-                            {recipients && recipients.map((recipient, idx) => {
-                                return (
-                                    <table key={idx}>
-                                        <tbody>
-                                            <tr>
-                                                <td><RenderEmailRecipientPanel key={idx} recipient={recipient}/></td>
-                                                <td>
-                                                    <Tooltip title="Remove recipient from email list" placement="right" enterDelay={300}>
-                                                        <DeleteIcon className={classes.deleteIcon} onClick={() => this.removeRecipientFromList(recipient)}/>
-                                                    </Tooltip>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                )
-                            })} 
-                            <br /><br />
-                            <Typography variant="subtitle1" className={classes.fwMedium} inline>
-                                Add recipient: 
-                            </Typography>
-                            <div style={{marginTop: "-26px", float: "right"}}>
-                                <form>
-                                    <FormSelect 
-                                        name="provider" 
-                                        label="Select recipient" 
-                                        width="200" 
-                                        items={providers} 
-                                        value={providers[0]}
-                                        helpText={false}
-                                    />
-                                </form>
-                            </div>
-                        </div>
-                       
+                        {loadingMail ? 
+                            <CallBack text="Sending email..." fallbackText="For some reason, email is taking time to send. You can wait here for confirmation or click done to continue."/>
+                            :
+                            errorMail ?
+                                <Typography variant="subtitle1" align="justify">
+                                    Unfortuneately, a problem was encountered and some or all of the recipients may not have recieved an email. Please check with the recipiemts or try to sens another email.
+                                </Typography>
+                                :
+                                mail.accepted && mail.accepted.length > 0 ? 
+                                    <Typography variant="subtitle1" align="justify">
+                                        Emails successfully sent
+                                    </Typography>
+                                    :
+                                    <Fragment>
+                                        <Typography variant="subtitle1" align="justify">
+                                            The report on {this.getPatient()}'s diary card:  {this.getDiaryCard()} will be sent to the following recipients:
+                                            <br /> <br />
+                                        </Typography>
+                                    
+                                        {recipients && recipients.map((recipient, idx) => {
+                                            return (
+                                                <table key={idx}>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td><RenderEmailRecipientPanel key={idx} recipient={recipient}/></td>
+                                                            <td>
+                                                                <Tooltip title="Remove recipient from email list" placement="right" enterDelay={300}>
+                                                                    <DeleteIcon className={classes.deleteIcon} onClick={() => this.removeRecipientFromList(recipient)}/>
+                                                                </Tooltip>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            )
+                                        })} 
+                                        <br /><br />
+                                        <div className={classes.addRecipientBox}>
+                                            <Typography variant="subtitle1" style={{fontWeight: 500}}inline>
+                                                Add recipient: 
+                                            </Typography>
+                                            <div style={{margin: "-26px 0 0 20px", float: "right"}}>
+                                                <form>
+                                                    <FormSelect 
+                                                        name="provider" 
+                                                        label="Select recipient" 
+                                                        width="200" 
+                                                        items={providers} 
+                                                        value={providers[1]}
+                                                        helpText={false}
+                                                    />
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </Fragment>
+                        }
+                     
                     </DialogContent>
 
                     <DialogActions style={{margin: "0 20px 20px 0"}}>
-                        <BtnGroup 
-                            btns={[
-                                {btn: "send", type: "button", id: "1"},
-                                {btn: "cancel", type: "button", warning: true, id: "2"},
-                            ]} 
-                            handleBtns={this.handleBtns} 
-                        />
+                        {loadingMail || errorMail || (mail.accepted && mail.accepted.length > 0) ?
+                             <BtnGroup 
+                                btns={[
+                                    {btn: "finish", type: "button", id: "2"},
+                                ]} 
+                             handleBtns={this.handleBtns} 
+                            />
+                            :
+                            <BtnGroup 
+                                btns={[
+                                    {btn: "send", type: "button", id: "1"},
+                                    {btn: "cancel", type: "button", warning: true, id: "2"},
+                                ]} 
+                                handleBtns={this.handleBtns} 
+                            />
+                        }
                     </DialogActions>	
 
             </Dialog>	
@@ -299,10 +307,13 @@ const mapStateToProps = (state) => {
 	console.log("State : ", state);
 	return {
         patientInfo: state.patient.patient.patientInfo,
-        // reportEmail: 
-        // loadingReportEmail:
-        // errorReportEmail:
-
+        episode: state.reportEpisode,
+        providers: state.providersByGroup.listProviders,
+        loadingProviders: state.providersByGroup.loading,
+        errorProviders: state.providersByGroup.error,
+        mail: state.mailer.mail,
+        loadingMail: state.mailer.loading,
+        errorMail: state.mailer.error,
         reportForm: state.form.ReportEmailForm
 	}
 };

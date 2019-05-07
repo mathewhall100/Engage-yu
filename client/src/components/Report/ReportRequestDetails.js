@@ -7,7 +7,7 @@ import ProviderName from '../UI/providerName'
 export default class ReportRequestDetails extends PureComponent {
 
     render () {
-        const { patientInfo, episode: { requesting_provider, report_to }  } = this.props
+        const { episode: { requesting_provider, report_to }  } = this.props
 
         return (
             <Grid container spacing={24} style={{paddingTop: "10px"}}>
@@ -28,29 +28,13 @@ export default class ReportRequestDetails extends PureComponent {
                     <Typography variant="body2">
                         {moment().format("MMM Do YYYY")}
                     </Typography>
-                    <Typography variant="body2">
-                    (1)&nbsp;
-                        <ProviderName 
-                            title={patientInfo.primary_provider.title} 
-                            firstname={patientInfo.primary_provider.firstname} 
-                            lastname={patientInfo.primary_provider.lastname} 
-                        />
-                    </Typography>
-                    <Typography variant="body2">
-                        (2)&nbsp;
-                        <ProviderName 
-                            title={requesting_provider.title} 
-                            firstname={requesting_provider.firstname} 
-                            lastname={requesting_provider.lastname} 
-                        />
-                    </Typography>
 
-                    {!isEmpty(report_to) &&  
+                    {!isEmpty(report_to) ?
                         <Fragment>
                             {report_to.map((d, index) => {
                                 return (
                                     <Typography variant="body2" key={index}>
-                                        ({index+3})&nbsp;
+                                        ({index+1})&nbsp;
                                         <ProviderName 
                                             title={d.title} 
                                             firstname={d.firstname} 
@@ -60,6 +44,10 @@ export default class ReportRequestDetails extends PureComponent {
                                 )
                             }) }
                         </Fragment>
+                        :
+                        <Typography variant="body2">
+                            None specified
+                        </Typography>
                     }
             
                 </Grid>

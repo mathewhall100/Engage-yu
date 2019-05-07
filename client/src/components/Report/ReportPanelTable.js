@@ -2,12 +2,13 @@ import React, {Component, Fragment}  from 'react';
 import { startCase, isEmpty, isEqual } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types';
-import { withStyles, Paper, Table, Typography, TableHead, TableBody, TableCell, TableRow, TablePagination, TableSortLabel, Fade, Popper} from '@material-ui/core';
+import { withStyles,Table, Typography, TableHead, TableBody, TableCell, TableRow, TablePagination, TableSortLabel } from '@material-ui/core';
 import NoteIcon from '@material-ui/icons/EventNote'
 import { stableSort, getSorting } from '../../logic/tableSortFunctions';
 import BtnActionGroup from '../UI/Buttons/btnActionGroup';
 import BtnCloseIcon from '../UI/Buttons/btnCloseIcon'
 import HrStyled from '../UI/hrStyled'
+import PopperCustom from '../UI/popperCustom'
 
 const styles = (theme) =>  ({
     root: {
@@ -19,39 +20,6 @@ const styles = (theme) =>  ({
             backgroundColor: "#EEE"
         }
     },
-    popper: {
-        zIndex: 1,
-        marginBottom: '12px',
-        border: "2px solid",
-        borderColor: theme.palette.primary.main,
-        borderRadius: "8px",
-        '&[x-placement*="top"] $arrow': {
-            bottom: 0,
-            left: 0,
-            marginLeft: "-12px",
-            marginBottom: '-1em',
-            height: '1em',
-            width: '1em',
-            '&::before': {
-                borderWidth: '1em 1em 0 1em',
-                    borderColor: `${theme.palette.primary.main} transparent transparent transparent`, //
-            },
-          },
-      },
-      arrow: {
-        position: 'absolute',
-        fontSize: 14,
-        width: '3em',
-        height: '3em',
-        '&::before': {
-            content: '""',
-            margin: 'auto',
-            display: 'block',
-            width: 0,
-            height: 0,
-            borderStyle: 'solid',
-        },
-      },
     noteIcon: {
         position: "relative",
         top: "-6px", 
@@ -111,7 +79,6 @@ class ReportPanelTable extends Component {
 
     // event handlers
     handleElemClick = (event, heading, row, popperIndex) => {
-        console.log("row; ", row)
         if (!this.state.popperOpen || !isEqual(popperIndex, this.state.popperIndex)) {
             const { currentTarget } = event;
             let msg = {};
@@ -173,7 +140,7 @@ class ReportPanelTable extends Component {
 
     render () {
         const { classes, activeEpisode, tableHeadings, tableData, lastCellHeading, lastCellData } = this.props;
-        const { order, orderBy, rowsPerPage, page, popperContent, popperOpen, arrowRef, anchorEl } = this.state;
+        const { order, orderBy, rowsPerPage, page, popperContent, popperOpen, anchorEl } = this.state;
 
         const getTableCell = (row, idx) => {
             for (var key in row) {
@@ -272,34 +239,11 @@ class ReportPanelTable extends Component {
                     />
                 }
 
-                <Popper 
-                    open={popperOpen} 
-                    anchorEl={anchorEl} 
-                    placement='top'
-                    className={classes.popper}
-                    modifiers={{
-                        arrow: {
-                          enabled: true,
-                          element: arrowRef,
-                        },
-                        flip: {
-                            enabled: false,
-                        },
-                        preventOverflow: {
-                            enabled: true,
-                            boundariesElement: 'scrollParent',
-                        }
-                      }}
-                    >
-                        <span className={classes.arrow} ref={this.handleArrowRef} />
-                        <Paper style={{width: "360px", padding: "20px"}}>
-                            <Fade in={popperOpen} timeout={400}>
-                                <RenderPopperContent />
-                             </Fade>
-                        </Paper>
-                </Popper>
-            </div>
+                <PopperCustom anchorEl={anchorEl} placement="top" width="320px" popperContent={popperContent} popperOpen={popperOpen}> 
+                    <RenderPopperContent />
+                </PopperCustom>
 
+            </div>
         );
     }
 }

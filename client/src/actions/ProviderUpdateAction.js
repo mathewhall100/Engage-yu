@@ -1,8 +1,8 @@
 import {
-    PROVIDER_UPDATE_SAVE_BEGIN,
-    PROVIDER_UPDATE_SAVE_SUCCESS,
-    PROVIDER_UPDATE_SAVE_FAILURE,
-    PROVIDER_UPDATE_SAVE_RESET
+    PROVIDER_UPDATE_BEGIN,
+    PROVIDER_UPDATE_SUCCESS,
+    PROVIDER_UPDATE_FAILURE,
+    PROVIDER_UPDATE_RESET
 } from './types';
 import providerAPI from '../utils/provider';
 
@@ -111,19 +111,19 @@ export const providerUpdateSave = (values, provider) => {
 
 
 export const providerUpdateSaveBegin = () => ({
-    type: PROVIDER_UPDATE_SAVE_BEGIN
+    type: PROVIDER_UPDATE_BEGIN
 });
 
 export const providerUpdateSaveSuccess = data => ({
-    type: PROVIDER_UPDATE_SAVE_SUCCESS,
+    type: PROVIDER_UPDATE_SUCCESS,
     payload : { data }
 });
 
 export const providerUpdateSaveFailure = error => ({
-    type: PROVIDER_UPDATE_SAVE_FAILURE,
+    type: PROVIDER_UPDATE_FAILURE,
     payload : { error }
 });
 
 export const providerUpdateSaveReset = () => ({
-    type: PROVIDER_UPDATE_SAVE_RESET
+    type: PROVIDER_UPDATE_RESET
 });

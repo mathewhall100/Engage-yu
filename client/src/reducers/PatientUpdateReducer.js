@@ -1,8 +1,8 @@
 import {
-    PATIENT_UPDATE_SAVE_BEGIN,
-    PATIENT_UPDATE_SAVE_SUCCESS,
-    PATIENT_UPDATE_SAVE_FAILURE,
-    PATIENT_UPDATE_SAVE_RESET
+    PATIENT_UPDATE_BEGIN,
+    PATIENT_UPDATE_SUCCESS,
+    PATIENT_UPDATE_FAILURE,
+    PATIENT_UPDATE_RESET
 } from '../actions/types';
 
 const initialState = {
@@ -16,21 +16,21 @@ export default function patientUpdateSaveReducer(
     action
 ) {
     switch(action.type) {
-        case PATIENT_UPDATE_SAVE_BEGIN:
+        case PATIENT_UPDATE_BEGIN:
             return {
                 ...state,
                 loading: true,
                 error: null
             };
 
-        case PATIENT_UPDATE_SAVE_SUCCESS:
+        case PATIENT_UPDATE_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 update: action.payload.data
             };
 
-        case PATIENT_UPDATE_SAVE_FAILURE:
+        case PATIENT_UPDATE_FAILURE:
             return {
                 ...state,
                 loading: false,
@@ -38,7 +38,7 @@ export default function patientUpdateSaveReducer(
                 update: {}
             };
 
-        case PATIENT_UPDATE_SAVE_RESET:
+        case PATIENT_UPDATE_RESET:
             return {
                 ...state,
                 loading: false,

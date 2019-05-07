@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles, Button } from '@material-ui/core';
+import { withStyles, Button, MuiThemeProvider } from '@material-ui/core';
 
-const styles = () => ({
+const styles = (theme) => ({
     cancelBtn: {
         float: "right",
         marginLeft: "20px",
         padding: "5px",
         color: "#ffffff",
-        backgroundColor: "#c62828",
+        backgroundColor: theme.palette.primary.main, //"#c62828",
         '&:hover': {
             backgroundColor: "#871c1c",
         },

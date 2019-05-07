@@ -1,13 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles, Typography,ExpansionPanel,ExpansionPanelSummary,ExpansionPanelDetails } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandIcon from '@material-ui/icons/ExpandMore';
 import ReportPanelTable from './ReportPanelTable'
 
-const styles = () => ({
+const styles = (theme) => ({
   	root: {
 		width: "100%",
-  	},
+	  },
+	  expandIcon: {
+        fontSize: "26px",
+        '&:hover': {
+            color: theme.palette.primary.main,
+            cursor: "pointer"
+        }
+    },
 });
 
 class ReportPanel extends Component {
@@ -27,7 +34,7 @@ class ReportPanel extends Component {
 		return (
 			<ExpansionPanel className={classes.root} > 
 
-			<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} onClick={() => this.setState({popperClose: true})} >
+		<ExpansionPanelSummary expandIcon={<ExpandIcon className={classes.expandIcon}/>} onClick={() => this.setState({popperClose: true})} >
 					<Typography variant="button">{summary}</Typography>
 				</ExpansionPanelSummary>
 			

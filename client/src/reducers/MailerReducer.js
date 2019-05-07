@@ -1,51 +1,47 @@
 import {
-    PROVIDER_UPDATE_SAVE_BEGIN,
-    PROVIDER_UPDATE_SAVE_SUCCESS,
-    PROVIDER_UPDATE_SAVE_FAILURE,
-    PROVIDER_UPDATE_SAVE_RESET
+    MAILER_BEGIN,
+    MAILER_SUCCESS,
+    MAILER_FAILURE,
+    MAILER_RESET
 } from '../actions/types';
 
 const initialState = {
-    update: {},
+    mail: {},
     loading: false,
     error: null
 };
 
-export default function providerUpdateSaveReducer( 
+export default function patientReducer( 
     state = initialState,
     action
-) {
+    ) {
     switch(action.type) {
-        case PROVIDER_UPDATE_SAVE_BEGIN:
+        case MAILER_BEGIN:
             return {
                 ...state,
                 loading: true,
                 error: null
             };
-
-        case PROVIDER_UPDATE_SAVE_SUCCESS:
+        case MAILER_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                update: action.payload.data
+                mail: action.payload.mail
             };
-
-        case PROVIDER_UPDATE_SAVE_FAILURE:
+        case MAILER_FAILURE:
             return {
                 ...state,
                 loading: false,
                 error: action.payload.error,
-                update: {}
+                mail: {}
             };
-
-        case PROVIDER_UPDATE_SAVE_RESET:
+        case MAILER_RESET:
             return {
                 ...state,
                 loading: false,
                 error: null,
-                update: {} 
+                mail: {}
             };
-
         default: return state;
     }
 }

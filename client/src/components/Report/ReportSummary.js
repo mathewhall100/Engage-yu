@@ -10,6 +10,7 @@ import ReportBarGraph from './ReportBarGraph';
 import ReportGraphQuestionBar from './ReportGraphQuestionBar'
 import { selectConsoleTitle } from '../../actions/index';
 import { displayDataCalc } from './reportLogic';
+import { reportEpisode } from '../../actions'
 import ReportSurveyDetails from './ReportSurveyDetails';
 
 const styles = theme => ({
@@ -83,10 +84,10 @@ class ReportSummary extends Component {
                     episode.questions.length, 
                     episode.status
                 )
-            }, () => {localStorage.setItem("report_episode", JSON.stringify(this.state.episode)) } )
+            }, () => {this.props.dispatch(reportEpisode(this.state.episode)) } )
         } else { 
             this.setState({noDiaryCard: true}) 
-            localStorage.setItem("report_episode", JSON.stringify(false))
+            this.props.dispatch(reportEpisode({}))
         }
     };
 

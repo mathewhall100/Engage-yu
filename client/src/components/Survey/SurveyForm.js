@@ -10,6 +10,7 @@ import BtnActionLink from '../UI/Buttons/btnActionLnk'
 import CallBack from '../UI/callback'
 import { durations, startDates, frequencies, timeMargins, reminders } from './surveyConstants'
 import SurveyCustomQuestionTable from './SurveyCustomQuestionTable';
+import SurveyCustomRecipientsTable from './SurveyCustomRecipientsTable';
 import SurveyPanelExpandButton from './SurveyPanelExpandButton'
 import SurveyQuestionPanel from './SurveyQuestionPanel';
 import SurveyFormSlider from './SurveyFormSlider';
@@ -48,7 +49,7 @@ const styles = theme => ({
         borderRadius: "4px"
     },
     settingsContainer: {
-        width: "702px",
+        width: "500px",
         margin: "56px 12px 0 0",
         border: "1px solid #ccc",
         borderRadius: "4px"
@@ -65,27 +66,19 @@ const styles = theme => ({
         width: "100%",
         padding: "12px 0 20px 30px"
     },
-    hrStyled: {
-        opacity: 0.2, 
-        color: theme.palette.primary.main, 
-        paddingBottom: 0, 
-        marginBottom: 0
-    },
     // Btns
     closeBtn: {
         float: "right", 
         position: "relative", top: "-8px", 
         backgroundColor: "#eee",
         fontSize: "14px", 
-        color: theme.palette.error.main,
         '&:hover': {
             backgroundColor: "#eee",
-            color: theme.palette.error.dark,
         }
     },
     closeIcon: {
         fontSize: "32px", 
-        color: theme.palette.error.main,
+        color: theme.palette.primary.main,
         '&:hover': {
             backgroundColor: "#eee",
             color: theme.palette.error.dark,
@@ -94,10 +87,17 @@ const styles = theme => ({
     underlineBtn: {
         margin: "16px 12px 0 0",
         float: "right",
+        color: "#666",
         '&:hover': {
             textDecoration: "underline",
+            color: theme.palette.primary.dark,
             cursor: "pointer"
         }
+    },
+    underlineBtnDisabled: {
+        margin: "16px 12px 0 0",
+        float: "right",
+        color: "#666",
     },
     actionBtnsContainer: {
         width: "720px", 
@@ -132,9 +132,13 @@ class SurveyForm extends Component {
         selectedQuestions: [],
         selectedList: {},
         settings: false,
-        customize: false,
-        toggleCollapse: [true,false,false],
+        customizeQuestions: false,
+        toggleCollapse: [false,false,false],
+        reportRecipients: false,
+        initialReportRecipients: {},
+        recipients: [],
         saveList: false,
+        listSaved: false,
         success: false,
         failed: false, 
     }
@@ -153,13 +157,15 @@ class SurveyForm extends Component {
 
     submit(values) {
         console.log("values: ", values);
+        console.log("questions: ", this.state.selectedQuestions)
+        console.log("recipients: ", this.state.recipients)
         this.props.dispatch(saveSurvey(
              values, 
-             this.props.patientInfo, 
              this.props.patientData, 
              this.state.slider1Value, 
              this.state.slider2Value, 
-             this.state.selectedQuestions
+             this.state.selectedQuestions,
+             this.state.recipients
          ));
     };
 
@@ -179,14 +185,14 @@ class SurveyForm extends Component {
         this.setState({toggleCollapse: tempArray})
     }
 
-    toggleCustom = () => {
-        if (this.state.customize === true) {
+    toggleCustomQuestions = () => {
+        if (this.state.customizeQuestions === true) {
             this.setState({
                 selectedQuestions: [this.props.defaultQuestion],
                 selectedList: ""
             })
         }
-        this.setState({customize: !this.state.customize})
+        this.setState({customizeQuestions: !this.state.customizeQuestions})
     }
 
     handleListCheckBoxClick = (event, list) => {
@@ -194,7 +200,8 @@ class SurveyForm extends Component {
         event.nativeEvent.stopImmediatePropagation()
         this.setState({
             selectedQuestions: list.list_questions,
-            selectedList: list
+            selectedList: list,
+            listSaved: false
         })
     }
 
@@ -219,12 +226,31 @@ class SurveyForm extends Component {
         if (selectedIndex > 0 && selectedList && selectedList.list_name) {
             if (selectedList.list_questions.includes(question)) {this.setState({selectedList: {}}) }
         }
-        this.setState({ selectedQuestions: newSelected });
+        this.setState({ 
+            selectedQuestions: newSelected,
+            listSaved: false
+         });
+
     };
 
-    saveList = () => {
-        console.log("saveList")
-        this.setState({saveList: true})
+    saveListOpen = () => {
+        if (!this.state.listSaved) {this.setState({saveList: true}) }
+    }
+
+    saveListClose = (saved) => {
+        this.setState({saveList: false})
+        if (saved === "saved") {
+            this.setState({listSaved: true})
+        }
+    }
+
+    toggleReportRecipientsBox = () => {
+        this.setState({reportRecipients: !this.state.reportRecipients})
+    }    
+    
+    reportRecipients = (recipients) => {
+        console.log("recipinets: ", recipients)
+        this.setState({recipients: recipients})
     }
 
 
@@ -232,7 +258,7 @@ class SurveyForm extends Component {
     render () {
         
         const { patientInfo, patientData, defaultQuestion, customQuestions, provider, errorPatient, errorProvider, errorQuestions, loadingPatient, loadingProvider, loadingQuestions, survey, errorSurvey, loadingSurvey, handleSubmit, classes, submitting, surveyForm } = this.props;
-        const { selectedQuestions, selectedList, slider1Value, slider2Value, settings, customize, toggleCollapse, saveList } = this.state;
+        const { selectedQuestions, selectedList, slider1Value, slider2Value, settings, customizeQuestions, toggleCollapse, initialReportRecipients, reportRecipients, saveList } = this.state;
 
         if (errorPatient || errorProvider || errorQuestions) {
             return <div>
@@ -278,7 +304,7 @@ class SurveyForm extends Component {
 
                         <Typography variant="subtitle1" className={classes.questionLabel}> Selected Questions:</Typography>
                         <div className={classes.selectedQuestionsContainer}>
-                            <span style={{width: "500px"}}>
+                            <span style={{minWidth: "500px"}}>
                                 {selectedQuestions ? 
                                     <Fragment>
                                         {selectedQuestions.map((question, idx) =>
@@ -297,16 +323,13 @@ class SurveyForm extends Component {
                             </span>
 
                             <span>
-                                <Typography variant="button" className={classes.underlineBtn} onClick={() => this.toggleCustom()}>
-                                    {customize ? "restore default" : "customize questions"}
+                                <Typography variant="button" className={classes.underlineBtn} onClick={() => this.toggleCustomQuestions()}>
+                                    {customizeQuestions ? null : "custom questions"}
                                 </Typography> 
 
-                                <br /><br />
-
-
                                 {selectedQuestions.length > 1 ?
-                                    <Typography variant="button" className={classes.underlineBtn} onClick={() => this.saveList()}>
-                                        save selection
+                                    <Typography variant="button" className={this.state.listSaved ? classes.underlineBtnDisabled : classes.underlineBtn} onClick={() => this.saveListOpen()}>
+                                        {this.state.listSaved ? "selection saved" : "save selection"}
                                     </Typography> 
                                     :
                                     null
@@ -314,27 +337,33 @@ class SurveyForm extends Component {
                             </span>
                         </div>
 
-                        <Collapse in={customize} timeout={1000} ease>
+                        {!customizeQuestions && !reportRecipients && <Typography variant="button" className={classes.underlineBtn} style={{marginTop: "20px"}} onClick={() => this.toggleReportRecipientsBox()}>
+                            report recipients
+                        </Typography> 
+                        }
+
+                        <Collapse in={customizeQuestions} timeout={400} ease>
                             <div className={classes.customQuestionsContainer}>
 
                                 <div className={classes.containerTitleBanner}> 
                                     <Typography variant="subtitle1" className={classes.containerTitleText} inline >Custom Questions</Typography>
-                                    <Button className={classes.closeBtn} onClick={() => this.setState({customize: false})}>
+                                    <Button className={classes.closeBtn} onClick={() => this.setState({customizeQuestions: false})}>
                                         <CancelIcon className={classes.closeIcon} />
                                     </Button> 
                                 </div>
-                          
+
                                 <div className={classes.customContent}>
 
                                     <Collapse in={toggleCollapse[0]} collapsedHeight="38px" timeout={400}>
                                         <div className={classes.customBox} >
-                                            <Typography variant="subtitle1" inline>My question lists</Typography>
-                                            <SurveyPanelExpandButton 
-                                                toggle={toggleCollapse[0]}
-                                                i={0}
-                                                toggleCollapse={this.toggleCollapse}
-                                            />
-                                            <hr className={classes.hrStyled}/>
+                                            <div style={{height: "40px"}} >
+                                                <Typography variant="subtitle1" inline>My question lists</Typography>
+                                                <SurveyPanelExpandButton 
+                                                    toggle={toggleCollapse[0]}
+                                                    i={0}
+                                                    toggleCollapse={this.toggleCollapse}
+                                                />
+                                            </div>
                                             <SurveyCustomQuestionTable 
                                                 type="list"
                                                 customQuestions={provider.custom_question_lists}
@@ -346,13 +375,14 @@ class SurveyForm extends Component {
 
                                     <Collapse in={toggleCollapse[1]} collapsedHeight="38px" timeout={400}>
                                         <div className={classes.customBox} >
-                                            <Typography variant="subtitle1" inline >My questions</Typography>
-                                            <SurveyPanelExpandButton 
-                                                toggle={toggleCollapse[1]}
-                                                i={1}
-                                                toggleCollapse={this.toggleCollapse}
-                                            />
-                                            <hr className={classes.hrStyled}/>
+                                            <div style={{height: "40px"}} >
+                                                <Typography variant="subtitle1" inline >My questions</Typography>
+                                                <SurveyPanelExpandButton 
+                                                    toggle={toggleCollapse[1]}
+                                                    i={1}
+                                                    toggleCollapse={this.toggleCollapse}
+                                                />
+                                            </div>
                                             <SurveyCustomQuestionTable 
                                                 type="question"
                                                 customQuestions={customQuestions.questionList.filter(q => q.added_by_id === localStorage.getItem("user_provider_id"))}
@@ -364,13 +394,14 @@ class SurveyForm extends Component {
 
                                     <Collapse in={toggleCollapse[2]} collapsedHeight="38px" timeout={400}>
                                         <div className={classes.customBox}>
-                                            <Typography variant="subtitle1" inline>All questions</Typography>
-                                            <SurveyPanelExpandButton 
-                                                toggle={toggleCollapse[2]}
-                                                i={2}
-                                                toggleCollapse={this.toggleCollapse}
-                                            />
-                                            <hr className={classes.hrStyled}/>
+                                            <div style={{height: "40px"}} >
+                                                <Typography variant="subtitle1" inline>All questions</Typography>
+                                                <SurveyPanelExpandButton 
+                                                    toggle={toggleCollapse[2]}
+                                                    i={2}
+                                                    toggleCollapse={this.toggleCollapse}
+                                                />
+                                            </div>
                                             <SurveyCustomQuestionTable 
                                                 type="question"
                                                 customQuestions={customQuestions.questionList}
@@ -382,6 +413,38 @@ class SurveyForm extends Component {
 
                                 </div>
                             </div>              
+                        </Collapse>
+
+                        {customizeQuestions && !reportRecipients && settings && <Typography variant="button" className={classes.underlineBtn} onClick={() => this.toggleReportRecipientsBox()}>
+                            report recipients
+                        </Typography> 
+                        }
+
+                        <Collapse in={reportRecipients} timeout={400} >
+                            <div className={classes.settingsContainer}>
+
+                                <div className={classes.containerTitleBanner}>
+                                    <Typography variant="subtitle1" inline className={classes.containerTitleText}>Email Results To:</Typography>
+                                    <Button className={classes.closeBtn} onClick={() => this.setState({reportRecipients: false})}>
+                                        <CancelIcon className={classes.closeIcon} />
+                                    </Button>
+                                </div>
+
+                                <div className={classes.customContent}>
+                                    <br />
+                                    <Typography variant="subtitle1" style={{paddingRight: "20px"}} align="justify">
+                                        Email the following providers with the diary card results:
+                                        <br /> <br />
+                                    </Typography>
+
+                                    <SurveyCustomRecipientsTable 
+                                        initialRecipients={initialReportRecipients} 
+                                        recipients={reportRecipients}
+                                        returnRecipients={this.reportRecipients}
+                                    />  
+                                </div>
+
+                            </div>
                         </Collapse>
                             
                         <Collapse in={settings} timeout={400} >
@@ -412,7 +475,7 @@ class SurveyForm extends Component {
                                         />
                                     </div>
                                     
-                                    <Typography variant="subtitle1" className={classes.questionLabel}>Set reminder</Typography>
+                                    <Typography variant="subtitle1" className={classes.questionLabel}>Reminder (mins before entry due)</Typography>
                                     <div >
                                         <SurveyFormRadio
                                             name="reminder"
@@ -422,6 +485,12 @@ class SurveyForm extends Component {
                                 </div>
                             </div>
                         </Collapse>
+
+                        {customizeQuestions && !reportRecipients && !settings &&
+                            <Typography variant="button" className={classes.underlineBtn} onClick={() => this.toggleReportRecipientsBox()}>
+                                report recipients
+                            </Typography> 
+                        }
 
                         <div className={classes.actionBtnsContainer}>
                             <BtnAction type="submit" disabled={submitting || (slider1Value === 0 && slider2Value === 20)} text="create diary card" marginRight={true}/>
@@ -436,7 +505,7 @@ class SurveyForm extends Component {
                 </form>
 
                 {saveList && 
-                    <SurveySaveListDialog questions={selectedQuestions} providerId={localStorage.getItem("user_provider_id")}/>
+                    <SurveySaveListDialog questions={selectedQuestions} providerId={localStorage.getItem("user_provider_id")} saveListClose={this.saveListClose}/>
                 }
 
                 {(loadingSurvey || survey.newEpisodeId || errorSurvey) && 

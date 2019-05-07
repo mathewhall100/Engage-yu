@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react';
 import { withStyles, Button } from '@material-ui/core'
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
+import ExpandIcon from "@material-ui/icons/ExpandMore"
 
-const styles = ({
+const styles = (theme) => ({
     expandBtn: {
         float: "right",
+        marginTop: "-4px",
         backgroundColor: "white",
         fontSize: "14px", 
         '&:hover': {
@@ -12,15 +13,23 @@ const styles = ({
         }
     },
     expandIconStyles: {
-        fontSize: "24px",
-        color: "#333",
-      },
+        fontSize: "26px",
+        color: "#888",
+        '&:hover': {
+            color: theme.palette.primary.main,
+            cursor: "pointer"
+        }
+    },
       collapseIconStyles: {
-        fontSize: "24px",
-        color: "#333",
+        fontSize: "26px",
+        color: "#888",
         transform: "rotate(180deg)",
         transition: "transform 0.5s linear", 
-      },
+        '&:hover': {
+            color: theme.palette.primary.main,
+            cursor: "pointer"
+        }
+    },
 })
 
 
@@ -35,7 +44,7 @@ class SurveyPanelExpandButton extends PureComponent {
                 className={classes.expandBtn} 
                 onClick={() => this.props.toggleCollapse(i)}
                 >
-                    <ExpandMoreIcon className={toggle ? classes.collapseIconStyles : classes.expandIconStyles}/>
+                    <ExpandIcon className={toggle ? classes.collapseIconStyles : classes.expandIconStyles}/>
             </Button>
         )
     }

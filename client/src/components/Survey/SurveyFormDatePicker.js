@@ -12,16 +12,15 @@ class SurveyFormDatePicker extends Component {
 
         return (
             
-            <div>
+            <div style={{display: disabled ? "none" : "block"}}>
                 <TextField
                     {...field.input}
                     type="date"
-                    style={{margin: "7px 0 0 -4px", fontSize: "11px", fontWeight: 500}}
+                    style={{margin: "7px 0 0 -4px", fontSize: "11px"}}
                     disabled={disabled}
-                    value={disabled ? "" : value}
+                    value={value}
                     InputProps={{
-                        disableUnderline: true,
-                        
+                       underline: true,
                        }}
                 />
                  <div style={{fontSize: "13px", color: "red"}}> 

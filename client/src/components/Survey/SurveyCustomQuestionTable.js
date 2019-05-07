@@ -1,48 +1,19 @@
-import React, {Component}  from 'react';
+import React, {Component, Fragment}  from 'react';
 import PropTypes from 'prop-types';
-import { withStyles, Paper, Table, Typography, TableBody, TableCell, TableRow, TablePagination, Fade, Popper} from '@material-ui/core';
+import { withStyles, Table, Typography, TableBody, TableCell, TableRow, TablePagination } from '@material-ui/core';
 import SurveyCheckbox from './SurveyCheckbox';
+import HrStyled from '../UI/hrStyled'
+import PopperCustom from '../UI/popperCustom'
 
-const styles = (theme) =>  ({
-    // Popper
-    popper: {
-        zIndex: 100,
-        '&[x-placement*="right"] $arrow': {
-            left: 0,
-            marginLeft: '-0.9em',
-            height: '3em',
-            width: '1em',
-            '&::before': {
-                borderWidth: '1em 1em 1em 0',
-                borderColor: `transparent ${theme.palette.common.white} transparent transparent`,
-            },
-          },
-      },
-      arrow: {
-        position: 'absolute',
-        fontSize: 12,
-        width: '3em',
-        height: '3em',
-        '&::before': {
-            content: '""',
-            margin: 'auto',
-            display: 'block',
-            width: 0,
-            height: 0,
-            borderStyle: 'solid',
-        },
-      },
-})
-
-const CustomTableCell = withStyles(theme => ({
+const CustomTableCell = withStyles({
     head: {
         padding: "5px", 
     },
     body: {
         padding: "5px",
         fontSize: 14,
-    },
-  }))(TableCell);
+    }
+  })(TableCell);
 
 
 class SurveyCustomQuestionTable extends Component {
@@ -52,36 +23,30 @@ class SurveyCustomQuestionTable extends Component {
         popperOpen: false,
         popperType: "",
         popperContent: null,
-        arrowRef: null,
         page: 0,
         rowsPerPage: 5,
     }
 
+    // Popper Open
     handleRowHover = (event, type, content) => {
         console.log("PopperContent: ", type, " ", content)
         const { currentTarget } = event;
-        this.setState(state => ({
+        this.setState({
           anchorEl: currentTarget,
           popperType: type,
           popperContent: content,
           popperOpen: "true",
-        }));
+        });
       };
 
+    // popper close
     handleRowLeave = event =>  {
-        this.setState(state => ({
-            popperOpen: false
-        }))
+        this.setState({popperOpen: false})
     }
 
-    // Popper arrow 
-    handleArrowRef = node => {
-        this.setState({
-            arrowRef: node,
-        });
+    handleChangePage = (event, page) => { 
+        this.setState({ page }) 
     };
-
-    handleChangePage = (event, page) => { this.setState({ page }) };
 
     handleChangeRowsPerPage = event => {
         this.setState({ rowsPerPage: event.target.value });
@@ -89,13 +54,11 @@ class SurveyCustomQuestionTable extends Component {
 
 
     render () {
-
-        const { classes, customQuestions=[], selected, type } = this.props;
-        const { rowsPerPage, page, popperContent, popperOpen, popperType, arrowRef, anchorEl } = this.state;
-
+        const { customQuestions=[], selected, type } = this.props;
+        const { rowsPerPage, page, popperContent, popperOpen, popperType, anchorEl } = this.state;
 
         return (
-            <React.Fragment>
+            <Fragment>
                 {customQuestions.length > 0 ? 
                     <Table>
                         <TableBody >
@@ -106,7 +69,7 @@ class SurveyCustomQuestionTable extends Component {
                                         <TableRow 
                                             key={index} 
                                             hover 
-                                            onMouseOver={(event) => this.handleRowHover(event, type, item)} 
+                                            onMouseEnter={(event) => this.handleRowHover(event, type, item)} 
                                             onMouseLeave={(event) => this.handleRowLeave(event, item)}
                                             >
                                                 <CustomTableCell>
@@ -124,7 +87,9 @@ class SurveyCustomQuestionTable extends Component {
                         </TableBody>
                     </Table> 
                     :
-                    <Typography variant="body1" style={{margin: "15px"}}>No questions to display</Typography>
+                    <Typography variant="body1" style={{margin: "15px"}}>
+                        {type === "list" ? "No question lists saved for this provider" : "No custom questions saved for this provider"}
+                    </Typography>
                 }
 
                 {customQuestions.length > 4 && 
@@ -132,6 +97,7 @@ class SurveyCustomQuestionTable extends Component {
                         component="div"
                         count={customQuestions.length}
                         rowsPerPage={rowsPerPage}
+                        rowsPerPageOptions={[5, 10, 25]}
                         page={page}
                         backIconButtonProps={{'aria-label': 'Previous Page'}}
                         nextIconButtonProps={{'aria-label': 'Next Page'}}
@@ -140,75 +106,52 @@ class SurveyCustomQuestionTable extends Component {
                     />
                 }
 
+                {popperType === "question" && 
+                    <PopperCustom anchorEl={anchorEl} placement="right" width="245px" popperContent={popperContent} popperOpen={popperOpen} >
+                        <Typography variant="subtitle2" inline> CUSTOM QUESTION</Typography>
+                        <HrStyled /><br />
+                        <Typography variant="subtitle2" gutterBottom>Q. {popperContent.question}</Typography> 
+                        <table>
+                            <tbody>
+                                {popperContent.answers.map((answer, index) => {
+                                    return (
+                                        <Typography variant="subtitle2">
+                                            <tr>
+                                                <td style={{width: "20px", verticalAlign: "top"}}>{index+1}.</td>
+                                                <td>{answer[0].toUpperCase() + answer.slice(1)}</td>
+                                            </tr> 
+                                        </Typography> 
+                                    )
+                                }) }
+                            </tbody>
+                        </table>
+                    </PopperCustom>
+                }
 
-                <Popper 
-                    open={popperOpen} 
-                    anchorEl={anchorEl} 
-                    placement={'right'} 
-                    className={classes.popper}
-                    modifiers={{
-                        arrow: {
-                          enabled: true,
-                          element: arrowRef,
-                        },
-                      }}
-                    >
-                        <span className={classes.arrow} ref={this.handleArrowRef} />
-                        <Paper style={{width: "245px"}}>
-                            <Fade in={popperOpen} timeout={600}>
-                                <React.Fragment>
+                {popperType === "list" &&
+                    <PopperCustom anchorEl={anchorEl} placement="right" width="245px" popperContent={popperContent} popperOpen={popperOpen} >
+                        <Typography variant="subtitle2" inline> CUSTOM QUESTION LIST</Typography>
+                        <HrStyled /><br />
+                        <Typography variant="subtitle2" gutterBottom>Name: {popperContent.list_name}</Typography>                                 
+                        <Typography variant="subtitle2" gutterBottom>Questions ({popperContent.list_questions.length}):</Typography>                      
+                        <table>
+                            <tbody>
+                                {popperContent.list_questions.map((question, index) => {
+                                    return (
+                                        <Typography variant="subtitle2">
+                                            <tr>
+                                                <td style={{width: "24px", verticalAlign: "top"}}> {index+1}.</td>
+                                                <td>{question.question}</td>
+                                            </tr>
+                                        </Typography> 
+                                    )
+                                }) }
+                            </tbody>
+                        </table>
+                    </PopperCustom>
+                }
 
-                                    { popperContent && popperType === "question" &&
-                                        <div style={{padding: "20px 20px 20px 30px"}}> 
-                                            <Typography style={{fontSize: "16px", fontWeight: 500}}>{popperContent.question}</Typography> 
-                                            <br /> 
-                                                <table>
-                                                    <tbody>
-                                                        {popperContent.answers.map((answer, index) => {
-                                                            return (
-                                                                <Typography variant="subtitle2">
-                                                                    <tr>
-                                                                        <td style={{width: "20px", verticalAlign: "top"}}>{index+1}. </td>
-                                                                        <td>{answer[0].toUpperCase() + answer.slice(1)}</td>
-                                                                    </tr> 
-                                                                </Typography> 
-                                                            )
-                                                        }) }
-                                                    </tbody>
-                                                </table>
-                                            <br />
-                                        </div>
-                                    }
-
-                                    { popperContent && popperType === "list" &&
-                                        <div style={{padding: "20px"}}> 
-                                            <Typography style={{fontSize: "16px", fontWeight: 500}}>List: {popperContent.list_name}</Typography> 
-                                            <hr className={classes.hrStyled} />
-                                            <br />
-                                            <table>
-                                                <tbody>
-                                                    {popperContent.list_questions.map((question, index) => {
-                                                        return (
-                                                            <Typography variant="subtitle2">
-                                                                <tr>
-                                                                    <td style={{width: "20px", verticalAlign: "top"}} >Q{index+1}.</td>
-                                                                    <td>{question.question}</td>
-                                                                </tr>
-                                                            
-                                                            </Typography> 
-                                                        )
-                                                    }) }
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    }
-
-                                    </React.Fragment>
-                             </Fade>
-                        </Paper>
-                </Popper>
-
-            </React.Fragment>
+            </Fragment>
         );
     }
 }
@@ -218,4 +161,4 @@ SurveyCustomQuestionTable.propTypes = {
 
 };
 
-export default  withStyles(styles, { withTheme: true })(SurveyCustomQuestionTable);
+export default SurveyCustomQuestionTable;

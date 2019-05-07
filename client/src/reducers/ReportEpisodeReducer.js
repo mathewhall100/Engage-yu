@@ -1,10 +1,10 @@
-import { CONSOLE_TITLE } from '../actions/types'
+import { REPORT_EPISODE } from '../actions/types'
 
-const INITIAL_STATE = "";
+const INITIAL_STATE = {};
 
 export default (state = INITIAL_STATE, action) => {
     switch (action.type) {
-        case CONSOLE_TITLE:
+        case REPORT_EPISODE:
             return action.payload;
         default:
             return state;

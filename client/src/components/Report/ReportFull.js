@@ -14,15 +14,13 @@ import ReportEntriesTable from './ReportEntriesTable'
 import ReportBarGraph from './ReportBarGraph';
 import DetailsBar from '../UI/detailsBar';
 import BtnLink from '../UI/Buttons/btnLink';
-import Btn from '../UI/Buttons/btn';
 import { selectConsoleTitle } from '../../actions/index';
 import { displayDataCalc } from './reportLogic';
 import ReportRequestDetails from './ReportRequestDetails'
 import ReportSurveyDetails from './ReportSurveyDetails'
 import ReportEmailDialog from './ReportEmailDialog'
-import mailerAPI from '../../utils/mailer'
+import { reportEpisode } from '../../actions';
 import './reportPrint.css'
-
 
 
 const styles = theme => ({
@@ -86,15 +84,19 @@ class ReportFullPrepare extends Component {
 
     componentDidMount() {
         this.props.dispatch(selectConsoleTitle({title: "Full Report"}));
-        let episode =  JSON.parse(localStorage.getItem("report_episode")) 
-        if (episode) {
+        let episode =  this.props.episode
+        if (episode && episode._id) {
             this.setState({ 
-                episode,
+                episode: episode,
                 records: episode.records,
                 questions: episode.questions,
                 episodeDataForReport: displayDataCalc(episode.records, episode.num_days, episode.records.length/episode.num_days, episode.questions.length),
             })
         }
+    }
+
+    componentWillUnmount() {
+        this.props.dispatch(reportEpisode({}))
     }
 
     state = {
@@ -244,7 +246,11 @@ class ReportFullPrepare extends Component {
 class ReportFull extends Component {
 
     componentDidMount() {
-        this.setState({episode: JSON.parse(localStorage.getItem("report_episode")) })
+        this.props.dispatch(selectConsoleTitle({title: "Full Report"}));
+        let episode =  this.props.episode
+        if (episode && episode._id) {
+            this.setState({episode: episode})
+        }
     }
 
     state = {
@@ -261,8 +267,8 @@ class ReportFull extends Component {
     }
 
     handleCreatePdf = () => {
-            const USLetterWidthMm = 216;
-            const USLetterHeightMm = 279;
+            // const USLetterWidthMm = 216;
+            // const USLetterHeightMm = 279;
             const a4WidthMm = 210;
             const a4HeightMm = 297;
             const printPageWidthPx = 830;
@@ -272,12 +278,12 @@ class ReportFull extends Component {
             const inputHeightMm = this.pxToMm(input.offsetHeight);
             const inputWidthMm = this.pxToMm(input.offsetWidth);
             const inputHeightPx = input.offsetHeight;
-            const inputWidthPx = input.offsetWidth;
+            //const inputWidthPx = input.offsetWidth;
             console.log("inputHeightMm: ", inputHeightMm)
             console.log("inputWidthMm: ", inputWidthMm)
             console.log("inputHeightPx: ", input.offsetHeight)
             console.log("inputWidthPx: ", input.offsetWidth)
-            const a4HeightPx = this.mmToPx(a4HeightMm);
+            //const a4HeightPx = this.mmToPx(a4HeightMm);
             const numPages = inputHeightMm <= a4HeightMm ? 1 : Math.floor(inputHeightMm/a4HeightMm) + 1;
             console.log("numPages: ", numPages)
             html2canvas(input)
@@ -337,7 +343,7 @@ class ReportFull extends Component {
                     <Tooltip title="Send report direct to patient's electronic health record (EHR)" enterDelay={300}>
                         <Button variant="outlined" size="small" disabled={isEmpty(episode)}className={classes.btn} onClick={() => this.handleSendToEHR()}>send to ehr</Button>
                     </Tooltip>
-                    <BtnLink type="button" text='back' url={localStorage.getItem("report_episode") ? `/admin/report/${JSON.parse(localStorage.getItem("report_episode"))._id}` : '/admin/report/0'} />
+                    <BtnLink type="button" text='back' url={this.props.episode ? `/admin/report/${this.props.episode._id}` : '/admin/report/0'} />
                 </div>              
                 <br /><br />
                 <ReportFullPrepare id="report" ref={el => (this.componentRef = el)} />
@@ -358,7 +364,8 @@ const mapStateToProps = (state) => {
     return {
         patientInfo: state.patient.patient.patientInfo,
         error: state.patient.error,
-        loading: state.patient.loading
+        loading: state.patient.loading,
+        episode: state.reportEpisode
     }
   };
 

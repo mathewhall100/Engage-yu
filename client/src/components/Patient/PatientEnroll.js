@@ -12,6 +12,8 @@ import FormRadio from '../UI/Forms/formRadio'
 import PatientSaveDialog from './PatientSaveDialog'
 import { selectConsoleTitle } from '../../actions/index';
 import { patientSave } from "../../actions"
+import { providerName } from "../../logic/textFunctions"
+import { mailer } from '../../actions'
 import * as val from '../../logic/formValidations';
 
 
@@ -33,15 +35,43 @@ class PatientEnroll extends Component {
     }
 
 
-     //Handle form submission and save data to database
+    //Handle form submission and save data to database
     submit(values) {
         console.log("Submitted values: ", values);
+        // Save patient details to db
         this.props.dispatch(patientSave(values))
+        // Send email to patient
+        const newPatientName = `${values.firstname} ${values.lastname}`
+        const newPatientEmail = values.email
+        const newPatientPwd = values.password
+        const enrollingProvider = providerName(localStorage.getItem("user_provider_title"), localStorage.getItem("user_provider_firstname"), localStorage.getItem("user_provider_lastname"))
+        const msg = {
+            emailTo: newPatientEmail,
+            subject: `${newPatientName}: Welcome to Engage-yu`,
+            text: `
+                ${newPatientName}
+                Welcome to Engage-Yu
+                You have been registered with the Engage-Yu application by your healthcare provider, ${enrollingProvider}. 
+                You may now log in and use the application with the following credentials: 
+                    email : 	${newPatientEmail}
+                    password: 	${newPatientPwd}
+
+                This passowod is temporary and you will be prompted to change it to a more secure passord of your choice when you first login. Note that before you can login, you must have verified your email address by following the instructions on a separate email we have sent you. 
+                
+                Regards
+                The Engage-Yu team
+            `
+        }
+        this.props.dispatch(mailer(msg))
      }
 
     // Clear form entries and reset values using Redux Form 'reset'.
     handleClearForm = () => {
         this.props.reset('PatientEnrollForm')
+    }
+
+    handleCancelForm = () => {
+        this.props.history.push({pathname: '/admin/patient/find'})
     }
 
 
@@ -90,7 +120,8 @@ class PatientEnroll extends Component {
                     <br /> <br /> 
 
                     <BtnAction type="submit" disabled={submitting || pristine} text="submit" marginRight={true}/>
-                    <BtnAction type="button" disabled={pristine} text="clear" warning={true} handleAction={this.handleClearForm} />
+                    <BtnAction type="button" disabled={pristine} text="clear" warning={true} marginRight={true} handleAction={this.handleClearForm} />
+                    <BtnAction type="button" text="cancel" warning={true} handleAction={this.handleCancelForm} />
                     
                 </form>
 

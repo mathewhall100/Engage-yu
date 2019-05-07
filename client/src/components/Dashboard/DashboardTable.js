@@ -228,7 +228,7 @@ class DashboardTable extends Component {
                                                     <CustomTableCell>
                                                         <DashboardTableStatusBar adjustedStatus={d.adjustedStatus} compliance={d.compliance} progress={d.progress} />
                                                     </CustomTableCell>
-                                                    <CustomTableCell onMouseOver={() => {console.log("hover")}}>
+                                                    <CustomTableCell>
                                                         <ProviderName 
                                                             title={d.requester.title} 
                                                             firstname={d.requester.firstname} 

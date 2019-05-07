@@ -21,7 +21,7 @@ const styles = (theme) => ({
     warningBtn: {
         padding: "5px",
         color: "#ffffff",
-        backgroundColor: "#c62828",
+        backgroundColor: theme.palette.primary.main,
         '&:hover': {
             backgroundColor: "#871c1c",
         },

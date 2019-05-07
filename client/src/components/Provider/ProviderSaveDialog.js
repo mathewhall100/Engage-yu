@@ -4,20 +4,17 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
-import { Dialog, DialogActions, DialogContent, DialogTitle, withMobileDialog, Typography, Grid} from '@material-ui/core'
+import { Dialog, DialogActions, DialogContent, DialogTitle, withMobileDialog, Typography } from '@material-ui/core'
 import BtnGroup from '../UI/Buttons/btnGroup'
 import FormCheckbox from '../UI/Forms/formCheckbox'
 import DialogSaveFailure from '../UI/Dialogs/dialogSaveFailure'
 import DialogSaving from '../UI/Dialogs/dialogSaving'
-import { emailNewProvider } from '../../actions'
+import ProviderName from '../UI/providerName'
+import { providerName } from '../../logic/textFunctions'
+import { mailer } from '../../actions'
 
 
 class ProviderSaveDialog extends Component {
-
-	componentDidMount() {
-		//console.log("providerSaveDialog: ", this.props.enableLogin)
-	}
-
 
 	state = {
 		open: true
@@ -27,37 +24,43 @@ class ProviderSaveDialog extends Component {
 		this.setState({ open: false });
 	};
 
-	handleRedirects = () => {
+	handleRedirect = () => {
 		this.handleClose()
 		this.props.history.push({pathname: '/admin/provider/find'})
 	}
 
 	submit = (values) => {
 		console.log("Submitted values: ", values)
+		// If email and password entered for new provider, send welcome email
 		if (values.emailLoginCreds) {
 			const { newProvider } = this.props
-			const fullName = `Dr. ${newProvider.firstname} ${newProvider.lastname}`;
+			const newProviderName = providerName(newProvider.title, newProvider.firstname, newProvider.lastname)
+			const newProviderEmail = values.email
+			const newProviderPwd = values.password
+			const enrollingProvider = providerName(localStorage.getItem("user_provider_title"), localStorage.getItem("user_provider_firstname"), localStorage.getItem("user_provider_lastname"))
 			const msg = {
-				email: newProvider.email,
-				name: "admin @engage-yu",
-				subject: `${fullName}: Welcome to Engage-yu`,
+				emailTo: newProvider.email,
+				subject: `${newProviderName}: Welcome to Engage-yu`,
 				text: `
-					${fullName}
-					Welcome to Engage-Yu
-					You have been registered with the Engage-Yu application by your colleague, Dr. ${localStorage.getItem("user_provider_firstname")} ${localStorage.getItem("user_provider_lastname")}. 
-					You may now log in and use the application with the following credentials: 
-						email : 	${newProvider.email}
-						password: 	${newProvider.password}
+					Dear ${newProviderName}
 
-					This passowod is temporary and you will be prompted to change it to a more secure passord of your choice when you first login. Note that before you can login, you must have verified your email address by following the instructions on a separate email we have sent you. 
+					Welcome to Engage-Yu
+
+					You have been registered with the Engage-Yu application by your colleague, ${enrollingProvider}}. 
+					
+					You may now log in and use the application with the following credentials: 
+						email : 	${newProviderEmail}
+						password: 	${newProviderPwd}
+
+					This password is temporary and you will be prompted to change it to a more secure passord of your choice when you first login. Note that before you can login, you must have verified your email address by following the instructions on a separate email we have sent you. 
 					
 					Regards
 					The Engage-Yu team
-					`
+				`
 			}
-			this.props.dispatch(emailNewProvider(msg))
+			this.props.dispatch(mailer(msg))
 		}
-		this.handleRedirects()
+		this.handleRedirect()
 	}
 
 	render() {
@@ -77,8 +80,12 @@ class ProviderSaveDialog extends Component {
 			aria-labelledby="responsive-dialog-title"
 			PaperProps={{
 				style: {
-				padding: "40px",
-				width: "60%",
+					border: "2px solid  #28353d",
+					borderRadius: "5px",
+					padding: "20px 40px",
+					width: "800px",
+                    minWidth: "600px",
+                    maxWidth: "60%"
 				}
 			}}
 			>
@@ -88,24 +95,23 @@ class ProviderSaveDialog extends Component {
 					<DialogContent>
 						<Typography variant="subtitle1">New provider successfully added with the following details:</Typography>
 						<br /> <br />
-						<Grid container spacing={24} >
-							<Grid item xs={6}>
-								<Typography variant="subtitle2" gutterBottom>Name:</Typography> 
-								<Typography variant="subtitle2" gutterBottom>Role:</Typography> 
-								<Typography variant="subtitle2" gutterBottom>Office:</Typography> 
-								<Typography variant="subtitle2" gutterBottom>Email:</Typography> 
-								<Typography variant="subtitle2" gutterBottom>Office phone:</Typography> 
-								<Typography variant="subtitle2" gutterBottom>Care group:</Typography> 
-							</Grid>
-							<Grid item xs={6}>
-								<Typography variant="subtitle2" gutterBottom>{newProvider.firstname} {newProvider.lastname}</Typography> 
-								<Typography variant="subtitle2" gutterBottom>{newProvider.provider_role.role}</Typography> 
-								<Typography variant="subtitle2" gutterBottom>{newProvider.office.name}</Typography> 
-								<Typography variant="subtitle2" gutterBottom>{newProvider.email}</Typography> 
-								<Typography variant="subtitle2" gutterBottom>{newProvider.phone_office}</Typography> 
-								<Typography variant="subtitle2" gutterBottom>{newProvider.provider_group.name}</Typography> 
-							</Grid>
-						</Grid>
+							<Typography variant="subtitle2" gutterBottom>
+								<table>
+									<tbody>
+										<tr><td>Name:</td><td><ProviderName 	
+																	title={newProvider.title}
+																	firstname={newProvider.firstname}
+																	lastname={newProvider.lastname}
+																/></td></tr>
+										<tr><td>Role:</td><td>{newProvider.provider_role.role}</td></tr>
+										<tr><td>Office:</td><td>{newProvider.office.name}</td></tr>
+										<tr><td>Email:</td><td>{newProvider.email}</td></tr>
+										<tr><td>Office phone:</td><td>{newProvider.phone_office}</td></tr>
+										<tr><td>Care group:</td><td>{newProvider.provider_group.name}</td></tr>
+									</tbody>
+								</table>
+							</Typography> 
+
 						<br /> <br />
 
 						{enableLogin && 

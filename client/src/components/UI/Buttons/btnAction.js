@@ -21,7 +21,7 @@ const styles = (theme) => ({
         padding: "5px",
         color: "#ffffff",
         borderRadius: "5px",
-        backgroundColor: "#c62828",
+        backgroundColor: theme.palette.primary.main, //"#c62828",
         '&:hover': {
             backgroundColor: "#871c1c",
         },

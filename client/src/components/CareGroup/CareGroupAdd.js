@@ -5,7 +5,7 @@ import { isEmpty } from 'lodash'
 import moment from 'moment';
 import { withStyles, Card, Grid, Typography } from '@material-ui/core';
 import BtnActionLnk from '../UI/Buttons/btnActionLnk';
-import BtnActionBtn from '../UI/Buttons/btnAction';
+import BtnAction from '../UI/Buttons/btnAction';
 import FormTextFocused from '../UI/Forms/formTextFocused';
 import { selectConsoleTitle, careGroupSave } from '../../actions';
 import { validateName } from '../../logic/formValidations';
@@ -33,6 +33,11 @@ class CareGroupAdd extends Component {
     submit(values) {
         console.log("Submitted values: ", values);
         this.props.dispatch(careGroupSave(values))
+    }
+
+      // Clear form entries and reset values using Redux Form 'reset'.
+      handleClearForm = () => {
+        this.props.reset('CareGroupAddForm')
     }
 
     render() {
@@ -64,8 +69,9 @@ class CareGroupAdd extends Component {
 
                     <br /> <br />
 
-                    <BtnActionBtn type="submit" disabled={submitting || pristine} text="submit" marginRight={true}/>
-                    <BtnActionLnk disabled={false} url='/admin/caregroup/find' text="cancel" />
+                    <BtnAction type="submit" disabled={submitting || pristine} text="submit" marginRight={true}/>
+                    <BtnAction type="button" disabled={pristine} text="clear" warning={true} marginRight={true} handleAction={this.handleClearForm} />
+                    <BtnActionLnk disabled={false} url='/admin/caregroup/find' warning={true} text="cancel" />
 
                 </form> 
                 

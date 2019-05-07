@@ -10,7 +10,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
 import BuildIcon from '@material-ui/icons/Build';
 import SettingsIcon from '@material-ui/icons/Settings';
-import { loadPatient } from '../../actions';
+import { loadPatient, reportEpisode} from '../../actions';
 
 
 class ConsoleMenuListItems extends Component {
@@ -28,9 +28,9 @@ class ConsoleMenuListItems extends Component {
 			localStorage.removeItem("patient_find_form_name")
 			localStorage.removeItem("patient_find_form_hospId")
 			localStorage.setItem("patient_find_form_list", "my patient list")
-			localStorage.removeItem("report_episode")
 			localStorage.removeItem("report_return_locn")
 			this.props.dispatch(loadPatient("reset"))
+			this.props.dispatch(reportEpisode({}))
 		}
 		this.setState({ selectedIndex: index });
 	};

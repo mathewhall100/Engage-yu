@@ -3,7 +3,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import { withStyles, ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Checkbox, Typography} from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandIcon from '@material-ui/icons/ExpandMore';
 import ProviderName from '../UI/providerName'
 
 const styles = theme => ({
@@ -14,6 +14,13 @@ const styles = theme => ({
 		fontWeight: theme.typography.fontWeightMedium,
 		marginLeft: "15px"
 	},
+	expandIcon: {
+        fontSize: "26px",
+        '&:hover': {
+            color: theme.palette.primary.main,
+            cursor: "pointer"
+        }
+    },
 });
 
 const checkboxTheme = createMuiTheme({
@@ -29,7 +36,7 @@ const SurveyCustomQuestionPanel = (props) => {
 		return (
 				<ExpansionPanel className={classes.root} style={{boxShadow: noBorder ? "none" : null}}>
 
-					<ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+					<ExpansionPanelSummary expandIcon={<ExpandIcon className={classes.expandIcon}/> } >
 						<MuiThemeProvider theme={checkboxTheme}>
 							<Checkbox  checked={checked} onClick={(event) => props.handleCheckBoxClick(event, question)} style={{padding: 0}}/>  
 						</MuiThemeProvider>

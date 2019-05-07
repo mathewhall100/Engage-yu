@@ -72,7 +72,6 @@ class ReportListSurveys extends Component {
     }
 
     handleAction = (btn, row) => {
-        console.log("action: ", btn, " : ", row)
         switch (btn) {
             case "view":
                 this.props.changeEpisode(row._id)

@@ -8,18 +8,21 @@ import activeSurveys from './ActiveSurveysReducer';
 import auth from './auth/reducer';
 import careGroup from './CareGroupReducer';
 import careGroupSave from './CareGroupSaveReducer';
-import careGroupUpdate from './CareGroupUpdateSaveReducer';
+import careGroupUpdate from './CareGroupUpdateReducer';
 import consoleTitle from './ConsoleTitleReducer';
 import episodeStatusUpdate from './EpisodeStatusUpdateReducer';
+import mailer from './MailerReducer';
 import patientSave from './PatientSaveReducer'
 import patient from './PatientReducer';
 import patientsByProvider from './PatientsByProviderReducer';
 import patientsByCareGroup from './PatientsByCareGroupReducer';
-import patientUpdate from './PatientUpdateSaveReducer'
+import patientUpdate from './PatientUpdateReducer'
 import provider from './ProviderReducer';
+import providersByGroup from './ProvidersByCareGroupReducer'
 import providerSave from './ProviderSaveReducer';
-import providerUpdate from './ProviderUpdateSaveReducer';
+import providerUpdate from './ProviderUpdateReducer';
 import questions from './QuestionsReducer';
+import reportEpisode from './ReportEpisodeReducer';
 import survey from './SurveyReducer';
 import user from './UserReducer';
 
@@ -32,16 +35,19 @@ const combinedReducer = combineReducers({
     consoleTitle,
     episodeStatusUpdate,
     form: formReducer,
+    mailer,
     patient,
     patientSave,
     patientsByProvider,
     patientsByCareGroup,
     patientUpdate,
     provider,
+    providersByGroup,
     providerSave,
     providerUpdate,
     questions, 
     router: routerReducer,
+    reportEpisode,
     survey,
     user
 });

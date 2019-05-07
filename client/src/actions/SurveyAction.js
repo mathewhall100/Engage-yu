@@ -10,12 +10,12 @@ import { createStartDate, createRecordsArray, createSurveyQuestions} from '../co
 import { sliderTimes24HR } from '../components/Survey/surveyConstants'
 
 export const saveSurvey = (
-    values, 
-    patientInfo, 
+    values,  
     patientData, 
     slider1Value, 
     slider2Value, 
-    selectedQuestions
+    selectedQuestions,
+    recipients
 ) => {
     if (values === "reset") {
         return dispatch => {
@@ -41,6 +41,19 @@ export const saveSurvey = (
             role: localStorage.getItem("user_provider_role")
         };
 
+        const reportTo = [
+            ...recipients.map(recipient => {
+                return {
+                    ref: recipient[0],
+                    id: recipient[0],
+                    title: recipient[1],
+                    firstname: recipient[2],
+                    lastname: recipient[3],
+                    role: recipient[4]
+                }
+            })
+        ];
+
         const surveyObj = {
             episode_number: patientData.episodes.length,
             date_requested: moment(),
@@ -58,9 +71,7 @@ export const saveSurvey = (
             records: createRecordsArray(startDate, startTime, values.duration, values.frequency, entriesPerDay),
             status: "pending",
             messages: [],
-            report_to: [
-                // need to add code to allow user to enter 'report_to's
-            ]
+            report_to: reportTo
         }
 
         return dispatch => {
