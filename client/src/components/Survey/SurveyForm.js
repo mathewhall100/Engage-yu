@@ -215,8 +215,9 @@ class SurveyForm extends Component {
             case -1:
                 newSelected = newSelected.concat(selectedQuestions, question); break
             case 0:
-                if (selectedQuestions.length > 1) {newSelected = newSelected.concat(selectedQuestions.slice(1))} 
-                else newSelected = selectedQuestions; 
+                if (selectedQuestions.length > 1) {
+                    newSelected = newSelected.concat(selectedQuestions.slice(1))
+                } else {newSelected = selectedQuestions}; 
                 break;
             case selectedQuestions.length - 1:
                 newSelected = newSelected.concat(selectedQuestions.slice(0, -1));
@@ -224,7 +225,9 @@ class SurveyForm extends Component {
             default: newSelected = newSelected.concat(selectedQuestions.slice(0, selectedIndex),selectedQuestions.slice(selectedIndex + 1))
         }
         if (selectedIndex > 0 && selectedList && selectedList.list_name) {
-            if (selectedList.list_questions.includes(question)) {this.setState({selectedList: {}}) }
+            if (selectedList.list_questions.includes(question)) {
+                this.setState({selectedList: {}}) 
+            }
         }
         this.setState({ 
             selectedQuestions: newSelected,

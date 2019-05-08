@@ -100,13 +100,13 @@ class PatientFindTable extends Component {
             if ( 
                 (errorCareGroupPatients && errorCareGroupPatients.message && errorCareGroupPatients.message.includes('401')) 
                 || 
-                (errorProviderPatients && errorProviderPatients && errorProviderPatients.message.includes('401')) 
+                (errorProviderPatients && errorProviderPatients.message && errorProviderPatients.message.includes('401')) 
             ) { 
                 text="Whoops! Looks like you are not authorized to access this resource"
             } else {
                 text="Sorry an error occurred while fetching data. Please refresh the browser (F5) or try again." 
             }
-            return <CallBack title="" text={text}/>
+            return <CallBack noSpin={true} fallbackTitle="" fallbackText={text}/>
         }
 
         if (loadingCareGroupPatients || loadingProviderPatients ) {
@@ -121,7 +121,7 @@ class PatientFindTable extends Component {
                     lastCellRightAlign={true}
                     lastCellHeading={"Actions"}
                     lastCellData={["actions"]}
-                    handleActionBtn = {this.handleActionClick}
+                    handleActionClick = {this.handleActionClick}
                     handleRowClick = {this.handleRowClick}
                     hover={true}
                 />

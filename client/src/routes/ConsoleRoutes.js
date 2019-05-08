@@ -16,6 +16,7 @@ import CareGroupAdd from '../components/CareGroup/CareGroupAdd';
 import CareGroupFind from '../components/CareGroup/CareGroupFind';
 import CareGroupRemove from '../components/CareGroup/CareGroupRemove';
 import CareGroupUpdate from '../components/CareGroup/CareGroupUpdate';
+import CareGroupReassign from '../components/CareGroup/CareGroupReassignProvider';
 import NotFound from '../components/UI/notFound';
 
 
@@ -48,6 +49,8 @@ export default class AdminRoutes extends Component {
                 <Route exact path='/admin/caregroup/add' component={CareGroupAdd} />
                 <Route exact path='/admin/caregroup/remove' component={CareGroupRemove} />
                 <Route exact path='/admin/caregroup/update' component={CareGroupUpdate} />/>
+                <Route exact path='/admin/caregroup/update' component={CareGroupUpdate} />/>
+                <Route exact path='/admin/caregroup/reassign' component={CareGroupReassign} />/>
 
                 <Route component={NotFound} />
             </Switch>

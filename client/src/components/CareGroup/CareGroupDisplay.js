@@ -11,7 +11,7 @@ import HrStyled from '../UI/hrStyled';
 import BtnCloseIcon from '../UI/Buttons/btnCloseIcon';
 import CallBack from '../UI/callback';
 import providerAPI from "../../utils/provider.js";
-import  { loadCareGroup } from '../../actions';
+import  { loadCareGroup, loadProvider } from '../../actions';
 import ProviderName from '../UI/providerName';
 
 const styles = () => ({
@@ -44,6 +44,7 @@ class CareGroupDisplay extends Component {
                 res.data.providerList.map(provider => {
                     return (
                         providerList.push({
+                            id: provider._id,
                             name: <ProviderName title={provider.title} firstname={provider.firstname} lastname={provider.lastname} />,
                             role: provider.provider_role.role,
                             office: provider.office.name,
@@ -77,6 +78,19 @@ class CareGroupDisplay extends Component {
 
     handleShowProviders = () => {
         this.setState({showProviders: this.state.showProviders ? false : true});
+    }
+
+    handleActionClick = (btn, id) => {
+        console.log("care group display btn click: ", btn, " : ", id)
+        this.props.dispatch(loadProvider(id));
+        return this.props.history.push({
+            pathname: '/admin/caregroup/reassign',
+        });
+    }
+
+    // Event handlers
+    handleRowClick = (row) => {
+        console.log("care group display row click: ", row.id)
     }
 
     handleClose = () => {
@@ -146,6 +160,12 @@ class CareGroupDisplay extends Component {
                                 <TableGeneric 
                                     tableHeadings={["name", "role", "office"]}
                                     tableData={providerList}
+                                    lastCellRightAlign={true}
+                                    lastCellHeading={"Actions"}
+                                    lastCellData={["reassign"]}
+                                    handleActionClick = {this.handleActionClick}
+                                    handleRowClick = {this.handleRowClick}
+                                    hover={true}
                                 /> 
                             }
                             <br />

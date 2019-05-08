@@ -49,8 +49,8 @@ export const patientSave= (values) => {
                 },
                 provider_group: {
                     ref: values.provider[5],
-                    id: values.provider[6],
-                    name: values.provider[7]
+                    id: values.provider[5],
+                    name: values.provider[6]
                 }
             })
             .then(res_info => {

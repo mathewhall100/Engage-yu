@@ -40,7 +40,7 @@ const BtnActionGroup = (props) => {
     const { classes, row, actions, disabled=false } = props;
     
     const handleActionBtn = (btn, row) => {props.handleActionBtn(btn, row)};
-    const btns = ["cancel", "archive", "action", "view" ];
+    const btns = ["cancel", "archive", "action", "view", "reassign" ];
 
     return (
         <span>

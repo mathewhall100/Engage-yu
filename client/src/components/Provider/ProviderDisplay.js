@@ -126,24 +126,6 @@ class ProviderDisplay extends Component {
 
                 <br />
 
-                {/* <Grid container spacing={24}>
-                    <Grid item xs={4}>
-                        <Typography variant="subheading">
-                            <div>Primary provider to: </div>
-                            <div>N<sup>o</sup> diary cards created: </div>
-                            <div>N<sup>o</sup> diary cards reviewed: </div>
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={8}>
-                        <Typography variant="subheading">
-                            <div>{this.findNumPatients()}</div>
-                            <div>{this.findNumDiaryCreated()}</div>
-                            <div>{this.findNumDiaryReviewed()}</div> 
-                            <div></div>
-                        </Typography>
-                    </Grid>
-                </Grid> */}
-
                 <br />  <HrStyled />  <br />     
                
                 <BtnGroup

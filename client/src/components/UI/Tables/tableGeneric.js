@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { startCase } from 'lodash';
 import { withStyles, Typography, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel, TablePagination} from '@material-ui/core';
 import BtnActionIcons from '../Buttons/btnActionIcons';
+import BtnActionGroup from '../Buttons/btnActionGroup';
 import { stableSort, getSorting } from '../../../logic/tableSortFunctions';
 
 const styles = () =>  ({
@@ -42,7 +43,7 @@ class GenericTable extends Component {
     };
 
     handleActionBtn = (btn, _id) => {
-        this.props.handleActionBtn(btn, _id)
+        this.props.handleActionClick(btn, _id)
     };
 
     handleChangePage = (event, page) => { this.setState({ page }) };
@@ -59,7 +60,10 @@ class GenericTable extends Component {
         const getLastCell = (row) => {
             if  (lastCellData[0] === "actions") {
                     return <BtnActionIcons _id={row._id} handleActionBtn={this.handleActionBtn} />  
-            } else return <Typography>{lastCellData[0]}</Typography>
+            } else if (lastCellData[0] === "reassign") {
+                    return <BtnActionGroup text="reassign" row={row.id} actions={["reassign"]} handleActionBtn={this.handleActionBtn} />
+            } else { 
+                return <Typography>{lastCellData[0]}</Typography> }
         };
 
         const getTableCell = (row, idx) => {

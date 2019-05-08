@@ -102,8 +102,8 @@ class CareGroupRemove extends Component {
                     </Fragment>
                     :
                     <Fragment>
-                        <Typography variant="subtitle1" gutterBottom>{texts[3]}</Typography>
-                        <Typography variant="subtitle1" gutterBottom color='error'>{texts[4]}</Typography>
+                        <Typography variant="subtitle1" gutterBottom>{texts[2]}</Typography>
+                        <Typography variant="subtitle1" gutterBottom color='error'>{texts[3]}</Typography>
                         <br /> <HrStyled /> <br />
                         <BtnAction type ="button" disabled={false} text="cancel" marginRight={true} handleAction={this.handleCancel} />
                         <BtnAction type="button" disabled={false} text="delete" warning={true} handleAction={this.handleDelete} />

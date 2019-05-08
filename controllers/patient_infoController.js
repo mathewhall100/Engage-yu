@@ -147,6 +147,7 @@ module.exports = {
             console.log(`CONTROLLER ERROR: ${err}`);
             res.status(422).json(err);
         })
+        // need also to remove from users collection and from auth0 
     },
 
 
