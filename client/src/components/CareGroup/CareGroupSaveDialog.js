@@ -3,11 +3,12 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom';
 import { startCase, isEmpty } from 'lodash'
 import PropTypes from 'prop-types';
-import { Dialog, DialogActions, DialogContent, DialogTitle, withMobileDialog, Typography, Grid} from '@material-ui/core'
+import { withMobileDialog, Typography, Grid} from '@material-ui/core'
 import BtnGroup from '../UI/Buttons/btnGroup'
-import DialogSaveFailure from '../UI/Dialogs/dialogSaveFailure'
-import DialogSaving from '../UI/Dialogs/dialogSaving'
+import CallBack from '../UI/callback'
 import { loadCareGroup } from '../../actions'
+import DialogError from '../UI/Dialogs/dialogError';
+import DialogCustom from '../UI/Dialogs/dialogCustom'
 
 
 class CareGroupSaveDialog extends React.Component {
@@ -32,59 +33,40 @@ class CareGroupSaveDialog extends React.Component {
 	}
 
 	render() {
-		const { fullScreen, newCareGroup, loadingNewCareGroup, errorNewCareGroup} = this.props;
+		const { newCareGroup, loadingNewCareGroup, errorNewCareGroup} = this.props;
 
 		if (errorNewCareGroup) 
-			return <DialogSaveFailure text="An error ocurred and this Care Group  could not be added at this time." cancelUrl={"/admin/find"} /> 
+			return <DialogError text="An error ocurred and this Care Group  could not be added at this time." cancelUrl={"/admin/find"} /> 
 		
-        else if (loadingNewCareGroup && !isEmpty(newCareGroup)) 
-			return <DialogSaving />
+        if (loadingNewCareGroup && !isEmpty(newCareGroup)) 
+			return <CallBack text="Saving..." />
 		
-		else
-			return <Dialog
-				fullScreen={fullScreen}
-				open={this.state.open}
-				disableBackdropClick 
-				onClose={this.handleClose}
-				aria-labelledby="responsive-dialog-title"
-				PaperProps={{
-					style: {
-						border: "2px solid  #28353d",
-						borderRadius: "5px",
-						padding: "20px 40px",
-						width: "800px",
-						minWidth: "600px",
-						maxWidth: "60%"
-					}
-				}}
-				>
-					<DialogTitle id="responsive-dialog-title">Success!</DialogTitle>
-					<DialogContent>
-						<Typography variant="subtitle1">New Care group successfully added with the following details:</Typography>
-						<br /> <br />
-						<Grid container spacing={24} >
-							<Grid item xs={2}>
-								<Typography variant="subtitle2" gutterBottom>Name:</Typography> 
-							</Grid>
-							<Grid item xs={10}>
-								<Typography variant="subtitle2" gutterBottom>{startCase(newCareGroup.group_name)}</Typography> 
-							</Grid>
-						</Grid>
-						<br /> <br />
-						<Typography variant="subtitle1">
-							Click 'done' to return to dashboard or, if these details are incorrect, click 'edit' to make changes.
-						</Typography>
-					</DialogContent>
-					<DialogActions style={{margin: "0 20px 20px 0"}}>
-						<BtnGroup 
-							btns={[
-								{btn: "edit", type: "button", id: "0"},
-								{btn: "done", type: "button", id: "1"}
-							]} 
-							handleBtns={this.handleRedirects} 
-							/>
-					</DialogActions>
-				</Dialog>
+		return (
+			<DialogCustom title="Success!" width="800px">
+				<Typography variant="subtitle1">New Care group successfully added with the following details:</Typography>
+				<br /> <br />
+				<Grid container spacing={24} >
+					<Grid item xs={2}>
+						<Typography variant="subtitle2" gutterBottom>Name:</Typography> 
+					</Grid>
+					<Grid item xs={10}>
+						<Typography variant="subtitle2" gutterBottom>{startCase(newCareGroup.group_name)}</Typography> 
+					</Grid>
+				</Grid>
+				<br /> <br />
+				<Typography variant="subtitle1">
+					Click 'done' to return to dashboard or, if these details are incorrect, click 'edit' to make changes.
+				</Typography>
+				<br /><br />
+				<BtnGroup 
+					btns={[
+						{btn: "edit", type: "button", id: "0"},
+						{btn: "done", type: "button", id: "1"}
+					]} 
+					handleBtns={this.handleRedirects} 
+				/>
+			</DialogCustom>
+		)
 	}
 }
 

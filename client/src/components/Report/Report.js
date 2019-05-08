@@ -18,9 +18,7 @@ const styles = theme => ({
 class Report extends Component {  
 
     componentDidMount() {
-        const { match: { params } } = this.props
-        this.setState({episodeId: params.Id})
-        localStorage.setItem("report_return_locn", params.Id === "0" ? '/admin/patient/find' : '/admin/dashboard')
+        this.setState({episodeId: localStorage.getItem("report_episode_id") })
     }
         
     state = {
@@ -30,6 +28,7 @@ class Report extends Component {
     }
 
     handleChangeEpisode = (id) => {
+        localStorage.setItem("report_episode_id", id)
         this.setState({episodeId: id})
     }
 
@@ -48,7 +47,7 @@ class Report extends Component {
         return (
             <Paper className={classes.root}>
                 <ReportPatientDetails />
-                <ReportSummary  episodeId={episodeId} /> 
+                <ReportSummary  currentEpisode={episodeId} /> 
                 <br /> 
                 <ReportListSurveys changeEpisode={this.handleChangeEpisode} currentEpisode={episodeId}/> 
                 <br />

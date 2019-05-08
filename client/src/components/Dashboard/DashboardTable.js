@@ -133,7 +133,9 @@ class DashboardTable extends Component {
 
     handleRowClick = (patientId, episodeId) => {
         this.props.dispatch(loadPatient(patientId))
-        this.props.history.push({pathname: '/admin/report/'+episodeId})
+        localStorage.setItem("report_episode_id", episodeId)
+        localStorage.setItem("report_return_locn", '/admin/dashboard')
+        this.props.history.push({pathname: '/admin/report'})
     };
 
     handleCheckBoxClick = (event, id) => {

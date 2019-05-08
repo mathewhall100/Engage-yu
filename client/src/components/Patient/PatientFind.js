@@ -21,7 +21,6 @@ class PatientFind extends Component {
     componentDidMount() {
         this.props.dispatch(selectConsoleTitle({title: "Select Patient", menuIndex: 2}));
         this.props.dispatch(loadPatientsByProvider(localStorage.getItem("user_provider_id")));
-        localStorage.removeItem("report_return_locn")
     };
 
     componentWillReceiveProps(nextProps) {
@@ -64,7 +63,9 @@ class PatientFind extends Component {
             case "edit":
                 return this.props.history.push({pathname: 'update'})
             case "reports":
-                return this.props.history.push({pathname: '/admin/report/0'})
+                localStorage.setItem("report_episode_id", 0)
+                localStorage.setItem("report_return_locn", '/admin/patient/find')
+                return this.props.history.push({pathname: '/admin/report'})
             case "new diary card":
                 return this.props.history.push({pathname: '/admin/survey', state: {_id} })
             default: return null;

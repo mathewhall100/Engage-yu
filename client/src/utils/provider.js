@@ -30,8 +30,8 @@ export default {
         });
     },
 
-    remove: function(id){
-        console.log("Axios call made to '/api/provider' to 'remove' " + id);
+    delete: function(id){
+        console.log("Axios call made to '/api/provider' to 'delete' " + id);
         return axios.delete("/api/provider/"+id, { 
             headers: {'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')}
         });

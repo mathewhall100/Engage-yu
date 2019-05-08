@@ -312,6 +312,10 @@ class ReportFull extends Component {
         this.setState({openDialog: false}, () => {this.setState({openDialog: true}) } )
     }
 
+    emailDialogClose = () => {
+        this.setState({openDialog: false})
+    }
+
     handleSendToEHR = () => {
         console.log("send to EHR")
     }
@@ -323,31 +327,38 @@ class ReportFull extends Component {
         const { openDialog, episode } = this.state
         
         return (
-            <Fragment>
-                <div style={{textAlign: "center"}}>
+            <Fragment>  
+            
                 {/* dummy component to get the height of 1mm in pixels for the pdf function */}
                 <div id="myMm" style={{height: "1mm" }} /> 
+                
+                <div style={{textAlign: "center"}}>
                     <ReactToPrint
-                        trigger={() =>  <Tooltip title="Open print menu to print or save report" enterDelay={300}>
-                                            <Button variant="outlined" size="small" disabled={isEmpty(episode)} className={classes.btn}>print</Button>
-                                        </Tooltip>
-                                } 
+                        trigger={() =>  
+                            <Tooltip title="Open print menu to print or save report" enterDelay={300}>
+                                <Button variant="outlined" size="small" disabled={isEmpty(episode)} className={classes.btn}>print</Button>
+                            </Tooltip>
+                        } 
                         content={() => this.componentRef}
                     />
-                     <Tooltip title="Generate PDF to download, print or email" enterDelay={300}>
+                    <Tooltip title="Generate PDF to download, print or email" enterDelay={300}>
                         <Button variant="outlined" size="small" disabled={isEmpty(episode)} className={classes.btn} onClick={() => this.handleCreatePdf()}>create PDF</Button>
                     </Tooltip>
                     <Tooltip title="Open Email dialog to send report to other providers" enterDelay={300}>
-                        <Button variant="outlined" size="small" disabled={isEmpty(episode)}className={classes.btn} onClick={() => this.handleEmail()}>email</Button>
+                        <Button variant="outlined" size="small" disabled={isEmpty(episode)} className={classes.btn} onClick={() => this.handleEmail()}>email</Button>
                     </Tooltip>
                     <Tooltip title="Send report direct to patient's electronic health record (EHR)" enterDelay={300}>
-                        <Button variant="outlined" size="small" disabled={isEmpty(episode)}className={classes.btn} onClick={() => this.handleSendToEHR()}>send to ehr</Button>
+                        <Button variant="outlined" size="small" disabled={isEmpty(episode)} className={classes.btn} onClick={() => this.handleSendToEHR()}>send to ehr</Button>
                     </Tooltip>
-                    <BtnLink type="button" text='back' url={this.props.episode ? `/admin/report/${this.props.episode._id}` : '/admin/report/0'} />
-                </div>              
+                    <BtnLink type="button" text='back' url={"/admin/report"}/>
+                </div>
+
                 <br /><br />
+
                 <ReportFullPrepare id="report" ref={el => (this.componentRef = el)} />
-                {openDialog && <ReportEmailDialog />}
+
+                {openDialog && <ReportEmailDialog dialogClose={this.emailDialogClose}/>}
+
             </Fragment>
         )
     }

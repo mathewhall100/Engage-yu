@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { startCase } from 'lodash';
 import { withStyles, Typography, Card } from '@material-ui/core'
 import BtnAction from '../UI/Buttons/btnAction'
-import DialogGeneric from '../UI/Dialogs/dialogGeneric'
+import DialogCustom from '../UI/Dialogs/dialogCustom'
 import HrStyled from '../UI/hrStyled'
 import CallBack from '../UI/callback'
 import providerAPI from '../../utils/provider.js';
@@ -27,32 +27,25 @@ class CareGroupRemove extends Component {
     }
 
     state = {
-       success: false,
-       failed: false,
-       providerList: []
+        numProvidersInCareGroup: 0,
+        errorLoadingProviders: false,
+        success: false,
+        failed: false,
     }
 
     loadProvidersByGroup(id) {
-        let providerList = [];
         providerAPI.findAllByGroup(id)
             .then(res => {
-                providerList = res.data.providerList.map(provider => {
-                    return {
-                        name: `Dr. ${startCase(provider.firstname)} ${startCase(provider.lastname)}`,
-                        office: provider.office.name,
-                        role: provider.role
-                    }
-                })
-                this.setState({providerList: providerList})
+                this.setState({numProvidersInCareGroup: res.data.providerList.length})
             })
             .catch(err => {
             console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
             console.log(err);
+            this.setState({errorLoadingProviders: true})
         })
     };
 
     handleDelete = () => {
-        console.log("handleDelete: ", this.props.careGroup._id)
         provider_groupAPI.remove(this.props.careGroup._id)
         .then(res => {
             console.log("res.data: ", res.data)
@@ -65,22 +58,36 @@ class CareGroupRemove extends Component {
         })
     }
 
-    handlecancel = () => {
+    handleCancel = () => {
         this.props.history.push({
-            pathname: 'admin/caregroup/find'
+            pathname: '/admin/caregroup/find'
+        })
+    }
+
+    handleClose = () => {
+        this.setState({
+            success: false,
+            failed: false
         })
     }
 
     render () {
         const { classes, careGroup, error, loading } = this.props
-        const { success, failed, providerList } = this.state
+        const { success, failed, numProvidersInCareGroup, errorLoadingProviders} = this.state
+
+        const texts = [
+            `There are still ${numProvidersInCareGroup} providers in this care group.`,
+            `You cannot delete a care group with active providers. Please use the manage provider menu to transfer all remaining providers to other care groups and then you can delete this care group from the application.`,
+            `Select 'delete' to delete this caregroup from the list of caregroups held in the application.`,
+            `Note, this action cannot be undone. deleted care groups can be re-added to the application by re-entering their details via the add care group page but all individual providers will need re-allocating to the newly added care group.`
+        ]
     
-        if (error) {
-            return <div>Error! {error.message}</div>
+        if (error || errorLoadingProviders) {
+            return <Typography variant="subtitle1">"Care group cannot be deleted at this time. This may be temporary, so please try again later"/></Typography>
         }
 
-        if (loading || !careGroup._id ) {
-            return <CallBack />
+        if (loading || !(careGroup && careGroup._id)) {
+            return <CallBack fallBackText="Care group cannot be deleted at this time. This may be temporary, so please try again later"/>
         }
 
         return (
@@ -88,46 +95,39 @@ class CareGroupRemove extends Component {
 
                 <CareGroupDetailsBar careGroup={careGroup} />
 
-                { providerList.length ?
-                    <React.Fragment>
-                        <Typography variant="subtitle1" gutterBottom>
-                            There are still {providerList.length} providers in this care group.
-                        </Typography>
-                        <Typography variant="subtitle1" gutterBottom color='error'>
-                            You cannot delete a care group with active providers. Please use the manage provider menu  to transfer all remaining providers to other care groups and then you can delete this care group from the application.
-                        </Typography>
-                    </React.Fragment>
-
+                {numProvidersInCareGroup ?
+                    <Fragment>
+                        <Typography variant="subtitle1" gutterBottom>{texts[0]}</Typography>
+                        <Typography variant="subtitle1" gutterBottom color='error'>{texts[1]}</Typography>
+                    </Fragment>
                     :
-
-                    <React.Fragment>
-                        <Typography variant="subtitle1" gutterBottom>
-                            Select 'delete' to delete this caregroup from the list of caregroups held in the application.
-                        </Typography>
-                        <Typography variant="subtitle1" gutterBottom color='error'>
-                            Note, this action cannot be undone. deleted care groups can be re-added to the application by re-entering their details via the add care group page but all individual providers will need re-allocating to the newly added care group.
-                        </Typography>
-                    
+                    <Fragment>
+                        <Typography variant="subtitle1" gutterBottom>{texts[3]}</Typography>
+                        <Typography variant="subtitle1" gutterBottom color='error'>{texts[4]}</Typography>
                         <br /> <HrStyled /> <br />
-                    
                         <BtnAction type ="button" disabled={false} text="cancel" marginRight={true} handleAction={this.handleCancel} />
                         <BtnAction type="button" disabled={false} text="delete" warning={true} handleAction={this.handleDelete} />
-
-                    </React.Fragment> 
+                    </Fragment> 
                 }
-
 
                 {success && 
-                    <DialogGeneric 
-                        title="Success!" 
-                        text={`Care group '${careGroup.group_name}' has been successfully deleted`}
-                    />
+                    <DialogCustom title="Success!" width="600px">
+                        <Typography variant="subtitle1">
+                             Care group '{careGroup.group_name}' has been successfully deleted.
+                        </Typography>
+                        <br /><br />
+                        <BtnAction text="close" handleAction={() => this.handleCancel()} />
+                    </DialogCustom>
                 }
+
                 {failed && 
-                    <DialogGeneric
-                        title="Failed!" 
-                        text={`A problem occurred and care group '${careGroup.group_name}' could not be deleted at this time. Please check that this is an appropriate action and try again if required. If the problem persists, contact the system administrator.`} 
-                    />
+                    <DialogCustom title="Failed!" width="600px">
+                        <Typography variant="subtitle1">
+                            A problem occurred and care group '{careGroup.group_name}' could not be deleted at this time. Please check that this is an appropriate action and try again if required. If the problem persists, contact the system administrator.
+                        </Typography>
+                        <br /><br />
+                        <BtnAction text="close" handleAction={() => this.handleClose()} />
+                    </DialogCustom>
                 }
                 
             </Card> 

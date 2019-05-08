@@ -95,9 +95,9 @@ class ReportPanelTable extends Component {
                         <table>
                             <tbody>
                                 <tr><td>Sent by: </td><td>{row[heading]}</td></tr>
-                                <tr><td>Sent at: </td><td>{moment(msg.msg_date).format("dddd, MMMM Do YYYY, h:mm:ss a")}</td></tr>
+                                <tr><td>Sent at: </td><td>{moment(msg.msg_date).format("MMMM Do YYYY, h:mm:ss a")}</td></tr>
                                 <tr><td>Recipient: </td><td>{startCase(this.props.patient)}</td></tr>
-                                <tr><td>Status: </td><td>{msg.read ? `Read on ${moment(msg.time_read).format("dddd, MMMM Do YYYY, h:mm:ss a")}` : `Not yet read by recipient`}</td></tr>
+                                <tr><td>Status: </td><td>{msg.read ? `Read on ${moment(msg.time_read).format("MMMM Do YYYY, h:mm:ss a")}` : `Not yet read by recipient`}</td></tr>
                             </tbody>
                         </table>
                         </Typography>

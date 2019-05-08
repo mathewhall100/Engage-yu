@@ -76,7 +76,6 @@ class CareGroupDisplay extends Component {
     }
 
     handleShowProviders = () => {
-        /// console.log("handleShowProviders")
         this.setState({showProviders: this.state.showProviders ? false : true});
     }
 

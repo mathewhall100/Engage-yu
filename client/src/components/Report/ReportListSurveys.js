@@ -95,6 +95,10 @@ class ReportListSurveys extends Component {
         }
     };
 
+    handleDialogClose = () => {
+        this.setState({dialogOpen: false})
+    }
+
     render () {
         const { episodes, panelStatus, morePanels, dialogOpen } = this.state
         const { patientInfo, patientData, currentEpisode } = this.props
@@ -152,7 +156,15 @@ class ReportListSurveys extends Component {
                     </Fragment>
                 }
 
-                {dialogOpen && <ReportStatusUpdateDialog patientId={patientInfo._id} patientDataId={patientData._id} episode={this.state.episode} newStatus={this.state.newStatus}/> }
+                {dialogOpen && 
+                    <ReportStatusUpdateDialog 
+                        patientId={patientInfo._id} 
+                        patientDataId={patientData._id} 
+                        episode={this.state.episode} 
+                        newStatus={this.state.newStatus}
+                        handleDialogClose={this.handleDialogClose}
+                    /> 
+                }
                 
             </Fragment>
         );

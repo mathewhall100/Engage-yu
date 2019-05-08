@@ -31,11 +31,9 @@ class ProviderAdd extends Component {
         this.props.dispatch(selectConsoleTitle({title: "Add New Provider", menuIndex: 6}));
     };
 
-
     componentWillUnmount() {
         this.props.dispatch(providerSave("reset"))
     }
-
 
     // handle form submission and saving data to database
     submit(values) {

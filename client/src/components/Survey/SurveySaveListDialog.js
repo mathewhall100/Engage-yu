@@ -37,9 +37,9 @@ class SurveySaveQuestionListDialog extends React.Component {
 			})
 		}
 
-	handleClose = (saved) => {
+	handleClose = () => {
 		this.setState({open: false});
-		this.props.saveListClose(saved)
+		this.props.saveListClose()
 	};
 
 
@@ -66,11 +66,8 @@ class SurveySaveQuestionListDialog extends React.Component {
 						</tbody>
 					</table>
 				</Typography>
-
 				<br /><br />
-				
 				<Typography variant="subtitle1" gutterBottom>Enter a name for this custom question list</Typography> 
-
 				<form noValidate onSubmit={handleSubmit(this.submit.bind(this))}>
 					<FormBox name="name" label="Name" rows="1" />
 					<br />

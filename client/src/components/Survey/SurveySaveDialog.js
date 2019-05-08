@@ -4,12 +4,14 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import { Dialog, DialogContent, DialogTitle, withMobileDialog, Typography} from '@material-ui/core';
+import { withMobileDialog, Typography} from '@material-ui/core';
 import BtnAction from '../UI/Buttons/btnAction'
-import BtnLink from '../UI/Buttons/btnLink'
+import BtnActionLink from '../UI/Buttons/btnActionLnk'
 import FormBox from '../UI/Forms/formBox'
-import DialogSaveFailure from '../UI/Dialogs/dialogSaveFailure'
-import DialogSaving from '../UI/Dialogs/dialogSaving'
+import DialogError from '../UI/Dialogs/dialogError'
+import CallBack from '../UI/callback'
+import DialogCustom from '../UI/Dialogs/dialogCustom'
+import ProviderName from '../UI/providerName'
 import { validateIsRequired } from '../../logic/formValidations';
 import patient_dataAPI from "../../utils/patient_data.js";
 
@@ -63,61 +65,39 @@ class SurveySaveDialog extends Component {
 
 
 	render() {
-		const { fullScreen, handleSubmit, pristine, survey, errorSurvey, loadingSurvey, name } = this.props;
+		const { handleSubmit, pristine, survey, errorSurvey, loadingSurvey, name } = this.props;
 
 		if (errorSurvey) 
-			return <DialogSaveFailure text="This diary card could not be completed at this time." cancelurl={"/admin/patient/find"} /> 
+			return <DialogError text="This diary card could not be completed at this time." cancelurl={"/admin/patient/find"} /> 
 		
 		if (loadingSurvey) 
-			return <DialogSaving />
+			return <CallBack text="saving..." />
 
-		return <Dialog
-			fullScreen={fullScreen}
-			open={this.state.open}
-			disableBackdropClick 
-			onClose={this.handleClose}
-			aria-labelledby="responsive-dialog-title"
-			PaperProps={{
-				style: {
-					border: "2px solid  #28353d",
-               	 	borderRadius: "5px",
-                	padding: "20px 40px",
-					width: "800px",
-                    minWidth: "600px",
-                    maxWidth: "60%"
-				}
-			}}
-			>
-				<Fragment>
-					<DialogTitle id="responsive-dialog-title">Success!</DialogTitle>
-					<DialogContent>
-						<Typography variant="subtitle1" gutterBottom>
-							New diary card successfully created for <b>{name}</b> and due to start {this.getStart(survey.start)}. This entry will appear in the active diary cards as 'pending' and become 'active' once the patient logs in and starts to enter information.
-						</Typography>
-						<br />
-						<Typography variant="subtitle1" gutterBottom>
-							Enter an optional message for the patient when they first interact with this diary card.
-						</Typography> 
-						<form noValidate onSubmit={handleSubmit(this.submit.bind(this))}>
-							<br />
-							<FormBox name="title" label="RE:" rows="1"/>
-							<br />
-							<FormBox name="msg" label="Enter message" rows="3"/>		
-							<br />
-							<Typography variant="subtitle2" align="right">
-								{`Sender: Dr. ${localStorage.getItem("user_provider_firstname")} ${localStorage.getItem("user_provider_lastname")} on ${moment().format('MMMM Do YYYY, h:mm a')}`}
-							</Typography>
-							<br />
-							<BtnAction type="submit" disabled={pristine} text="send" />
-							<span style={{marginRight: "15px"}}>
-								<BtnLink text="skip" url="/admin/patient/find" />
-							</span>
-						</form>
-					</DialogContent> 
-				</Fragment> 
+		return (
+			<DialogCustom title="Success!" width="800px" closeIcon={false}>
 
-		</Dialog>
-		
+				<Typography variant="subtitle1" gutterBottom>
+					New diary card successfully created for <b>{name}</b> and due to start {this.getStart(survey.start)}. This entry will appear in the active diary cards as 'pending' and become 'active' once the patient logs in and starts to enter information.
+					<br /> <br />
+					Enter an optional message for the patient when they first interact with this diary card.
+				</Typography> 
+
+				<form noValidate onSubmit={handleSubmit(this.submit.bind(this))}>
+					<br />
+					<FormBox name="title" label="RE:" rows="1"/>
+					<br />
+					<FormBox name="msg" label="Enter message" rows="3"/>		
+					<br />
+					<Typography variant="subtitle2" align="right">
+						{`Sender: ${<ProviderName title={localStorage.getItem("user_provider_title")} firstname={localStorage.getItem("user_provider_firstname")} lastname={localStorage.getItem("user_providerr_lastname")} />} on ${moment().format('MMMM Do YYYY, h:mm a')}`}
+					</Typography>
+					<br />
+					<BtnAction type="submit" disabled={pristine} text="send" marginRight={true}/>
+					<BtnActionLink text="skip" url="/admin/patient/find" warning={true} />
+				</form>
+
+			</DialogCustom>
+		)
 	}
 }
 

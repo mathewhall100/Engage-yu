@@ -193,14 +193,12 @@ class HistorySurvey extends Component {
                                 Proceed to edit this entry?  (Episode {this.state.episode? this.state.episode : null } entry {this.state.entry ? this.state.entry : null }) ?     
                             </DialogContentText>
                         </DialogContent>
-                        <DialogActions>
-                            <Button onClick={this.handleClose} color="primary">
-                                Cancel
-                            </Button>
-                            <Button onClick={() => this.handleRedirect(this.state.episode, this.state.entry)} color="primary" autoFocus>
-                                Proceed
-                            </Button>   
-                        </DialogActions>
+                        <Button onClick={this.handleClose} color="primary">
+                            Cancel
+                        </Button>
+                        <Button onClick={() => this.handleRedirect(this.state.episode, this.state.entry)} color="primary" autoFocus>
+                            Proceed
+                        </Button>   
                     </Dialog>
                 </div>
                 

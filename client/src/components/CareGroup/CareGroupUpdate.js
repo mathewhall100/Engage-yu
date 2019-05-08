@@ -5,7 +5,7 @@ import { startCase, isEmpty } from 'lodash';
 import { withStyles, Typography, Card } from '@material-ui/core';
 import FormTextFocused from '../UI/Forms/formTextFocused';
 import FormUpdateUnit from '../UI/Forms/formUpdateUnit'
-import DialogSaveFailure from '../UI/Dialogs/dialogSaveFailure';
+import DialogError from '../UI/Dialogs/dialogError';
 import { selectConsoleTitle, loadCareGroup, careGroupUpdateSave } from '../../actions'
 import { validateName } from '../../logic/formValidations'
 import CareGroupDetailsBar from './CareGroupDetailsBar'
@@ -117,7 +117,7 @@ class CareGroupUpdate extends PureComponent {
 
                 </Card> 
 
-                {failed && <DialogSaveFailure text="A problem was encountered and the Care Group's details were not updated." cancelUrl="/admin/caregroup"/>}
+                {failed && <DialogError text="A problem was encountered and the Care Group's details were not updated." cancelUrl="/admin/caregroup"/>}
 
             </Fragment>
         );

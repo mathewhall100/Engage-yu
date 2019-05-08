@@ -5,12 +5,13 @@ import { startCase, isEmpty } from 'lodash';
 import { withStyles, Card, Typography } from '@material-ui/core';
 import FormTextFocused from '../UI/Forms/formTextFocused';
 import FormStateSelect from '../UI/Forms/formStateSelect';
-import DialogSaveFailure from '../UI/Dialogs/dialogSaveFailure';
+import DialogError from '../UI/Dialogs/dialogError';
 import FormUpdateUnit from '../UI/Forms/formUpdateUnit';
 import { validateName, validateZip, validateState, validateEmail, validatePhone, validatePhoneOther } from '../../logic/formValidations';
 import { selectConsoleTitle, loadProvider, providerUpdateSave } from '../../actions';
 import CareGroupSelect from '../CareGroup/CareGroupSelect'
 import ProviderDetailsBar from './ProviderDetailsBar';
+import dialogError from '../UI/Dialogs/dialogError';
 
 const styles = () => ({
     root: {
@@ -168,7 +169,7 @@ class ProviderUpdate extends PureComponent {
 
                 </Card>
 
-                {failed && <DialogSaveFailure text="A problem was encountered and the provider's details were not updated." cancelUrl="/admin/provider"/>} 
+                {failed && <dialogError text="A problem was encountered and the provider's details were not updated." cancelUrl="/admin/provider"/>} 
 
             </Fragment>   
         );

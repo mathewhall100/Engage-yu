@@ -32,7 +32,7 @@ class DialogCustom extends Component {
 			aria-labelledby="responsive-dialog-title"
 			PaperProps={{
 				style: {
-					border: "2px solid  #28353d",
+					border: "4px solid #28353d",
 					borderRadius: "5px",
 					padding: "20px 40px",
 					width: width,
@@ -42,12 +42,15 @@ class DialogCustom extends Component {
 			}}
 			>
                 {closeIcon && <span className={classes.closeIcon}><BtnCloseIcon handleBtnClick={this.handleClose}/></span>}
-				<DialogTitle id="responsive-dialog-title">{title}</DialogTitle>
-
+				<DialogTitle 
+					id="responsive-dialog-title"
+					style={{margin: closeIcon ? "-40px 0 10px 0" : "10px 0 10px 0"}}
+				>
+					{title}
+				</DialogTitle>
 				<DialogContent>
                     {this.props.children}
 				</DialogContent>
-
 			</Dialog>
 		);
 	}

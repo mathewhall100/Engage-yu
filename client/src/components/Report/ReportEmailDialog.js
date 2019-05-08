@@ -5,15 +5,16 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import { startCase, isEmpty, upperFirst } from 'lodash';
 import PropTypes from 'prop-types';
-import { withStyles, Dialog, DialogActions, DialogContent, DialogTitle, withMobileDialog,  ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Typography,Tooltip} from '@material-ui/core'
+import { withStyles, withMobileDialog,  ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Typography,Tooltip} from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import DeleteIcon from '@material-ui/icons/DeleteOutline'
-import BtnGroup from '../UI/Buttons/btnGroup'
-import BtnCloseIcon from '../UI/Buttons/btnCloseIcon'
+import BtnAction from '../UI/Buttons/btnAction'
 import FormSelect from '../UI/Forms/formSelect'
 import ProviderName from '../UI/providerName'
+import DialogCustom from '../UI/Dialogs/dialogCustom'
 import CallBack from '../UI/callback'
 import { loadProvidersByCareGroup, mailer } from '../../actions';
+import { getHtmlMsg } from './reportEmail'
 
 
 const styles = theme => ({
@@ -122,30 +123,31 @@ class ReportEmailDialog extends Component {
     }
 
 	handleClose = () => {
-		this.setState({ open: false });
-	};
+        this.setState({ open: false });
+        this.props.dialogClose()
+    };
+    
+    handleSend = () => {
+        if (this.props.patientInfo && this.state.recipients ) {
+            this.props.dispatch(mailer(getHtmlMsg(this.props.patientInfo, this.state.recipients)))
+        } else null
+    }
 
 	handleBtns = (index) => {
-		if (index === "send") {
-            const { patientInfo } = this.props
-            const patient = patientInfo ? `${startCase(patientInfo.firstname)} ${startCase(patientInfo.lastname)}` : null
-            const emailTo = this.state.recipients.map(recipient => {return recipient[8]})
-            console.log("email To: ", emailTo)
-            const msg = {
-                email: emailTo, 
-                name: "admin @engage-yu",
-                subject: `${patient}: Diary card report for patent: `,
-                text: "",
-                html: `<H3>Diary Card report for ${patient} is ready to be veiwed</h3>
-                        <p>Login to the Engage-Yu application to view the report and respond to the patient.</p>
-                        <p>Regards</p>
-                        <p>The Engage-Yu team</p>`,
-                }
-                this.props.dispatch(mailer(msg))
+        switch (index) {
+            case "send": 
+                if (this.props.patientInfo && this.state.recipients ) {
+                        this.props.dispatch(mailer(getHtmlMsg(this.props.patientInfo, this.state.recipients)))
+                } else null
+                break;
+            case "cancel":
+                this.handleDialogClose();
+                break;
+            case "finish":
+                this.handleDialogClose();
+                break;
+            default: null
         }
-        else if (index === "cancel" || index === "finish") {
-            this.handleClose()
-        } else null
     }
 
     getRecipientName = (recipient) => {
@@ -190,108 +192,93 @@ class ReportEmailDialog extends Component {
                 </ExpansionPanelDetails>
             </ExpansionPanel>
 
+        if (loadingMail) {
+            return  (
+                <DialogCustom title="Email Report" width="800px" closeIcon={true}>
+                    <CallBack 
+                        text="Sending email..." 
+                        fallbackText="For some reason, email is taking time to send. You can wait here for confirmation or click done to continue."
+                    />
+                </DialogCustom>
+            )
+        }
 
-        return <Dialog
-            fullScreen={fullScreen}
-            open={this.state.open}
-            disableBackdropClick 
-            onClose={this.handleClose}
-            aria-labelledby="responsive-dialog-title"
-            PaperProps={{
-                style: {
-                    border: "2px solid  #28353d",
-                    borderRadius: "5px",
-                    padding: "20px 40px",
-                    width: "800px",
-                    minWidth: "600px",
-                    maxWidth: "60%"
-                }
-            }}
-            >
+        if (errorMail) {
+            return  (
+                <DialogCustom title="Email Report" width="800px" closeIcon={true}>
+                    <Typography variant="subtitle1" align="justify">
+                        Unfortuneately, a problem was encountered and some or all of the recipients may not have recieved an email. Please check with the recipiemts or try to sens another email.
+                    </Typography>
+                </DialogCustom>
+            )
+        }
 
-                <span className={classes.closeIcon}><BtnCloseIcon handleBtnClick={this.handleClose}/></span>
+        if (mail.accepted && mail.accepted.length > 0) {
+            return  (
+                <DialogCustom title="Email Report" width="800px" closeIcon={true}>
+                    <Typography variant="subtitle1" align="justify">
+                        Emails successfully sent
+                    </Typography>
+                </DialogCustom>
+            )
+        }
+
+        return (
+            <DialogCustom title="Email Report" width="800px" closeIcon={true}>
+
+                    <Typography variant="subtitle1" align="justify">
+                        The report on {this.getPatient()}'s diary card:  {this.getDiaryCard()} will be sent to the following recipients:
+                        <br /> <br />
+                    </Typography>
                 
-                <DialogTitle id="responsive-dialog-title">Email Report</DialogTitle>
+                    {recipients && recipients.map((recipient, idx) => {
+                        return (
+                            <table key={idx}>
+                                <tbody>
+                                    <tr>
+                                        <td><RenderEmailRecipientPanel key={idx} recipient={recipient}/></td>
+                                        <td>
+                                            <Tooltip title="Remove recipient from email list" placement="right" enterDelay={300}>
+                                                <DeleteIcon className={classes.deleteIcon} onClick={() => this.removeRecipientFromList(recipient)}/>
+                                            </Tooltip>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        )
+                    })} 
+                    <br /><br />
+                    <div className={classes.addRecipientBox}>
+                        <Typography variant="subtitle1" style={{fontWeight: 500}}inline>
+                            Add recipient: 
+                        </Typography>
+                        <div style={{margin: "-26px 0 0 20px", float: "right"}}>
+                            <form>
+                                <FormSelect 
+                                    name="provider" 
+                                    label="Select recipient" 
+                                    width="200" 
+                                    items={providers} 
+                                    value={providers[1]}
+                                    helpText={false}
+                                />
+                            </form>
+                        </div>
+                    </div>
 
-                    <DialogContent>
-                        {loadingMail ? 
-                            <CallBack text="Sending email..." fallbackText="For some reason, email is taking time to send. You can wait here for confirmation or click done to continue."/>
-                            :
-                            errorMail ?
-                                <Typography variant="subtitle1" align="justify">
-                                    Unfortuneately, a problem was encountered and some or all of the recipients may not have recieved an email. Please check with the recipiemts or try to sens another email.
-                                </Typography>
-                                :
-                                mail.accepted && mail.accepted.length > 0 ? 
-                                    <Typography variant="subtitle1" align="justify">
-                                        Emails successfully sent
-                                    </Typography>
-                                    :
-                                    <Fragment>
-                                        <Typography variant="subtitle1" align="justify">
-                                            The report on {this.getPatient()}'s diary card:  {this.getDiaryCard()} will be sent to the following recipients:
-                                            <br /> <br />
-                                        </Typography>
-                                    
-                                        {recipients && recipients.map((recipient, idx) => {
-                                            return (
-                                                <table key={idx}>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td><RenderEmailRecipientPanel key={idx} recipient={recipient}/></td>
-                                                            <td>
-                                                                <Tooltip title="Remove recipient from email list" placement="right" enterDelay={300}>
-                                                                    <DeleteIcon className={classes.deleteIcon} onClick={() => this.removeRecipientFromList(recipient)}/>
-                                                                </Tooltip>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            )
-                                        })} 
-                                        <br /><br />
-                                        <div className={classes.addRecipientBox}>
-                                            <Typography variant="subtitle1" style={{fontWeight: 500}}inline>
-                                                Add recipient: 
-                                            </Typography>
-                                            <div style={{margin: "-26px 0 0 20px", float: "right"}}>
-                                                <form>
-                                                    <FormSelect 
-                                                        name="provider" 
-                                                        label="Select recipient" 
-                                                        width="200" 
-                                                        items={providers} 
-                                                        value={providers[1]}
-                                                        helpText={false}
-                                                    />
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </Fragment>
-                        }
-                     
-                    </DialogContent>
-
-                    <DialogActions style={{margin: "0 20px 20px 0"}}>
-                        {loadingMail || errorMail || (mail.accepted && mail.accepted.length > 0) ?
-                             <BtnGroup 
-                                btns={[
-                                    {btn: "finish", type: "button", id: "2"},
-                                ]} 
-                             handleBtns={this.handleBtns} 
-                            />
-                            :
-                            <BtnGroup 
-                                btns={[
-                                    {btn: "send", type: "button", id: "1"},
-                                    {btn: "cancel", type: "button", warning: true, id: "2"},
-                                ]} 
-                                handleBtns={this.handleBtns} 
-                            />
-                        }
-                    </DialogActions>	
-
-            </Dialog>	
+                    <br /><br />
+                    
+                    {loadingMail || errorMail || (mail.accepted && mail.accepted.length > 0) ?
+                        <BtnAction text="finish" marginRight={true} handleAction={this.handleClose} />
+                        :
+                        <Fragment>
+                            <BtnAction text="send" marginRight={true} handleAction={this.handleSend} />
+                            <BtnAction text="cancel" warning={true} handleAction={this.handleClose} />
+                        </Fragment>
+                    }
+                	
+            </DialogCustom>
+        )
 	}
 }
 

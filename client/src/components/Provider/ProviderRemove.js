@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withStyles, Card, Typography } from '@material-ui/core';
 import BtnAction from '../UI/Buttons/btnAction'
-import DialogGeneric from '../UI/Dialogs/dialogGeneric';
+import DialogCustom from '../UI/Dialogs/dialogCustom';
 import CallBack from '../UI/callback'
 import HrStyled from '../UI/hrStyled'
 import { selectConsoleTitle } from '../../actions'
-import providerAPI from "../../utils/provider.js";
+import providerAPI from "../../utils/provider";
 import ProviderDetailsBar from './ProviderDetailsBar'
+import ProviderName from '../UI/providerName'
 
 
 const styles = () => ({
@@ -27,8 +28,7 @@ class ProviderRemove extends Component {
         failed: false,
     }
 
-    handleRemove() {
-        console.log("handleRemove: ")
+    handleRemove = () => {
         providerAPI.delete(this.props.provider._id)
         .then(res => {
             console.log("res.data: ", res.data)
@@ -78,17 +78,35 @@ class ProviderRemove extends Component {
                 <BtnAction type="button" disabled={false} text="delete" warning={true} handleAction={this.handleRemove} />
 
                 {success && 
-                    <DialogGeneric 
-                        title="Success!" 
-                        text={`provider ${provider.firstname} ${provider.lastname} has been successfully deleted`}
-                    />
+                    <DialogCustom title="Success!" width="600px">
+                        <Typography variant="subtitle1">
+                            <ProviderName 
+                                title={provider.title}
+                                firstname={provider.firstname} 
+                                lastname={provider.lastname} 
+                            /> 
+                            successfully removed from the application.
+                        </Typography>
+                        <br /><br />
+                        <BtnAction text="close" style={{float: "right"}} handleAction={() => this.handleCancel()} />
+                    </DialogCustom>
                 }
 
                 {failed && 
-                    <DialogGeneric
-                        title="Failed!" 
-                        text={`A problem occurred and provider ${provider.firstname} ${provider.lastname}  could not be deleted at this time. Please check that this is an appropriate action and try again. If the problem persists, contact the system administrator.`} 
-                    />
+                    <DialogCustom title="Failed!" width="600px">
+                        <Typography variant="subtitle1">
+                            A problem occurred and provider '
+                            <ProviderName 
+                                title={provider.title} 
+                                firstname={provider.firstname} 
+                                lastname={provider.lastname} 
+                            />
+                            ' could not be deleted at this time. Please check that this is an appropriate action and try again if required. If the problem persists, contact the system administrator.
+                        </Typography>
+                        <br /><br />
+                        <BtnAction text="close" handleAction={() => this.handleCancel()} />
+                        <br/>
+                    </DialogCustom>
                 }
             
             </Card>

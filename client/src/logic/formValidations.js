@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 
 export const validateIsRequired = (value) => {
     //console.log("valueReq: ", value);
@@ -21,8 +23,6 @@ export const validateAddress = (value, required=false) => {
     } else return "";
 };
 
-
-
 export const validateHospId = (value, required=false) => {
     //console.log("value: ", value);
     if (!value) {if (required) return "*Required field"; else return "";}
@@ -33,9 +33,14 @@ export const validateHospId = (value, required=false) => {
 
 export const validateDOB = (value, required=false) => {
     //console.log("value: ", value);
+
     if (!value) {if (required) return "*Required field"; else return "";}
-    else if (!/^(0?[1-9]|1[012])[/-](0?[1-9]|[12][0-9]|3[01])[-]\d{4}$/i.test(value))  {
+    else if (!/^(0?[1-9]|1[012])[/-](0?[1-9]|[12][0-9]|3[01])[/-]\d{4}$/i.test(value))  {
         return "*Invalid date of birth.";
+    } else if (value && parseInt(value.slice(-4), 10) > moment().format('YYYY')-16) {
+        return "*Must be over 16years of age";
+    } else if (value && parseInt(value.slice(-4), 10) < 1900) {
+        return "*You cannot be this old!";
     } else return "";
 };
 

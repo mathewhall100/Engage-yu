@@ -33,15 +33,15 @@ class ReportSummary extends Component {
 
     componentDidMount() {
         this.props.dispatch(selectConsoleTitle({title: "Summary Report", menuIndex: 2}));
-        const { patientData, episodeId } = this.props
-        if (!isEmpty(patientData) && episodeId) {this.prepareDataForDisplay(episodeId)} 
+        const { patientData, currentEpisode } = this.props
+        if (!isEmpty(patientData) && currentEpisode) {this.prepareDataForDisplay(currentEpisode)} 
         localStorage.removeItem("report_episode")
      };
 
     componentWillReceiveProps(nextProps) {
-        const { patientData, episodeId } = this.props
-        if (patientData !== nextProps.patientData || episodeId !== nextProps.episodeId) {
-            this.prepareDataForDisplay(nextProps.episodeId)
+        const { patientData, currentEpisode } = this.props
+        if (patientData !== nextProps.patientData || currentEpisode !== nextProps.currentEpisode) {
+            this.prepareDataForDisplay(nextProps.currentEpisode)
             this.setState({displayQuestion: 0})
         }
     };
@@ -54,12 +54,12 @@ class ReportSummary extends Component {
         episodeDataForDisplay: [],
     };
 
-    getEpisode = (episodeId) => {
+    getEpisode = (currentEpisode) => {
         let episodes = this.props.patientData.episodes;
         if (!episodes.length) {
             this.setState({noEpisodes: true}) 
         } else {
-            if (episodeId !== "0") {return episodes.filter(e => e._id === episodeId)[0]
+            if (currentEpisode !== "0") {return episodes.filter(e => e._id === currentEpisode)[0]
             } else {
                 let ep = [];
                 let status = ["awaiting review", "active", "actioned", "pending"];
@@ -71,8 +71,8 @@ class ReportSummary extends Component {
         }
     };
 
-    prepareDataForDisplay = (episodeId) => {
-        const episode = this.getEpisode(episodeId)
+    prepareDataForDisplay = (currentEpisode) => {
+        const episode = this.getEpisode(currentEpisode)
         if (episode) {
             this.setState({
                 episode,             
@@ -161,7 +161,7 @@ class ReportSummary extends Component {
 
                             <div className={classes.tableContainer}>
                                 {!noDiaryCard && episode.status !== "pending" ?
-                                    <React.Fragment> 
+                                    <Fragment> 
                                         <ReportGraphQuestionBar  
                                             questions={questions}
                                             displayQuestion={displayQuestion}
@@ -174,7 +174,7 @@ class ReportSummary extends Component {
                                             question={questions[displayQuestion]}
                                             numDays={this.state.episode.num_days}
                                         />
-                                    </React.Fragment>
+                                    </Fragment>
                                     : 
                                     null
                                 }

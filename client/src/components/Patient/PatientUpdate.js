@@ -6,7 +6,7 @@ import { withStyles, Card, Typography } from '@material-ui/core';
 import FormTextFocused from '../UI/Forms/formTextFocused';
 import ProviderSelect from '../UI/Forms/FormProviderSelect'
 import FormRadio from '../UI/Forms/formRadio'
-import DialogSaveFailure from '../UI/Dialogs/dialogSaveFailure'
+import DialogError from '../UI/Dialogs/dialogError'
 import PatientDetailsBar from './PatientDetailsBar';
 import FormUpdateUnit from '../UI/Forms/formUpdateUnit'
 import { selectConsoleTitle, loadPatient, patientUpdateSave } from '../../actions';
@@ -132,7 +132,7 @@ class PatientUpdate extends PureComponent {
                     <br /> <br />
                 </Card>
 
-                {failed && <DialogSaveFailure text="A problem was encountered and the patient's details were not updated." cancelUrl="/admin/find"/>} 
+                {failed && <DialogError text="A problem was encountered and the patient's details were not updated." cancelUrl="/admin/find"/>} 
 
             </Fragment>
         );
