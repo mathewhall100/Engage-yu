@@ -6,124 +6,91 @@ import {
 } from './types';
 import providerAPI from '../utils/provider';
 
-export const providerUpdateSave = (values, provider) => {
+export const providerUpdate = (values, provider) => {
+
     if (values === "reset") {
         return dispatch => {
-            dispatch(providerUpdateSaveReset())
+            dispatch(providerUpdateReset())
         }
-    } else {
+    } 
+    
+    if (values.email) {
         return dispatch => {
-            dispatch(providerUpdateSaveBegin());
-            if (values.officename || values.officestreet || values.officecity || values.officestate || values.officezip) {
-                providerAPI.update(provider._id, {
-                    office: {
-                        name: values.officename ? values.officename : provider.office.name,
-                        street: values.officestreet ? values.officestreet : provider.office.street,
-                        city: values.officecity ? values.officecity : provider.office.city,
-                        state: values.officestate ? values.officestate : provider.office.state,
-                        zip: values.officezip ? values.officezip : provider.office.zip
+            dispatch(providerUpdateBegin());
+            let updObj = {}
+            updObj = {email: values.email}
+            providerAPI.updateEmail(provider._id, updObj)
+            .then(res => {
+                //console.log("res: ", res.data)
+                dispatch(providerUpdateSuccess(res.data))
+            })
+            .catch(err => {
+                console.log("error: ", err)
+                console.log("error: ", err.response)
+                dispatch(providerUpdateFailure(err)) 
+            })
+        }
+    }
+
+    if (values !== "reset" && !values.email) {
+        return dispatch => {
+            dispatch(providerUpdateBegin());
+            let updObj = [];
+                if (values.officename || values.officestreet || values.officecity || values.officestate || values.officezip) {
+                    updObj = {
+                        office: {
+                            name: values.officename ? values.officename : provider.office.name,
+                            street: values.officestreet ? values.officestreet : provider.office.street,
+                            city: values.officecity ? values.officecity : provider.office.city,
+                            state: values.officestate ? values.officestate : provider.office.state,
+                            zip: values.officezip ? values.officezip : provider.office.zip
+                        }
                     }
-                })
-                .then(res => {
-                    console.log("res.data: ", res.data)
-                    dispatch(providerUpdateSaveSuccess(res.data))
-                })
-                .catch(error => {
-                    console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                    console.log(error);
-                    dispatch(providerUpdateSaveFailure(error)) 
-                })
-    
-            } else if (values.email) {
-                providerAPI.update(provider._id, {
-                    email: values.email,
-                })
-                .then(res => {
-                    console.log("res.data: ", res.data)
-                    dispatch(providerUpdateSaveSuccess(res.data))
-                })
-                .catch(error => {
-                    console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                    console.log(error);
-                    dispatch(providerUpdateSaveFailure(error)) 
-                })
-    
-            } else if (values.phoneoffice) {
-                providerAPI.update(provider._id, {
-                    phone_office: values.phoneoffice,
-                })
-                .then(res => {
-                    dispatch(providerUpdateSaveSuccess(res.data))
-                    console.log("res.data: ", res.data)
-                })
-                .catch(error => {
-                    console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                    console.log(error);
-                    dispatch(providerUpdateSaveFailure(error)) 
-                })
-            } else if (values.phonecell) {
-                providerAPI.update(provider._id, {
-                    phone_cell: values.phonecell,
-                })
-                .then(res => {
-                    dispatch(providerUpdateSaveSuccess(res.data))
-                    console.log("res.data: ", res.data)
-                })
-                .catch(error => {
-                    console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                    console.log(error);
-                    dispatch(providerUpdateSaveFailure(error)) 
-                })
-            } else if (values.phonepager) {
-                providerAPI.update(provider._id, {
-                    phone_pager: values.phonepager,
-                })
-                .then(res => {
-                    dispatch(providerUpdateSaveSuccess(res.data))
-                    console.log("res.data: ", res.data)
-                })
-                .catch(error => {
-                    console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                    console.log(error);
-                    dispatch(providerUpdateSaveFailure(error)) 
-                })
-            } else if (values.caregroup) {
-                providerAPI.update(provider._id, {
-                    provider_group: {
-                        ref: values.caregroup[0],
-                        id: values.caregroup[0],
-                        name: values.caregroup[1]
+                } else if (values.phoneoffice) {
+                    updObj = {phone_office: values.phoneoffice}
+                } else if (values.phonecell) {
+                    updObj = {phone_cell: values.phonecell}
+                } else if (values.phonepager) {
+                    updObj = {phone_pager: values.phonepager}
+                } else if (values.caregroup) {
+                    updObj = {
+                        provider_group: {
+                            ref: values.caregroup[0],
+                            id: values.caregroup[0],
+                            name: values.caregroup[1]
+                        }
                     }
-                })
-                .then(res => {
-                    dispatch(providerUpdateSaveSuccess(res.data))
-                    console.log("res.data: ", res.data)
-                })
-                .catch(error => {
-                    console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                    console.log(error);
-                    dispatch(providerUpdateSaveFailure(error)) 
-                })
-            } 
+                } else updObj = {}
+
+            return providerAPI.update(provider._id, updObj)
+            .then(res => {
+                //console.log("res: ", res.data)
+                dispatch(providerUpdateSuccess(res.data)) 
+            })
+            .catch(err => { 
+                console.log(err)
+                console.log(err.response);
+                dispatch(providerUpdateFailure(err)) 
+            })
         }
     }
 }
 
 
-export const providerUpdateSaveBegin = () => ({
+export const providerUpdateBegin = () => ({
     type: PROVIDER_UPDATE_BEGIN
 });
 
-export const providerUpdateSaveSuccess = data => ({
+export const providerUpdateSuccess = data => ({
     type: PROVIDER_UPDATE_SUCCESS,
     payload : { data }
 });
 
-export const providerUpdateSaveFailure = error => ({
+export const providerUpdateFailure = error => ({
     type: PROVIDER_UPDATE_FAILURE,
     payload : { error }
 });
 
-export const providerUpdateSaveReset = () => ({
+export const providerUpdateReset = () => ({
     type: PROVIDER_UPDATE_RESET
 });

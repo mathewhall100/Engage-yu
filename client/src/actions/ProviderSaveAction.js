@@ -15,10 +15,12 @@ export const providerSave = (values) => {
         return dispatch => {
             dispatch(providerSaveReset())
         }
-    } else {
+    } 
+    
+    if (values && values !== "reset") {
         return dispatch => {
             dispatch(providerSaveBegin());
-            return  providerAPI.create({
+            const newObj = {
                 date_added: new Date(),
                 added_by: {
                     ref: localStorage.getItem("user_provider_id"),
@@ -51,69 +53,84 @@ export const providerSave = (values) => {
                     name: values.caregroup[1]
                 },
                 custom_question_list: []
-            })
-            .then(res_data => {
-                console.log("res.data: ", res_data.data) 
+            };
+            providerAPI.create(newObj)
+            .then(result => {
+                let newProvider;
+                console.log("Create provider: ", result.data)
                 if (values.signup && values.email && values.password) {
-                    AuthService.webAuth.signup({
-                        connection: "Engage-Yu",
-                        email: values.email,
-                        password: values.password,
-                        user_metadata: { 
-                            firstname: values.firstname,
-                            lastname: values.lastname,
-                            role: "provider",
-                            password: "temp"
-                        },
-                        responseType: "token id_token"
-                    }, function (error, res_user) {
-                        if (error) {
-                            dispatch(providerSaveFailure(error))
-                            saveFailedCleanup(res_data.data._id, error) // inner
-                        }
-                        console.log("New user Created: ", res_user)
-                        userAPI.userCreate({
-                            sub: `auth0|${res_user.Id}`,
-                            role: "provider",
-                            id: res_data.data._id
-                        })
-                        .then(res_newUser => {
-                            console.log("res_newUser: ", res_newUser)
-                            res_data.data["password"] = values.password
-                            dispatch(providerSaveSuccess(res_data.data))
-                        })
-                        .catch(error => { 
-                            dispatch(providerSaveFailure(error))
-                            saveFailedCleanup(res_data.data._id, error) // first middle block
-                        })
-                    }) 
-                } else {
-                    console.log("res_newUser: ", res_data.data)
-                    dispatch(providerSaveSuccess(res_data.data))
-                }
+                    newProvider = result.data
+                    authSave(dispatch, values, newProvider)
+                } else {dispatch(providerSaveSuccess(newProvider))}
             })
             .catch(error => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log(error);
+                console.log("error: ", error)
+                console.log("error: ", error.response)
                 dispatch(providerSaveFailure(error));
             })
         }
     }
+};
+
+// if provider is to have sign-up access, save them as a user with auth0 
+const authSave = (dispatch, values, newProvider) => {
+    let userObj = {};
+    userObj = {
+        connection: "Engage-Yu",
+        email: values.email,
+        password: values.password,
+        user_metadata: { 
+            firstname: values.firstname,
+            lastname: values.lastname,
+            role: "newProvider",
+            password: "temp"
+        },
+        responseType: "token id_token"
+    };
+    AuthService.webAuth.signup(userObj, function (error, result) {
+        if (error) {
+            dispatch(providerSaveFailure(error))
+            saveFailedCleanup(newProvider._id, error) 
+        } else {
+            console.log("New auth0 user created: ", result)
+            userSave(dispatch, values, newProvider, result)
+        }
+    })
 }
-    
+
+// if user successfully daved to auth0, then save as user in user collection
+const userSave = (dispatch, values, newProvider, newAuth) => {
+    console.log("NP: ", newProvider)
+    userAPI.userCreate({
+        sub: `auth0|${newAuth.Id}`,
+        role: "provider",
+        id: newProvider._id
+    })
+    .then(newUser => {
+        console.log("New user crewted: ", newUser)
+        newProvider["password"] = values.password // add pasword to provider & return
+        dispatch(providerSaveSuccess(newProvider))
+    })
+    .catch(error => { 
+        dispatch(providerSaveFailure(error))
+        saveFailedCleanup(newProvider._id, error) // first middle block
+    })
+}
+
 // When enroll fails, need to remove any documents created during the sequence of enroll database actions
-const saveFailedCleanup = (id, err) => {
-    console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-    console.log(err);
-    console.log("Add provider fail cleanup: ", id)
+const saveFailedCleanup = (id, error) => {
+    console.log("error: ", error)
+    console.log("error: ", error.response)
+    console.log("Cleaning up: ", id)
     if (id) {
         providerAPI.remove(id)
         .then(res => {
-            console.log(`Provider document ${res.data._id} removed`)
+            console.log(`Provider document ${id} removed`)
         })
         .catch(err => {
-            console.log(`OOPS! A fatal problem occurred. Document ${id} could not be cleaned up. Please contact your system administrator`);
+            console.log(`A problem occurred and provider document ${id} could not be cleaned up.`);
             console.log(err);
+            console.log("err: ", err.response)
         })
     }
 }
@@ -135,3 +152,4 @@ export const providerSaveFailure = error => ({
 export const providerSaveReset = error => ({
     type: PROVIDER_SAVE_RESET
 });
+

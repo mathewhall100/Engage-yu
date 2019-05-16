@@ -4,7 +4,7 @@ import { withStyles, Grid, Typography } from '@material-ui/core';
 import { selectConsoleTitle } from '../../actions'
 import BtnLink from '../UI/Buttons/btnLink';
 import ConsoleTitle from '../Console/ConsoleTitle'
-import AccountViewStats from './ViewStats'
+import AccountActivity from './Activity'
 import AccountChangePassword from './ChangePassword'
 import AccountUpdateDetails from './UpdateDetails'
 import AccountCloseAccount from './AccountCloseAccount'
@@ -92,15 +92,15 @@ class Account extends Component {
                 <Grid container spacing={24}>
                     <Grid item xs={3}>
                         <div className={classes.menuBox}>
-                            <RenderMenuItem text="View stats" selected={selected[0]} index={0} handleSelected={this.handleSelected} />
-                            <RenderMenuItem text="Update Details" selected={selected[1]} index={1} handleSelected={this.handleSelected} />
-                            <RenderMenuItem text="Change Password" selected={selected[2]} index={2} handleSelected={this.handleSelected} />
-                            <RenderMenuItem text="Close my account" selected={selected[3]} index={3} handleSelected={this.handleSelected} />
+                            <RenderMenuItem text="My Activity" selected={selected[0]} index={0} handleSelected={this.handleSelected} />
+                            <RenderMenuItem text="Update My Details" selected={selected[1]} index={1} handleSelected={this.handleSelected} />
+                            <RenderMenuItem text="Change My Password" selected={selected[2]} index={2} handleSelected={this.handleSelected} />
+                            <RenderMenuItem text="Close My Account" selected={selected[3]} index={3} handleSelected={this.handleSelected} />
                         </div>
                     </Grid>
                     <Grid item xs={9}>
                         <div className={classes.mainBox}>
-                            {selected[0] && <AccountViewStats />}
+                            {selected[0] && <AccountActivity />}
                             {selected[1] && <AccountUpdateDetails />}
                             {selected[2] && <AccountChangePassword />}
                             {selected[3] && <AccountCloseAccount />}

@@ -57,7 +57,7 @@ class FormProviderSelect extends Component {
         const { providers } = this.state
 
         return (
-            <FormSelect name="provider" label="Select provider" width="200" items={providers} value={providers[1]}/>
+            <FormSelect name="provider" label="Select provider" width="270" items={providers} value={providers[1]}/>
         );
     }
 }

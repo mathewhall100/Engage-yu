@@ -35,10 +35,10 @@ class CareGroupRemove extends Component {
 
     loadProvidersByGroup(id) {
         providerAPI.findAllByGroup(id)
-            .then(res => {
-                this.setState({numProvidersInCareGroup: res.data.providerList.length})
-            })
-            .catch(err => {
+        .then(res => {
+            this.setState({numProvidersInCareGroup: res.data.providerList.length})
+        })
+        .catch(err => {
             console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
             console.log(err);
             this.setState({errorLoadingProviders: true})
@@ -52,8 +52,8 @@ class CareGroupRemove extends Component {
             this.setState ({success: true})   // update success dialog
         })
         .catch(err => {
-            console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-            console.log(err);
+            console.log(err)
+            console.log(err.response)
             this.setState({failed: true}); // update failed dialog
         })
     }

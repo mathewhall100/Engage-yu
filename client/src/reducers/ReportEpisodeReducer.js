@@ -1,4 +1,4 @@
-import { REPORT_EPISODE } from '../actions/types'
+import { REPORT_EPISODE } from '../actions/types';
 
 const INITIAL_STATE = {};
 

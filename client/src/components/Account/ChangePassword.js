@@ -29,9 +29,9 @@ class AccountChangePassword extends Component {
         .then(result => {
             //console.log("result: ", result) 
             accessToken = result.data.access_token
-            authAPI.passwordChange({
+            authAPI.update({
                 userId: UserService.getUserId(),
-                newPassword: values.password,
+                updObj: {password: values.password},
                 accessToken
             })
             .then(result => {
@@ -66,12 +66,12 @@ class AccountChangePassword extends Component {
             <Fragment>
                 <Typography variant="subtitle1" style={{color: "red"}} gutterBottom>
                         Password update failed!
-                    </Typography>
-                    <br />
-                    <Typography variant="subtitle1" gutterBottom>
-                        This is most likey because it contained a common word or phrase or you reused one of your previous passwords. Try again with an original password that you have not used before. 
-                    <br /> 
                 </Typography>
+                <br />
+                <Typography variant="subtitle1" gutterBottom>
+                    This is most likey because it contained a common word or phrase or you reused one of your previous passwords. Try again with an original password that you have not used before. 
+                <br /> 
+            </Typography>
             </Fragment>
 
         const RenderMsg = () => 

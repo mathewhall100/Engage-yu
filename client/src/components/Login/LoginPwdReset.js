@@ -23,20 +23,20 @@ class LoginPwdReset extends Component {
 
 	//Handle form submission and save message
 	submit(values) {
-
         console.log("Submitted values: ", values);
         authAPI.passwordReset({
             email: values.email
         })
         .then(res => {
-			console.log("res: ", res)
-			this.setState({dialogContent: "sent"})
+            console.log(res.data)
+            this.setState({dialogContent: "sent"})
         })
         .catch(err => {
-			console.log("Err: ", err)
-			if (err.code === "401") {this.setState({dialogContent: "invalid"})}
+            console.log(err)
+            console.log(err.response)
+            if (err.code === "401") {this.setState({dialogContent: "invalid"})}
 				else this.setState({reset: "error"})
-		})
+        })
 		this.handleClose()
 	}
 

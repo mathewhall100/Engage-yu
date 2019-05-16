@@ -27,14 +27,13 @@ export const mailer = (msg) => {
                 attachments
             })
             .then(res => {
-                console.log(res.data)
+                //console.log(res.data)
                 dispatch(mailerSuccess(res.data));
             })
-            .catch(error => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log("No active surveys retrieved");
-                console.log(error);
-                dispatch(mailerFailure(error));
+            .catch(err => {
+                console.log(err)
+                console.log(err.response)
+                dispatch(mailerFailure(err));
             })
         }
     }

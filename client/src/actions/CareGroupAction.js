@@ -11,15 +11,14 @@ export const loadCareGroup = (id) => {
         dispatch(careGroupBegin());
         return careGroupAPI.findById(id)
             .then(res => {
-                console.log("result: ", res.data)
+                //console.log("result: ", res.data)
                 dispatch(careGroupSuccess(res.data));
                 return res.data;
             })
-            .catch(error => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log("No active surveys retrieved");
-                console.log(error);
-                dispatch(careGroupFailure(error))
+            .catch(err => {
+                console.log(err)
+                console.log(err.response)
+                dispatch(careGroupFailure(err))
             });
     };
 }

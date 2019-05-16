@@ -10,17 +10,15 @@ export const loadPatientsByProvider = (id) => {
     return dispatch => {
         dispatch(patientsByProviderBegin());
         return  patient_infoAPI.findAllByProvider(id)
-            .then(res => {
-                console.log("result: ", res.data)
-                dispatch(patientsByProviderSuccess(res.data));
-                return res.data;
-            })
-            .catch(error => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log("No active surveys retrieved");
-                console.log(error);
-                dispatch(patientsByProviderFailure(error))
-            });
+        .then(res => {
+            //console.log(res.data)
+            dispatch(patientsByProviderSuccess(res.data));
+        })
+        .catch(err => {
+            console.log(err)
+            console.log(err.response) 
+            dispatch(patientsByProviderFailure(err))
+        })
     };
 }
 

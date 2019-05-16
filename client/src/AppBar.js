@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { startCase } from 'lodash';
 import { withRouter, Redirect } from 'react-router-dom';
@@ -42,7 +42,7 @@ const styles = theme =>({
     }
 });
 
-class TopBar extends Component {  
+class TopBar extends PureComponent {  
 
     state = {
         redirect : false,
@@ -63,62 +63,52 @@ class TopBar extends Component {
     };
 
     render () {
-        
-        const { profile } = this.props.auth;
         const { classes } = this.props;
         const { redirect } = this.state;
+        const profile = JSON.parse(localStorage.getItem("auth_profile"))
 
         if (redirect) {
             const url = `/login`;
             return <Redirect to={url} />;
         }
 
-        // If logged in successfully (isAuthenticated=true) 
-        // Also displays user profile if present (profile=true)
-        const RenderAppBarAuthUser = (props) => {
-            return (
-                <div style={{width: "100%", display: 'flex', flexDirection: 'row', justifyContent: "space-between"}}>
-
-                    <Typography variant="h5" color="inherit" className={classes.logoText}>Engage-Yu!</Typography>
-
-                    <div>
-                        <Typography variant="subtitle2"  align="right" color="inherit" inline className={classes.text}>
-                            Care Group: &nbsp;&nbsp;{startCase(localStorage.getItem("user_provider_group_name"))}
-                        </Typography> 
-
-                        <Typography variant="subtitle2" inline color="inherit" >
-                            {profile ? 
-                                <span>
-                                    <img src={profile.picture} height="45px" alt="profile" className={classes.avatar}/> 
-                                    Welcome, &nbsp;&nbsp;
-                                    <ProviderName 
-                                        title={localStorage.getItem("user_provider_title")} 
-                                        firstname={localStorage.getItem("user_provider_firstname")} 
-                                        lastname={localStorage.getItem("user_provider_lastname")} 
-                                    />
-                                </span>
-                                :
-                                <span>Error: this user has no profile</span>
-                            }  
-                        </Typography>
-                    </div>
-
-                    <div className={classes.appBarBtns}>
-                        <BtnAction type="button" text="Help" marginRight={true} handleAction={this.handleHelp}/>
-                        <BtnAction type="button" text="My Account" marginRight={true} handleAction={this.handleMyAccount} />
-                        <BtnAction type="button" text="Logout" handleAction={this.handleLogout} />
-                    </div>
-
-                </div>
-           
-            )
-        }
-
         return (
             <div className={classes.root}>
                 <AppBar position="static" color="primary">
                     <Toolbar >
-                        <RenderAppBarAuthUser />
+                        <div style={{width: "100%", display: 'flex', flexDirection: 'row', justifyContent: "space-between"}}>
+
+                        <Typography variant="h5" color="inherit" className={classes.logoText}>Engage-Yu!</Typography>
+
+                        <div>
+                            <Typography variant="subtitle2"  align="right" color="inherit" inline className={classes.text}>
+                                Care Group: &nbsp;&nbsp;{startCase(localStorage.getItem("user_provider_group_name"))}
+                            </Typography> 
+
+                            <Typography variant="subtitle2" inline color="inherit" >
+                                {profile ? 
+                                    <span>
+                                        <img src={profile.picture} height="45px" alt="profile" className={classes.avatar}/> 
+                                        Welcome, &nbsp;&nbsp;
+                                        <ProviderName 
+                                            title={localStorage.getItem("user_provider_title")} 
+                                            firstname={localStorage.getItem("user_provider_firstname")} 
+                                            lastname={localStorage.getItem("user_provider_lastname")} 
+                                        />
+                                    </span>
+                                    :
+                                    <span>Error: this user has no profile</span>
+                                }  
+                            </Typography>
+                        </div>
+
+                        <div className={classes.appBarBtns}>
+                            <BtnAction type="button" text="Help" marginRight={true} handleAction={this.handleHelp}/>
+                            <BtnAction type="button" text="My Account" marginRight={true} handleAction={this.handleMyAccount} />
+                            <BtnAction type="button" text="Logout" handleAction={this.handleLogout} />
+                        </div>
+
+                        </div>
                     </Toolbar>
                 </AppBar>
             </div>

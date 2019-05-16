@@ -10,25 +10,22 @@ const initialState = {
     error: null
 };
 
-export default function activeSurveysReducer( 
-    state = initialState,
-    action
-) {
+export default (state = initialState, action) => {
+
     switch(action.type) {
+
         case ACTIVE_SURVEYS_BEGIN:
             return {
                 ...state,
                 loading: true,
                 error: null
             };
-
         case ACTIVE_SURVEYS_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 surveys: action.payload.activeSurveys
             };
-
         case ACTIVE_SURVEYS_FAILURE:
             return {
                 ...state,
@@ -36,7 +33,6 @@ export default function activeSurveysReducer(
                 error: action.payload.error,
                 surveys: []
             };
-
         default: return state;
     }
-}
+};

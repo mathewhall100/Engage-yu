@@ -19,11 +19,10 @@ export const loadActiveSurveys = (id) => {
                 dispatch(activeSurveysSuccess(surveys));
                 return surveys;
             })
-            .catch(error => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log("No active surveys retrieved");
-                console.log(error);
-                dispatch(activeSurveysFailure(error))
+            .catch(err => {
+                console.log(err)
+                console.log(err.response)
+                dispatch(activeSurveysFailure(err))
             });
     };
 }

@@ -41,7 +41,7 @@ class CareGroupDisplay extends Component {
         providerAPI.findAllByGroup(careGroupId)
             .then(res => {
                 console.log("res.data: ", res.data);
-                res.data.providerList.map(provider => {
+                res.data.map(provider => {
                     return (
                         providerList.push({
                             id: provider._id,

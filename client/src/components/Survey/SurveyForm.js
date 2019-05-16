@@ -265,11 +265,11 @@ class SurveyForm extends Component {
 
         if (errorPatient || errorProvider || errorQuestions) {
             return <div>
-                Unfortuneately an proble occurred and a new Diary card cannot be created at this time. 
+                Unfortuneately an problem occurred and a new Diary card cannot be created at this time. 
                 </div>
         }
 
-        if (loadingPatient || loadingProvider || loadingQuestions || !patientInfo || !provider || !defaultQuestion || !customQuestions.questionList ) {
+        if (loadingPatient || loadingProvider || loadingQuestions || !patientInfo || !provider || !defaultQuestion || !customQuestions ) {
             return <CallBack />
         }
 
@@ -388,7 +388,7 @@ class SurveyForm extends Component {
                                             </div>
                                             <SurveyCustomQuestionTable 
                                                 type="question"
-                                                customQuestions={customQuestions.questionList.filter(q => q.added_by_id === localStorage.getItem("user_provider_id"))}
+                                                customQuestions={customQuestions.filter(q => q.added_by_id === localStorage.getItem("user_provider_id"))}
                                                 selected={selectedQuestions}
                                                 checkboxClick={this.handleQuestionCheckBoxClick}
                                             />
@@ -407,7 +407,7 @@ class SurveyForm extends Component {
                                             </div>
                                             <SurveyCustomQuestionTable 
                                                 type="question"
-                                                customQuestions={customQuestions.questionList}
+                                                customQuestions={customQuestions}
                                                 selected={selectedQuestions}
                                                 checkboxClick={this.handleQuestionCheckBoxClick}
                                             />      

@@ -1,6 +1,7 @@
 const jwt = require("express-jwt");
-const jwtAuthz = require("express-jwt-authZ");
+const jwtAuthz = require("express-jwt-authz");
 const jwksRsa = require("jwks-rsa");
+require('dotenv').config();
 
 // Authentication middleware 
 // Access token (from axios authorization header) must exist and be verified against Auth0 JSON Web Key Set
@@ -15,8 +16,7 @@ exports.getCheckToken = function(){
     }),
     // validate the audience and the issuer.
     audience: process.env.AUDIENCE,
-    // audience: 'https://auth/api',
-    issuer: process.env.ISSUER,
+    issuer: "https://engageyu-dev.auth0.com/",
     algorithm: ['RS256']
     })
 }

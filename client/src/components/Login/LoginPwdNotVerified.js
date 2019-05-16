@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { reduxForm } from 'redux-form';
 import { withRouter } from 'react-router-dom';
 import { startCase } from 'lodash'
-import { Typography } from '@material-ui/core/Typography';
+import Typography from '@material-ui/core/Typography';
 import FormTextPassword from '../UI/Forms/formTextPassword';
 import BtnAction from '../UI/Buttons/btnAction';
 import BtnActionLnk from '../UI/Buttons/btnActionLnk';
@@ -38,26 +38,30 @@ class LoginPwdNotVerified extends PureComponent {
         if (!password && !passwordConfirm) {
             let accessToken = ""
             const { userId } = this.state
+
             // get the auth0 management API access token
             authAPI.getAPIAccessToken()
             .then(res => {
                 console.log("result: ", res) 
                 accessToken = res.data.access_token
+
                 // then send a password change request to auth0 via management API
-                authAPI.passwordChange({
+                authAPI.update({
                     userId,
                     accessToken,
-                    newPassword: values.password
+                    updObj: {password: values.password}
                 }) 
                 .then(result1 => {
                     console.log("result1: ", result1) 
                     if (result1.status === 200) {
                         console.log("Password type successfully updated")
                     }
+
                     // if successful, send request to update user metadata to password: "valid"
-                    authAPI.passwordTypeUpdate({
+                    authAPI.updateMetaData({
                         userId,
-                        accessToken
+                        accessToken,
+                        updObj: {"password": "valid"}
                     })  
                     .then(result2 => {
                         console.log("result2: ", result2)
@@ -65,6 +69,7 @@ class LoginPwdNotVerified extends PureComponent {
                             console.log("Password type successfully updated")
                             this.setState({update: true})
                         }   
+                        // ***dont we also need to update the password in the ptient_info collection***
                     })
                 })
             })

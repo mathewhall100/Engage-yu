@@ -59,8 +59,8 @@ const combinedReducer = combineReducers({
         return combinedReducer(undefined, action)
      }
      return combinedReducer(state, action)
- }
+ };
 
-export default rootReducer
+export default rootReducer;
 
         

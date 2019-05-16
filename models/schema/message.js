@@ -5,7 +5,7 @@ const messageSchema = new Schema({
 
     msg_id: {
         type: String, 
-        enum: ["requesting", "actioning", "cancelling"]
+        enum: ["requested", "actioned", "cancelled"]
     },
 
     msg_date: { 

@@ -1,140 +1,131 @@
-const db = require("../models");
-const mongoose = require('mongoose');
+const db = require("../models/provider")
+const user = require("../models/user")
+const hp = require("../utils/helper")
+const auth0 = require("./auth0")
+const api = require("./dbApi")
 
 
 module.exports = { 
 
-    // Fetch all provider names and _ids (to populate listmenu)
-    findAll: function(req, res) {
-        console.log("Provider controller called to 'findAll'");
-        db.Provider
-        .find({})
-        .sort( {"name.last" : 1} )
-        .then(providerList =>  {
-            console.log(providerList)
-            res.json(providerList)
-        })
-        .catch(err => {
-            console.log(`CONTROLLER ERROR: ${err}`);
-            res.status(422).json(err);
-        })
-    },
-
     // Fetch details of all providers of a particular care group
-    //requires caregroup id as searchterm in req.body.searchId
-    // Returns json list of provider names only (sorted alphabeltically by last_name)
-    findAllByGroup: function(req, res) {
+    findAllByCareGroup: async function(req, res) {
         console.log("Provider controller called to 'find all by provider group' ", req.params.id );
-        db.Provider
-        .find( {"provider_group.id": req.params.id} )
-        .sort( {"lastname": 1} )
-        .then(providerList => {
-            console.log("RESULT:", providerList)
-            res.json({
-                providerList: providerList,
-            });
-        })
-        .catch(err => {
-            console.log(`CONTROLLER ERROR: ${err}`);
-            res.status(422).json(err);
-        })
+        findObj = {
+            find: {"provider_group.id": req.params.id},
+            sort: {lastname: 1}
+        }
+        try {
+            const result = await api.find(findObj, db)
+            hp.sendData(res, "success")(result)
+        } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }
     }, 
 
 
     // Fetch provider details by id
-    // To be sent req.params.id with _id of provider to be fetched
-    findById: function(req, res) {
+    findById: async function(req, res) {
         console.log("Provider controller called to 'findById' ", req.params.id);
-        db.Provider
-        .findById(req.params.id)
-        //.populate("provider_group.ref", "group_name") -> needs reviewing
-        .then(provider => {
-            console.log("Provider controller (findById) returned: ")
-            console.log(">>", provider.firstname, provider.lastname)
-            //console.log(provider);
-            res.json(provider)
-        })
-        .catch(err => {
-            console.log(`CONTROLLER ERROR IN FIND BY ID: ${err}`);
-            res.status(422).json(err);
-        })
+        const id = req.params.id
+        try {
+            const result = await api.findById(id, {}, db)
+            hp.sendData(res, "success")(result)
+        } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }
     },
 
     // Create a new document using mongoose 'save'
-    // To be sent req.body describing new document
-    create: function(req, res) {
-        console.log("Provider controller called to 'create'");
-        console.log(req.body)
-        let provider = new db.Provider(req.body)
-        provider.save()
-        .then(result=> {
-            console.log(result);
-            res.json(result)
-        })
-        .catch(err => {
-            console.log(`CONTROLLER ERROR: ${err}`);
-            res.status(422).json(err);
-        })
-    },
-   
-
-    // Remove a provider
-    // To be sent req.params.id of resultto be deleted
-    remove: function(req, res) {
-        console.log("Provider controller called to 'remove' ", req.params.id);
-        db.Provider
-        .findByIdAndRemove({_id: req.params.id})
-        .then(result => {
-            console.log(result);
-            res.json(result)
-        })
-        .catch(err => {
-            console.log(`CONTROLLER ERROR: ${err}`);
-            res.status(422).json(err);
-        })
-        // need also to remove from users collection and from auth0
+    create: async function(req, res) {
+        console.log("Provider controller called to 'create' ", req.body);
+        const newObj = req.body
+        try {
+            const result = await api.create(newObj, db)
+            hp.sendData(res, "success")(result)
+        } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }
     },
 
-    
     // Update a providers details
     // To be sent req.params.id of provider to be updated & req.body object of provider's new details
-    update: function(req, res) {
-        console.log("Provider controller called to 'update' ", req.params.id);
-        let opts = {runValidators: true};
-        db.Provider
-        .findOneAndUpdate(
-            { _id: req.params.id },
-            req.body, opts
-            )
-        .then(result => {
-            console.log(result)
-            res.json(result)
-        })
-        .catch(err => {
-            console.log(`CONTROLLER ERROR: ${err}`);
-            res.status(422).json(err);
-        })
+    update: async function(req, res) {
+        console.log("Provider controller called to 'update' ", req.params.id, " ", req.body);
+        const idObj = { _id: req.params.id }
+        const updObj = req.body
+        try {
+            const result = await api.updateVal({idObj, updObj}, db)
+            hp.sendData(res, "success")(result)
+        } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }
+    },
+
+    // Update patient Email address
+    updateEmail: async function(req, res) {
+        const providerId = req.params.id;
+        const idObj = { _id: providerId }
+        const updObj = req.body;
+        const findObj = { find: {id: providerId} }
+        console.log("Provider controller called to 'update'", providerId, " ", updObj );
+        try {
+            const ret = await Promise.all([
+                auth0.getToken(),
+                api.findOne(findObj, user),
+                api.updateVal({idObj, updObj}, db)
+            ])
+            const accessToken = ret[0].data.access_token;
+            const auth0UserId = ret[1].sub;
+            const updateProvider = ret[2];
+            const updateAuth0 = await auth0.updateProfile(accessToken, auth0UserId, updObj)
+            // if no errors return success
+            hp.sendSuccess(res, "success")({"Patient": updateProvider, "auth0": updateAuth0.status})
+        } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }
     },
 
      // Update a providers details
     // To be sent req.params.id of provider to be updated & req.body object of provider's new details
-    saveQuestionList: function(req, res) {
-        //console.log("Provider controller called to 'saveQuestionList' ", req.params.id, " info: ", req.body);
-        //let opts = {runValidators: true};
-        db.Provider
-        .findOneAndUpdate
-            ( 
-                { _id: req.params.id },
-                { $push: { "custom_question_lists": req.body } }
-            )
-        .then(result => {
-            //console.log("RESULT:", result);
-            res.json(result)
-        })
-        .catch(err => {
-            console.log(`CONTROLLER ERROR: ${err}`);
-            res.status(422).json(err);
-        })
-    }
+    saveQuestionList: async function(req, res) {
+        console.log("Provider controller called to 'update' ", req.params.id, " ", req.body);
+        const idObj = { _id: req.params.id }
+        const updObj = { $push: { "custom_question_lists": req.body } }
+        try {
+            const result = await api.updateVal({idObj, updObj}, db)
+            hp.sendData(res, "success")(result)
+        } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }
+    },
+
+    // Delete provider
+    // To be sent patient_info._id of provider to be deleted as req.params.id
+    delete: async function(req, res) {
+        console.log("Provider controller called to 'remove' ", req.params.id);
+        const providerId = req.params.id
+        const findObj = { find: {id: providerId} }
+        console.log("finduser: ", findObj)
+        try { 
+            let ret = await Promise.all([
+                api.findOne(findObj, user),
+                auth0.getToken()
+            ])
+            console.log("ret: ", ret[0]._id, " : ", ret[1].data.access_token)
+            if (ret[0] && ret[1]) {
+                const userId = ret[0]._id
+                const auth0UserId = ret[0].sub;
+                const accessToken = ret[1].data.access_token;
+                ret = await Promise.all([
+                    api.del_te(userId, user),
+                    auth0.del_te(accessToken, auth0UserId)
+                ])  
+            }
+            const result = await api.del_te(providerId, db)
+            hp.sendSuccess(res, "success")(result)
+        } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }
+    },
 
 };

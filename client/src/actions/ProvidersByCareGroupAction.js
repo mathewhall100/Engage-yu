@@ -13,8 +13,8 @@ export const loadProvidersByCareGroup = (id) => {
         let providers = [];
         return  providerAPI.findAllByGroup(id)
             .then(res => {
-                console.log("result: ", res.data)
-                providers = res.data.providerList.map(provider => {
+                //console.log("result: ", res.data)
+                providers = res.data.map(provider => {
                     let val = [
                         provider._id, 
                         provider.title,

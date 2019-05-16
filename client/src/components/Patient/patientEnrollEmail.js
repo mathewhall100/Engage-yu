@@ -1,10 +1,10 @@
 import { providerName } from "../../logic/textFunctions"
 
-export const getHtmlMsg = (values) => {
+export const getHtmlMsg = (patient) => {
 
-    const newPatientName = `${values.firstname} ${values.lastname}`
-    const newPatientEmail = values.email
-    const newPatientPwd = values.password
+    const newPatientName = `${patient.firstname} ${patient.lastname}`
+    const newPatientEmail = patient.email
+    const newPatientPwd = patient.password
     const enrollingProvider = providerName(
         localStorage.getItem("user_provider_title"), 
         localStorage.getItem("user_provider_firstname"), 

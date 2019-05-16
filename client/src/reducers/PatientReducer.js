@@ -11,10 +11,7 @@ const initialState = {
     error: null
 };
 
-export default function patientReducer( 
-    state = initialState,
-    action
-    ) {
+export default ( state = initialState,action) => {
     switch(action.type) {
         case PATIENT_BEGIN:
             return {
@@ -44,4 +41,4 @@ export default function patientReducer(
             };
         default: return state;
     }
-}
+};

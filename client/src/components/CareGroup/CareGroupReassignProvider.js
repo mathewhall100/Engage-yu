@@ -5,7 +5,7 @@ import { startCase, isEmpty } from 'lodash';
 import { withStyles, Card, Typography } from '@material-ui/core';
 import FormUpdateUnit from '../UI/Forms/formUpdateUnit';
 import { validateName } from '../../logic/formValidations';
-import { selectConsoleTitle, loadProvider, providerUpdateSave } from '../../actions';
+import { selectConsoleTitle, loadProvider, providerUpdate } from '../../actions';
 import CareGroupSelect from '../CareGroup/CareGroupSelect'
 import ProviderDetailsBar from '../Provider/ProviderDetailsBar';
 import DialogError from '../UI/Dialogs/dialogError';
@@ -30,7 +30,7 @@ class CareGroupReassignProvider extends PureComponent {
     } 
 
     componentWillUnmount() {
-        this.props.dispatch(providerUpdateSave("reset"))
+        this.props.dispatch(providerUpdate("reset"))
     }
     
     state = {
@@ -41,7 +41,7 @@ class CareGroupReassignProvider extends PureComponent {
 
     submit(values) {
         console.log("Submit: ", values)
-        this.props.dispatch(providerUpdateSave(values, this.props.provider))
+        this.props.dispatch(providerUpdate(values, this.props.provider))
     };
 
     updateSuccess = (data) => {
@@ -52,7 +52,7 @@ class CareGroupReassignProvider extends PureComponent {
 
     updateFailed = (err) => {
         this.setState({failed: true}); 
-        this.props.dispatch(providerUpdateSave("reset"))
+        this.props.dispatch(providerUpdate("reset"))
     }
 
     updateInProgress = (err) => {

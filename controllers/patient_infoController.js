@@ -1,156 +1,189 @@
-const db = require("../models");
+const db = require("../models/patient_info");
+const patient_data = require("../models/patient_data")
+const user = require("../models/user");
+const hp = require("../utils/helper")
+const auth0 = require("./auth0")
+const api = require("./dbApi");
+
 
 module.exports = {
 
     // Fetch personal details of all patients of a particular physician
-    // requires physician id as searchterm in req.body.searchId
-    // Returns json list of patients details only (sorted alphabeltically by last_name)
-    findAllByProvider: function(req, res) {
+    findAllByProvider: async function(req, res) {
         console.log("Patient_info controller called to 'find all by provider'" + req.params.id);
-        db.Patient_info
-        .find( {"primary_provider.id" : req.params.id}, {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1, primary_provider: 1} )
-        .sort( {"patient_details.lastname": 1} )
-        .then(patients=> {
-            console.log("RESULT:", patients)
-            res.json(patients);
-        })
-        .catch(err => {
-            console.log(`CONTROLLER ERROR: ${err}`)
-            res.status(422).json(err);
-        })
+        const findObj = {
+            find: {"primary_provider.id" : req.params.id},
+            fields:  {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1, primary_provider: 1},
+            sort: {lastname: 1},
+        }
+        try { 
+            const result = await api.find(findObj, db)
+            hp.sendData(res, "success")(result)
+        } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }
     }, 
-
+        
     // Fetch personal details of all patients of a particular care group
-    //requires caregroup id as searchterm in req.body.searchId
-    // Returns json list of patients details only (sorted alphabeltically by last_name)
-    findAllByGroup: function(req, res) {
-        console.log("Patient_info controller called to 'find all by provider group'", req.body );
-        db.Patient_info
-        .find( {"provider_group.id": req.params.id}, {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1, primary_provider: 1 } )
-        .sort( {"patient_details.lastname": 1} )
-        .then(patients=> {
-            console.log("RESULT:", patients)
-            res.json(patients);
-        })
-        .catch(err => {
-            console.log(`CONTROLLER ERROR: ${err}`);
-            res.status(422).json(err);
-        })
+    findAllByCareGroup: async function(req, res) {
+        console.log("Patient_info controller called to 'find all by provider group'", req.params.id );
+        const findObj = {
+            find: {"provider_group.id" : req.params.id},
+            fields:  {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1, primary_provider: 1},
+            sort: {lastname: 1},
+        }
+        try {
+            const result = await api.find(findObj, db)
+            hp.sendData(res, "success")(result)
+        } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }
     }, 
-
-
-    // Fetch patient info by id 
-    // To be sent req.params.id with _id of patient to be fetched
-    // Returns json of patient data (all) + providers (via populate)
-    findById: function(req, res) {
-        console.log("Patient_info controller called to 'findById'");
-        db.Patient_info
-        .findById(req.params.id)
-        .populate("enrolled_by.ref", "firstname lastname")
-        .populate("primary_provider.ref", "firstname lastname")
-        .then(patient => {
-            console.log("RESULT:", patient);
-            res.json(patient)
-        })
-        .catch(err => {
-            console.log(`CONTROLLER ERROR IN PATIENT INFO: ${err}`);
-            res.status(422).json(err);
-        })
-    },
 
     // Fetch FULL patient record (info + data) by patient  id 
-    // To be sent req.params.id with _id of patient to be fetched
-    // Returns json of patient info + patient data
-    findFullById: function(req, res) {
-        console.log("Patient_info controller called to 'findFullById'");
-        db.Patient_info
-        .findById(req.params.id)
-        .populate("patient_data_ref")
-        .then(patient => {
-            console.log("RESULT:", patient);
-            res.json({patient})
-        })
-        .catch(err => {
-            console.log(`CONTROLLER ERROR: ${err}`);
-            res.status(422).json(err);
-        })
+    findById: async function(req, res) {
+        console.log("Patient_info controller called to 'findFullById' ", req.params.id);
+        const id = req.params.id
+        const findObj = {
+            pop: "patient_data_ref"
+        }
+        try {
+            const result = await api.findById(id, findObj, db)
+            hp.sendData(res, "success")(result)
+        } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }
     },
 
     // Search patient_info documents
-    // To be sent a searchterm object: {field: searchterm}
-    // Return json of patient data (all) + provider details (via populate)
-   findBySearchterm: function(req, res) {
-        console.log("Patient_info controller called to 'findBySearchterm' ", req.body);
-        db.Patient_info
-        .find(req.body,  {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1})
-        .populate("enrolled_by.ref", "name")
-        .populate("primary_provider.ref", "name")
-        .then(patient => {
-            console.log("RESULT:", patient);
-            res.json(patient);
-        })
-        .catch(err => {
-            console.log(`CONTROLLER ERROR: ${err}`);
-            res.status(422).json(err);
-        }) 
+   findOne: async function(req, res) {
+        console.log("Patient_info controller called to 'search' ", req.body);
+        const findObj = {
+            find: req.body,
+            fields:  {date_enrolled: 1, status: 1, firstname: 1, lastname: 1, dob: 1, hospital_id: 1, primary_provider: 1},
+            sort: {lastname: 1},
+            pop: "patient_data_ref"
+        }
+        try {
+            const result = await api.findOne(findObj, db)
+            hp.sendData(res, "success")(result)
+        } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }
     },
 
-    // Add new patient_info document
-    // To be sent req.body with new patient object {see model & validations}
-    // Returns json object of new doctor
-    create: function(req, res) {
-        console.log("Patient controller called to 'create'" );
-        let patient = new db.Patient_info(req.body)
-        patient.save()
-        .then(result=> {
-            console.log("RESULT: ", result);
-            res.json(result)
-        })
-            .catch(err => {
-                console.log(`CONTROLLER ERROR: ${err}`);
-                res.status(422).json(err);
-        })  
+    // Add new patient_info and patient_data documents
+    create: async function(req, res) {
+        const newPtInfoObj = req.body
+        console.log("Patient controller called to 'create' ", newPtInfoObj );
+        try {
+            const retNewPtInfo = await api.create(newPtInfoObj, db)
+            const newPtDataObj = {
+                patient_info_ref: retNewPtInfo._id,
+                patient_info_id: retNewPtInfo._id
+            }
+            const retNewPtData = await api.create(newPtDataObj, db)
+            const newPtUpdObj = {
+                $set: {
+                    patient_data_ref: retNewPtData._id,
+                    patient_data_id: retNewPtData._id
+                }
+            }
+            const newPtIdObj = {_id: retNewPtInfo._id }
+            const retNewPtInfoUpdate = await api.updateVal({idObj: newPtIdObj, updObj: newPtUpdObj}, db)
+            // if no errors return success
+            hp.sendSuccess(res, "success")({
+                "newPtInfo": retNewPtInfoUpdate, 
+                "newPtData": retNewPtData
+            })
+        } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }   
     },
 
-    // INsert data ref during patient enroll
-    // To be sent req.params.id of patient to be updated and req.body with new patient_data ref id
-    update: function(req, res) {
+    // Update patient details
+    update: async function(req, res) {
         console.log("Patient_info controller called to 'update'", req.params.id, " ", req.body );
-        let opts = {runValidators: true};
-        db.Patient_info
-        .findOneAndUpdate(
-            { _id: req.params.id },
-            { $set: req.body }, 
-            opts
-        )
-        .then(result => {
-            console.log("RESULT: ", result);
-            res.json(result)
-        })
-        .catch(err => {
-            console.log(`CONTROLLER ERROR: ${err}`);
-            res.status(422).json(err);
-        })
+        const idObj = {_id: req.params.id};
+        const updObj = req.body;
+        try {
+            result = await api.updateVal({idObj, updObj}, db)
+            hp.sendSuccess(res, "success")(result)
+        } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }
+    },
+
+    // Update patient Email address
+    updateEmail: async function(req, res) {
+        const patientInfoId = req.params.id;
+        const idObj = {_id: patientInfoId}
+        const updObj = req.body;
+        const findObj = {find: {id: patientInfoId}}
+        console.log("Patient_info controller called to 'update'", patientInfoId, " ", updObj );
+        try {
+            const ret = await Promise.all([
+                auth0.getToken(),
+                api.findOne(findObj, user),
+                api.updateVal({idObj, updObj}, db)
+            ])
+            const accessToken = ret[0].data.access_token;
+            const auth0UserId = ret[1].sub;
+            const updatePatient = ret[2];
+            const updateAuth0 = await auth0.updateProfile(accessToken, auth0UserId, updObj)
+            // if no errors return success
+            hp.sendSuccess(res, "success")({"Patient": updatePatient, "auth0": updateAuth0.status})
+        } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }
+    },
+
+    // Cleanup after failed create new user
+    cleanUp: async function(req, res) {
+        console.log("patient_info controller called to 'cleanup' :", req.body)
+        const { infoId, dataId, userId, authId } = req.body;
+        try {
+            if (infoId) {
+                // delete from patient_info
+            }
+            if (dataId) {
+                // delete from patient_data
+            }
+            if (userId) {
+                // delete from user
+            }
+            if (authId) {
+                // get auth0 access token
+                // delete from auth
+            }
+            // if no errors return success
+            hp.sendSuccess(res, "success")({"Patient": updatePatient, "auth0": updateAuth0.status})
+        } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }
     },
 
     // Remove patient account
-    // To be sent req.params.id of patient to be deleted
-    delete: function(req, res) {
+    delete: async function(req, res) {
         console.log("Patient-infoController called to 'remove' " + req.params.id);
-        db.Patient_info
-        .findByIdAndRemove({_id: req.params.id})
-        .then(result => {
-            console.log(result);
-            res.json(result)
-        })
-        .catch(err => {
-            console.log(`CONTROLLER ERROR: ${err}`);
-            res.status(422).json(err);
-        })
-        // need also to remove from users collection and from auth0 
-    },
-
-
+        const patientInfoId = req.params.id;
+        try { 
+            let ret = await Promise.all([
+                api.findOne(findObj, user),
+                auth0.getToken()
+            ])
+            const userId = ret[0]._id
+            const auth0UserId = ret[1].sub;
+            const accessToken = ret[0].data.access_token;
+            ret = await Promise.all([
+                api.del_te(userId, user),
+                auth0.del_te(accessToken, auth0UserId)
+            ])
+            const result = await api.del_ete(patientInfoId, db)
+            hp.sendSuccess(res, "success")(result)
+               } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }
+    }
 
 };
-

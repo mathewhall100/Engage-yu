@@ -9,18 +9,16 @@ export const loadPatientsByCareGroup = (id) => {
     console.log("PatientsByCareGroupAction: ", id);
     return dispatch => {
         dispatch(patientsByCareGroupBegin());
-        return  patient_infoAPI.findAllByGroup(id)
-            .then(res => {
-                console.log("result: ", res.data)
-                dispatch(patientsByCareGroupSuccess(res.data));
-                return res.data;
-            })
-            .catch(error => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log("No active surveys retrieved");
-                console.log(error);
-                dispatch(patientsByCareGroupFailure(error))
-            });
+        return  patient_infoAPI.findAllByCareGroup(id)
+        .then(res => {
+            //console.log(res.data.data)
+            dispatch(patientsByCareGroupSuccess(res.data));
+        })
+        .catch(err => {
+            console.log(err)
+            console.log(err.response) 
+            dispatch(patientsByCareGroupFailure(err))
+        })
     };
 }
 

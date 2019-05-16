@@ -98,7 +98,6 @@ const episodeSchema = new Schema({
         },
         actioned_by: { 
             type: {provider_summarySchema}, 
-            required: [true, 'No requesting_provider details supplied']
         },
         msg_id: {
             type: String
@@ -112,7 +111,6 @@ const episodeSchema = new Schema({
         },
         archived_by: { 
             type: {provider_summarySchema}, 
-            required: [true, 'No requesting_provider details supplied']
         }
     },
     
@@ -123,7 +121,6 @@ const episodeSchema = new Schema({
         },
         cancelled_by: { 
             type: {provider_summarySchema}, 
-            required: [true, 'No requesting_provider details supplied']
         },
         msg_id: {
             type: String

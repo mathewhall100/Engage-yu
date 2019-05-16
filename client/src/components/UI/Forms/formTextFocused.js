@@ -57,6 +57,9 @@ export default class FormTextFocused extends Component {
 FormTextFocused.propTypes = {
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
-    width: PropTypes.string,
+    width:  PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ]),
     variant: PropTypes.string
 };

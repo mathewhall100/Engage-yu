@@ -11,10 +11,7 @@ const initialState = {
     error: null
 };
 
-export default function episodeStatusUpdateReducer( 
-    state = initialState,
-    action
-) {
+export default (state = initialState, action) => {
     switch(action.type) {
         case EPISODE_STATUS_UPDATE_BEGIN:
             return {
@@ -22,14 +19,12 @@ export default function episodeStatusUpdateReducer(
                 loading: true,
                 error: null
             };
-
         case EPISODE_STATUS_UPDATE_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 update: action.payload.data
             };
-
         case EPISODE_STATUS_UPDATE_FAILURE:
             return {
                 ...state,
@@ -37,15 +32,13 @@ export default function episodeStatusUpdateReducer(
                 error: action.payload.error,
                 update: {}
             };
-
         case EPISODE_STATUS_UPDATE_RESET:
-        return {
-            ...state,
-            loading: false,
-            error: null,
-            update: {} 
-        };
-
+            return {
+                ...state,
+                loading: false,
+                error: null,
+                update: {} 
+            };
         default: return state;
     }
-}
+};

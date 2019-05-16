@@ -13,11 +13,11 @@ const transporter = nodemailer.createTransport({
     },
 })
 
-const send = ({ from, name, to, subject, text, html, attachments }) => {
+const send = ({ from, to, name, subject, text, html, attachments }) => {
     const message = {
         from,
-        name, 
         to,
+        name, 
         subject, 
         text,
         html,

@@ -6,18 +6,18 @@ import React, { Component } from 'react';
 // })
 
 
-class AccountViewStats extends Component {
+class AccountActivity extends Component {
 
     render() {
         //const { classes } = this.props;
 
         return (
             <div>
-                View Stats
+                Activity
             </div>
         )
     }
 }
 
-// AccountViewStats = withStyles(styles)(AccountViewStats)
-export default AccountViewStats
+// AccountActivity = withStyles(styles)(AccountActivity)
+export default AccountActivity

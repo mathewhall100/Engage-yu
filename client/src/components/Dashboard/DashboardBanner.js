@@ -38,6 +38,10 @@ class DashboardBanner extends Component {
         this.props.toggleBanner()
     }
 
+    learnMore = () => {
+        console.log("learn more")
+    }
+
     render () {
         const { classes } = this.props
 
@@ -60,7 +64,7 @@ class DashboardBanner extends Component {
                         <BtnClose handleBtnClick={this.closeBanner}/>
                     </div>
                     <div className={classes.bannerButton}> 
-                        <BtnAction text="Learn More" />
+                        <BtnAction text="Learn More" handleAction={this.learnMore}/>
                     </div>
 
                 </Card> 

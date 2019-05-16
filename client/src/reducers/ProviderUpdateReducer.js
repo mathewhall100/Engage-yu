@@ -11,10 +11,7 @@ const initialState = {
     error: null
 };
 
-export default function providerUpdateSaveReducer( 
-    state = initialState,
-    action
-) {
+export default (state = initialState, action) => {
     switch(action.type) {
         case PROVIDER_UPDATE_BEGIN:
             return {
@@ -22,14 +19,12 @@ export default function providerUpdateSaveReducer(
                 loading: true,
                 error: null
             };
-
         case PROVIDER_UPDATE_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 update: action.payload.data
             };
-
         case PROVIDER_UPDATE_FAILURE:
             return {
                 ...state,
@@ -37,7 +32,6 @@ export default function providerUpdateSaveReducer(
                 error: action.payload.error,
                 update: {}
             };
-
         case PROVIDER_UPDATE_RESET:
             return {
                 ...state,
@@ -45,7 +39,6 @@ export default function providerUpdateSaveReducer(
                 error: null,
                 update: {} 
             };
-
         default: return state;
     }
-}
+};

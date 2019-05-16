@@ -1,16 +1,15 @@
 import * as types from '../../actions/auth/types';
 import * as AuthService from '../../services/AuthService';
 
-const authReducer = (
-    state = {
-        isAuthenticated: !AuthService.isTokenExpired(),
-        isFetching: false,
-        loggedOut: false,
-        profile: {}, 
-        error: null
-    },
-    action
-) => {
+const initialState = {  
+    isAuthenticated: !AuthService.isTokenExpired(),
+    isFetching: false,
+    loggedOut: false,
+    profile: {}, 
+    error: null
+}
+
+export default (state = initialState, action) => {
     switch (action.type) {
         case types.LOGIN_REQUEST:
             return {
@@ -46,5 +45,3 @@ const authReducer = (
         default: return state;
     }
 };
-
-export default authReducer;

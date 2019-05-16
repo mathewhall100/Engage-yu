@@ -117,7 +117,7 @@ class PatientFindDisplay extends PureComponent {
 
 
 const mapStateToProps = (state) => {
-    //console.log("State : ", state);
+    console.log("State : ", state);
     return {
         patientInfo: state.patient.patient.patientInfo,
         patientData: state.patient.patient.patientData,

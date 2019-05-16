@@ -9,7 +9,7 @@ import FormRadio from '../UI/Forms/formRadio'
 import DialogError from '../UI/Dialogs/dialogError'
 import PatientDetailsBar from './PatientDetailsBar';
 import FormUpdateUnit from '../UI/Forms/formUpdateUnit'
-import { selectConsoleTitle, loadPatient, patientUpdateSave } from '../../actions';
+import { selectConsoleTitle, loadPatient, patientUpdate } from '../../actions';
 import { providerName } from '../../logic/textFunctions'
 import { validateName, validateEmail, validatePhone, validateStatus, validateIsRequired } from '../../logic/formValidations'
 
@@ -41,7 +41,7 @@ class PatientUpdate extends PureComponent {
     submit(values) {
         console.log("Submit: ", values)
         const { patientInfo } = this.props
-        this.props.dispatch(patientUpdateSave(values, patientInfo))
+        this.props.dispatch(patientUpdate(values, patientInfo))
     }
 
     updateSuccess = () => {
@@ -52,8 +52,8 @@ class PatientUpdate extends PureComponent {
 
     updateFailed = (err) => {
         this.setState({failed: true}); // update failed dialog
-        let values="clear"
-        this.props.dispatch(patientUpdateSave(values))
+        let values="reset"
+        this.props.dispatch(patientUpdate(values))
     }
 
     updateInProgress = (err) => {
@@ -107,7 +107,7 @@ class PatientUpdate extends PureComponent {
         ];
 
         if (error) {
-            return <div>Error! {error}</div>
+            return <div>Error!</div>
         }
 
         if (isEmpty(patientInfo)) {
@@ -132,7 +132,10 @@ class PatientUpdate extends PureComponent {
                     <br /> <br />
                 </Card>
 
-                {failed && <DialogError text="A problem was encountered and the patient's details were not updated." cancelUrl="/admin/find"/>} 
+                {failed && <DialogError 
+                    text="A problem was encountered and the patient's details were not updated." cancelUrl="/admin/patient/find"
+                    closeDialog={this.outcomeReset}
+                />} 
 
             </Fragment>
         );

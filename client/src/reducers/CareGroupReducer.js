@@ -10,10 +10,7 @@ const initialState = {
     error: null
 };
 
-export default function careGroupReducer( 
-    state = initialState,
-    action
-) {
+export default (state = initialState, action) => {
     switch(action.type) {
         case CAREGROUP_BEGIN:
             return {
@@ -21,14 +18,12 @@ export default function careGroupReducer(
                 loading: true,
                 error: null
             };
-
         case CAREGROUP_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 careGroup: action.payload.careGroup
             };
-
         case CAREGROUP_FAILURE:
             return {
                 ...state,
@@ -36,7 +31,6 @@ export default function careGroupReducer(
                 error: action.payload.error,
                 careGroup: []
             };
-
         default: return state;
     }
-}
+};

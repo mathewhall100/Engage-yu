@@ -6,7 +6,6 @@ import {
 } from './types';
 import * as AuthService from '../services/AuthService';
 import patient_infoAPI from '../utils/patient_info';
-import patient_dataAPI from '../utils/patient_data';
 import userAPI from '../utils/user';
 
 export const patientSave= (values) => {
@@ -16,10 +15,12 @@ export const patientSave= (values) => {
         return dispatch => {
             dispatch(patientSaveReset())
         }
-    } else {
+    } 
+    
+    if (values && values !== "reset") {
         return dispatch => {
             dispatch(patientSaveBegin());
-            return  patient_infoAPI.createNewPatient({
+            const newObj = {
                 date_enrolled: new Date(),
                 enrolled_by: {
                     ref: localStorage.getItem("user_provider_id"),
@@ -52,103 +53,89 @@ export const patientSave= (values) => {
                     id: values.provider[5],
                     name: values.provider[6]
                 }
-            })
-            .then(res_info => {
-                console.log("res_info.data: ", res_info.data)
-                // Then using new patientInfo_id create a new patient_data collection for the patient
-                patient_dataAPI.createNewPatient({
-                    patient_info_id: res_info.data._id,
-                    patient_info_ref: res_info.data._id
-                })
-                .then(res_data => {
-                    console.log("res_data.data: ", res_data.data)
-                    // Then go back and save the patient_data_id into the patientInfo collection
-                    patient_infoAPI.update(res_info.data._id, {
-                        patient_data_ref: res_data.data._id,
-                        patient_data_id: res_data.data._id
-                    })
-                    .then(res_ref => {
-                        console.log("res_user: ", res_ref.data)
-                        console.log("values: ", values)
-                        AuthService.webAuth.signup({
-                            connection: "Engage-Yu",
-                            email: values.email,
-                            password: values.password,
-                            user_metadata: { 
-                                firstname: values.firstname,
-                                lastname: values.lastname,
-                                role: "patient",
-                                password: "temp"
-                            },
-                            responseType: "token id_token"
-                        }, function (error, res_user) {
-                            if (error) {
-                                dispatch(patientSaveFailure(error))
-                                saveFailedCleanup(res_info.data._id, res_data.data._id, error) // inner
-                            }
-                            console.log("New user Created: ", res_user)
-                            userAPI.userCreate({
-                                sub: `auth0|${res_user.Id}`,
-                                role: "patient",
-                                id: res_info.data._id,
-                            })
-                            .then(res_newUser => {
-                                console.log("res_newUser: ", res_newUser)
-                                dispatch(patientSaveSuccess(res_info.data))
-                            })
-                            .catch(error => { 
-                                dispatch(patientSaveFailure(error))
-                                saveFailedCleanup(res_info.data._id, res_data.data._id, error) // first middle block
-                            })
-                        })
-                    })
-                    .catch(error => { 
-                        dispatch(patientSaveFailure(error))
-                        saveFailedCleanup(res_info.data._id, res_data.data._id, error) // first middle block
-                    })
-                })
-                .catch(error => {
-                    dispatch(patientSaveFailure(error))
-                    saveFailedCleanup(res_info.data._id, null, error) // second middle block
-                })
+            }; 
+            let newPatientInfo;
+            let newPatientData;
+            patient_infoAPI.create(newObj)
+            .then(res => {
+                console.log("New patient created: ", res.data)
+                newPatientInfo = res.data.data.newPtInfo
+                newPatientData = res.data.data.newPtData
+                authSave(dispatch, values, newPatientInfo, newPatientData)
             })
             .catch(error => {
-                dispatch(patientSaveFailure(error))
-                saveFailedCleanup(null, null, error) // outer block
+                dispatch(patientSaveFailure(error));
+                saveFailedCleanup(newPatientInfo._id, newPatientData._id, null, error)
             })
         }
     }
+};
+         
+// save patient as a user with auth0 
+const authSave = (dispatch, values, newPatientInfo, newPatientData) => {
+    let userObj = {
+        connection: "Engage-Yu",
+        email: values.email,
+        password: values.password,
+        user_metadata: { 
+            firstname: values.firstname,
+            lastname: values.lastname,
+            role: "patient",
+            password: "temp"
+        },
+        responseType: "token id_token"
+    };
+    AuthService.webAuth.signup(userObj, function (error, result) {
+        if (error) {
+            dispatch(patientSaveFailure(error))
+            saveFailedCleanup(newPatientInfo._id, newPatientData._id, null, error)
+        }
+        else {
+            console.log("New auth0 user created: ", result)
+            userSave(dispatch, values, newPatientInfo, newPatientData, result)
+        }
+    })
+};
+
+// if user successfully saved to auth0, then save as user in user collection
+const userSave = (dispatch, values, newPatientInfo, newPatientData, newAuth) => {
+    userAPI.userCreate({
+        sub: `auth0|${newAuth.Id}`,
+        role: "provider",
+        id: newPatientInfo._id
+    })
+    .then(res => {
+        console.log("New user created: ", res)
+        newPatientInfo["password"] = values.password // add pasword to patient & return
+        dispatch(patientSaveSuccess(newPatientInfo))
+    })
+    .catch(err => {
+        console.log(err)
+        console.log(err.response)
+        dispatch(patientSaveFailure(err))
+        saveFailedCleanup(newPatientInfo._id, newPatientData._id, newAuth.Id, err) // first middle block
+    })
+}
+
+
+// When enroll fails, need to remove any documents created during the sequence of enroll database actions (clean up)
+const saveFailedCleanup = (info_id, data_id, auth_id, error) => {
+    console.log("error: ", error)
+    console.log("error: ", error.response)
+    const clnUpObj = {
+        info_id, data_id, auth_id,
+    }
+    patient_infoAPI.cleanUp(clnUpObj)
+    .then(res=> {
+        console.log("Cleanup after failed new patient save complete")
+    })
+    .catch(err => {
+        console.log(err)
+        console.log(err.response)
+        console.log(":There was a problem cleaning up after the failed new patient save operation. there may be unwanted files remaiing on the system. Please contact the system administrator.")
+    })
 }
     
-
-// When enroll fails, need to remove any documents created during the sequence of enroll database actions
-const saveFailedCleanup = (info_id, data_id, err) => {
-    console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-    console.log(err);
-    console.log("Enroll fail cleanup: ", info_id, " : ", data_id)
-    if (info_id) {
-        patient_infoAPI.remove(info_id)
-        .then(res => {
-            console.log(`patient_info document ${res.data._id} removed`)
-        })
-        .catch(err => {
-            console.log(`OOPS! A fatal problem occurred. Document ${info_id} could not be cleaned up. Please contact your system administrator`);
-            console.log(err);
-        })
-    }
-    if (data_id) {
-        patient_dataAPI.remove(data_id)
-        .then(res => {
-            console.log(`patient_data document ${res.data._id} removed`)
-        })
-        .catch(err => {
-            console.log(`OOPS! A fatal problem occurred. Document ${data_id} could not be cleaned up. Please contact your system administrator`);
-            console.log(err);
-        })
-    }
-}
-    
-
 
 export const patientSaveBegin = () => ({
     type: PATIENT_SAVE_BEGIN

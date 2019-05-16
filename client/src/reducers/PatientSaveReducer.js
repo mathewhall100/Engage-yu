@@ -11,10 +11,7 @@ const initialState = {
     error: null
 };
 
-export default function patientSaveReducer( 
-    state = initialState,
-    action
-) {
+export default (state = initialState, action) => {
     switch(action.type) {
         case PATIENT_SAVE_BEGIN:
             return {
@@ -22,14 +19,12 @@ export default function patientSaveReducer(
                 loading: true,
                 error: null
             };
-
         case PATIENT_SAVE_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 info: action.payload.data
             };
-
         case PATIENT_SAVE_FAILURE:
             return {
                 ...state,
@@ -37,7 +32,6 @@ export default function patientSaveReducer(
                 error: action.payload.error,
                 info: {}
             };
-
         case PATIENT_SAVE_RESET:
             return {
                 ...state,
@@ -45,7 +39,6 @@ export default function patientSaveReducer(
                 error: null,
                 info: {}
             };
-
         default: return state;
     }
-}
+};

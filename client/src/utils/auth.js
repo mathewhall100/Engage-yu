@@ -17,16 +17,23 @@ export default {
         });
     },
 
-    passwordChange :function(obj) {
-        console.log("Axios call made to '/api/auth to 'passswordChange' ", obj);
-        return axios.post("/api/auth/pwdchange", obj, { 
+    update :function(obj) {
+        console.log("Axios call made to '/api/auth to 'update' ", obj);
+        return axios.post("/api/auth/update", obj, { 
             headers: {'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')}
         });
     },
 
-    passwordTypeUpdate :function(obj) {
-        console.log("Axios call made to '/api/auth to 'passswordTypeUpdate' ", obj);
-        return axios.post("/api/auth/pwdtypeupdate", obj, { 
+    updateMetaData :function(obj) {
+        console.log("Axios call made to '/api/auth to 'updateMetaData' ", obj);
+        return axios.post("/api/auth/updatemeta", obj, { 
+            headers: {'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')}
+        });
+    },
+
+    delete :function(obj) {
+        console.log("Axios call made to 'api/auth' to 'delete' ", obj)
+        return axios.post("/api/auth/delete", obj, {
             headers: {'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')}
         });
     }

@@ -1,6 +1,6 @@
 const router = require("express").Router();
-const mailer = require("../../mailer/mailer.js")
-const checkToken = require("../../jwt/jwt");
+const mailer = require("../../utils/mailer.js")
+const checkToken = require("../../utils/jwt");
 const checkJwt = checkToken.getCheckToken()
 
 // Matches with "/api/mailer"
@@ -8,9 +8,9 @@ router
     .route("/send")
     .post((req, res) => {
         console.log("mailerRoute: ", req.body)
-        const { from="", name="", to="", subject="", text="", html="", attachments=[] } = req.body
+        const { from="", to="", name="", subject="", text="", html="", attachments=[] } = req.body
 
-        mailer.send({ from, name, to, subject, text, html, attachments })
+        mailer.send({ from, to, name, subject, text, html, attachments })
             .then(result => {
                 console.log("Message sent: ", result)
                 res.json(result)

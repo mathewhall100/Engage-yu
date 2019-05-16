@@ -27,13 +27,13 @@ export const careGroupSave = (values) => {
                 group_name: values.caregroup
             })
             .then(res => {
-                console.log("res.data: ", res.data);
+                //console.log("res.data: ", res.data);
                 dispatch(careGroupSaveSuccess(res.data));
             })
-            .catch(error => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log(error);
-                dispatch(careGroupSaveFailure(error));
+            .catch(err => {
+                console.log(err)
+                console.log(err.response)
+                dispatch(careGroupSaveFailure(err));
             })
         }
     }

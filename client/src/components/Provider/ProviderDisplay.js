@@ -64,9 +64,9 @@ class ProviderDisplay extends Component {
             {caption: "Added", info: moment(provider.date_added).format("MMM Do YYYY")}
         ];
         const btns = [
-           {btn: "remove provider", type: "button", icon: "" },
-           {btn: "reassign care group", type: "button", icon: "" },
-           {btn: "edit details", type: "button", icon: "" },
+            {btn: "remove provider", type: "button", icon: "" },
+            {btn: "reassign care group", type: "button", icon: "" },
+            {btn: "edit details", type: "button", icon: "" },
         ]; 
 
 

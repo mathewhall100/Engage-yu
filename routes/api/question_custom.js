@@ -10,6 +10,6 @@ router
 // Matches with "/api/question_custom/:id"
 router
   .route("/:id")
-  .delete(question_customController.remove);
+  .delete(question_customController.delete);
 
 module.exports = router;

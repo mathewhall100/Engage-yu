@@ -68,7 +68,7 @@ class SurveySaveDialog extends Component {
 		const { handleSubmit, pristine, survey, errorSurvey, loadingSurvey, name } = this.props;
 
 		if (errorSurvey) 
-			return <DialogError text="This diary card could not be completed at this time." cancelurl={"/admin/patient/find"} /> 
+			return <DialogError text="This diary card could not be completed at this time." cancelUrl={"/admin/patient/find"} /> 
 		
 		if (loadingSurvey) 
 			return <CallBack text="saving..." />

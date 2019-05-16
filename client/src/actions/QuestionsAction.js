@@ -18,16 +18,15 @@ export const loadQuestions = () => {
                 question_customAPI.findAll()
                 .then(res => {
                     customQuestions = res.data
-                    console.log("QuestionsAPI - defaultQuestion: ", defaultQuestion)
-                    console.log("QuestionsAPI - customQuestions: ", customQuestions)
+                    //console.log("QuestionsAPI - defaultQuestion: ", defaultQuestion)
+                    //console.log("QuestionsAPI - customQuestions: ", customQuestions)
                     dispatch(questionsSuccess({defaultQuestion, customQuestions}));
                 })
             })
-            .catch(error => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log("No active surveys retrieved");
-                console.log(error);
-                dispatch(questionsFailure(error))
+            .catch(err => {
+                console.log(err)
+                console.log(err.response)
+                dispatch(questionsFailure(err))
             });
     };
 }

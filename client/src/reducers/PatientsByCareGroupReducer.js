@@ -11,10 +11,7 @@ const initialState = {
     error: null
 };
 
-export default function patientsByCareGroupReducer( 
-    state = initialState,
-    action
-) {
+export default (state = initialState, action) => {
     switch(action.type) {
         case PATIENTS_BY_CAREGROUP_BEGIN:
             return {
@@ -22,14 +19,12 @@ export default function patientsByCareGroupReducer(
                 loading: true,
                 error: null
             };
-
         case PATIENTS_BY_CAREGROUP_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 listPatients: action.payload.listPatients
             };
-
         case PATIENTS_BY_CAREGROUP_FAILURE:
             return {
                 ...state,
@@ -37,7 +32,6 @@ export default function patientsByCareGroupReducer(
                 error: action.payload.error,
                 plistPatients: []
             };
-
         default: return state;
     }
-}
+};

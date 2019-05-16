@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import { Button, withMobileDialog, Typography}from '@material-ui/core'
+import { withMobileDialog, Typography}from '@material-ui/core'
+import BtnAction from '../Buttons/btnAction'
+import BtnActionLink from '../Buttons/btnActionLnk'
 import DialogCustom from './dialogCustom'
 
 
@@ -11,16 +12,21 @@ class DialogError extends React.Component {
 		open: true
 	};
 
+	closeDialog = () => {
+		this.props.closeDialog()
+	}
+	
+
 	render() {
 		const { text, cancelUrl } = this.props;
 
 		return (
-			<DialogCustom title="Opertaion failed!" width="600px">
+			<DialogCustom title="Operation failed!" width="600px">
 				<Typography variant="subtitle1" gutterBottom>{text}</Typography>
 				<Typography variant="subtitle1">Click 'Return' to review and try again, or 'Cancel' to quit</Typography>
 				<br/><br />
-					<Button color="primary" autoFocus onClick={() => this.setState({ open: false }) }>Try again</Button> 
-					<Button color="primary" component={Link} to={cancelUrl} >Cancel</Button>
+					<BtnAction type="button" text="try again" marginRight={true} handleAction={this.closeDialog} /> 
+					<BtnActionLink url={cancelUrl} text="cancel" warning={true}/>
 				<br />
 			</DialogCustom>
 		);

@@ -1,6 +1,6 @@
 import React, { Component } from 'react' ;
 import { withRouter } from 'react-router'
-import { Typography } from '@material-ui/core/Typography'
+import Typography from '@material-ui/core/Typography'
 import BtnActionLnk from '../UI/Buttons/btnActionLnk'
 import LoginBanner from './LoginBanner'
 
@@ -9,9 +9,11 @@ class EmailNotVerified extends Component {
     render () {
 
         const RenderBannerTitle = () => 
-            <Typography variant="h4" align="center" color="primary" gutterBottom >Welcome to Engage-Yu!</Typography>
+            <Typography variant="h4" align="center" color="primary" gutterBottom >
+                Welcome to Engage-Yu!
+            </Typography>
 
-        return(
+        return (
             <LoginBanner backgroundImage={false}>
 
                 <RenderBannerTitle />

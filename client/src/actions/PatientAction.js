@@ -18,19 +18,18 @@ export const loadPatient = (id) => {
         let patientData = {};
         return dispatch => {
             dispatch(patientBegin());
-            return patient_infoAPI.findFullById(id)
+            return patient_infoAPI.findById(id)
             .then(res => {
-                patientData = res.data.patient.patient_data_ref;
-                patientInfo = res.data.patient
-                patientInfo.patient_data_ref = patientInfo.patient_data_id
+                patientData = res.data.patient_data_ref;
+                delete res.data.patient_data_ref
+                patientInfo = res.data
                 console.log("PatientAction patientInfo: ", patientInfo)
                 console.log("PatientAction patientData: ", patientData)
                 dispatch(patientSuccess({patientInfo, patientData}))
             })
             .catch(error => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log("No patient retrieved");
                 console.log(error);
+                console.log(error.response);
                 dispatch(patientFailure(error))
             });
         };

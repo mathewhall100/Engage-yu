@@ -78,13 +78,15 @@ export const saveSurvey = (
             dispatch(surveyBegin());
             return patient_dataAPI.newEpisode(patientData._id, surveyObj)
             .then(res => {
-                const ep = res.data.episodes[res.data.episodes.length-1]
+                //console.log("result: ", res.data)
+                const resData = res.data.episodes
+                const ep = resData[resData.length-1]
                 dispatch(surveySuccess( {newEpisodeId: ep._id, start: ep.start_date} ))
             })
-            .catch(error => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log(error);
-                dispatch(surveyFailure(error))
+            .catch(err => {
+                console.log(err)
+                console.log(err.response)
+                dispatch(surveyFailure(err))
             })
         };
     }

@@ -55,6 +55,9 @@ export default class FormText extends Component {
 FormText.propTypes = {
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
-    width: PropTypes.string,
+    width:  PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ]),
     variant: PropTypes.string,
 };

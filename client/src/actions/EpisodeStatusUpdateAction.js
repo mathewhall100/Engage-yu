@@ -66,13 +66,13 @@ export const updateEpisodeStatus = (values, newStatus, patientDataId, episodeId)
                 {episodeId, newStatus, msg, updater} 
             )
             .then(res => {
-                console.log("res.data: ", res.data)
+                //console.log("res.data: ", res.data)
                 dispatch(updateEpisodeStatusSuccess(res.data))
             })
-            .catch(error => {
-                console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-                console.log(error);
-                dispatch(updateEpisodeStatusFailure(error)) 
+            .catch(err => {
+                console.log(err)
+                console.log(err.response)
+                dispatch(updateEpisodeStatusFailure(err)) 
             })
     
         }

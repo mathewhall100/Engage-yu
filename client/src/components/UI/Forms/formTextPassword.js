@@ -51,14 +51,12 @@ export default class FormTextPassword extends Component {
                 
                 {dirty && submitted ?
                     <Fragment>
-                        {console.log("1: ", dirty, submitted)}
                         {helpText && <span style={{color: "red", position: "relative", left: "10px", top: "32px"}}> 
                             { error }
                         </span> }
                     </Fragment>
                     :
                     <Fragment>
-                         {console.log("2: ", dirty, submitted)}
                         {helpText && <div style={{fontSize: "13px", color: "red"}}> 
                             {touched ? error : ''}
                         </div> }
@@ -90,7 +88,10 @@ export default class FormTextPassword extends Component {
 FormTextPassword.propTypes = {
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
-    width: PropTypes.string,
+    width:  PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ]),
     variant: PropTypes.string,
     submitted: PropTypes.bool
 };

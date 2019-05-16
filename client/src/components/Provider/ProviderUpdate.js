@@ -7,7 +7,7 @@ import FormTextFocused from '../UI/Forms/formTextFocused';
 import FormStateSelect from '../UI/Forms/formStateSelect';
 import FormUpdateUnit from '../UI/Forms/formUpdateUnit';
 import { validateName, validateZip, validateState, validateEmail, validatePhone, validatePhoneOther } from '../../logic/formValidations';
-import { selectConsoleTitle, loadProvider, providerUpdateSave } from '../../actions';
+import { selectConsoleTitle, loadProvider, providerUpdate } from '../../actions';
 import CareGroupSelect from '../CareGroup/CareGroupSelect'
 import ProviderDetailsBar from './ProviderDetailsBar';
 import DialogError from '../UI/Dialogs/dialogError';
@@ -34,7 +34,7 @@ class ProviderUpdate extends PureComponent {
     } 
 
     componentWillUnmount() {
-        this.props.dispatch(providerUpdateSave("reset"))
+        this.props.dispatch(providerUpdate("reset"))
     }
     
     state = {
@@ -45,7 +45,7 @@ class ProviderUpdate extends PureComponent {
 
     submit(values) {
         console.log("Submit: ", values)
-        this.props.dispatch(providerUpdateSave(values, this.props.provider))
+        this.props.dispatch(providerUpdate(values, this.props.provider))
     };
 
     updateSuccess = (data) => {
@@ -56,7 +56,7 @@ class ProviderUpdate extends PureComponent {
 
     updateFailed = (err) => {
         this.setState({failed: true}); 
-        this.props.dispatch(providerUpdateSave("reset"))
+        this.props.dispatch(providerUpdate("reset"))
     }
 
     updateInProgress = (err) => {
@@ -168,7 +168,7 @@ class ProviderUpdate extends PureComponent {
 
                 </Card>
 
-                {failed && <DialogError text="A problem was encountered and the provider's details were not updated." cancelUrl="/admin/provider"/>} 
+                {failed && <DialogError text="A problem was encountered and the provider's details were not updated." cancelUrl="/admin/provider/find" closeDialog={this.outcomeReset}/>} 
 
             </Fragment>   
         );

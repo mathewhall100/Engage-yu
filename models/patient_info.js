@@ -135,16 +135,16 @@ const patient_infoSchema = new Schema({
 // mongoose error handling middleware function
 handleError = (error, doc, next) => {
     console.log('Operation failed')
-    console.log(`error code: ${error.code}`)
     console.log(`Error name: ${error.name}`)
-    console.log(`Error: ${error}`)
-    if (error.name === "MongoError" && error.code === 11000) {
-        next(new Error('Duplicate key error'))  // returned to console as CONTROLLER ERROR:
-    } else if (error.name === "ValidationError") {
-         next(new Error(`New/updated document failed Mongoose validation.`));
-    } else {
-        next(new Error('An unspecified error occurred while saving the data')) 
-    }
+    console.log("error message", error._message)
+    // if (error.name === "MongoError" && error.code === 11000) {
+    //     next(new Error('Duplicate key error'))  // returned to console as CONTROLLER ERROR:
+    // } else if (error.name === "ValidationError") {
+    //      next(new Error(`New/updated document failed Mongoose validation.`));
+    // } else {
+    //     next(new Error('An unspecified error occurred while saving the data')) 
+    //}
+    next() 
 };
 patient_infoSchema.post('save', handleError);
 patient_infoSchema.post('findOneAndUpdate', handleError);

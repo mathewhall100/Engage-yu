@@ -17,10 +17,6 @@ import { mailer } from '../../actions'
 
 class ProviderSaveDialog extends Component {
 
-	state = {
-		open: true
-	};
-
 	submit = (values) => {
 		console.log("Submitted values: ", values)
 		// If email and password entered for new provider, send welcome email
@@ -34,7 +30,11 @@ class ProviderSaveDialog extends Component {
 		const { handleSubmit, newProvider, loadingNewProvider, errorNewProvider, enableLogin } = this.props;
 
 		if (errorNewProvider) 
-			return <DialogError text="An error ocurred and this provider's details could not be saved at this time." cancelUrl={"/admin/provider/find"} /> 
+			return <DialogError 
+				text="An error ocurred and this provider's details could not be saved at this time." 
+				cancelUrl={"/admin/provider/find"
+			} 
+			/> 
 		
 		if (loadingNewProvider || isEmpty(newProvider))
 			return <CallBack text="Saving..." />

@@ -1,21 +1,20 @@
-const db = require("../models");
+const db = require("../models/question_default");
+const hp = require("../utils/helper")
+const api = require("./dbApi")
 
 
 module.exports = {
 
     // Fetch details of all default questions
-    findAll: function(req, res) {
-        console.log("Question_default controller called to 'findAll'" );
-        db.Question_default
-        .find({}) 
-        .then(questionList => {
-            console.log(questionList)
-            res.send(questionList);
-        })
-        .catch(err => {
-            console.log(`CONTROLLER ERROR: ${err}`);
-            res.status(422).json(err);
-        })
+    findAll: async function(req, res) {
+        console.log("Question_custom controller called to 'findAll'" );
+        findObj={find: {}}
+        try {
+            const result = await api.find(findObj, db)
+            hp.sendData(res, "success")(result)
+        } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }
     },
 
 };

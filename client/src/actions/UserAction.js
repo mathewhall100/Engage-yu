@@ -18,7 +18,7 @@ export const fetchUserDetails = (sub) => {
         })
         .then(res => {
             console.log("user lookup", res)
-            userInfo = res.data[0];
+            userInfo = res.data;
             localStorage.setItem('user_role', userInfo.role);
             localStorage.setItem('user_app_id', userInfo.id);
 
@@ -44,7 +44,7 @@ export const fetchUserDetails = (sub) => {
                 headers: {'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')}
             })
             .then(res => {
-                console.log("patient/provider info", res)
+                // console.log("patient/provider info", res)
                 if(userRole === 'patient') {
                     localStorage.setItem('user_patient_data_id', null);
                 }

@@ -12,8 +12,6 @@ import FormRadio from '../UI/Forms/formRadio'
 import PatientSaveDialog from './PatientSaveDialog'
 import { selectConsoleTitle } from '../../actions/index';
 import { patientSave } from "../../actions"
-import { getHtmlMsg } from "./patientEnrollEmail"
-import { mailer } from '../../actions'
 import * as val from '../../logic/formValidations';
 
 
@@ -39,8 +37,6 @@ class PatientEnroll extends Component {
         console.log("Submitted values: ", values);
         // Save patient details to db
         this.props.dispatch(patientSave(values))
-        // Send welcome email
-        this.props.dispatch(mailer(getHtmlMsg(values)))
      }
 
     // Clear form entries and reset values using Redux Form 'reset'.

@@ -9,8 +9,17 @@ import DialogCustom from '../UI/Dialogs/dialogCustom'
 import DialogError from '../UI/Dialogs/dialogError'
 import { loadPatient } from '../../actions'
 import ProviderName from '../UI/providerName'
+import { getHtmlMsg } from "./patientEnrollEmail"
+import { mailer } from '../../actions'
 
 class PatientSaveDialog extends React.Component {
+
+	componentWillReceiveProps(nextProps) {
+		// Send welcome email
+		if (nextProps.newPatient !== this.props.newPatient && nextProps.newPatient._id) {
+			this.props.dispatch(mailer(getHtmlMsg(nextProps.newPatient)))
+		} 
+	}
 
 	state = {
 		open: true
@@ -42,7 +51,7 @@ class PatientSaveDialog extends React.Component {
 			return <CallBack text="Saving..." />
 			
 		if (errorNewPatient ) 
-			return <DialogError text="A problem was encountered and the provider could not be saved at this time." cancelUrl="/admin/provider"/>
+			return <DialogError text="A problem was encountered and the patient could not be saved at this time." cancelUrl="/admin/provider"/>
 						
 		if (newPatient && newPatient.firstname) 
 			return (

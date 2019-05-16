@@ -11,10 +11,7 @@ const initialState = {
     error: null
 };
 
-export default function surveyReducer( 
-    state = initialState,
-    action
-) {
+export default (state = initialState, action) => {
     switch(action.type) {
         case SURVEY_BEGIN:
             return {
@@ -22,14 +19,12 @@ export default function surveyReducer(
                 loading: true,
                 error: null
             };
-
         case SURVEY_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 survey: action.payload.survey
             };
-
         case SURVEY_FAILURE:
             return {
                 ...state,
@@ -37,7 +32,6 @@ export default function surveyReducer(
                 error: action.payload.error,
                 survey: []
             };
-
         case SURVEY_RESET:
             return {
                 ...state,
@@ -45,7 +39,6 @@ export default function surveyReducer(
                 error: null,
                 survey: []
             };
-
         default: return state;
     }
-}
+};

@@ -9,9 +9,9 @@ export default {
         });
     },
 
-    findAllByGroup: function(id) {
-        console.log("Axios call made to '/api/patient_info' to 'findAllByGroup' ", id);
-        return axios.get("/api/patient_info/allByGroup/"+id, { 
+    findAllByCareGroup: function(id) {
+        console.log("Axios call made to '/api/patient_info' to 'findAllByCareGroup' ", id);
+        return axios.get("/api/patient_info/allByCareGroup/"+id, { 
             headers: {'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')}
         });
     },
@@ -23,23 +23,16 @@ export default {
         });
     },
 
-    findFullById:function(id) {
-        console.log("Axios call made to '/api/patient_info' to 'findFullById'", id);
-        return axios.get("/api/patient_info/findFull/"+id, { 
-            headers: {'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')}
-        });
-    },
-
-    findBySearchterm: function(searchterm) {
-        console.log("Axios call made to '/api/patient_info' to 'findBySearchterm' ", searchterm );
-        return axios.post("/api/patient_info/search", searchterm, { 
+    findOne: function(searchterm) {
+        console.log("Axios call made to '/api/patient_info' to 'findOne' ", searchterm );
+        return axios.post("/api/patient_info/findone", searchterm, { 
             headers: {'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')}
         });
     },  
     
-    createNewPatient: function(info) {
-        console.log("Axios call made to '/api/patient_info' to 'createNewPatient'", info);
-        return axios.post("/api/patient_info/new", info, { 
+    create: function(info) {
+        console.log("Axios call made to '/api/patient_info' to 'create'", info);
+        return axios.post("/api/patient_info/create", info, { 
             headers: {'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')}
         });
     },
@@ -51,11 +44,26 @@ export default {
         });
     },
 
+    updateEmail: function(id, info) {
+        console.log("Axios call made to '/api/patient_info' to 'updateEmail' ", id, " ", info);
+        return axios.put("/api/patient_info/update/email/"+id, info, { 
+            headers: {'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')}
+        });
+    },
+
+    cleanUp: function(info) {
+        console.log("Axios call made to '/api/patient_info to 'cleanUp' :", info)
+        return axios.put("/api/patient_info/cleanup/", info, {
+            headers: {'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')}
+        });
+    },
+
     remove: function(id){
         console.log("Axios call made to '/api/patient_info' to 'remove' " + id);
         return axios.delete("/api/patient_info/delete/"+id, { 
             headers: {
                 'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')
+
             }
         });
     },
