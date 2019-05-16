@@ -9,7 +9,7 @@ export default class FormTextFocused extends Component {
 
     renderTextField(field) {
         //console.log("Field: ", field)
-        const {width, label, variant, meta: {dirty, touched, error}} = field;
+        const {width, label, variant, helpText, meta: {dirty, touched, error}} = field;
 
         return (
             <Fragment>
@@ -27,20 +27,20 @@ export default class FormTextFocused extends Component {
                     
                 />
 
-                {dirty && !error && <span style={{position: "relative", left: "10px", top: "32px"}}> 
+                {helpText && dirty && !error && <span style={{position: "relative", left: "10px", top: "32px"}}> 
                     <DoneIcon style={{fontSize: "28px", color: "green"}}/>
                 </span> }
 
-                <div style={{fontSize: "13px", color: "red"}}> 
+                {helpText && <div style={{fontSize: "13px", color: "red"}}> 
                     {touched ? error : ''}
-                </div>
+                </div> }
 
             </Fragment>
         );
     }
 
     render () {
-        const { name, label, variant="standard", width="250" } = this.props;
+        const { name, label, variant="standard", width="250", helpText=true} = this.props;
         return (
             <Field 
                 name={name}
@@ -48,6 +48,7 @@ export default class FormTextFocused extends Component {
                 width={`${width}px`}
                 component={this.renderTextField}
                 variant={variant}
+                helpText={helpText}
                 autoComplete="off"
             />
         );
@@ -61,5 +62,6 @@ FormTextFocused.propTypes = {
         PropTypes.string,
         PropTypes.number
     ]),
+    helpText: PropTypes.bool,
     variant: PropTypes.string
 };

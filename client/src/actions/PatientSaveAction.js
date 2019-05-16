@@ -34,8 +34,8 @@ export const patientSave= (values) => {
                 patient_data_id:  "000000000000000000000000",
                 status: "active",
                 hospital_id: values.hospId,
-                firstname: values.firstname,
-                lastname: values.lastname,
+                firstname: values.firstname.toLowerCase().trim(),
+                lastname: values.lastname.toLowerCase().trim(),
                 gender: values.gender,
                 dob: values.dob,
                 email: values.email,
@@ -78,8 +78,8 @@ const authSave = (dispatch, values, newPatientInfo, newPatientData) => {
         email: values.email,
         password: values.password,
         user_metadata: { 
-            firstname: values.firstname,
-            lastname: values.lastname,
+            firstname: values.firstname.toLowerCase().trim(),
+            lastname: values.lastname.toLowerCase().trim(),
             role: "patient",
             password: "temp"
         },

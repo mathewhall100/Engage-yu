@@ -46,7 +46,7 @@ class ConsoleMenuListItems extends Component {
 			{title: "divider", text: "Admin"},
 			{title: "Manage providers", icon: <SupervisorAccountIcon color="primary" />, lnk: "/admin/provider/find"},
 			{title: "Manage care groups", icon: <LocalHospitalIcon color="primary" />, lnk: "/admin/caregroup/find"},
-			{title: "Delete an account", icon: <DeleteIcon color="primary" />, lnk: "/admin/delete"},
+			{title: "Delete patient", icon: <DeleteIcon color="primary" />, lnk: "/admin/deletePt/find"},
 			{title: "Settings", icon: <SettingsIcon color="primary" />, lnk: "/admin/settings"}
 		]
 

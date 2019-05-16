@@ -61,11 +61,11 @@ class ProviderRemove extends Component {
                      "Note, this action cannot be undone. Removed providers can be added back by re-entering all their details via the 'new provider' page."]
         
         if (error) {
-            return <Typography variant="subtitle1">"Care group cannot be deleted at this time. This may be temporary, so please try again later"/></Typography>
+            return <Typography variant="subtitle1">"Provider cannot be deleted at this time. This may be temporary, so please try again later"/></Typography>
         }
 
         if (loading || !(provider && provider._id)) {
-            return <CallBack fallBackText="Care group cannot be deleted at this time. This may be temporary, so please try again later"/>
+            return <CallBack fallBackText="Provider cannot be deleted at this time. This may be temporary, so please try again later"/>
         }
 
 

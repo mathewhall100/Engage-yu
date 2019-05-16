@@ -30,13 +30,13 @@ export const providerSave = (values) => {
                     lastname: localStorage.getItem("user_provider_lastname"),
                     role: localStorage.getItem("user_provider_role")
                 },
-                title: values.title.toLowerCase(),
-                firstname: values.firstname,
-                lastname: values.lastname, 
+                title: values.title.toLowerCase().trim(),
+                firstname: values.firstname.toLowerCase().trim(),
+                lastname: values.lastname.toLowerCase().trim(), 
                 office: {
-                    name: values.officename,
-                    street: values.officestreet,
-                    city:values.officecity, 
+                    name: values.officename.toLowerCase().trim(),
+                    street: values.officestreet.toLowerCase().trim(),
+                    city:values.officecity.toLowerCase().trim(), 
                     state: values.officestate, 
                     zip: values.officezip,
                 },
@@ -80,8 +80,8 @@ const authSave = (dispatch, values, newProvider) => {
         email: values.email,
         password: values.password,
         user_metadata: { 
-            firstname: values.firstname,
-            lastname: values.lastname,
+            firstname: values.firstname.toLowerCase().trim(),
+            lastname: values.lastname.toLowerCase().trim(),
             role: "newProvider",
             password: "temp"
         },

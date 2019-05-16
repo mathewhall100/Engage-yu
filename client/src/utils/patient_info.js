@@ -58,8 +58,8 @@ export default {
         });
     },
 
-    remove: function(id){
-        console.log("Axios call made to '/api/patient_info' to 'remove' " + id);
+    delete: function(id){
+        console.log("Axios call made to '/api/patient_info' to 'delete' " + id);
         return axios.delete("/api/patient_info/delete/"+id, { 
             headers: {
                 'Authorization': 'Bearer ' + window.localStorage.getItem('auth_id_token')

@@ -5,7 +5,7 @@ import { withStyles, Typography } from '@material-ui/core'
 const styles = (theme) => ({
     consoleTitle: {
 		fontWeight: 500,
-		paddingLeft: "20px",
+		paddingLeft: "10px",
 		[theme.breakpoints.up('lg')]: {
 			paddingTop: "10px",
 		}, 
@@ -18,13 +18,9 @@ class ConsoleTitle extends Component {
 
         const { classes } = this.props
 
-        if (!this.props.consoleTitle) {
-            return <div> &nbsp;Dashboard</div>;
-        }
-
         return (
             <Typography variant="h5" className={classes.consoleTitle}>
-                {this.props.consoleTitle.title}
+                {this.props.consoleTitle ? this.props.consoleTitle.title : "Dashboard"}
             </Typography>
         );
     }

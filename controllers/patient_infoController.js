@@ -1,6 +1,6 @@
 const db = require("../models/patient_info");
-const patient_data = require("../models/patient_data")
-const user = require("../models/user");
+const db_patient_data = require("../models/patient_data")
+const db_user = require("../models/user");
 const hp = require("../utils/helper")
 const auth0 = require("./auth0")
 const api = require("./dbApi");
@@ -82,7 +82,7 @@ module.exports = {
                 patient_info_ref: retNewPtInfo._id,
                 patient_info_id: retNewPtInfo._id
             }
-            const retNewPtData = await api.create(newPtDataObj, db)
+            const retNewPtData = await api.create(newPtDataObj, db_patient_data)
             const newPtUpdObj = {
                 $set: {
                     patient_data_ref: retNewPtData._id,
@@ -124,7 +124,7 @@ module.exports = {
         try {
             const ret = await Promise.all([
                 auth0.getToken(),
-                api.findOne(findObj, user),
+                api.findOne(findObj, db_user),
                 api.updateVal({idObj, updObj}, db)
             ])
             const accessToken = ret[0].data.access_token;
@@ -163,23 +163,24 @@ module.exports = {
         }
     },
 
-    // Remove patient account
+    // Delete patient account
     delete: async function(req, res) {
         console.log("Patient-infoController called to 'remove' " + req.params.id);
         const patientInfoId = req.params.id;
+        const findObj = { find: {id: patientInfoId} }
         try { 
             let ret = await Promise.all([
-                api.findOne(findObj, user),
+                api.findOne(findObj, db_user),
                 auth0.getToken()
             ])
             const userId = ret[0]._id
-            const auth0UserId = ret[1].sub;
-            const accessToken = ret[0].data.access_token;
+            const auth0UserId = ret[0].sub;
+            const accessToken = ret[1].data.access_token;
             ret = await Promise.all([
-                api.del_te(userId, user),
+                api.del_te(userId, db_user),
                 auth0.del_te(accessToken, auth0UserId)
             ])
-            const result = await api.del_ete(patientInfoId, db)
+            const result = await api.del_te(patientInfoId, db)
             hp.sendSuccess(res, "success")(result)
                } catch(error) {
             hp.sendError(res, "failed")(error)
