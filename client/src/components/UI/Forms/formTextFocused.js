@@ -45,7 +45,7 @@ export default class FormTextFocused extends Component {
             <Field 
                 name={name}
                 label={label}
-                width={`${width}px`}
+                width={width.includes('%') ? width : width.includes("px") ? width: `${width}px`}
                 component={this.renderTextField}
                 variant={variant}
                 helpText={helpText}

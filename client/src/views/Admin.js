@@ -1,7 +1,4 @@
 import React, { Component, Fragment} from 'react';
-import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
-import * as AuthService from '../services/AuthService';
 import { withStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Console from '../components/Console/Console';
@@ -53,7 +50,6 @@ class Admin extends Component {
         );
     }
 }
-const mapStateToProps = ({ auth }) => ({ auth })
 
-export default connect(mapStateToProps, null, null, {pure:false}) (withStyles(styles) (Admin));
+export default withStyles(styles)(Admin);
 

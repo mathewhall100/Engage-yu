@@ -58,7 +58,7 @@ class PatientEnroll extends Component {
             <FormText name="lastname" label="Lastname" width="270" />,
             <FormText name="dob" label="DOB (mm-dd-yyyy or mm/dd/yyyy)" width="270" />,
             <div style={{position: "relative", top: "40px"}}><FormRadio name="gender" items={[{value: "male", label: "Male"},{value: "female", label: "Female"}]} /></div>,
-            <FormText name="email"label="Email (john.doe@you.com" width="270" />,
+            <FormText name="email" label="Email (john.doe@you.com" width="270" />,
             <FormText name="phone" label="Contact phone "width="270" />,
             <FormText name="hospId" label="Hospital Number" width="270" />,
             <div style={{position: "relative", top: "20px"}}><ProviderSelect /> </div>,

@@ -7,6 +7,11 @@ const questionSchema = new Schema({
         type: Number
     },
 
+    date_added: {
+        type: Date, 
+        default: Date.now
+    },
+
     question: { 
         type: String, 
         required: [true, "No question supplied"] 
@@ -20,11 +25,8 @@ const questionSchema = new Schema({
     hints: [{ 
         type: String
     }]
-},
 
-    { _id: false}
-    
-);
+});
 
 
 module.exports = questionSchema; 

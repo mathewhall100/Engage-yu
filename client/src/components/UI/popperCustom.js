@@ -39,6 +39,24 @@ const styles = (theme) =>  ({
             },
           },
       },
+    popperLeft: {
+        zIndex: 1,
+        marginRight: '25px',
+        border: "2px solid",
+        borderColor: theme.palette.primary.main,
+        borderRadius: "8px",
+        '&[x-placement*="left"] $arrow': {
+            right: 0,
+            marginTop: "-15px",
+            marginRight: "-1em",
+            height: '1em',
+            width: '1em',
+            '&::before': {
+                borderWidth: '1em 0 1em 1em',
+                borderColor: ` transparent transparent transparent ${theme.palette.primary.main}`,
+            },
+          },
+      },
       arrow: {
         position: 'absolute',
         fontSize: 14,
@@ -77,7 +95,7 @@ class PopperCustom extends Component {
             open={this.props.popperOpen} 
             anchorEl={this.props.anchorEl} 
             placement={placement} 
-            className={placement === "right" ? classes.popperRight : classes.popperTop}
+            className={placement === "right" ? classes.popperRight : placement === "left" ? classes.popperLeft : classes.popperTop}
             modifiers={{
                 arrow: {
                     enabled: true,

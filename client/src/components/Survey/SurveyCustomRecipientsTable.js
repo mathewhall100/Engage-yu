@@ -2,7 +2,7 @@ import React, {Component, Fragment}  from 'react';
 import { reduxForm } from 'redux-form';
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types';
-import { startCase, upperFirst } from 'lodash';
+import { startCase, upperFirst, isEmpty } from 'lodash';
 import { withStyles, Typography } from '@material-ui/core';
 import SurveyCheckbox from './SurveyCheckbox';
 import HrStyled from '../UI/hrStyled'
@@ -18,8 +18,8 @@ const styles = () => ({
     },
     tableCell: {
         width: '100%',
-         borderTop: "1px solid #DDD", 
-         borderBottom: "1px solid #DDD"
+        borderTop: "1px solid #DDD", 
+        borderBottom: "1px solid #DDD"
     },
     addEmailTextCell: {
         width: "165px"
@@ -61,10 +61,12 @@ class SurveyCustomRecipientsTable extends Component {
 
     getInitialRecipients = () => {
         const { providers } = this.state;
-        if (this.props.patientInfo && this.props.provider) {
+        if (this.props.patientInfo && this.props.patientInfo.primary_provider && this.props.provider && providers) {
+            const recipientPrimaryProvider = providers.filter(provider => {return provider.value[0] === this.props.patientInfo.primary_provider.id})
+            const recipientRequestingProvider = providers.filter(provider => {return provider.value[0] === this.props.provider._id})
             this.setState({recipients: [
-                [...providers.filter(provider => {return provider.value[0] === this.props.patientInfo.primary_provider.id})[0].value],
-                [...providers.filter(provider => {return provider.value[0] === this.props.provider._id})[0].value]
+                !isEmpty(recipientPrimaryProvider) ? recipientPrimaryProvider[0].value : null,
+                !isEmpty(recipientRequestingProvider) ? recipientRequestingProvider[0].value : null
             ]}, () =>  this.props.returnRecipients(this.state.recipients) )
         }
     }
@@ -139,16 +141,18 @@ class SurveyCustomRecipientsTable extends Component {
                                     onMouseOver={() => this.setState({hoverRow: index})}
                                     style={{backgroundColor: hoverRow === index ? "#ededed" : "#FFF"}}
                                     >
-                                        <td className={classes.tableCell}>
-                                            <SurveyCheckbox 
-                                                item={recipient}
-                                                checkboxClick={this.removeRecipientFromList}
-                                                checked={true}
-                                            />
-                                            <Typography variant="subtitle1" inline >
-                                                {this.getRecipientName(recipient)} 
-                                            </Typography>
-                                        </td>
+                                        {recipient && 
+                                            <td className={classes.tableCell}>
+                                                <SurveyCheckbox 
+                                                    item={recipient}
+                                                    checkboxClick={this.removeRecipientFromList}
+                                                    checked={true}
+                                                />
+                                                <Typography variant="subtitle1" inline >
+                                                    {this.getRecipientName(recipient)} 
+                                                </Typography>
+                                            </td>
+                                        }
                                 </tr>
                             ); 
                             

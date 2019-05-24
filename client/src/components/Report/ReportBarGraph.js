@@ -36,8 +36,8 @@ class ReportBarGraph extends Component {
                     <Legend layout='vertical' align='right' verticalAlign='top' 
                         payload={[
                             { id: 'ans1', value: this.props.question.answers[0], type: 'square', color: 'green' },
-                            { id: 'ans2', value: this.props.question.answers[1], type: 'square', color: '#ffc200' },
-                            { id: 'ans3', value: this.props.question.answers[2], type: 'square', color: 'orange' },
+                            { id: 'ans2', value: this.props.question.answers[1], type: 'square', color: '#FFD700' },
+                            { id: 'ans3', value: this.props.question.answers[2], type: 'square', color: '#FFA500' },
                             { id: 'ans4', value: this.props.question.answers[3], type: 'square', color: 'red' },
                             { id: 'ans5', value: this.props.question.answers[4], type: 'square', color: 'grey' },
                         ]} 
@@ -52,8 +52,8 @@ class ReportBarGraph extends Component {
                     />
                     <Bar dataKey="ans5" stackId="a" fill="grey" />
                     <Bar dataKey="ans4" stackId="a" fill="red" />
-                    <Bar dataKey="ans3" stackId="a" fill="orange" />
-                    <Bar dataKey="ans2" stackId="a" fill="#ffc200" />
+                    <Bar dataKey="ans3" stackId="a" fill="#FFA500" />
+                    <Bar dataKey="ans2" stackId="a" fill="#FFD700" />
                     <Bar dataKey="ans1" stackId="a" fill="green" />
                 </BarChart> 
 

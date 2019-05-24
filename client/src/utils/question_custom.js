@@ -5,13 +5,18 @@ export default {
         return axios.get("/api/question_custom");
     },
 
-    create: function(questionInfo){
+    create: function(info){
         console.log("Axios call made to '/api/question_custom' to 'create'");
-        return axios.post("/api/question_custom/", questionInfo);
+        return axios.post("/api/question_custom/", info);
     },
 
-    remove: function(id){
-        console.log("Axios call made to '/api/question_custom' to 'remove' ");
+    update: function(id, info){
+        console.log("Axios call made to '/api/question_custom' to 'update'")
+        return axios.put("/api/question_custom/"+id, info)
+    },
+
+    delete: function(id){
+        console.log("Axios call made to '/api/question_custom' to 'delete' ");
         return axios.delete("/api/question_custom/"+id);
     },
 

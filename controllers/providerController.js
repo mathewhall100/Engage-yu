@@ -85,12 +85,109 @@ module.exports = {
         }
     },
 
-     // Update a providers details
-    // To be sent req.params.id of provider to be updated & req.body object of provider's new details
-    saveQuestionList: async function(req, res) {
-        console.log("Provider controller called to 'update' ", req.params.id, " ", req.body);
+    // Save a new custom question list details to 'custom_question_lists'
+    // To be sent req.params.id of provider to be updated & req.body object of new list to add
+    addList: async function(req, res) {
+        console.log("Provider controller called to 'addList' ", req.params.id, " ", req.body);
         const idObj = { _id: req.params.id }
         const updObj = { $push: { "custom_question_lists": req.body } }
+        try {
+            const result = await api.updateVal({idObj, updObj}, db)
+            hp.sendData(res, "success")(result)
+        } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }
+    },
+
+    // Update a question list in  'custom_question_lists'
+    // To be sent req.params.id of provider to be updated & req.body object of question id and new question data
+    updateList: async function(req, res) {
+        console.log("Provider controller called to 'updateList' ", req.params.id, " ", req.body);
+        const { listId, listData} = req.body
+        const idObj = { _id: req.params.id }
+        const updObj =  { $set: {"custom_question_lists.$[elem]" : listData} }
+        const filterObj = { arrayFilters: [ { "elem._id": listId} ] }
+        try {
+            const result = await api.update({idObj, updObj, filterObj}, db)
+            hp.sendData(res, "success")(result)
+        } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }
+    },
+
+    // delete a question list in  'custom_question_lists'
+    // To be sent req.params.id of provider & id of list to be delted in req.body
+    deleteList: async function(req, res) {
+        console.log("Provider controller called to 'deleteList' ", req.params.id, " ", req.body);
+        const listId = req.body.listId;
+        const idObj = { _id: req.params.id }
+        const updObj = {$pull: { custom_question_lists: { _id: listId } } }
+        try {
+            const result = await api.updateVal({idObj, updObj}, db)
+            hp.sendData(res, "success")(result)
+        } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }
+    },
+
+    // Save 'custom_questions'
+    // To be sent req.params.id of provider to be updated & req.body array of custom questions
+    allQuestions: async function(req, res) {
+        console.log("Provider controller called to 'update' ", req.params.id, " ", req.body);
+        const idObj = { _id: req.params.id }
+        const updObj = { $set: {"custom_questions": req.body } } 
+        filterObj = {}
+        try {
+            const result = await api.update({idObj, updObj, filterObj }, db)
+            hp.sendData(res, "success")(result)
+        } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }
+    },
+
+    
+    // Save a new custom question to 'custom_questions'
+    // To be sent req.params.id of provider to be updated & req.body object of new question
+    saveQuestion: async function(req, res) {
+        console.log("Provider controller called to 'update' ", req.params.id, " ", req.body);
+        const idObj = { _id: req.params.id }
+        const updObj = { $push: { 
+            "custom_questions": {
+                $each: [req.body],
+                $position: 0
+            }
+        } }
+        try {
+            const result = await api.updateVal({idObj, updObj}, db)
+            hp.sendData(res, "success")(result)
+        } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }
+    },
+
+    // Update a custom question 
+    // To be sent req.params.id of provider to be updated & req.body object of question id and new question data
+    updateQuestion: async function(req, res) {
+        console.log("Provider controller called to 'updateQuestion' ", req.params.id, " ", req.body);
+        const { questionId, questionData} = req.body
+        const idObj = { _id: req.params.id }
+        const updObj =  { $set: {"custom_questions.$[elem]" : questionData} }
+        const filterObj = { arrayFilters: [ { "elem._id": questionId} ] }
+        try {
+            const result = await api.update({idObj, updObj, filterObj}, db)
+            hp.sendData(res, "success")(result)
+        } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }
+    },
+
+    // Delete a question from 'custom questions'
+    // To be sent req.params.id of provider $ id of question to be deleted in req.body
+    deleteQuestion: async function(req, res) {
+        console.log("Provider controller called to 'deleteQuestion' ", req.params.id, " ", req.body);
+        const questionId = req.body.questionId;
+        const idObj = { _id: req.params.id }
+        const updObj = {$pull: { custom_questions: { _id: questionId } } }
         try {
             const result = await api.updateVal({idObj, updObj}, db)
             hp.sendData(res, "success")(result)

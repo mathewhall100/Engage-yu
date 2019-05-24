@@ -38,8 +38,8 @@ class ReportTable extends Component {
     tableCellColor = (index) => {
         switch (index) {
             case 0: return "green";
-            case 1: return "#ffc200";
-            case 2: return "orange"; 
+            case 1: return "#FFD700";
+            case 2: return "#FFA500"; 
             case 3: return "red";
             default: return "grey";
         }

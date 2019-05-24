@@ -46,7 +46,9 @@ class GenericTable extends Component {
         this.props.handleActionClick(btn, _id)
     };
 
-    handleChangePage = (event, page) => { this.setState({ page }) };
+    handleChangePage = (event, page) => { 
+        this.setState({ page }) 
+    };
 
     handleChangeRowsPerPage = event => {
         this.setState({ rowsPerPage: event.target.value });

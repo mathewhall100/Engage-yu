@@ -360,7 +360,7 @@ class SurveyForm extends Component {
                                     <Collapse in={toggleCollapse[0]} collapsedHeight="38px" timeout={400}>
                                         <div className={classes.customBox} >
                                             <div style={{height: "40px"}} >
-                                                <Typography variant="subtitle1" inline>My question lists</Typography>
+                                                <Typography variant="subtitle1" inline>My Question Lists</Typography>
                                                 <SurveyPanelExpandButton 
                                                     toggle={toggleCollapse[0]}
                                                     i={0}
@@ -379,7 +379,7 @@ class SurveyForm extends Component {
                                     <Collapse in={toggleCollapse[1]} collapsedHeight="38px" timeout={400}>
                                         <div className={classes.customBox} >
                                             <div style={{height: "40px"}} >
-                                                <Typography variant="subtitle1" inline >My questions</Typography>
+                                                <Typography variant="subtitle1" inline >My Custom Questions</Typography>
                                                 <SurveyPanelExpandButton 
                                                     toggle={toggleCollapse[1]}
                                                     i={1}
@@ -388,7 +388,7 @@ class SurveyForm extends Component {
                                             </div>
                                             <SurveyCustomQuestionTable 
                                                 type="question"
-                                                customQuestions={customQuestions.filter(q => q.added_by_id === localStorage.getItem("user_provider_id"))}
+                                                customQuestions={provider.custom_questions}
                                                 selected={selectedQuestions}
                                                 checkboxClick={this.handleQuestionCheckBoxClick}
                                             />
@@ -398,7 +398,7 @@ class SurveyForm extends Component {
                                     <Collapse in={toggleCollapse[2]} collapsedHeight="38px" timeout={400}>
                                         <div className={classes.customBox}>
                                             <div style={{height: "40px"}} >
-                                                <Typography variant="subtitle1" inline>All questions</Typography>
+                                                <Typography variant="subtitle1" inline>Shared Questions</Typography>
                                                 <SurveyPanelExpandButton 
                                                     toggle={toggleCollapse[2]}
                                                     i={2}

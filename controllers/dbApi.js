@@ -12,7 +12,6 @@ const find = (findObj, db) => {
 };
 
 const findById = (id, findObj, db) => {
-    console.log("Patient_info controller called to 'find all by provider': ", id);
     const { fields, sort, pop="" } = findObj
     return  db.findById(id, fields)
     .sort(sort)

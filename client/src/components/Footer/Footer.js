@@ -48,20 +48,20 @@ class Footer extends Component {
     //     })
     // }
 
-    test = () => {
-        const userId = "auth0|5cd24f76b9443a1085a4eac3"
-        const updObj = {
-            email: "henry@martins.com"
-        }
-        authAPI.update({userId, updObj})
-        .then(res => {
-            console.log(res.data)
-        })
-        .catch(err => {
-            console.log(err)
-            console.log(err.response)
-        })
-    }
+    // test = () => {
+    //     const userId = "auth0|5cd24f76b9443a1085a4eac3"
+    //     const updObj = {
+    //         email: "henry@martins.com"
+    //     }
+    //     authAPI.update({userId, updObj})
+    //     .then(res => {
+    //         console.log(res.data)
+    //     })
+    //     .catch(err => {
+    //         console.log(err)
+    //         console.log(err.response)
+    //     })
+    // }
 
 
     render() {
@@ -71,7 +71,7 @@ class Footer extends Component {
                 <br />
                 <Typography variant="subtitle1" align="center" color="primary"><span style={{fontSize: "20px"}}>&copy;</span> Engage-Yu 2019</Typography>
                 <br />
-                <Button onClick={() => {this.test()}} >test</Button>
+                {/* <Button onClick={() => {this.test()}} >test</Button> */}
             </div>
         )
     }

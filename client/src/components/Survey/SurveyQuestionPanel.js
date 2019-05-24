@@ -44,37 +44,37 @@ const SurveyCustomQuestionPanel = (props) => {
 					</ExpansionPanelSummary>
 				
 					<ExpansionPanelDetails>
-							<Typography variant="subtitle2" style={{marginTop: "-8px"}}>
-					<table>
-						<tbody>
-							{question.answers.map((ans, index) => 
-								<tr key={index}>
-									<td style={{width: '36px'}}></td>
-									<td>{index+1}. {ans[0].toUpperCase() + ans.slice(1)}</td>
-								</tr>		
-							)}
-						</tbody>
-					</table>
+						<Typography variant="subtitle2" style={{marginTop: "-8px"}}>
+							<table>
+								<tbody>
+									{question.answers.map((ans, index) => 
+										<tr key={index}>
+											<td style={{width: '36px'}}></td>
+											<td>{index+1}. {ans[0].toUpperCase() + ans.slice(1)}</td>
+										</tr>		
+									)}
+								</tbody>
+							</table>
 
-					<br />
+							<br />
 
-					<span style={{marginLeft: "40px"}}>
-						{question.added_by ? 
-							<Fragment>
-								Added by &nbsp;
-								<ProviderName 
-									title={question.added_by.title} 
-									firstname={question.added_by.firstname}
-									lastname={question.added_by.lastname}
-								/>
-								&nbsp; on {moment(question.date_added).format("MMM Do YYYY")}
-							</Fragment>
-							:
-							`Default question`
-						}			
-					</span>
+							<span style={{marginLeft: "40px"}}>
+								{question.added_by ? 
+									<Fragment>
+										Added by &nbsp;
+										<ProviderName 
+											title={question.added_by.title} 
+											firstname={question.added_by.firstname}
+											lastname={question.added_by.lastname}
+										/>
+										&nbsp; on {moment(question.date_added).format("MMM Do YYYY")}
+									</Fragment>
+									:
+									`Default question`
+								}			
+							</span>
 
-				</Typography>
+						</Typography>
 					</ExpansionPanelDetails>
 
 				</ExpansionPanel>

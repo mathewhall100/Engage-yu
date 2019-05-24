@@ -36,7 +36,7 @@ class CareGroupRemove extends Component {
     loadProvidersByGroup(id) {
         providerAPI.findAllByGroup(id)
         .then(res => {
-            this.setState({numProvidersInCareGroup: res.data.providerList.length})
+            this.setState({numProvidersInCareGroup: res.data.length})
         })
         .catch(err => {
             console.log(`OOPS! A fatal problem occurred and your request could not be completed`);

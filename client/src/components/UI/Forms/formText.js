@@ -43,7 +43,7 @@ export default class FormText extends Component {
                 name={name}
                 label={label}
                 type={type}
-                width={`${width}px`}
+                width={width.includes('%') ? width : width.includes("px") ? width : `${width}px`}
                 variant={variant}
                 helpText={helpText}
                 component={this.renderTextField}

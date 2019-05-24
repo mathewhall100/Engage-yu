@@ -30,6 +30,20 @@ module.exports = {
         }
     },
 
+    // Update a new custom question document 
+    // To be sent req.body describing new document
+    update: async function(req, res) {
+        console.log("Question_custom controller called to 'update' ", req.params.id, " ", req.body);
+        const idObj = { _id: req.params.id }
+        const updObj = req.body
+        try {
+            const result = await api.updateVal({idObj, updObj}, db)
+            hp.sendData(res, "success")(result)
+        } catch(error) {
+            hp.sendError(res, "failed")(error)
+        }
+    },
+
     // Remove a question from custom question list
     // To be sent req.params.id of resultto be deleted
     delete: async function(req, res) {

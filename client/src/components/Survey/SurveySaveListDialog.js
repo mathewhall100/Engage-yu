@@ -25,7 +25,7 @@ class SurveySaveQuestionListDialog extends React.Component {
 			date_created: new Date(),
 			list_questions: [...questions]
 		}
-		providerAPI.saveQuestionList(this.props.providerId, listObj)
+		providerAPI.addNewList(this.props.providerId, listObj)
 			.then(res => {
 				console.log("res.data: ", res.data)
 				this.props.dispatch(loadProvider(this.props.providerId));
