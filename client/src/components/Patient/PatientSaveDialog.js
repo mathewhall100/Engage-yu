@@ -51,7 +51,7 @@ class PatientSaveDialog extends React.Component {
 			return <CallBack text="Saving..." />
 			
 		if (errorNewPatient ) 
-			return <DialogError text="A problem was encountered and the patient could not be saved at this time." cancelUrl="/admin/provider"/>
+			return <DialogError />
 						
 		if (newPatient && newPatient.firstname) 
 			return (

@@ -1,13 +1,15 @@
 import React, { Component, Fragment } from 'react';
 import { reduxForm} from 'redux-form';
 import { connect } from 'react-redux';
-import { startCase } from 'lodash';
+import moment from 'moment'
+import { startCase, isEmpty } from 'lodash';
 //import PropTypes from 'prop-types';
 import { withStyles, Button, Typography, Collapse} from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel'
 import BtnAction from '../UI/Buttons/btnAction'
 import BtnActionLink from '../UI/Buttons/btnActionLnk'
 import CallBack from '../UI/callback'
+import DialogError from '../UI/Dialogs/dialogError'
 import { durations, startDates, frequencies, timeMargins, reminders } from './surveyConstants'
 import SurveyCustomQuestionTable from './SurveyCustomQuestionTable';
 import SurveyCustomRecipientsTable from './SurveyCustomRecipientsTable';
@@ -19,6 +21,7 @@ import SurveyDatePicker from './SurveyFormDatePicker';
 import SurveySaveListDialog from "./SurveySaveListDialog"
 import SurveySaveDialog from './SurveySaveDialog'
 import { saveSurvey } from '../../actions'
+import { createStartDate } from './surveyLogic'
 
 
 const styles = theme => ({
@@ -135,10 +138,11 @@ class SurveyForm extends Component {
         customizeQuestions: false,
         toggleCollapse: [false,false,false],
         reportRecipients: false,
-        initialReportRecipients: {},
+        initialReportRecipients: [],
         recipients: [],
         saveList: false,
         listSaved: false,
+        errorDatePicked: false,
         success: false,
         failed: false, 
     }
@@ -156,18 +160,46 @@ class SurveyForm extends Component {
     }
 
     submit(values) {
-        console.log("values: ", values);
-        console.log("questions: ", this.state.selectedQuestions)
-        console.log("recipients: ", this.state.recipients)
-        this.props.dispatch(saveSurvey(
-             values, 
-             this.props.patientData, 
-             this.state.slider1Value, 
-             this.state.slider2Value, 
-             this.state.selectedQuestions,
-             this.state.recipients
-         ));
+        const latestEnd = this.checkDate(values.startdate, values.datepick)
+        if (latestEnd) {
+            this.setState({errorDatePicked: false}, () => this.setState({errorDatePicked: latestEnd}) )
+        } else {
+            this.props.dispatch(saveSurvey(
+                values, 
+                this.props.patientData, 
+                this.state.slider1Value, 
+                this.state.slider2Value, 
+                this.state.selectedQuestions,
+                this.state.recipients
+            ));
+        }
     };
+
+    // Check to make sure times do not overlap existing pending or active diary cards
+    checkDate = (startDate, datePick) => {
+        const newEpisodeStart = createStartDate(startDate, datePick)
+        const patientData = this.props.patientData
+        if (patientData && patientData.episodes) {
+            const episodes = patientData.episodes;
+            if (!isEmpty(episodes)) {
+                const latestEnd = episodes.reduce(this.orderDates)
+                console.log("newEpisodeStart: ", moment(newEpisodeStart).startOf('day'), " : latest end: ", moment(latestEnd).startOf('day'))
+                if ( moment(newEpisodeStart).startOf('day').isSameOrBefore(moment(latestEnd).startOf('day')) ) {return latestEnd} else {return false}
+            } 
+            return false
+        }
+    }
+
+    orderDates = (acc, ep) => {
+        if (ep.status === "pending" || ep.status === "active") {
+            if (acc) {
+                if (moment(ep.end_date).isAfter(moment(acc))) {
+                    acc = ep.end_date
+                }
+            } else acc = ep.end_date
+        }
+        return acc;
+    }
 
     // Slider values
     getSliderValues = (slider1, slider2) => {
@@ -252,7 +284,7 @@ class SurveyForm extends Component {
     }    
     
     reportRecipients = (recipients) => {
-        console.log("recipinets: ", recipients)
+        console.log("recipients: ", recipients)
         this.setState({recipients: recipients})
     }
 
@@ -261,19 +293,18 @@ class SurveyForm extends Component {
     render () {
         
         const { patientInfo, patientData, defaultQuestion, customQuestions, provider, errorPatient, errorProvider, errorQuestions, loadingPatient, loadingProvider, loadingQuestions, survey, errorSurvey, loadingSurvey, handleSubmit, classes, submitting, surveyForm } = this.props;
-        const { selectedQuestions, selectedList, slider1Value, slider2Value, settings, customizeQuestions, toggleCollapse, initialReportRecipients, reportRecipients, saveList } = this.state;
+        const { selectedQuestions, selectedList, slider1Value, slider2Value, settings, customizeQuestions, toggleCollapse, initialReportRecipients, reportRecipients, saveList, errorDatePicked } = this.state;
 
         if (errorPatient || errorProvider || errorQuestions) {
-            return <div>
-                Unfortuneately an problem occurred and a new Diary card cannot be created at this time. 
-                </div>
+            return <DialogError />
         }
 
         if (loadingPatient || loadingProvider || loadingQuestions || !patientInfo || !provider || !defaultQuestion || !customQuestions ) {
             return <CallBack />
         }
 
-        // SurveyForm component return
+
+        // Component return
         return (
             <div className={classes.root}>
 
@@ -507,6 +538,12 @@ class SurveyForm extends Component {
 
                 </form>
 
+                {errorDatePicked && 
+                        <DialogError title="Invalid diary card start date" 
+                        text={`Only one diary card per patient can be active at one time and the new diary card is due to start before an earlier pending or active one ends. Either select a start date that is after the end of all current pending and active diary cards or, alternatively, you can cancel an earlier diary card if you want to keep the current start date. 
+                        (i.e. after ${moment(errorDatePicked).format("DD MMM YYYY")}).`}
+                /> }
+
                 {saveList && 
                     <SurveySaveListDialog questions={selectedQuestions} providerId={localStorage.getItem("user_provider_id")} saveListClose={this.saveListClose}/>
                 }
@@ -516,6 +553,7 @@ class SurveyForm extends Component {
                         start={survey.start} 
                         name={`${startCase(patientInfo.firstname)} ${startCase(patientInfo.lastname)}`} 
                         patientDataId={patientData._id}
+                        patientInfoId={patientInfo._id}
                      />
                 }
 
@@ -524,10 +562,15 @@ class SurveyForm extends Component {
     }
 };
 
-function validate(values) {
+const validate = (values) => {
     const errors = {};
-    if (values.startdate === "date" && !values.datepick) {
-        errors.datepick = "Please enter a valid date";   
+    if (values.startdate === "date") {
+        if (!values.datepick) {
+            errors.datepick = "Please enter a valid date";  
+        } 
+    if (moment(values.datepick).isSameOrBefore(moment.now()) ) {
+        errors.datepick = "Start date must be a future date"
+        }
     }
     console.log("Errors: ", errors)
     return errors;

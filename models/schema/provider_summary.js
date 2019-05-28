@@ -30,7 +30,9 @@ const provider_summarySchema = new Schema({
         required: [true, "No primary provider lastname supplied"] 
     },
     
-    provider_roleSchema
+    provider_roleSchema,
+
+    email: String
 
 },
 

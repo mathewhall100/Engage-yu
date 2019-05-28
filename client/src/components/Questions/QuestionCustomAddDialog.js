@@ -3,7 +3,6 @@ import { reduxForm } from 'redux-form';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { startCase } from 'lodash'
 import moment from 'moment';
 import { withStyles, withMobileDialog, Typography, Grid} from '@material-ui/core';
 import RecordVoiceIcon from '@material-ui/icons/RecordVoiceOver';
@@ -11,8 +10,6 @@ import VideoCamIcon from '@material-ui/icons/Videocam';
 import BtnAction from '../UI/Buttons/btnAction'
 import FormText from './QuestionAddFormText'
 import FormBox from '../UI/Forms/formBox'
-import DialogError from '../UI/Dialogs/dialogError'
-import CallBack from '../UI/callback'
 import DialogCustom from '../UI/Dialogs/dialogCustom'
 import ProviderName from '../UI/providerName'
 import { loadProvider } from '../../actions'

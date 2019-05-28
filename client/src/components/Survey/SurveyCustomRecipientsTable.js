@@ -61,13 +61,23 @@ class SurveyCustomRecipientsTable extends Component {
 
     getInitialRecipients = () => {
         const { providers } = this.state;
-        if (this.props.patientInfo && this.props.patientInfo.primary_provider && this.props.provider && providers) {
-            const recipientPrimaryProvider = providers.filter(provider => {return provider.value[0] === this.props.patientInfo.primary_provider.id})
-            const recipientRequestingProvider = providers.filter(provider => {return provider.value[0] === this.props.provider._id})
-            this.setState({recipients: [
-                !isEmpty(recipientPrimaryProvider) ? recipientPrimaryProvider[0].value : null,
-                !isEmpty(recipientRequestingProvider) ? recipientRequestingProvider[0].value : null
-            ]}, () =>  this.props.returnRecipients(this.state.recipients) )
+        const recipients = [];
+        let primProviderId = "";
+        let reqProviderId = "";
+        let primProvider = [];
+        let reqProvider = [];
+        if (this.props.patientInfo && this.props.patientInfo.primary_provider) {primProviderId = this.props.patientInfo.primary_provider.id}
+        if (this.props.provider) {reqProviderId = this.props.provider._id}
+        if (!isEmpty(providers)) {
+            primProvider = providers.filter(provider => {return provider.value[0] === primProviderId})
+            reqProvider = providers.filter(provider => {return provider.value[0] === reqProviderId})
+        if (!isEmpty(primProvider)) {
+            recipients.push(primProvider[0].value)
+        } else null
+        if (!isEmpty(reqProvider)) {
+            recipients.push(reqProvider[0].value)
+        } else null
+        this.setState({recipients: recipients}, () =>  this.props.returnRecipients(this.state.recipients) )
         }
     }
 

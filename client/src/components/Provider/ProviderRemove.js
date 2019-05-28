@@ -32,7 +32,7 @@ class ProviderRemove extends Component {
 
     submit = (values) => {
         console.log(values)
-        if (values.lastname === this.props.provider.lastname) {
+        if (values.lastname.toLowerCase().trim() === this.props.provider.lastname.toLowerCase().trim()) {
             providerAPI.delete(this.props.provider._id)
             .then(res => {
                 console.log("result: ", res.data)

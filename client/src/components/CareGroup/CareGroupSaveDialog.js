@@ -36,7 +36,7 @@ class CareGroupSaveDialog extends React.Component {
 		const { newCareGroup, loadingNewCareGroup, errorNewCareGroup} = this.props;
 
 		if (errorNewCareGroup) 
-			return <DialogError text="An error ocurred and this Care Group  could not be added at this time." cancelUrl={"/admin/find"} /> 
+			return <DialogError /> 
 		
         if (loadingNewCareGroup && !isEmpty(newCareGroup)) 
 			return <CallBack text="Saving..." />

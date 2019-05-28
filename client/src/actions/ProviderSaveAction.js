@@ -47,6 +47,7 @@ export const providerSave = (values) => {
                 provider_role: {
                     role: values.role.toLowerCase()
                 },
+                login_auth: values.signup && values.email && values.password ? 'true' : 'false',
                 provider_group: {
                     ref: values.caregroup[0],
                     id: values.caregroup[0],

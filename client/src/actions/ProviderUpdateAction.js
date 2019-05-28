@@ -18,7 +18,7 @@ export const providerUpdate = (values, provider) => {
         return dispatch => {
             dispatch(providerUpdateBegin());
             let updObj = {}
-            updObj = {email: values.email}
+            updObj = {email: values.email, loginAuth: provider.login_auth}
             providerAPI.updateEmail(provider._id, updObj)
             .then(res => {
                 //console.log("res: ", res.data)

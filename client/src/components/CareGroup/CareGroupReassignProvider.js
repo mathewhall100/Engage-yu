@@ -83,7 +83,7 @@ class CareGroupReassignProvider extends PureComponent {
         }
 
         if (error) {
-            return <div>Error! {error.message}</div>
+            return <DialogError /> 
         }
     
         if (isEmpty(provider)) {
@@ -115,7 +115,7 @@ class CareGroupReassignProvider extends PureComponent {
 
                 </Card>
 
-                {failed && <DialogError text="A problem was encountered and the provider's details were not updated." cancelUrl="/admin/provider"/>} 
+                {failed && <DialogError text="Whoops! Something went wrong and the provider's details could not be updated at this time."/>} 
 
             </Fragment>   
         );

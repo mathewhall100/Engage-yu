@@ -33,14 +33,17 @@ export default class ReportRequestDetails extends PureComponent {
                         <Fragment>
                             {report_to.map((d, index) => {
                                 return (
+                                    d ? 
                                     <Typography variant="body2" key={index}>
                                         ({index+1})&nbsp;
                                         <ProviderName 
                                             title={d.title} 
                                             firstname={d.firstname} 
                                             lastname={d.lastname} 
-                                        />
+                                        /> ({d.email})
                                     </Typography>
+                                    : 
+                                    null
                                 )
                             }) }
                         </Fragment>

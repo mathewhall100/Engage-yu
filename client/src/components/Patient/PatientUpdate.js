@@ -107,7 +107,7 @@ class PatientUpdate extends PureComponent {
         ];
 
         if (error) {
-            return <div>Error!</div>
+            return <DialogError />
         }
 
         if (isEmpty(patientInfo)) {
@@ -133,7 +133,7 @@ class PatientUpdate extends PureComponent {
                 </Card>
 
                 {failed && <DialogError 
-                    text="A problem was encountered and the patient's details were not updated." cancelUrl="/admin/patient/find"
+                    text="Whoops! Something went wrong and this patient's details could not be updated at this time."
                     closeDialog={this.outcomeReset}
                 />} 
 

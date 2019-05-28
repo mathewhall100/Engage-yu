@@ -47,7 +47,7 @@ SurveyPatientDetails.propTypes = {
 };
 
 const mapStateToProps = (state) => {
-    console.log("State : ", state);
+    //console.log("State : ", state);
     return {
         patientInfo: state.patient.patient.patientInfo,
         error: state.patient.error,

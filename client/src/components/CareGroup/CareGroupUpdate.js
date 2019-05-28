@@ -85,7 +85,7 @@ class CareGroupUpdate extends PureComponent {
 
 
         if (error) {
-            return <div>Error! {error.message}</div>
+            return <DialogError text="An error ocurred and this Care Group could not be updated at this time." /> 
         }
     
         if (isEmpty(careGroup)) {

@@ -65,21 +65,28 @@ module.exports = {
     updateEmail: async function(req, res) {
         const providerId = req.params.id;
         const idObj = { _id: providerId }
-        const updObj = req.body;
+        console.log("^^^^: ", req.body)
+        const {email, loginAuth} = req.body
+        const updObj = {email: email}
         const findObj = { find: {id: providerId} }
-        console.log("Provider controller called to 'update'", providerId, " ", updObj );
+        console.log("Provider controller called to 'update'", providerId, " loginAuth: ", loginAuth, " ", email );
         try {
-            const ret = await Promise.all([
-                auth0.getToken(),
-                api.findOne(findObj, user),
-                api.updateVal({idObj, updObj}, db)
-            ])
-            const accessToken = ret[0].data.access_token;
-            const auth0UserId = ret[1].sub;
-            const updateProvider = ret[2];
-            const updateAuth0 = await auth0.updateProfile(accessToken, auth0UserId, updObj)
-            // if no errors return success
-            hp.sendSuccess(res, "success")({"Patient": updateProvider, "auth0": updateAuth0.status})
+            if (loginAuth) {
+                const ret = await Promise.all([
+                    auth0.getToken(),
+                    api.findOne(findObj, user),
+                    api.updateVal({idObj, updObj}, db)
+                ])
+                const accessToken = ret[0].data.access_token;
+                const auth0UserId = ret[1].sub;
+                const updateProvider = ret[2];
+                const updateAuth0 = await auth0.updateProfile(accessToken, auth0UserId, updObj)
+                // if no errors return success
+                hp.sendSuccess(res, "success")({"Patient": updateProvider, "auth0": updateAuth0.status})
+            } else {
+                const result = api.updateVal({idObj, updObj}, db)
+                hp.sendSuccess(res, "success")(result)
+            }
         } catch(error) {
             hp.sendError(res, "failed")(error)
         }
@@ -204,19 +211,22 @@ module.exports = {
         const findObj = { find: {id: providerId} }
         console.log("finduser: ", findObj)
         try { 
-            let ret = await Promise.all([
-                api.findOne(findObj, user),
-                auth0.getToken()
-            ])
-            console.log("ret: ", ret[0]._id, " : ", ret[1].data.access_token)
-            if (ret[0] && ret[1]) {
-                const userId = ret[0]._id
-                const auth0UserId = ret[0].sub;
-                const accessToken = ret[1].data.access_token;
-                ret = await Promise.all([
-                    api.del_te(userId, user),
-                    auth0.del_te(accessToken, auth0UserId)
-                ])  
+            const provider = await api.findById(providerId, {}, db)
+            if (provider.login_auth) {
+                let ret = await Promise.all([
+                    api.findOne(findObj, user),
+                    auth0.getToken()
+                ])
+                console.log("ret: ", ret[0]._id, " : ", ret[1].data.access_token)
+                if (ret[0] && ret[1]) {
+                    const userId = ret[0]._id
+                    const auth0UserId = ret[0].sub;
+                    const accessToken = ret[1].data.access_token;
+                    ret = await Promise.all([
+                        api.del_te(userId, user),
+                        auth0.del_te(accessToken, auth0UserId)
+                    ])  
+                }
             }
             const result = await api.del_te(providerId, db)
             hp.sendSuccess(res, "success")(result)

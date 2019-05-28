@@ -31,9 +31,7 @@ class ProviderSaveDialog extends Component {
 
 		if (errorNewProvider) 
 			return <DialogError 
-				text="An error ocurred and this provider's details could not be saved at this time." 
-				cancelUrl={"/admin/provider/find"
-			} 
+				text="Whoops! Something went wrong and this provider's details could not be saved at this time. Please check all your entries and try again. If the problem persists try again later or contact your IT help. " 
 			/> 
 		
 		if (loadingNewProvider || isEmpty(newProvider))

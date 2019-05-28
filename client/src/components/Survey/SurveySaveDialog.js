@@ -6,12 +6,12 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { withMobileDialog, Typography} from '@material-ui/core';
 import BtnAction from '../UI/Buttons/btnAction'
-import BtnActionLink from '../UI/Buttons/btnActionLnk'
 import FormBox from '../UI/Forms/formBox'
 import DialogError from '../UI/Dialogs/dialogError'
 import CallBack from '../UI/callback'
 import DialogCustom from '../UI/Dialogs/dialogCustom'
 import ProviderName from '../UI/providerName'
+import { loadPatient } from '../../actions'
 import { validateIsRequired } from '../../logic/formValidations';
 import patient_dataAPI from "../../utils/patient_data.js";
 
@@ -25,7 +25,7 @@ class SurveySaveDialog extends Component {
 	//Handle form submission and save message
 	submit(values) {
 		console.log("Submitted values: ", values);
-
+		this.props.dispatch(loadPatient(this.props.patientInfoId))
 		const msgObj = {
 			msg_id: "requested",
 			msg_date: new Date(),
@@ -42,8 +42,8 @@ class SurveySaveDialog extends Component {
 			this.props.history.push('/admin/patient/find')
 		})
 		.catch(err => {
-			console.log(`OOPS! A fatal problem occurred and your request could not be completed`);
-			console.log(err);
+			console.log(err)
+            console.log(err.response)
 			this.setState({failed: true}); // open failed dialog
 		})
 	}
@@ -58,9 +58,14 @@ class SurveySaveDialog extends Component {
 		}
 	}
 
+	handleSkip = () => {
+		this.props.dispatch(loadPatient(this.props.patientInfoId))
+		this.handleClose()
+		this.props.history.push('/admin/patient/find')
+	}
+
 	handleClose = () => {
 		this.setState({ open: false });
-		this.props.saveListClose()
 	};
 
 
@@ -68,10 +73,12 @@ class SurveySaveDialog extends Component {
 		const { handleSubmit, pristine, survey, errorSurvey, loadingSurvey, name } = this.props;
 
 		if (errorSurvey) 
-			return <DialogError text="This diary card could not be completed at this time." cancelUrl={"/admin/patient/find"} /> 
+			return <DialogError /> 
 		
 		if (loadingSurvey) 
-			return <CallBack text="saving..." />
+			return 	<DialogCustom width="800px" closeIcon={false}>
+						<CallBack text="saving..." />
+					</DialogCustom>
 
 		return (
 			<DialogCustom title="Success!" width="800px" closeIcon={false}>
@@ -89,11 +96,17 @@ class SurveySaveDialog extends Component {
 					<FormBox name="msg" label="Enter message" rows="3"/>		
 					<br />
 					<Typography variant="subtitle2" align="right">
-						{`Sender: ${<ProviderName title={localStorage.getItem("user_provider_title")} firstname={localStorage.getItem("user_provider_firstname")} lastname={localStorage.getItem("user_providerr_lastname")} />} on ${moment().format('MMMM Do YYYY, h:mm a')}`}
+						Sender:&nbsp;
+						<ProviderName 
+							title={localStorage.getItem("user_provider_title")} 
+							firstname={localStorage.getItem("user_provider_firstname")} 
+							lastname={localStorage.getItem("user_provider_lastname")} 
+						/>
+						&nbsp; on {moment().format('MMMM Do YYYY, h:mm a')}
 					</Typography>
 					<br />
 					<BtnAction type="submit" disabled={pristine} text="send" marginRight={true}/>
-					<BtnActionLink text="skip" url="/admin/patient/find" warning={true} />
+					<BtnAction type="button" text="skip" warning={true}  handleAction={this.handleSkip}/>
 				</form>
 
 			</DialogCustom>

@@ -69,9 +69,9 @@ class QuestionsCustom extends Component {
         failed: false,
         myLists: [],
         page: 0,
-        rowsPerPage: 5,
+        rowsPerPage: 9,
         pageB: 0,
-        rowsPerPageB: 5,
+        rowsPerPageB: 10,
     }
 
     updateDb = (action, list) => {
@@ -407,10 +407,7 @@ class QuestionsCustom extends Component {
          }
         
         if (errorQuestions || errorProvider) {
-            return <DialogError 
-                        text="A problem was encountered and the patient's details were not updated." cancelUrl="/admin/QuestionsCustom"
-                        closeDialog={this.dialogClose}
-                    />
+            return <DialogError />
         }
 
         return (
@@ -424,8 +421,8 @@ class QuestionsCustom extends Component {
                     <br />
 
                     <Typography variant="h6" gutterBottom align="center">Shared Custom Questions</Typography>
-                    <HrStyled /> <br />
-                    <Table>
+                    <HrStyled />
+                    <Table style={{marginTop: "14px"}}>
                         <TableBody>
                             <TableRow>
                                 <TableCell style={{padding: 0, border: "none"}}>
@@ -597,10 +594,7 @@ class QuestionsCustom extends Component {
 
                  {newQuestionDialog && <QuestionCustomAddDialog newQuestion={newQuestion} dialogClose={this.dialogClose} /> }
                  {updateQuestionDialog && <QuestionCustomUpdateDialog updateQuestion={updateQuestion} updateQuestionType={updateQuestionType} dialogClose={this.dialogClose} /> }
-                 {failed && <DialogError 
-                    text="A problem was encountered and the patient's details were not updated." cancelUrl="/admin/QuestionsCustom"
-                    closeDialog={this.dialogClose}
-                />} 
+                 {failed && <DialogError text="Whoops! Something went wrong and the patient's details could not be updated at this time. Please try again. If the problem persist, contact your It help" />} 
 
             </div>
         )

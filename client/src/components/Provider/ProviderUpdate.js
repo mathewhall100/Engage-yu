@@ -128,7 +128,7 @@ class ProviderUpdate extends PureComponent {
         }
 
         if (error) {
-            return <div>Error! {error.message}</div>
+            return <DialogError />
         }
     
         if (isEmpty(provider)) {
@@ -168,7 +168,7 @@ class ProviderUpdate extends PureComponent {
 
                 </Card>
 
-                {failed && <DialogError text="A problem was encountered and the provider's details were not updated." cancelUrl="/admin/provider/find" closeDialog={this.outcomeReset}/>} 
+                {failed && <DialogError text="Whoops! Something went wrong and this provider's details could not be updated at this time. Please try again. If the problem persists contact your IT help."/>} 
 
             </Fragment>   
         );

@@ -43,19 +43,22 @@ export const saveSurvey = (
 
         const reportTo = [
             ...recipients.map(recipient => {
-                return {
-                    ref: recipient[0],
-                    id: recipient[0],
-                    title: recipient[1],
-                    firstname: recipient[2],
-                    lastname: recipient[3],
-                    role: recipient[4]
+                if (recipient) {
+                    return {
+                        ref: recipient[0],
+                        id: recipient[0],
+                        title: recipient[1],
+                        firstname: recipient[2],
+                        lastname: recipient[3],
+                        role: recipient[4],
+                        email: recipient[8],
+                    }
                 }
             })
         ];
 
         const surveyObj = {
-            episode_number: patientData.episodes.length,
+            episode_number: patientData.episodes.length+1,
             date_requested: moment(),
             requesting_provider: requestingProvider,
             start_date: startDate,

@@ -41,11 +41,12 @@ export default class FormTextFocused extends Component {
 
     render () {
         const { name, label, variant="standard", width="250", helpText=true} = this.props;
+        console.log("width: ", width)
         return (
             <Field 
                 name={name}
                 label={label}
-                width={width.includes('%') ? width : width.includes("px") ? width: `${width}px`}
+                width={!isNaN(width) ? `${width}px` : width.includes("%") ? width : width.includes("px") ? width : "250px"}
                 component={this.renderTextField}
                 variant={variant}
                 helpText={helpText}
